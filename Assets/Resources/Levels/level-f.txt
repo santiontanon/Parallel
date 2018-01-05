@@ -1,0 +1,83 @@
+METADATA
+level_id	3
+level_title	More Roads
+goal_string	Deliver 4 packages with each arrow delivering at least 2
+goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":1001,"type":"thread","value":1},{"condition":"gt","property":"delivered","id":1002,"type":"thread","value":1},{"condition":"gt","property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","property":"delivered","id":3002,"type":"delivery","value":1}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	16
+
+LAYOUT
+-----B--
+-----J--
+-----J--
+-----J--
+--FEEMEC
+--J----J
+FEOEEC-J
+J-J--J-J
+J-J--J-J
+J-LEEOEI
+J----J--
+LEGEEI--
+--J-----
+--J-----
+--J-----
+--H-----
+
+COLORS
+-----"--
+-----"--
+-----"--
+-----"--
+--""""""
+--"----"
+!!#!!!-"
+!-"--!-"
+!-"--!-"
+!-"""#""
+!----!--
+!!!!!!--
+--!-----
+--!-----
+--!-----
+--!-----
+
+DIRECTIONS
+     A  
+     A  
+     A  
+     A  
+  A>>X>>
+  A    V
+<<X<<A V
+V A  A V
+V A  A V
+V <<<X<V
+V    A  
+V>X>>>  
+  V     
+  V     
+  V     
+  V     
+
+COMPONENTS
+1001	thread	4	9	S	L	{"color":2,"initial_direction":"West","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1002	thread	5	8	S	L	{"color":1,"initial_direction":"North","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+2001	pickup	2	6	S	L	{"color":1,"type":"Conditional","picked":0,"passed":0}
+3001	delivery	7	7	S	L	{"accepted_types":["Conditional"],"accepted_colors":[],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":2}
+3002	delivery	3	11	S	L	{"accepted_types":["Conditional"],"accepted_colors":[],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":2}
+5001	diverter	5	4	S	L	{"passed":0,"directions_types":[[],[],["Conditional"],["Empty"]],"directions_colors":[[],[],[],[]]}
+5002	diverter	2	11	S	L	{"passed":0,"directions_types":[[],["Empty"],["Conditional"],[]],"directions_colors":[[],[],[],[]]}
+
+EXECUTION
+
+
+PLAYER
+

@@ -1,0 +1,1520 @@
+METADATA
+level_id	57
+level_title	Optional Level 39
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2111,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2122,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2080,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":2137,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2070,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":2133,"type":"delivery","value":2}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":0},"signal":{"count":0},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	57
+board_height	31
+
+LAYOUT
+--FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEC
+--J-----------------------------------------------------J
+--J-----FEEEEEEEC-------------FEEEEEEEEEEEEEEEEEEEEEEEGEI
+--J-----J-------J-------------J-----------------------J--
+--J-----J-------J-------------J-----------------------J--
+--J-----J-------J-------------J-----------------------J--
+--J-----J-------NEEEEEEEEEEEGEMEEEEEEEEEEEEEEEEEEEEEEEI--
+--J-----J-------J-----------J----------------------------
+--NEEEEEI-------J-----------J----------------------------
+--J-------------J-----------J----------------------------
+--J-------------J-FEGEGEEEEEI----------------------------
+--J-------------J-J-J-J----------------------------------
+--J-------------J-LEI-J----------------------------------
+--J-------------J-----J----------------------------------
+FEK-------------LEEEEEI----------------------------------
+J-J------------------------------------------------------
+LEI------------------------------------------------------
+---------------------------------------------------------
+FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEC------------------------
+J-------------------------------J------------------------
+J---------FEEEEEEEEEGEEEEEEEEEEEK------------------------
+J---------J---------J-----------J------------------------
+J-----FEEEMEEEEEEEEEI-----------J------------------------
+J-----J-------------------------J------------------------
+LEEEEEMEEEEEEEEEEEEEEEEEEEEEEEEEI------------------------
+---------------------------------------------------------
+FEGEEEEEC------------------------------------------------
+J-J-----J------------------------------------------------
+LEI-----J------------------------------------------------
+--------J------------------------------------------------
+--------LEA----------------------------------------------
+
+COLORS
+--                                                       
+-- ----------------------------------------------------- 
+-- -----         -------------                           
+-- ----- ------- ------------- ----------------------- --
+-- ----- ------- ------------- ----------------------- --
+-- ----- ------- ------------- ----------------------- --
+-- ----- -------                                       --
+-- ----- ------- ----------- ----------------------------
+--       ------- ----------- ----------------------------
+-- ------------- ----------- ----------------------------
+-- ------------- -           ----------------------------
+-- ------------- - - - ----------------------------------
+-- ------------- -   - ----------------------------------
+-- ------------- ----- ----------------------------------
+   -------------       ----------------------------------
+ - ------------------------------------------------------
+   ------------------------------------------------------
+---------------------------------------------------------
+                                 ------------------------
+ ------------------------------- ------------------------
+ ---------                       ------------------------
+ --------- --------- ----------- ------------------------
+ -----               ----------- ------------------------
+ ----- ------------------------- ------------------------
+                                 ------------------------
+---------------------------------------------------------
+         ------------------------------------------------
+ - ----- ------------------------------------------------
+   ----- ------------------------------------------------
+-------- ------------------------------------------------
+--------   ----------------------------------------------
+
+DIRECTIONS
+  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>V
+  A                                                     V
+  A     V<<<<<<<<             V<<<<<<<<<<<<<<<<<<<<<<<<<<
+  A     V       A             V                       A  
+  A     V       A             V                       A  
+  A     V       A             V                       A  
+  A     V       A<<<<<<<<<<<X<X>>>>>>>>>>>>>>>>>>>>>>>A  
+  A     V       A           V                            
+  X<<<<<<       A           V                            
+  V             A           V                            
+  V             A >>V<X<<<<<<                            
+  V             A A V V                                  
+  V             A A<< V                                  
+  V             A     V                                  
+>>V             A<<<<<<                                  
+A V                                                      
+A<<                                                      
+                                                         
+V<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<                        
+V                               A                        
+V         >>>>>>>>>>>>>>>>>>>>>>A                        
+V         A         A           A                        
+V     >>>>X>>>>>>>>>A           A                        
+V     A                         A                        
+>>>>>>X>>>>>>>>>>>>>>>>>>>>>>>>>A                        
+                                                         
+V<<<<<<<<                                                
+V A     A                                                
+>>A     A                                                
+        A                                                
+        A<<                                              
+
+COMPONENTS
+9137	signal	39	0	P	E	{"color":0,"link":9136,"passed":0}
+9136	semaphore	11	2	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9135	signal	21	14	P	E	{"color":0,"link":9134,"passed":0}
+9134	semaphore	25	10	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9133	signal	43	6	P	E	{"color":0,"link":9132,"passed":0}
+9132	semaphore	39	6	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9131	signal	27	6	P	E	{"color":0,"link":9126,"passed":0}
+9130	signal	28	7	P	E	{"color":0,"link":9126,"passed":0}
+9129	signal	31	6	P	E	{"color":0,"link":9126,"passed":0}
+9128	signal	29	6	P	E	{"color":0,"link":1100,"passed":0}
+9127	signal	30	5	P	E	{"color":0,"link":1103,"passed":0}
+9126	semaphore	30	4	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9125	signal	37	6	P	E	{"color":0,"link":9124,"passed":0}
+9124	semaphore	23	20	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9123	signal	21	24	P	E	{"color":0,"link":9122,"passed":0}
+9122	semaphore	11	24	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9121	signal	7	24	P	E	{"color":0,"link":9116,"passed":0}
+9120	signal	11	22	P	E	{"color":0,"link":9116,"passed":0}
+9119	signal	10	21	P	E	{"color":0,"link":9116,"passed":0}
+9118	signal	9	22	P	E	{"color":0,"link":1048,"passed":0}
+9117	signal	5	24	P	E	{"color":0,"link":1126,"passed":0}
+9116	semaphore	4	24	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+9115	signal	19	6	P	E	{"color":0,"link":9114,"passed":0}
+9114	semaphore	2	27	P	E	{"stopped":0,"color":0,"passed":0,"value":0}
+4081	exchange	0	26	S	L	{"delay":0,"color":1,"stop":0,"link":4082,"exchanged":0,"passed":0,"strict":0,"value":0}
+2076	pickup	2	26	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+68	thread	10	30	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+67	thread	0	24	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+66	thread	2	24	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+4071	exchange	26	20	S	L	{"delay":0,"color":1,"stop":0,"link":4072,"exchanged":0,"passed":0,"strict":0,"value":0}
+1056	semaphore	20	22	S	L	{"stopped":0,"color":0,"passed":0,"value":0}
+1060	semaphore	18	20	S	L	{"stopped":0,"color":0,"passed":0,"value":0}
+1058	signal	14	22	S	L	{"color":0,"link":1060,"passed":0}
+1054	signal	16	20	S	L	{"color":0,"link":1056,"passed":0}
+2066	pickup	24	20	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+1048	conditional	10	22	S	L	{"current":0,"color":0,"directions":["North","East"],"passed":0}
+2133	delivery	20	24	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2138	pickup	12	24	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
+1126	conditional	6	24	S	L	{"current":0,"color":0,"directions":["East","North"],"passed":0}
+43	thread	24	18	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+42	thread	48	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+39	thread	46	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+36	thread	44	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+1130	diverter	22	10	S	L	{"color":0,"direction_condition":"West","directions_colors":[[-1],[1,2,3,4,5,6],[],[]],"passed":0,"directions_types":[["Empty"],["Conditional"],[],[]],"direction_default":"West"}
+1121	diverter	2	8	S	L	{"color":0,"direction_condition":"West","directions_colors":[[],[-1],[],[1,2,3,4,5,6]],"passed":0,"directions_types":[[],["Empty"],[],["Conditional"]],"direction_default":"West"}
+2136	pickup	10	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+4082	exchange	22	6	S	L	{"delay":0,"color":1,"stop":0,"link":4081,"exchanged":0,"passed":0,"strict":0,"value":0}
+4072	exchange	34	6	S	L	{"delay":0,"color":1,"stop":0,"link":4071,"exchanged":0,"passed":0,"strict":0,"value":0}
+2115	pickup	40	6	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2070	delivery	36	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+2137	delivery	22	14	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2080	delivery	20	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+2125	pickup	24	10	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2122	delivery	42	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2111	delivery	38	0	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+1100	conditional	28	6	S	L	{"current":0,"color":0,"directions":["South","West"],"passed":0}
+1103	conditional	30	6	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
+1	thread	50	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+
+EXECUTION
+S	1311	42	21	14	{"speed":0.0}
+M	0	1	50	2	
+M	0	36	44	2	
+M	0	39	46	2	
+M	0	42	48	2	
+M	0	43	24	18	
+M	0	66	2	24	
+M	0	67	0	24	
+M	0	68	10	30	
+M	1	1	49	2	
+M	1	36	43	2	
+M	1	39	45	2	
+M	1	42	47	2	
+M	1	43	23	18	
+M	1	66	3	24	
+M	1	67	1	24	
+M	1	68	9	30	
+M	2	68	8	30	
+M	4	67	4	24	
+M	6	68	8	26	
+M	12	68	2	26	
+M	14	36	30	2	
+M	16	39	30	2	
+M	18	42	30	2	
+M	20	1	30	2	
+M	20	42	30	4	
+M	24	43	0	18	
+M	30	43	0	24	
+M	34	42	30	5	
+M	34	67	5	24	
+M	34	68	1	26	
+M	35	42	30	6	
+M	35	67	6	24	
+M	35	68	0	26	
+M	36	42	31	6	
+M	36	67	6	23	
+M	37	39	30	4	
+M	37	42	32	6	
+M	37	67	6	22	
+M	40	67	9	22	
+M	41	39	30	5	
+M	41	67	10	22	
+M	42	42	34	6	
+M	43	39	30	6	
+M	43	67	11	22	
+M	44	39	29	6	
+M	44	66	4	24	
+M	44	67	12	22	
+M	45	39	28	6	
+M	45	66	5	24	
+M	46	67	14	22	
+M	47	39	27	6	
+M	47	66	6	24	
+M	47	67	15	22	
+M	48	36	30	4	
+M	48	39	26	6	
+M	48	66	7	24	
+M	52	36	30	5	
+M	52	43	4	24	
+M	52	66	8	24	
+M	55	39	22	6	
+M	56	36	30	6	
+M	56	39	21	6	
+M	56	43	5	24	
+M	56	68	0	27	
+M	58	66	11	24	
+M	59	36	31	6	
+M	59	39	20	6	
+M	59	43	6	24	
+M	59	66	12	24	
+M	59	68	0	28	
+M	61	68	2	28	
+M	62	1	30	4	
+M	62	36	32	6	
+M	62	39	19	6	
+M	62	43	6	23	
+M	62	66	13	24	
+M	63	1	30	5	
+M	63	39	18	6	
+M	63	43	6	22	
+M	63	68	2	27	
+M	66	43	9	22	
+M	69	66	20	24	
+M	70	1	30	6	
+M	70	43	10	22	
+M	70	66	21	24	
+M	70	68	2	26	
+M	71	39	16	6	
+M	75	39	16	2	
+M	80	39	11	2	
+M	81	1	29	6	
+M	81	39	10	2	
+M	81	43	10	21	
+M	81	66	22	24	
+M	81	68	1	26	
+M	82	1	28	6	
+M	82	39	9	2	
+M	82	43	10	20	
+M	82	68	0	26	
+M	91	66	32	24	
+M	95	66	32	20	
+M	97	66	32	18	
+M	129	66	0	18	
+M	135	66	0	24	
+M	137	66	2	24	
+M	138	1	28	7	
+M	138	39	8	2	
+M	138	66	3	24	
+M	143	43	16	20	
+M	144	39	8	8	
+M	150	39	2	8	
+M	151	1	28	8	
+M	151	43	17	20	
+M	151	66	4	24	
+M	151	67	20	22	
+M	158	39	2	0	
+M	194	39	38	0	
+M	195	39	39	0	
+M	195	43	18	20	
+M	195	66	5	24	
+M	195	67	20	21	
+M	196	1	28	10	
+M	199	1	25	10	
+M	200	1	24	10	
+M	200	39	40	0	
+M	200	43	19	20	
+M	200	66	6	24	
+M	200	67	20	20	
+M	203	67	23	20	
+M	204	1	23	10	
+M	204	43	20	20	
+M	204	66	7	24	
+M	204	67	24	20	
+M	219	39	56	0	
+M	221	39	56	2	
+M	223	39	54	2	
+M	231	39	46	2	
+M	232	1	22	10	
+M	232	39	45	2	
+M	232	66	8	24	
+M	232	67	25	20	
+M	233	67	26	20	
+M	235	66	11	24	
+M	236	1	22	14	
+M	247	39	30	2	
+M	249	39	30	4	
+M	250	1	21	14	
+M	250	39	30	5	
+M	250	42	35	6	
+M	250	66	12	24	
+M	250	67	27	20	
+M	251	1	20	14	
+M	251	36	34	6	
+M	251	39	30	6	
+M	251	42	36	6	
+M	251	66	13	24	
+M	255	67	32	20	
+M	257	67	32	18	
+M	289	67	0	18	
+M	295	67	0	24	
+M	296	39	31	6	
+M	296	42	37	6	
+M	296	67	1	24	
+M	299	1	16	14	
+M	302	66	20	24	
+M	307	1	16	6	
+M	311	1	16	2	
+M	316	1	11	2	
+M	317	1	10	2	
+M	317	39	32	6	
+M	317	42	38	6	
+M	317	43	23	20	
+M	317	66	21	24	
+M	319	67	4	24	
+M	320	1	9	2	
+M	320	42	39	6	
+M	320	43	24	20	
+M	320	66	22	24	
+M	320	67	5	24	
+M	321	1	8	2	
+M	321	42	40	6	
+M	321	43	25	20	
+M	321	67	6	24	
+M	327	1	8	8	
+M	330	66	32	24	
+M	333	1	2	8	
+M	334	66	32	20	
+M	336	66	32	18	
+M	368	66	0	18	
+M	374	66	0	24	
+M	376	66	2	24	
+M	377	42	41	6	
+M	377	43	26	20	
+M	377	66	3	24	
+M	377	67	6	23	
+M	384	1	2	0	
+M	420	1	38	0	
+M	421	1	39	0	
+M	421	36	35	6	
+M	421	42	42	6	
+M	421	43	27	20	
+M	421	67	6	22	
+M	424	67	9	22	
+M	425	1	40	0	
+M	425	36	36	6	
+M	425	39	34	6	
+M	425	42	43	6	
+M	425	67	10	22	
+M	429	43	32	20	
+M	431	43	32	18	
+M	439	43	24	18	
+M	440	36	37	6	
+M	440	42	44	6	
+M	440	43	23	18	
+M	440	67	11	22	
+M	455	1	56	0	
+M	457	1	56	2	
+M	459	1	54	2	
+M	463	1	50	2	
+M	464	1	49	2	
+M	464	36	38	6	
+M	464	66	4	24	
+M	464	67	12	22	
+M	473	42	54	6	
+M	477	42	54	2	
+M	483	42	48	2	
+M	486	43	0	18	
+M	492	43	0	24	
+M	496	36	39	6	
+M	496	42	47	2	
+M	496	66	5	24	
+M	497	67	14	22	
+M	514	1	30	2	
+M	516	1	30	4	
+M	517	1	30	5	
+M	517	36	40	6	
+M	517	66	6	24	
+M	517	67	15	22	
+M	533	42	30	2	
+M	535	1	30	6	
+M	535	36	41	6	
+M	535	66	7	24	
+M	539	1	29	6	
+M	539	36	42	6	
+M	539	43	4	24	
+M	539	66	8	24	
+M	540	1	28	6	
+M	540	36	43	6	
+M	540	43	5	24	
+M	542	66	11	24	
+M	543	1	27	6	
+M	543	36	44	6	
+M	543	43	6	24	
+M	543	66	12	24	
+M	544	1	26	6	
+M	544	42	30	4	
+M	544	43	6	23	
+M	544	66	13	24	
+M	553	36	54	6	
+M	557	36	54	2	
+M	567	36	44	2	
+M	568	36	43	2	
+M	568	42	30	5	
+M	568	43	6	22	
+M	571	1	22	6	
+M	571	43	9	22	
+M	574	66	20	24	
+M	575	1	21	6	
+M	575	42	30	6	
+M	575	43	10	22	
+M	575	66	21	24	
+M	575	68	0	27	
+M	587	36	30	2	
+M	589	1	20	6	
+M	589	42	31	6	
+M	589	43	10	21	
+M	589	66	22	24	
+M	589	68	0	28	
+M	591	68	2	28	
+M	592	1	19	6	
+M	592	36	30	4	
+M	592	42	32	6	
+M	592	43	10	20	
+M	601	66	32	24	
+M	605	66	32	20	
+M	607	66	32	18	
+M	639	66	0	18	
+M	645	66	0	24	
+M	647	66	2	24	
+M	648	1	18	6	
+M	648	36	30	5	
+M	648	66	3	24	
+M	648	68	2	27	
+M	653	43	16	20	
+M	654	36	30	6	
+M	654	43	17	20	
+M	654	66	4	24	
+M	654	67	20	22	
+M	654	68	2	26	
+M	655	1	16	6	
+M	659	1	16	2	
+M	664	1	11	2	
+M	665	1	10	2	
+M	665	36	29	6	
+M	665	43	18	20	
+M	665	66	5	24	
+M	665	67	20	21	
+M	665	68	1	26	
+M	666	1	9	2	
+M	666	36	28	6	
+M	666	43	19	20	
+M	666	66	6	24	
+M	666	67	20	20	
+M	666	68	0	26	
+M	669	67	23	20	
+M	670	1	8	2	
+M	670	36	28	7	
+M	670	43	20	20	
+M	670	66	7	24	
+M	670	67	24	20	
+M	676	1	8	8	
+M	682	1	2	8	
+M	683	36	28	8	
+M	683	66	8	24	
+M	683	67	25	20	
+M	690	1	2	0	
+M	726	1	38	0	
+M	727	1	39	0	
+M	727	67	26	20	
+M	728	36	28	10	
+M	729	66	11	24	
+M	731	36	25	10	
+M	732	1	40	0	
+M	732	36	24	10	
+M	732	39	35	6	
+M	732	66	12	24	
+M	732	67	27	20	
+M	733	36	23	10	
+M	733	39	36	6	
+M	733	42	34	6	
+M	733	66	13	24	
+M	737	67	32	20	
+M	739	67	32	18	
+M	748	1	56	0	
+M	750	1	56	2	
+M	752	1	54	2	
+M	756	1	50	2	
+M	771	67	0	18	
+M	777	67	0	24	
+M	778	1	49	2	
+M	778	36	22	10	
+M	778	39	37	6	
+M	778	67	1	24	
+M	784	66	20	24	
+M	785	39	38	6	
+M	785	43	23	20	
+M	785	66	21	24	
+M	787	67	4	24	
+M	788	36	22	14	
+M	803	1	30	2	
+M	805	1	30	4	
+M	806	1	30	5	
+M	806	36	21	14	
+M	806	39	39	6	
+M	806	43	24	20	
+M	806	66	22	24	
+M	806	67	5	24	
+M	807	1	30	6	
+M	807	36	20	14	
+M	807	39	40	6	
+M	807	43	25	20	
+M	807	67	6	24	
+M	816	66	32	24	
+M	820	66	32	20	
+M	822	66	32	18	
+M	854	66	0	18	
+M	860	66	0	24	
+M	862	66	2	24	
+M	863	1	31	6	
+M	863	39	41	6	
+M	863	43	26	20	
+M	863	66	3	24	
+M	863	67	6	23	
+M	866	36	16	14	
+M	874	36	16	6	
+M	878	36	16	2	
+M	883	36	11	2	
+M	884	1	32	6	
+M	884	36	10	2	
+M	884	39	42	6	
+M	884	42	35	6	
+M	884	43	27	20	
+M	884	67	6	22	
+M	887	67	9	22	
+M	888	36	9	2	
+M	888	39	43	6	
+M	888	42	36	6	
+M	888	67	10	22	
+M	889	1	34	6	
+M	892	43	32	20	
+M	894	43	32	18	
+M	902	43	24	18	
+M	903	36	8	2	
+M	903	39	44	6	
+M	903	42	37	6	
+M	903	43	23	18	
+M	903	67	11	22	
+M	909	36	8	8	
+M	915	36	2	8	
+M	916	42	38	6	
+M	916	66	4	24	
+M	916	67	12	22	
+M	923	36	2	0	
+M	925	39	54	6	
+M	929	39	54	2	
+M	937	39	46	2	
+M	938	43	0	18	
+M	944	43	0	24	
+M	959	36	38	0	
+M	960	36	39	0	
+M	960	39	45	2	
+M	960	42	39	6	
+M	960	66	5	24	
+M	961	67	14	22	
+M	962	36	40	0	
+M	962	42	40	6	
+M	962	66	6	24	
+M	962	67	15	22	
+M	976	39	30	2	
+M	978	39	30	4	
+M	979	39	30	5	
+M	979	42	41	6	
+M	979	66	7	24	
+M	994	36	56	0	
+M	996	36	56	2	
+M	998	36	54	2	
+M	1008	36	44	2	
+M	1009	36	43	2	
+M	1009	39	30	6	
+M	1009	42	42	6	
+M	1009	43	4	24	
+M	1009	66	8	24	
+M	1010	39	29	6	
+M	1010	42	43	6	
+M	1010	43	5	24	
+M	1012	66	11	24	
+M	1022	36	30	2	
+M	1024	39	28	6	
+M	1024	42	44	6	
+M	1024	43	6	24	
+M	1024	66	12	24	
+M	1025	39	27	6	
+M	1025	43	6	23	
+M	1025	66	13	24	
+M	1034	42	54	6	
+M	1038	42	54	2	
+M	1044	42	48	2	
+M	1045	36	30	4	
+M	1045	39	26	6	
+M	1045	42	47	2	
+M	1045	43	6	22	
+M	1048	43	9	22	
+M	1051	66	20	24	
+M	1052	36	30	5	
+M	1052	43	10	22	
+M	1052	66	21	24	
+M	1055	39	22	6	
+M	1068	42	30	2	
+M	1070	36	30	6	
+M	1070	39	21	6	
+M	1070	43	10	21	
+M	1070	66	22	24	
+M	1070	68	0	27	
+M	1071	36	31	6	
+M	1071	39	20	6	
+M	1071	43	10	20	
+M	1071	68	0	28	
+M	1073	68	2	28	
+M	1080	66	32	24	
+M	1084	66	32	20	
+M	1086	66	32	18	
+M	1118	66	0	18	
+M	1124	66	0	24	
+M	1126	66	2	24	
+M	1127	36	32	6	
+M	1127	39	19	6	
+M	1127	42	30	4	
+M	1127	66	3	24	
+M	1132	43	16	20	
+M	1133	39	18	6	
+M	1133	42	30	5	
+M	1133	43	17	20	
+M	1133	66	4	24	
+M	1133	67	20	22	
+M	1133	68	2	27	
+M	1134	42	30	6	
+M	1134	43	18	20	
+M	1134	66	5	24	
+M	1134	67	20	21	
+M	1134	68	2	26	
+M	1135	39	16	6	
+M	1139	39	16	2	
+M	1144	39	11	2	
+M	1145	39	10	2	
+M	1145	42	29	6	
+M	1145	43	19	20	
+M	1145	66	6	24	
+M	1145	67	20	20	
+M	1145	68	1	26	
+M	1148	67	23	20	
+M	1149	39	9	2	
+M	1149	42	28	6	
+M	1149	43	20	20	
+M	1149	66	7	24	
+M	1149	67	24	20	
+M	1149	68	0	26	
+M	1152	39	8	2	
+M	1152	42	28	7	
+M	1152	66	8	24	
+M	1152	67	25	20	
+M	1158	39	8	8	
+M	1164	39	2	8	
+M	1165	42	28	8	
+M	1165	67	26	20	
+M	1167	66	11	24	
+M	1172	39	2	0	
+M	1208	39	38	0	
+M	1209	1	35	6	
+M	1209	39	39	0	
+M	1209	66	12	24	
+M	1209	67	27	20	
+M	1210	42	28	10	
+M	1213	42	25	10	
+M	1214	1	36	6	
+M	1214	36	34	6	
+M	1214	39	40	0	
+M	1214	42	24	10	
+M	1214	66	13	24	
+M	1218	67	32	20	
+M	1220	67	32	18	
+M	1252	67	0	18	
+M	1258	67	0	24	
+M	1259	1	37	6	
+M	1259	42	23	10	
+M	1259	67	1	24	
+M	1265	66	20	24	
+M	1274	39	56	0	
+M	1276	39	56	2	
+M	1278	39	54	2	
+M	1286	39	46	2	
+M	1287	1	38	6	
+M	1287	39	45	2	
+M	1287	42	22	10	
+M	1287	43	23	20	
+M	1287	66	21	24	
+M	1289	67	4	24	
+M	1290	1	39	6	
+M	1290	43	24	20	
+M	1290	66	22	24	
+M	1290	67	5	24	
+M	1293	42	22	14	
+M	1304	39	30	2	
+M	1306	39	30	4	
+M	1307	1	40	6	
+M	1308	1	41	6	
+M	1309	1	42	6	
+M	1310	1	43	6	
+M	1311	42	21	14	
+E	1	68	10	30	{"passed":1}
+E	1	67	0	24	{"passed":1}
+E	1	66	2	24	{"passed":1}
+E	1	2133	20	24	{"denominator":-1}
+E	1	43	24	18	{"passed":1}
+E	1	42	48	2	{"passed":1}
+E	1	39	46	2	{"passed":1}
+E	1	36	44	2	{"passed":1}
+E	1	2070	36	6	{"denominator":-1}
+E	1	2137	22	14	{"denominator":-1}
+E	1	2080	20	6	{"denominator":-1}
+E	1	2122	42	6	{"denominator":-1}
+E	1	2111	38	0	{"denominator":-1}
+E	1	1	50	2	{"passed":1}
+E	33	9126	30	4	{"value":0}
+E	33	9116	4	24	{"value":0}
+E	33	67	0	24	{"passed":2}
+E	33	66	2	24	{"passed":3}
+E	33	42	48	2	{"passed":2}
+E	33	39	46	2	{"passed":3}
+E	33	36	44	2	{"passed":4}
+E	34	9126	30	4	{"passed":1}
+E	34	9116	4	24	{"passed":1}
+E	34	2076	2	26	{"available":0}
+E	34	2076	2	26	{"picked":1}
+E	34	2076	2	26	{"passed":1}
+E	34	1126	6	24	{"current":1}
+E	34	1103	30	6	{"current":1}
+E	34	68	2	26	{"payload":[2076]}
+E	35	9127	30	5	{"passed":1}
+E	35	9117	5	24	{"passed":1}
+E	35	4081	0	26	{"value":1}
+E	36	9126	30	4	{"value":1}
+E	36	1126	6	24	{"passed":1}
+E	36	1103	30	6	{"passed":1}
+E	40	9129	31	6	{"passed":1}
+E	40	9126	30	4	{"value":0}
+E	40	1048	10	22	{"current":1}
+E	42	9126	30	4	{"passed":2}
+E	42	9118	9	22	{"passed":1}
+E	42	4072	34	6	{"value":1}
+E	42	1103	30	6	{"current":0}
+E	43	9127	30	5	{"passed":2}
+E	43	9116	4	24	{"value":1}
+E	43	1048	10	22	{"passed":1}
+E	44	9120	11	22	{"passed":1}
+E	44	9116	4	24	{"value":0}
+E	44	1100	28	6	{"current":1}
+E	44	1103	30	6	{"passed":2}
+E	46	9128	29	6	{"passed":1}
+E	46	9116	4	24	{"passed":2}
+E	46	1060	18	20	{"value":1}
+E	46	1126	6	24	{"current":0}
+E	47	9126	30	4	{"value":1}
+E	47	9117	5	24	{"passed":2}
+E	47	1058	14	22	{"passed":1}
+E	47	1100	28	6	{"passed":1}
+E	51	9131	27	6	{"passed":1}
+E	51	9126	30	4	{"value":0}
+E	51	9116	4	24	{"value":1}
+E	51	1126	6	24	{"passed":2}
+E	55	9126	30	4	{"passed":3}
+E	55	9121	7	24	{"passed":1}
+E	55	9116	4	24	{"value":0}
+E	55	4081	0	26	{"exchanged":1}
+E	55	4081	0	26	{"value":0}
+E	55	4082	22	6	{"exchanged":1}
+E	55	1103	30	6	{"current":1}
+E	55	68	0	26	{"payload":[]}
+D	55	68	0	26	{"exchange_between_b":39,"exchange_between_a":68}
+E	55	39	26	6	{"payload":[2076]}
+E	58	9127	30	5	{"passed":3}
+E	58	9122	11	24	{"value":0}
+E	58	9116	4	24	{"passed":3}
+E	58	4081	0	26	{"passed":1}
+E	58	1126	6	24	{"current":1}
+E	58	4082	22	6	{"passed":1}
+E	61	9126	30	4	{"value":1}
+E	61	9122	11	24	{"passed":1}
+E	61	9117	5	24	{"passed":3}
+E	61	1103	30	6	{"passed":3}
+E	62	9129	31	6	{"passed":2}
+E	62	9126	30	4	{"value":0}
+E	62	9114	2	27	{"value":1}
+E	62	2076	2	26	{"available":1}
+E	62	2138	12	24	{"picked":1}
+E	62	2138	12	24	{"passed":1}
+E	62	1126	6	24	{"passed":3}
+E	62	2080	20	6	{"delivered":1}
+E	62	2080	20	6	{"passed":1}
+E	62	66	12	24	{"payload":[2138]}
+E	62	39	20	6	{"payload":[]}
+E	62	39	20	6	{"delivered":1}
+D	62	39	20	6	{"missed_items":[],"delivered_items":[2076],"delivered_to":2080}
+E	62	0	0	0	{"goals_completed":1}
+E	69	9126	30	4	{"passed":4}
+E	69	9115	19	6	{"passed":1}
+E	69	9114	2	27	{"value":0}
+E	69	1048	10	22	{"current":0}
+E	69	1103	30	6	{"current":0}
+E	80	9136	11	2	{"value":0}
+E	80	9127	30	5	{"passed":4}
+E	80	9122	11	24	{"value":1}
+E	80	9118	9	22	{"passed":2}
+E	80	9114	2	27	{"passed":1}
+E	80	2133	20	24	{"delivered":1}
+E	80	2133	20	24	{"passed":1}
+E	80	66	20	24	{"payload":[]}
+E	80	66	20	24	{"delivered":1}
+D	80	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	81	9136	11	2	{"passed":1}
+E	81	9123	21	24	{"passed":1}
+E	81	9116	4	24	{"value":1}
+E	81	2076	2	26	{"available":0}
+E	81	2076	2	26	{"picked":2}
+E	81	2076	2	26	{"passed":2}
+E	81	1048	10	22	{"passed":2}
+E	81	1100	28	6	{"current":0}
+E	81	1103	30	6	{"passed":4}
+E	81	68	2	26	{"payload":[2076]}
+E	137	9128	29	6	{"passed":2}
+E	137	9119	10	21	{"passed":1}
+E	137	4081	0	26	{"value":1}
+E	137	67	0	24	{"passed":3}
+E	137	43	24	18	{"passed":2}
+E	137	2136	10	2	{"available":0}
+E	137	2136	10	2	{"picked":1}
+E	137	2136	10	2	{"passed":1}
+E	137	39	10	2	{"payload":[2136]}
+E	150	9126	30	4	{"value":1}
+E	150	66	2	24	{"passed":4}
+E	150	1056	20	22	{"value":1}
+E	150	1100	28	6	{"passed":2}
+E	194	9130	28	7	{"passed":1}
+E	194	9116	4	24	{"value":0}
+E	194	1056	20	22	{"value":0}
+E	194	1054	16	20	{"passed":1}
+E	194	1121	2	8	{"passed":1}
+E	199	9136	11	2	{"value":1}
+E	199	9134	25	10	{"value":0}
+E	199	9116	4	24	{"passed":4}
+E	199	1056	20	22	{"passed":1}
+E	199	1060	18	20	{"value":0}
+E	199	1126	6	24	{"current":0}
+E	199	2136	10	2	{"available":1}
+E	199	2111	38	0	{"delivered":1}
+E	199	2111	38	0	{"passed":1}
+E	199	39	38	0	{"payload":[]}
+E	199	39	38	0	{"delivered":2}
+D	199	39	38	0	{"missed_items":[],"delivered_items":[2136],"delivered_to":2111}
+E	203	9137	39	0	{"passed":1}
+E	203	9134	25	10	{"passed":1}
+E	203	9124	23	20	{"value":0}
+E	203	9117	5	24	{"passed":4}
+E	203	1060	18	20	{"passed":1}
+E	231	9124	23	20	{"passed":1}
+E	231	9116	4	24	{"value":1}
+E	231	1126	6	24	{"passed":4}
+E	231	42	48	2	{"passed":3}
+E	231	2125	24	10	{"available":0}
+E	231	2125	24	10	{"picked":1}
+E	231	2125	24	10	{"passed":1}
+E	231	1	50	2	{"passed":2}
+E	231	1	24	10	{"payload":[2125]}
+E	232	9121	7	24	{"passed":2}
+E	232	2066	24	20	{"available":0}
+E	232	2066	24	20	{"picked":1}
+E	232	2066	24	20	{"passed":1}
+E	232	39	46	2	{"passed":4}
+E	232	67	24	20	{"payload":[2066]}
+E	249	9126	30	4	{"value":0}
+E	249	9122	11	24	{"value":0}
+E	249	4071	26	20	{"exchanged":1}
+E	249	36	44	2	{"passed":5}
+E	249	1130	22	10	{"passed":1}
+E	249	4072	34	6	{"exchanged":1}
+E	249	4072	34	6	{"value":0}
+E	249	67	25	20	{"payload":[]}
+E	249	42	34	6	{"payload":[2066]}
+D	249	42	34	6	{"exchange_between_b":67,"exchange_between_a":42}
+E	250	9134	25	10	{"value":1}
+E	250	9126	30	4	{"passed":5}
+E	250	9122	11	24	{"passed":2}
+E	250	4071	26	20	{"passed":1}
+E	250	4072	34	6	{"passed":1}
+E	250	2137	22	14	{"delivered":1}
+E	250	2137	22	14	{"passed":1}
+E	250	2125	24	10	{"available":1}
+E	250	1103	30	6	{"current":1}
+E	250	1	22	14	{"payload":[]}
+E	250	1	22	14	{"delivered":1}
+D	250	1	22	14	{"missed_items":[],"delivered_items":[2125],"delivered_to":2137}
+E	295	9135	21	14	{"passed":1}
+E	295	9127	30	5	{"passed":5}
+E	295	2138	12	24	{"picked":2}
+E	295	2138	12	24	{"passed":2}
+E	295	43	24	18	{"passed":3}
+E	295	4072	34	6	{"value":1}
+E	295	66	12	24	{"payload":[2138]}
+E	316	9136	11	2	{"value":0}
+E	316	9126	30	4	{"value":1}
+E	316	9124	23	20	{"value":1}
+E	316	67	0	24	{"passed":4}
+E	316	2066	24	20	{"available":1}
+E	316	2070	36	6	{"delivered":1}
+E	316	2070	36	6	{"passed":1}
+E	316	1103	30	6	{"passed":5}
+E	316	42	36	6	{"payload":[]}
+E	316	42	36	6	{"delivered":1}
+D	316	42	36	6	{"missed_items":[],"delivered_items":[2066],"delivered_to":2070}
+E	316	0	0	0	{"goals_completed":2}
+E	319	9136	11	2	{"passed":2}
+E	319	9129	31	6	{"passed":3}
+E	319	9125	37	6	{"passed":1}
+E	319	9124	23	20	{"value":0}
+E	319	9122	11	24	{"value":1}
+E	319	9116	4	24	{"value":0}
+E	319	66	2	24	{"passed":5}
+E	319	2133	20	24	{"delivered":2}
+E	319	2133	20	24	{"passed":2}
+E	319	66	20	24	{"payload":[]}
+E	319	66	20	24	{"delivered":2}
+D	319	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	320	9132	39	6	{"value":0}
+E	320	9124	23	20	{"passed":2}
+E	320	9123	21	24	{"passed":2}
+E	320	9116	4	24	{"passed":5}
+E	320	1126	6	24	{"current":1}
+E	320	2136	10	2	{"available":0}
+E	320	2136	10	2	{"picked":2}
+E	320	2136	10	2	{"passed":2}
+E	320	1	10	2	{"payload":[2136]}
+E	376	9132	39	6	{"passed":1}
+E	376	9117	5	24	{"passed":5}
+E	376	67	0	24	{"passed":5}
+E	376	2066	24	20	{"available":0}
+E	376	2066	24	20	{"picked":2}
+E	376	2066	24	20	{"passed":2}
+E	376	43	24	18	{"passed":4}
+E	376	43	24	20	{"payload":[2066]}
+E	420	66	2	24	{"passed":6}
+E	420	4071	26	20	{"exchanged":2}
+E	420	1126	6	24	{"passed":5}
+E	420	1121	2	8	{"passed":2}
+E	420	4072	34	6	{"exchanged":2}
+E	420	4072	34	6	{"value":0}
+E	420	2115	40	6	{"available":0}
+E	420	2115	40	6	{"picked":1}
+E	420	2115	40	6	{"passed":1}
+E	420	43	25	20	{"payload":[]}
+E	420	42	40	6	{"payload":[2115]}
+E	420	36	34	6	{"payload":[2066]}
+D	420	36	34	6	{"exchange_between_b":43,"exchange_between_a":36}
+E	424	9136	11	2	{"value":1}
+E	424	4071	26	20	{"passed":2}
+E	424	1048	10	22	{"current":1}
+E	424	2136	10	2	{"available":1}
+E	424	4072	34	6	{"passed":2}
+E	424	2111	38	0	{"delivered":2}
+E	424	2111	38	0	{"passed":2}
+E	424	1	38	0	{"payload":[]}
+E	424	1	38	0	{"delivered":2}
+D	424	1	38	0	{"missed_items":[],"delivered_items":[2136],"delivered_to":2111}
+E	439	9137	39	0	{"passed":2}
+E	439	9132	39	6	{"value":1}
+E	439	9118	9	22	{"passed":3}
+E	439	4072	34	6	{"value":1}
+E	439	2115	40	6	{"available":1}
+E	439	2122	42	6	{"delivered":1}
+E	439	2122	42	6	{"passed":1}
+E	439	42	42	6	{"payload":[]}
+E	439	42	42	6	{"delivered":2}
+D	439	42	42	6	{"missed_items":[],"delivered_items":[2115],"delivered_to":2122}
+E	463	9133	43	6	{"passed":1}
+E	463	9124	23	20	{"value":1}
+E	463	9116	4	24	{"value":1}
+E	463	2066	24	20	{"available":1}
+E	463	1048	10	22	{"passed":3}
+E	463	43	24	18	{"passed":5}
+E	463	2070	36	6	{"delivered":2}
+E	463	2070	36	6	{"passed":2}
+E	463	36	36	6	{"payload":[]}
+E	463	36	36	6	{"delivered":1}
+D	463	36	36	6	{"missed_items":[],"delivered_items":[2066],"delivered_to":2070}
+E	495	9125	37	6	{"passed":2}
+E	495	9120	11	22	{"passed":2}
+E	495	9116	4	24	{"value":0}
+E	495	67	0	24	{"passed":6}
+E	495	66	2	24	{"passed":7}
+E	495	1	50	2	{"passed":4}
+E	516	9132	39	6	{"value":0}
+E	516	9126	30	4	{"value":0}
+E	516	9116	4	24	{"passed":6}
+E	516	1060	18	20	{"value":1}
+E	516	1126	6	24	{"current":0}
+E	516	42	48	2	{"passed":5}
+E	516	39	46	2	{"passed":5}
+E	516	36	44	2	{"passed":6}
+E	534	9132	39	6	{"passed":2}
+E	534	9126	30	4	{"passed":6}
+E	534	9117	5	24	{"passed":6}
+E	534	1058	14	22	{"passed":2}
+E	534	39	46	2	{"passed":6}
+E	534	36	44	2	{"passed":7}
+E	534	1103	30	6	{"current":0}
+E	538	9127	30	5	{"passed":6}
+E	538	9116	4	24	{"value":1}
+E	538	1126	6	24	{"passed":6}
+E	538	2115	40	6	{"available":0}
+E	538	2115	40	6	{"picked":2}
+E	538	2115	40	6	{"passed":2}
+E	538	36	40	6	{"payload":[2115]}
+E	539	9121	7	24	{"passed":3}
+E	539	9116	4	24	{"value":0}
+E	539	1100	28	6	{"current":1}
+E	539	1103	30	6	{"passed":6}
+E	542	9132	39	6	{"value":1}
+E	542	9128	29	6	{"passed":3}
+E	542	9122	11	24	{"value":0}
+E	542	9116	4	24	{"passed":7}
+E	542	1126	6	24	{"current":1}
+E	542	2115	40	6	{"available":1}
+E	542	2122	42	6	{"delivered":2}
+E	542	2122	42	6	{"passed":2}
+E	542	36	42	6	{"payload":[]}
+E	542	36	42	6	{"delivered":2}
+D	542	36	42	6	{"missed_items":[],"delivered_items":[2115],"delivered_to":2122}
+E	543	9133	43	6	{"passed":2}
+E	543	9126	30	4	{"value":1}
+E	543	9122	11	24	{"passed":3}
+E	543	9117	5	24	{"passed":7}
+E	543	1100	28	6	{"passed":3}
+E	567	9131	27	6	{"passed":2}
+E	567	9126	30	4	{"value":0}
+E	567	2138	12	24	{"picked":3}
+E	567	2138	12	24	{"passed":3}
+E	567	1126	6	24	{"passed":7}
+E	567	42	48	2	{"passed":6}
+E	567	39	46	2	{"passed":7}
+E	567	1	50	2	{"passed":5}
+E	567	66	12	24	{"payload":[2138]}
+E	574	9126	30	4	{"passed":7}
+E	574	4081	0	26	{"exchanged":2}
+E	574	4081	0	26	{"value":0}
+E	574	1048	10	22	{"current":0}
+E	574	36	44	2	{"passed":8}
+E	574	4082	22	6	{"exchanged":2}
+E	574	1103	30	6	{"current":1}
+E	574	68	0	26	{"payload":[]}
+D	574	68	0	26	{"exchange_between_b":1,"exchange_between_a":68}
+E	574	1	26	6	{"payload":[2076]}
+E	588	9127	30	5	{"passed":7}
+E	588	9122	11	24	{"value":1}
+E	588	9118	9	22	{"passed":4}
+E	588	4081	0	26	{"passed":2}
+E	588	2133	20	24	{"delivered":3}
+E	588	2133	20	24	{"passed":3}
+E	588	4082	22	6	{"passed":2}
+E	588	66	20	24	{"payload":[]}
+E	588	66	20	24	{"delivered":3}
+D	588	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	588	0	0	0	{"goals_completed":3}
+E	591	9126	30	4	{"value":1}
+E	591	9123	21	24	{"passed":3}
+E	591	9116	4	24	{"value":1}
+E	591	1048	10	22	{"passed":4}
+E	591	1103	30	6	{"passed":7}
+E	647	9129	31	6	{"passed":4}
+E	647	9126	30	4	{"value":0}
+E	647	9119	10	21	{"passed":2}
+E	647	9114	2	27	{"value":1}
+E	647	2076	2	26	{"available":1}
+E	647	67	0	24	{"passed":7}
+E	647	43	24	18	{"passed":6}
+E	647	2080	20	6	{"delivered":2}
+E	647	2080	20	6	{"passed":2}
+E	647	1	20	6	{"payload":[]}
+E	647	1	20	6	{"delivered":3}
+D	647	1	20	6	{"missed_items":[],"delivered_items":[2076],"delivered_to":2080}
+E	653	9126	30	4	{"passed":8}
+E	653	9115	19	6	{"passed":2}
+E	653	9114	2	27	{"value":0}
+E	653	66	2	24	{"passed":8}
+E	653	1056	20	22	{"value":1}
+E	653	1103	30	6	{"current":0}
+E	664	9136	11	2	{"value":0}
+E	664	9127	30	5	{"passed":8}
+E	664	9116	4	24	{"value":0}
+E	664	9114	2	27	{"passed":2}
+E	664	1056	20	22	{"value":0}
+E	664	1054	16	20	{"passed":2}
+E	665	9136	11	2	{"passed":3}
+E	665	9116	4	24	{"passed":8}
+E	665	2076	2	26	{"available":0}
+E	665	2076	2	26	{"picked":3}
+E	665	2076	2	26	{"passed":3}
+E	665	1056	20	22	{"passed":2}
+E	665	1060	18	20	{"value":0}
+E	665	1126	6	24	{"current":0}
+E	665	1100	28	6	{"current":0}
+E	665	1103	30	6	{"passed":8}
+E	665	68	2	26	{"payload":[2076]}
+E	669	9128	29	6	{"passed":4}
+E	669	9124	23	20	{"value":0}
+E	669	9117	5	24	{"passed":8}
+E	669	4081	0	26	{"value":1}
+E	669	1060	18	20	{"passed":2}
+E	669	2136	10	2	{"available":0}
+E	669	2136	10	2	{"picked":3}
+E	669	2136	10	2	{"passed":3}
+E	669	1	10	2	{"payload":[2136]}
+E	682	9126	30	4	{"value":1}
+E	682	9124	23	20	{"passed":3}
+E	682	9116	4	24	{"value":1}
+E	682	1126	6	24	{"passed":8}
+E	682	1100	28	6	{"passed":4}
+E	726	9130	28	7	{"passed":2}
+E	726	9121	7	24	{"passed":4}
+E	726	2066	24	20	{"available":0}
+E	726	2066	24	20	{"picked":3}
+E	726	2066	24	20	{"passed":3}
+E	726	1121	2	8	{"passed":3}
+E	726	67	24	20	{"payload":[2066]}
+E	731	9136	11	2	{"value":1}
+E	731	9134	25	10	{"value":0}
+E	731	9122	11	24	{"value":0}
+E	731	4071	26	20	{"exchanged":3}
+E	731	2136	10	2	{"available":1}
+E	731	4072	34	6	{"exchanged":3}
+E	731	4072	34	6	{"value":0}
+E	731	2111	38	0	{"delivered":3}
+E	731	2111	38	0	{"passed":3}
+E	731	67	25	20	{"payload":[]}
+E	731	39	34	6	{"payload":[2066]}
+D	731	39	34	6	{"exchange_between_b":67,"exchange_between_a":39}
+E	731	1	38	0	{"payload":[]}
+E	731	1	38	0	{"delivered":4}
+D	731	1	38	0	{"missed_items":[],"delivered_items":[2136],"delivered_to":2111}
+E	731	0	0	0	{"goals_completed":4}
+E	732	9137	39	0	{"passed":3}
+E	732	9134	25	10	{"passed":2}
+E	732	9122	11	24	{"passed":4}
+E	732	4071	26	20	{"passed":3}
+E	732	4072	34	6	{"passed":3}
+E	777	2138	12	24	{"picked":4}
+E	777	2138	12	24	{"passed":4}
+E	777	43	24	18	{"passed":7}
+E	777	4072	34	6	{"value":1}
+E	777	2125	24	10	{"available":0}
+E	777	2125	24	10	{"picked":2}
+E	777	2125	24	10	{"passed":2}
+E	777	66	12	24	{"payload":[2138]}
+E	777	36	24	10	{"payload":[2125]}
+E	784	9124	23	20	{"value":1}
+E	784	67	0	24	{"passed":8}
+E	784	2066	24	20	{"available":1}
+E	784	2070	36	6	{"delivered":3}
+E	784	2070	36	6	{"passed":3}
+E	784	1	50	2	{"passed":6}
+E	784	39	36	6	{"payload":[]}
+E	784	39	36	6	{"delivered":3}
+D	784	39	36	6	{"missed_items":[],"delivered_items":[2066],"delivered_to":2070}
+E	805	9126	30	4	{"value":0}
+E	805	9125	37	6	{"passed":3}
+E	805	9124	23	20	{"value":0}
+E	805	9122	11	24	{"value":1}
+E	805	9116	4	24	{"value":0}
+E	805	66	2	24	{"passed":9}
+E	805	2133	20	24	{"delivered":4}
+E	805	2133	20	24	{"passed":4}
+E	805	42	48	2	{"passed":7}
+E	805	39	46	2	{"passed":8}
+E	805	36	44	2	{"passed":9}
+E	805	1130	22	10	{"passed":2}
+E	805	66	20	24	{"payload":[]}
+E	805	66	20	24	{"delivered":4}
+D	805	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	806	9134	25	10	{"value":1}
+E	806	9132	39	6	{"value":0}
+E	806	9126	30	4	{"passed":9}
+E	806	9124	23	20	{"passed":4}
+E	806	9123	21	24	{"passed":4}
+E	806	9116	4	24	{"passed":9}
+E	806	1126	6	24	{"current":1}
+E	806	2137	22	14	{"delivered":2}
+E	806	2137	22	14	{"passed":2}
+E	806	2125	24	10	{"available":1}
+E	806	1103	30	6	{"current":1}
+E	806	36	22	14	{"payload":[]}
+E	806	36	22	14	{"delivered":3}
+D	806	36	22	14	{"missed_items":[],"delivered_items":[2125],"delivered_to":2137}
+E	862	9135	21	14	{"passed":2}
+E	862	9132	39	6	{"passed":3}
+E	862	9127	30	5	{"passed":9}
+E	862	9117	5	24	{"passed":9}
+E	862	67	0	24	{"passed":9}
+E	862	2066	24	20	{"available":0}
+E	862	2066	24	20	{"picked":4}
+E	862	2066	24	20	{"passed":4}
+E	862	43	24	18	{"passed":8}
+E	862	43	24	20	{"payload":[2066]}
+E	883	9136	11	2	{"value":0}
+E	883	9126	30	4	{"value":1}
+E	883	66	2	24	{"passed":10}
+E	883	4071	26	20	{"exchanged":4}
+E	883	1126	6	24	{"passed":9}
+E	883	4072	34	6	{"exchanged":4}
+E	883	4072	34	6	{"value":0}
+E	883	2115	40	6	{"available":0}
+E	883	2115	40	6	{"picked":3}
+E	883	2115	40	6	{"passed":3}
+E	883	1103	30	6	{"passed":9}
+E	883	43	25	20	{"payload":[]}
+E	883	42	34	6	{"payload":[2066]}
+D	883	42	34	6	{"exchange_between_b":43,"exchange_between_a":42}
+E	883	39	40	6	{"payload":[2115]}
+E	887	9136	11	2	{"passed":4}
+E	887	9129	31	6	{"passed":5}
+E	887	4071	26	20	{"passed":4}
+E	887	1048	10	22	{"current":1}
+E	887	4072	34	6	{"passed":4}
+E	902	9132	39	6	{"value":1}
+E	902	9118	9	22	{"passed":5}
+E	902	2136	10	2	{"available":0}
+E	902	2136	10	2	{"picked":4}
+E	902	2136	10	2	{"passed":4}
+E	902	4072	34	6	{"value":1}
+E	902	2115	40	6	{"available":1}
+E	902	2122	42	6	{"delivered":3}
+E	902	2122	42	6	{"passed":3}
+E	902	39	42	6	{"payload":[]}
+E	902	39	42	6	{"delivered":4}
+D	902	39	42	6	{"missed_items":[],"delivered_items":[2115],"delivered_to":2122}
+E	902	36	10	2	{"payload":[2136]}
+E	902	0	0	0	{"goals_completed":5}
+E	915	9133	43	6	{"passed":3}
+E	915	9124	23	20	{"value":1}
+E	915	9116	4	24	{"value":1}
+E	915	2066	24	20	{"available":1}
+E	915	1048	10	22	{"passed":5}
+E	915	43	24	18	{"passed":9}
+E	915	2070	36	6	{"delivered":4}
+E	915	2070	36	6	{"passed":4}
+E	915	42	36	6	{"payload":[]}
+E	915	42	36	6	{"delivered":3}
+D	915	42	36	6	{"missed_items":[],"delivered_items":[2066],"delivered_to":2070}
+E	959	9125	37	6	{"passed":4}
+E	959	9120	11	22	{"passed":3}
+E	959	9116	4	24	{"value":0}
+E	959	67	0	24	{"passed":10}
+E	959	66	2	24	{"passed":11}
+E	959	42	48	2	{"passed":8}
+E	959	1121	2	8	{"passed":4}
+E	959	1	50	2	{"passed":7}
+E	961	9136	11	2	{"value":1}
+E	961	9132	39	6	{"value":0}
+E	961	9116	4	24	{"passed":10}
+E	961	1060	18	20	{"value":1}
+E	961	1126	6	24	{"current":0}
+E	961	39	46	2	{"passed":9}
+E	961	2136	10	2	{"available":1}
+E	961	2111	38	0	{"delivered":4}
+E	961	2111	38	0	{"passed":4}
+E	961	36	38	0	{"payload":[]}
+E	961	36	38	0	{"delivered":4}
+D	961	36	38	0	{"missed_items":[],"delivered_items":[2136],"delivered_to":2111}
+E	978	9137	39	0	{"passed":4}
+E	978	9132	39	6	{"passed":4}
+E	978	9126	30	4	{"value":0}
+E	978	9117	5	24	{"passed":10}
+E	978	1058	14	22	{"passed":3}
+E	978	36	44	2	{"passed":10}
+E	1008	9126	30	4	{"passed":10}
+E	1008	9116	4	24	{"value":1}
+E	1008	1126	6	24	{"passed":10}
+E	1008	42	48	2	{"passed":9}
+E	1008	39	46	2	{"passed":10}
+E	1008	2115	40	6	{"available":0}
+E	1008	2115	40	6	{"picked":4}
+E	1008	2115	40	6	{"passed":4}
+E	1008	1103	30	6	{"current":0}
+E	1008	1	50	2	{"passed":8}
+E	1008	42	40	6	{"payload":[2115]}
+E	1009	9127	30	5	{"passed":10}
+E	1009	9121	7	24	{"passed":5}
+E	1009	9116	4	24	{"value":0}
+E	1009	36	44	2	{"passed":11}
+E	1023	9132	39	6	{"value":1}
+E	1023	9122	11	24	{"value":0}
+E	1023	9116	4	24	{"passed":11}
+E	1023	1126	6	24	{"current":1}
+E	1023	2115	40	6	{"available":1}
+E	1023	2122	42	6	{"delivered":4}
+E	1023	2122	42	6	{"passed":4}
+E	1023	1100	28	6	{"current":1}
+E	1023	1103	30	6	{"passed":10}
+E	1023	42	42	6	{"payload":[]}
+E	1023	42	42	6	{"delivered":4}
+D	1023	42	42	6	{"missed_items":[],"delivered_items":[2115],"delivered_to":2122}
+E	1024	9133	43	6	{"passed":4}
+E	1024	9128	29	6	{"passed":5}
+E	1024	9122	11	24	{"passed":5}
+E	1024	9117	5	24	{"passed":11}
+E	1044	9126	30	4	{"value":1}
+E	1044	2138	12	24	{"picked":5}
+E	1044	2138	12	24	{"passed":5}
+E	1044	1126	6	24	{"passed":11}
+E	1044	1100	28	6	{"passed":5}
+E	1044	1	50	2	{"passed":9}
+E	1044	66	12	24	{"payload":[2138]}
+E	1051	9131	27	6	{"passed":3}
+E	1051	9126	30	4	{"value":0}
+E	1051	1048	10	22	{"current":0}
+E	1051	42	48	2	{"passed":10}
+E	1069	9126	30	4	{"passed":11}
+E	1069	9122	11	24	{"value":1}
+E	1069	9118	9	22	{"passed":6}
+E	1069	4081	0	26	{"exchanged":3}
+E	1069	4081	0	26	{"value":0}
+E	1069	2133	20	24	{"delivered":5}
+E	1069	2133	20	24	{"passed":5}
+E	1069	39	46	2	{"passed":11}
+E	1069	36	44	2	{"passed":12}
+E	1069	4082	22	6	{"exchanged":3}
+E	1069	1103	30	6	{"current":1}
+E	1069	68	0	26	{"payload":[]}
+D	1069	68	0	26	{"exchange_between_b":39,"exchange_between_a":68}
+E	1069	66	20	24	{"payload":[]}
+E	1069	66	20	24	{"delivered":5}
+D	1069	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	1069	39	26	6	{"payload":[2076]}
+E	1070	9127	30	5	{"passed":11}
+E	1070	9123	21	24	{"passed":5}
+E	1070	9116	4	24	{"value":1}
+E	1070	4081	0	26	{"passed":3}
+E	1070	1048	10	22	{"passed":6}
+E	1070	4082	22	6	{"passed":3}
+E	1126	9126	30	4	{"value":1}
+E	1126	9119	10	21	{"passed":3}
+E	1126	67	0	24	{"passed":11}
+E	1126	43	24	18	{"passed":10}
+E	1126	1103	30	6	{"passed":11}
+E	1132	9129	31	6	{"passed":6}
+E	1132	9126	30	4	{"value":0}
+E	1132	9114	2	27	{"value":1}
+E	1132	2076	2	26	{"available":1}
+E	1132	66	2	24	{"passed":12}
+E	1132	1056	20	22	{"value":1}
+E	1132	2080	20	6	{"delivered":3}
+E	1132	2080	20	6	{"passed":3}
+E	1132	39	20	6	{"payload":[]}
+E	1132	39	20	6	{"delivered":5}
+D	1132	39	20	6	{"missed_items":[],"delivered_items":[2076],"delivered_to":2080}
+E	1133	9126	30	4	{"passed":12}
+E	1133	9116	4	24	{"value":0}
+E	1133	9115	19	6	{"passed":3}
+E	1133	9114	2	27	{"value":0}
+E	1133	1056	20	22	{"value":0}
+E	1133	1054	16	20	{"passed":3}
+E	1133	1103	30	6	{"current":0}
+E	1144	9136	11	2	{"value":0}
+E	1144	9127	30	5	{"passed":12}
+E	1144	9116	4	24	{"passed":12}
+E	1144	9114	2	27	{"passed":3}
+E	1144	1056	20	22	{"passed":3}
+E	1144	1060	18	20	{"value":0}
+E	1144	1126	6	24	{"current":0}
+E	1148	9136	11	2	{"passed":5}
+E	1148	9124	23	20	{"value":0}
+E	1148	9117	5	24	{"passed":12}
+E	1148	2076	2	26	{"available":0}
+E	1148	2076	2	26	{"picked":4}
+E	1148	2076	2	26	{"passed":4}
+E	1148	1060	18	20	{"passed":3}
+E	1148	1100	28	6	{"current":0}
+E	1148	1103	30	6	{"passed":12}
+E	1148	68	2	26	{"payload":[2076]}
+E	1151	9128	29	6	{"passed":6}
+E	1151	9124	23	20	{"passed":5}
+E	1151	9116	4	24	{"value":1}
+E	1151	4081	0	26	{"value":1}
+E	1151	1126	6	24	{"passed":12}
+E	1151	2136	10	2	{"available":0}
+E	1151	2136	10	2	{"picked":5}
+E	1151	2136	10	2	{"passed":5}
+E	1151	39	10	2	{"payload":[2136]}
+E	1164	9126	30	4	{"value":1}
+E	1164	9121	7	24	{"passed":6}
+E	1164	2066	24	20	{"available":0}
+E	1164	2066	24	20	{"picked":5}
+E	1164	2066	24	20	{"passed":5}
+E	1164	1100	28	6	{"passed":6}
+E	1164	67	24	20	{"payload":[2066]}
+E	1208	9130	28	7	{"passed":3}
+E	1208	9122	11	24	{"value":0}
+E	1208	4071	26	20	{"exchanged":5}
+E	1208	1121	2	8	{"passed":5}
+E	1208	4072	34	6	{"exchanged":5}
+E	1208	4072	34	6	{"value":0}
+E	1208	67	25	20	{"payload":[]}
+E	1208	1	34	6	{"payload":[2066]}
+D	1208	1	34	6	{"exchange_between_b":67,"exchange_between_a":1}
+E	1213	9136	11	2	{"value":1}
+E	1213	9134	25	10	{"value":0}
+E	1213	9122	11	24	{"passed":6}
+E	1213	4071	26	20	{"passed":5}
+E	1213	2136	10	2	{"available":1}
+E	1213	4072	34	6	{"passed":5}
+E	1213	2111	38	0	{"delivered":5}
+E	1213	2111	38	0	{"passed":5}
+E	1213	39	38	0	{"payload":[]}
+E	1213	39	38	0	{"delivered":6}
+D	1213	39	38	0	{"missed_items":[],"delivered_items":[2136],"delivered_to":2111}
+E	1258	9137	39	0	{"passed":5}
+E	1258	9134	25	10	{"passed":3}
+E	1258	2138	12	24	{"picked":6}
+E	1258	2138	12	24	{"passed":6}
+E	1258	43	24	18	{"passed":11}
+E	1258	4072	34	6	{"value":1}
+E	1258	66	12	24	{"payload":[2138]}
+E	1286	9124	23	20	{"value":1}
+E	1286	67	0	24	{"passed":12}
+E	1286	2066	24	20	{"available":1}
+E	1286	42	48	2	{"passed":11}
+E	1286	2070	36	6	{"delivered":5}
+E	1286	2070	36	6	{"passed":5}
+E	1286	2125	24	10	{"available":0}
+E	1286	2125	24	10	{"picked":3}
+E	1286	2125	24	10	{"passed":3}
+E	1286	1	50	2	{"passed":10}
+E	1286	42	24	10	{"payload":[2125]}
+E	1286	1	36	6	{"payload":[]}
+E	1286	1	36	6	{"delivered":5}
+D	1286	1	36	6	{"missed_items":[],"delivered_items":[2066],"delivered_to":2070}
+E	1289	9125	37	6	{"passed":5}
+E	1289	9124	23	20	{"value":0}
+E	1289	9122	11	24	{"value":1}
+E	1289	9116	4	24	{"value":0}
+E	1289	66	2	24	{"passed":13}
+E	1289	2133	20	24	{"delivered":6}
+E	1289	2133	20	24	{"passed":6}
+E	1289	39	46	2	{"passed":12}
+E	1289	66	20	24	{"payload":[]}
+E	1289	66	20	24	{"delivered":6}
+D	1289	66	20	24	{"missed_items":[],"delivered_items":[2138],"delivered_to":2133}
+E	1306	9132	39	6	{"value":0}
+E	1306	9126	30	4	{"value":0}
+E	1306	9124	23	20	{"passed":6}
+E	1306	9123	21	24	{"passed":6}
+E	1306	9116	4	24	{"passed":13}
+E	1306	1126	6	24	{"current":1}
+E	1306	36	44	2	{"passed":13}
+E	1306	1130	22	10	{"passed":3}
+E	1307	9132	39	6	{"passed":5}
+E	1308	2115	40	6	{"available":0}
+E	1308	2115	40	6	{"picked":5}
+E	1308	2115	40	6	{"passed":5}
+E	1308	1	40	6	{"payload":[2115]}
+E	1310	9132	39	6	{"value":1}
+E	1310	2115	40	6	{"available":1}
+E	1310	2122	42	6	{"delivered":5}
+E	1310	2122	42	6	{"passed":5}
+E	1310	1	42	6	{"payload":[]}
+E	1310	1	42	6	{"delivered":6}
+D	1310	1	42	6	{"missed_items":[],"delivered_items":[2115],"delivered_to":2122}
+E	1311	9134	25	10	{"value":1}
+E	1311	2137	22	14	{"delivered":3}
+E	1311	2137	22	14	{"passed":3}
+E	1311	2125	24	10	{"available":1}
+E	1311	42	22	14	{"payload":[]}
+E	1311	42	22	14	{"delivered":5}
+D	1311	42	22	14	{"missed_items":[],"delivered_items":[2125],"delivered_to":2137}
+E	1311	0	0	0	{"goals_completed":6}
+E	1311	0	0	0	{"final_condition":10,"goal_descriptions":[],"goal_state":[true,true,true,true,true,true]}
+
+PLAYER
+

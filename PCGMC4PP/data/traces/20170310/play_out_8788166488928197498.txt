@@ -1,0 +1,97 @@
+METADATA
+level_id	3
+level_title	More Roads
+goal_string	Deliver 4 packages with each arrow delivering at least 2
+goal_struct	{"desired":[],"required":[{"id":1001,"condition":"gt","value":1,"property":"delivered","type":"thread","thread_id":0},{"id":1002,"condition":"gt","value":1,"property":"delivered","type":"thread","thread_id":0},{"id":3001,"condition":"gt","value":1,"property":"delivered","type":"delivery","thread_id":0},{"id":3002,"condition":"gt","value":1,"property":"delivered","type":"delivery","thread_id":0}]}
+player_palette	{"colors":{"count":2},"semaphore":{"count":-1},"signal":{"count":-1},"painter":{"count":0}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	16
+
+LAYOUT
+-----FEC
+-----J-J
+-----NEI
+-----J--
+--FEEMEC
+--J----J
+FEOEEC-J
+J-J--J-J
+J-J--J-J
+J-LEEOEI
+J----J--
+LEGEEI--
+--J-----
+FEK-----
+J-J-----
+LEI-----
+
+COLORS
+-----"""
+-----"-"
+-----"""
+-----"--
+--""""""
+--"----"
+!!#!!!-"
+!-"--!-"
+!-"--!-"
+!-"""#""
+!----!--
+!!!!!!--
+--!-----
+!!!-----
+!-!-----
+!!!-----
+
+DIRECTIONS
+     >>V
+     A V
+     X<<
+     A  
+  X>>X>X
+  A    V
+X<X<<X V
+V A  A V
+V A  A V
+V X<<X<X
+V    A  
+X>X>>X  
+  V     
+>>X     
+A V     
+A<<     
+
+COMPONENTS
+9020	semaphore	4	6	P	E	{"passed":0,"stopped":0,"color":0,"value":0}
+9016	signal	5	9	P	E	{"passed":0,"color":0,"link":9020}
+5002	diverter	2	11	S	L	{"direction_condition":"West","direction_default":"West","passed":0,"color":0,"directions_colors":[[],[],[],[]],"directions_types":[[],["Empty"],["Conditional"],[]]}
+5001	diverter	5	4	S	L	{"direction_condition":"West","direction_default":"West","passed":0,"color":0,"directions_colors":[[],[],[],[]],"directions_types":[[],[],["Conditional"],["Empty"]]}
+5004	intersection	2	13	S	L	{"directions":["South","South","South","South","South","South"],"passed":0,"color":0}
+5003	intersection	5	2	S	L	{"directions":["North","North","North","North","North","North"],"passed":0,"color":0}
+3002	delivery	3	11	S	L	{"accepted_colors":[],"delivered":0,"accepted_types":["Conditional"],"passed":0,"color":0,"denominator":2,"strict":0,"consumer":-1,"missed":0}
+3001	delivery	7	7	S	L	{"accepted_colors":[],"delivered":0,"accepted_types":["Conditional"],"passed":0,"color":0,"denominator":2,"strict":0,"consumer":-1,"missed":0}
+2001	pickup	2	6	S	L	{"picked":0,"passed":0,"color":1,"type":"Conditional"}
+1002	thread	5	8	S	L	{"initial_direction":"North","time_pickup_max":-1,"delivered":0,"time_delivery_min":-1,"passed":0,"time_delivery_max":-1,"time_pickup_min":-1,"direction":"North","picked":0,"color":1,"capacity":-1,"delay":0,"time_exchange_min":-1,"missed":0,"time_exchange_max":-1}
+1001	thread	4	9	S	L	{"initial_direction":"West","time_pickup_max":-1,"delivered":0,"time_delivery_min":-1,"passed":0,"time_delivery_max":-1,"time_pickup_min":-1,"direction":"West","picked":0,"color":2,"capacity":-1,"delay":0,"time_exchange_min":-1,"missed":0,"time_exchange_max":-1}
+9018	semaphore	2	9	P	E	{"passed":0,"stopped":0,"color":0,"value":0}
+
+EXECUTION
+M	0	1002	5	8	
+M	0	1001	4	9	
+M	1	1002	5	7	
+M	1	1001	3	9	
+M	2	1002	5	6	
+E	0	3002	3	11	{"denominator":-1}
+E	0	3001	7	7	{"denominator":-1}
+E	1	1002	5	8	{"passed":1}
+E	1	1001	4	9	{"passed":1}
+E	2	0	0	0	{"final_condition":1}
+
+PLAYER
+

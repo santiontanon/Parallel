@@ -1,0 +1,78 @@
+METADATA
+level_id	3
+level_title	Introduction (3) - Prototype
+goal_string	Get each car to deliver one package.
+goal_struct	{"required":[{"id":3001,"type":"delivery","property":"delivered","value":3,"condition":"gt"}],"desired":[{"id":1001,"type":"thread","property":"delivered","value":1,"condition":"gt"},{"id":1002,"type":"thread","property":"delivered","value":1,"condition":"gt"}]}
+player_palette	{"semaphore":{"count":3},"signal":{"count":3},"painter":{"count":0},"colors":{"count":0}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	19
+board_height	15
+
+LAYOUT
+FEEC-----------FEEC
+J--J-----------J--J
+J--J-----------J--J
+J--LEEEEEGEEEEEI--J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+J--------J--------J
+LEEEEEEEEMEEEEEEEEI
+
+COLORS
+!!!!-----------$$$$
+!--!-----------$--$
+!--!-----------$--$
+!--!!!!!! $$$$$$--$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!-------- --------$
+!!!!!!!!! $$$$$$$$$
+
+
+COMPONENTS
+1001	thread	5	3	S	L	{"color":1,"initial_direction":"East","capacity":1,"delay":0,"picked":0,"delivered":0,"missed":0}
+1002	thread	13	3	S	L	{"color":3,"initial_direction":"West","capacity":1,"delay":0,"picked":0,"delivered":0,"missed":0}
+2001	pickup	9	9	S	L	{"type":"Conditional","color":2,"picked":0,"passed":0}
+3001	delivery	9	12	S	L	{"color":2,"consumer":-1,"strict":1,"passed":0,"delivered":0,"missed":0}
+3002	intersection	9	14	S	L	{"directions":["North","West","North","East","North","North"],"passed":0}
+6001	intersection	9	3	S	L	{"directions":["South","South","South","South","South","South"],"passed":0}
+
+EXECUTION
+M	0	1001	6	3	{"speed":1.0}
+M	16	1001	7	14	{"speed":0.14285715}
+M	23	1001	5	3	{"speed":1.0}
+M	53	1001	7	3	{"speed":0.5}
+M	55	1001	8	3	{"speed":1.0}
+M	56	1001	9	9	{"speed":0.2413793}
+M	85	1001	9	12	{"speed":1.0}
+M	91	1001	7	14	{"speed":0.14285715}
+M	98	1001	5	3	{"speed":1.0}
+M	128	1001	6	3	{"speed":0.0}
+M	0	1002	12	3	{"speed":1.0}
+M	1	1002	12	3	{"speed":0.0}
+M	14	1002	10	3	{"speed":1.0}
+M	88	1002	12	3	{"speed":0.0}
+M	89	1002	10	3	{"speed":1.0}
+M	128	1002	9	13	{"speed":0.0}
+
+PLAYER
+

@@ -1,0 +1,43 @@
+<ontology>
+    <sort name="problem" super="any"/>
+    <sort name="spawn" super="any"/>
+    <sort name="situation" super="any"/>
+    <sort name="situation_" super="any"/>
+    <sort name="situation__" super="any"/>
+    <sort name="solution" super="any"/>
+    <sort name="end" super="any"/>
+    <sort name="done" super="any"/>
+
+    <sort name="track" super="any"/>
+    <sort name="track_" super="any"/>
+        <sort name="in" super="track_"/>
+        <sort name="out" super="track_"/>
+        <sort name="dead-end" super="track"/>
+
+    <sort name="intersection" super="any"/>
+    <sort name="fork" super="track,intersection"/>
+    <sort name="merge" super="track,intersection"/>
+    <sort name="cross" super="track,intersection"/>
+    <sort name="multilevel" super="cross"/>
+
+    <sort name="thread" super="any"/>
+
+    <sort name="component" super="any"/>
+    <sort name="pickup" super="component"/>
+    <sort name="delivery" super="component"/>
+
+    <sort name="relation" super="any"/>
+    <sort name="to" super="relation"/>
+    <sort name="is" super="relation"/>
+    <sort name="has" super="relation"/>
+    <sort name="partOf" super="relation"/>
+
+    <sort name="connector" super="any"/>
+    <sort name="in_c" super="connector"/>
+    <sort name="out_c" super="connector"/>
+
+    <sort name="action" super="any"/>
+        <sort name="pickup_a" super="action"/>
+        <sort name="deliver_a" super="action"/>
+
+</ontology>

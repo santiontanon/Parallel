@@ -1,0 +1,72 @@
+METADATA
+level_id	1
+level_title	PCG Level
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2033,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2037,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2032,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2038,"type":"delivery","value":2}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	11
+board_height	11
+
+LAYOUT
+FEC-FEC-FEC
+J-J-J-J-J-J
+J-J-J-J-J-J
+J-J-J-J-J-J
+J-J-LEI-LEI
+J-J--------
+J-J--------
+J-J--------
+J-J--------
+J-J--------
+LEI--------
+
+COLORS
+   -   -   
+ - - - - - 
+ - - - - - 
+ - - - - - 
+ - -   -   
+ - --------
+ - --------
+ - --------
+ - --------
+ - --------
+   --------
+
+DIRECTIONS
+V<< V<< >>V
+V A V A A V
+V A V A A V
+V A V A A V
+V A >>A A<<
+V A        
+V A        
+V A        
+V A        
+V A        
+>>A        
+
+COMPONENTS
+1	thread	0	6	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+2035	pickup	2	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
+2033	delivery	2	0	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2038	delivery	2	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2036	pickup	2	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+10	thread	0	8	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+11	thread	6	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+2031	pickup	4	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2037	delivery	6	4	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+16	thread	10	4	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+2034	pickup	8	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2032	delivery	10	0	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+
+EXECUTION
+
+PLAYER
+

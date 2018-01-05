@@ -1,0 +1,38 @@
+RULE ADD_MORE_PROBLEMS 1.0 0.5 0 COMPLICATE
+    PATTERN A:problem()
+    REPLACEMENT A:problem(),B:problem()
+RULE MAKE_SUBPROBLEM_ABST_SERIAL_TASKS 1.0 0.5 1 SERIAL
+    PATTERN A:problem()
+    REPLACEMENT A:{track,thread,start_point}(partOf:I,partOf:M,to:J),B:track(to:N),C{track,end_point}(),\
+    I:{subproblem_abst,dead_end}(),J:track(partOf:I,is:J_),K:track(to:B,partOf:I,is:K_),J_:out(),K_:in(),\
+    M:{subproblem_abst,dead_end}(),N:track(partOf:M,is:N_),O:track(to:C,partOf:M,is:O_),N_:out(),O_:in()
+RULE MAKE_SUBPROBLEM_ABST_FORK_MERGE 1.0 0.5 0 FORK
+    PATTERN A:problem()
+    REPLACEMENT A:{track,thread,start_point}(partOf:I,partOf:M,to:B),B:fork(to:J,to:N),C:merge(to:D),D{track,end_point},\
+    I:{subproblem_abst,dead_end}(),J:track(partOf:I,is:J_),K:track(to:C,partOf:I,is:K_),J_:out(),K_:in(),\
+    M:{subproblem_abst,dead_end}(),N:track(partOf:M,is:N_),O:track(to:C,partOf:M,is:O_),N_:out(),O_:in()
+RULE MAKE_SUBPROBLEM_ABST_DEAD_END 1.0 0.5 0 DEAD_END
+    PATTERN A:problem()
+    REPLACEMENT A:{subproblem_abst,dead_end}(),B:{track,thread,start_point}(partOf:A,is:B_),C:{end_point}(partOf:A,is:C_),B_:out(),C_:in()
+RULE MAKE_SUBPROBLEM_INST_TRIVIAL 1.0 0.5 -1 TRIVIAL
+    PATTERN A:{subproblem_abst,dead_end}(),B:track(partOf:A,is:B_),C:{track}(partOf:A,is:C_),B_:out(),C_:in()
+    REPLACEMENT A:{subproblem_inst,dead_end}(),B:track(partOf:A,to:M),C:track(partOf:A),M:{track,pickup}(to:N,partOf:O),N:{track,delivery}(to:C,partOf:O),O:{situation_trivial}(partOf:A)
+RULE MAKE_DELIVERY_CRITICAL 1.0 0.5 0 CRITICAL
+    PATTERN A:{subproblem_inst}(),B:{track,thread}(partOf:A,to:D),C:situation_trivial(partOf:A),D:track(),\
+    M:{track,pickup}(to:N,partOf:C),N:{track,delivery}(partOf:C,to:P),O:track(to:M),P:track()
+    NEGATEDPATTERN A:{subproblem_inst}(),B:{track,thread}(partOf:A),C:situation_inst(partOf:A),\
+    M:{track,pickup}(to:N),N:{track,delivery}(),\
+    I:{track,semaphore}(to:M)
+    REPLACEMENT A:{subproblem_inst}(),B:{track,thread}(partOf:A,to:E),C:situation_critical(partOf:A),D:track(),E:{track,thread}(to:D)\
+    M:{track,pickup}(to:N,partOf:C),N:{track,delivery}(partOf:C,to:J),O:track(to:I),P:track(),\
+    I:{track,semaphore}(to:M),J:{track,button}(partOf:I,to:P)
+RULE MAKE_EXCANGE_SYNCRO 1.0 0.5 0 SYNCRO
+    PATTERN A:{subproblem_inst}(),B:{track,thread}(partOf:A,to:D),D:track(),\
+    C:situation_trivial(partOf:A),M:{track,pickup}(to:N,partOf:C),N:{track,delivery}(partOf:C,to:P),\
+    X:situation_trivial(partOf:A),I:{track,pickup}(to:J,partOf:X),J:{track,delivery}(partOf:X,to:L)
+    REPLACEMENT A:{subproblem_inst}(),B:{track,thread}(partOf:A,to:E),D:track(),E:{track,thread}(to:D),\
+    C:situation_syncro(partOf:A),M:{track,pickup}(to:N,partOf:C),N:{track,exchange}(partOf:C,to:P,partOf:I),\
+                                 I:{track,exchange}(to:J,partOf:C,partOf:N),J:{track,delivery}(partOf:C,to:L)
+RULE MAKE_LOOP 1.0 0.5 -1 LOOP
+    PATTERN A:{subproblem_inst,dead_end}(),B:{track,start_point}(partOf:A),C:{track,end_point}(partOf:A)
+    REPLACEMENT A:{subproblem_inst,loop}(),B:{start_point}(partOf:A),C:{end_point}(partOf:A,to:B)

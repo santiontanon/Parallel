@@ -1,0 +1,55 @@
+METADATA
+level_id	1
+level_title	Intro to Parallel Programming
+goal_string	Deliver 2 packages
+goal_struct	{"required":[{"id":3001,"type":"delivery","property":"delivered","value":2,"condition":"eq","thread_id":0}],"desired":[{"id":3001,"type":"delivery","property":"delivered","value":2,"condition":"eq","thread_id":0}]}
+player_palette	{"semaphore":{"count":-1},"signal":{"count":-1},"painter":{"count":0},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	8
+
+LAYOUT
+FEEEEEEC
+J------J
+J------J
+J------J
+J------J
+J------J
+J------J
+LEEEEEEI
+
+COLORS
+!!!!!!!!
+!------!
+!------!
+!------!
+!------!
+!------!
+!------!
+!!!!!!!!
+
+DIRECTIONS
+>>>>>>>V
+A      V
+A      V
+A      V
+A      V
+A      V
+A      V
+A<<<<<<<
+
+COMPONENTS
+1001	thread	7	1	S	L	{"color":1,"initial_direction":"South","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+2001	pickup	1	7	S	L	{"type":"Conditional","color":1,"passed":0,"picked":0}
+3001	delivery	1	0	S	L	{"color":0,"accepted_types":["Conditional"],"accepted_colors":[],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":2,"missed":0}
+4001	semaphore	7	6	S	L	{"value":1,"passed":0}
+9009	signal	7	4	P	E	{"link":4001,"passed":0}
+
+EXECUTION
+
+PLAYER

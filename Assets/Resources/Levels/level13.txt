@@ -1,0 +1,95 @@
+METADATA
+level_id	13
+level_title	Intro to Parallel
+goal_string	Each Delivery Point Receives 2 Packages
+goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","property":"delivered","id":3002,"type":"delivery","value":1},{"condition":"gt","property":"delivered","id":3003,"type":"delivery","value":1}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":3}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	15
+board_height	17
+
+LAYOUT
+-----FEEEEGEEEC
+-----J----J---J
+-----J----J---J
+--FEEMEEEEI---J
+--J-----------J
+--J-----------J
+--LEEEEEEEEEEEI
+---------------
+FEEC-FEEC------
+J--J-J--J------
+J--J-J--J------
+J--J-LEEOEEEEEC
+J--J----J-----J
+LEEI----J-----J
+--------NEEC--J
+--------J--J--J
+--------LEEMEEI
+
+COLORS
+-----$$$$$$$$$$
+-----$----$---$
+-----$----$---$
+--$$$$$$$$$---$
+--$-----------$
+--$-----------$
+--$$$$$$$$$$$$$
+---------------
+!!!!-""""------
+!--!-"--"------
+!--!-"--"------
+!--!-""""""""""
+!--!----"-----"
+!!!!----"-----"
+--------""""--"
+--------"--"--"
+--------"""""""
+
+DIRECTIONS
+     V<<<<<<<<<
+     V    A   A
+     V    A   A
+  V<<X>>>>A   A
+  V           A
+  V           A
+  >>>>>>>>>>>>A
+               
+V<<< >>>V      
+V  A A  V      
+V  A A  V      
+V  A A<<X>>>>>V
+V  A    A     V
+>>>A    A     V
+        A<<<  V
+        A  A  V
+        A<<X<<<
+
+COMPONENTS
+1001	thread	3	10	S	L	{"color":1,"initial_direction":"North","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1002	thread	11	0	S	L	{"color":3,"initial_direction":"West","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1003	thread	14	12	S	L	{"color":2,"initial_direction":"South","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+2001	pickup	0	8	S	L	{"color":1,"type":"Conditional","picked":0,"passed":0}
+2002	pickup	5	0	S	L	{"color":2,"type":"Unconditional","picked":0,"passed":0}
+2003	pickup	8	16	S	L	{"color":3,"type":"Unconditional","picked":0,"passed":0}
+3001	delivery	10	3	S	L	{"accepted_types":["Unconditional"],"accepted_colors":[2,3],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":2}
+3002	delivery	14	6	S	L	{"accepted_types":["Conditional"],"accepted_colors":[1],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":2}
+3003	delivery	14	11	S	L	{"accepted_types":["Unconditional"],"accepted_colors":[2,3],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":2}
+4001	exchange	5	6	S	L	{"link":4002,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+4002	exchange	5	8	S	L	{"link":4001,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+4003	exchange	3	11	S	L	{"link":4004,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+4004	exchange	5	11	S	L	{"link":4003,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+5001	conditional	5	3	S	L	{"directions":["East","West"],"current":0,"passed":0}
+5002	conditional	11	16	S	L	{"directions":["West","North"],"current":0,"passed":0}
+5003	diverter	8	11	S	L	{"passed":0,"directions_types":[["Empty"],[],["Unconditional"],[]],"directions_colors":[[],[],[],[]]}
+
+EXECUTION
+
+
+PLAYER
+

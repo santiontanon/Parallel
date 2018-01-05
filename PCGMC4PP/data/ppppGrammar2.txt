@@ -1,0 +1,15 @@
+Rule PROBLEM 1.0 1.0
+    A:problem()
+    A:problem(),B:spawn(partOf:A),C:situation(partOf:A),D:end(partOf:A),E:solution(partOf:A)
+Rule SPAWN_A 1.0 1.0
+    A:spawn()
+    A:spawn(),B:track(is:A,to:C,has:D,is:E),C:track(is:A,is:F),D:thread(),E:in(partOf:A),F:out(partOf:A)
+Rule SITUATION_INSTANCE 1.0 1.0
+	A:situation(),B:track(is:C),C:out(),D:track(is:E),E:in()
+	A:situation_(),B:track(is:C,is:M),C:out(),D:track(is:E,is:N),E:in(),M:in(partOf:A),N:out(partOf:A)
+Rule SITUATION_INSTANCES 1.0 1.0
+	A:situation(),B:track(is:C),C:out(),D:track(is:E),E:in()
+	A:situation_(),B:track(is:C,is:M),C:out(),D:track(is:E,is:N,is:Q),E:in(),M:in(partOf:A),N:out(partOf:A),O:situation_(),P:track(is:R),Q:in(partOf:O),R:out(partOf:O)
+Rule SITUATION_PICKUP_DELIVERY 1.0 1.0
+    A:situation_(),B:track(is:C),C:in(partOf:A),D:track(is:E),E:out(partOf:A)
+    A:situation__(),B:track(is:C,to:M),C:in(partOf:A),D:track(is:E),E:out(partOf:A),M:track(has:O,to:N),N:track(has:P,to:D),O:pickup(partOf:A),P:delivery(partOf:A)

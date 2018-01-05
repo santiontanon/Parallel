@@ -1,0 +1,44 @@
+METADATA
+level_id	2
+level_title	More Trains
+goal_string	Deliver 2 package per train
+goal_struct	{"desired":[{"condition":"eq","property":"delivered","id":3001,"type":"delivery","value":2},{"condition":"eq","property":"delivered","id":3002,"type":"delivery","value":2},{"condition":"eq","property":"delivered","id":1001,"type":"thread","value":2},{"condition":"eq","property":"delivered","id":1002,"type":"thread","value":2}],"required":[{"condition":"eq","property":"delivered","id":3001,"type":"delivery","value":2},{"condition":"eq","property":"delivered","id":3002,"type":"delivery","value":2}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	5
+board_height	5
+
+LAYOUT
+FEGEC
+J-J-J
+J-J-J
+J-J-J
+LEMEI
+
+COLORS
+     
+ - - 
+ - - 
+ - - 
+     
+
+COMPONENTS
+1001	thread	2	1	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1}
+1002	thread	2	2	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1}
+2001	pickup	0	0	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2002	pickup	4	0	S	L	{"color":2,"picked":0,"passed":0,"type":"Conditional"}
+3001	delivery	0	4	S	L	{"color":1,"missed":0,"delivered":0,"passed":0,"strict":1,"consumer":-1}
+3002	delivery	4	4	S	L	{"color":2,"missed":0,"delivered":0,"passed":0,"strict":1,"consumer":-1}
+4001	intersection	2	4	S	L	{"directions":["North","North","North","North","North","North"]}
+5001	conditional	2	0	S	L	{"directions":["East","West"],"current":1}
+
+EXECUTION
+
+
+PLAYER
+

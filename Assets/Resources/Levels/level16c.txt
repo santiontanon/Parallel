@@ -1,0 +1,101 @@
+METADATA
+level_id	16
+level_title	Classic Concurrency Problems
+goal_string	Each arrow delivers to all possible delivery points.
+goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":3001,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":3002,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":3003,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":3004,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":1001,"type":"thread","value":2},{"condition":"gt","property":"delivered","id":1002,"type":"thread","value":2},{"condition":"gt","property":"delivered","id":1003,"type":"thread","value":2},{"condition":"gt","property":"delivered","id":1004,"type":"thread","value":2}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":4}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	23
+board_height	17
+
+LAYOUT
+FEEEEEEEC-----FEGEGEGEC
+J-------J-----J-J-J-J-J
+J-------J-----J-J-J-J-J
+J-------J-----J-J-J-J-J
+J---FEEEOEEEC-J-J-J-J-J
+J---J---J---J-J-J-J-J-J
+J---J-FEOEC-J-LEMEMEMEI
+J---J-J-J-J-J----------
+NEEEOEOEOEOEI----------
+J---J-J-J-J------------
+J---LEOEOEOEEEEEEEEEEEC
+J-----J-J-J-----------J
+J-----LEOEI-----------J
+J-------J-------------J
+J-------J-------------J
+J-------J-------------J
+LEEEEEEEMEEEEEEEEEEEEEI
+
+COLORS
+!!!!!!!!!-----(((((((((
+!-------!-----(-(-(-(-(
+!-------!-----(-(-(-(-(
+!-------!-----(-(-(-(-(
+!---!!!!!!!!!-(-(-(-(-(
+!---!---!---!-(-(-(-(-(
+!---!-""#""-!-(((((((((
+!---!-"-!-"-!----------
+#"""#"""'''!!----------
+#---!-"-$-$------------
+#---!!'''''''''''''''''
+#-----$-$-$-----------'
+#-----$$$$$-----------'
+#-------$-------------'
+#-------$-------------'
+#-------$-------------'
+########'''''''''''''''
+
+DIRECTIONS
+>>>>>>>>V     >>X>X>X>V
+A       V     A V V V V
+A       V     A V V V V
+A       V     A V V V V
+A   V<<<X<<<< A V V V V
+A   V   V   A A V V V V
+A   V V<X<< A A<<<<<<<<
+A   V V V A A          
+X>>>X>X>>>X>A          
+A   V V A V            
+A   >>>>X>X>>>>>>>>>>>V
+A     A A V           V
+A     A<X<<           V
+A       A             V
+A       A             V
+A       A             V
+A<<<<<<<X<<<<<<<<<<<<<<
+
+COMPONENTS
+1001	thread	8	2	S	L	{"color":1,"initial_direction":"South","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1002	thread	2	8	S	L	{"color":2,"initial_direction":"East","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1003	thread	8	14	S	L	{"color":3,"initial_direction":"North","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+1004	thread	15	0	S	L	{"color":4,"initial_direction":"East","capacity":-1,"missed":0,"delay":0,"time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_delivery_max":-1,"time_exchange_max":-1,"time_pickup_max":-1,"picked":0,"delivered":0,"missed":0}
+2001	pickup	8	4	S	L	{"color":1,"type":"Unconditional","picked":0,"passed":0}
+2002	pickup	6	8	S	L	{"color":2,"type":"Unconditional","picked":0,"passed":0}
+2003	pickup	8	12	S	L	{"color":3,"type":"Unconditional","picked":0,"passed":0}
+2004	pickup	16	3	S	L	{"color":2,"type":"Unconditional","picked":0,"passed":0}
+2005	pickup	18	3	S	L	{"color":1,"type":"Unconditional","picked":0,"passed":0}
+2006	pickup	20	3	S	L	{"color":2,"type":"Unconditional","picked":0,"passed":0}
+2007	pickup	16	4	S	L	{"color":3,"type":"Unconditional","picked":0,"passed":0}
+2008	pickup	18	4	S	L	{"color":3,"type":"Unconditional","picked":0,"passed":0}
+2009	pickup	20	4	S	L	{"color":1,"type":"Unconditional","picked":0,"passed":0}
+3001	delivery	22	11	S	L	{"accepted_types":[],"accepted_colors":[1],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":3}
+3002	delivery	22	13	S	L	{"accepted_types":[],"accepted_colors":[2],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":3}
+3003	delivery	22	15	S	L	{"accepted_types":[],"accepted_colors":[3],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":3}
+3004	delivery	14	3	S	L	{"accepted_types":[],"accepted_colors":[],"consumer":-1,"passed":0,"delivered":0,"missed":0,"denominator":-1}
+4001	exchange	10	8	S	L	{"link":4002,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+4002	exchange	14	5	S	L	{"link":4001,"color":0,"strict":1,"stop":1,"passed":0,"exchanged":0}
+5001	conditional	16	0	S	L	{"directions":["South","East"],"current":0,"passed":0}
+5002	conditional	18	0	S	L	{"directions":["East","South"],"current":0,"passed":0}
+5003	conditional	20	0	S	L	{"directions":["East","South"],"current":0,"passed":0}
+
+EXECUTION
+
+
+PLAYER
+

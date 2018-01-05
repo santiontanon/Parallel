@@ -1,0 +1,119 @@
+METADATA
+level_id	5
+level_title	Intro to Parallel
+goal_string	Deliver 4 packages with each train delivering at least 1
+goal_struct	{"desired":[],"required":[{"condition":"lt","thread_id":0,"property":"picked","id":2001,"type":"pickup","value":5},{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":0}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	8
+
+LAYOUT
+--FEEEEC
+--J----J
+FEOEEC-J
+J-J--J-J
+J-J--J-J
+J-LEEOEI
+J----J--
+LEEEEI--
+
+COLORS
+--""""""
+--"----"
+!!#!!!-"
+!-"--!-"
+!-"--!-"
+!-"""#""
+!----!--
+!!!!!!--
+
+DIRECTIONS
+  V<<<<<
+  V    A
+>>X>>V A
+A V  V A
+A V  V A
+A >>>X>A
+A    V  
+A<<<<<  
+
+COMPONENTS
+9010	signal	7	2	P	E	{"color":0,"link":9007,"passed":0}
+9009	signal	2	7	P	E	{"color":0,"link":9008,"passed":0}
+9008	semaphore	2	1	P	E	{"stopped":0,"color":0,"passed":0,"value":0}
+9007	semaphore	1	2	P	E	{"stopped":0,"color":0,"passed":0,"value":1}
+3002	delivery	3	7	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+3001	delivery	7	3	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+2001	pickup	2	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+1002	thread	0	5	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+1001	thread	5	0	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+
+EXECUTION
+S	29	1001	7	2	{"speed":0.0}
+M	0	1001	5	0	
+M	0	1002	0	5	
+M	1	1001	4	0	
+M	1	1002	0	4	
+M	3	1001	2	0	
+M	3	1002	0	2	
+M	4	1002	1	2	
+M	5	1002	2	2	
+M	6	1002	3	2	
+M	8	1002	5	2	
+M	11	1002	5	5	
+M	13	1002	5	7	
+M	15	1002	3	7	
+M	16	1002	2	7	
+M	17	1001	2	1	
+M	17	1002	1	7	
+M	18	1001	2	2	
+M	19	1001	2	3	
+M	21	1001	2	5	
+M	24	1001	5	5	
+M	26	1001	7	5	
+M	28	1001	7	3	
+M	29	1001	7	2	
+E	1	3002	3	7	{"denominator":-1}
+E	1	3001	7	3	{"denominator":-1}
+E	1	1002	0	5	{"passed":1}
+E	1	1001	5	0	{"passed":1}
+E	1	0	0	0	{"goals_completed":1}
+E	4	9007	1	2	{"value":0}
+E	5	9007	1	2	{"passed":1}
+E	6	2001	2	2	{"available":0}
+E	6	2001	2	2	{"picked":1}
+E	6	2001	2	2	{"passed":1}
+E	6	1002	2	2	{"payload":[2001]}
+E	16	9008	2	1	{"value":1}
+E	16	3002	3	7	{"delivered":1}
+E	16	3002	3	7	{"passed":1}
+E	16	2001	2	2	{"available":1}
+E	16	1002	3	7	{"payload":[]}
+E	16	1002	3	7	{"delivered":1}
+D	16	1002	3	7	{"missed_items":[],"delivered_items":[2001],"delivered_to":3002}
+E	16	0	0	0	{"goals_completed":2}
+E	17	9009	2	7	{"passed":1}
+E	17	9008	2	1	{"value":0}
+E	18	9008	2	1	{"passed":1}
+E	19	2001	2	2	{"available":0}
+E	19	2001	2	2	{"picked":2}
+E	19	2001	2	2	{"passed":2}
+E	19	1001	2	2	{"payload":[2001]}
+E	29	9007	1	2	{"value":1}
+E	29	3001	7	3	{"delivered":1}
+E	29	3001	7	3	{"passed":1}
+E	29	2001	2	2	{"available":1}
+E	29	1001	7	3	{"payload":[]}
+E	29	1001	7	3	{"delivered":1}
+D	29	1001	7	3	{"missed_items":[],"delivered_items":[2001],"delivered_to":3001}
+E	29	0	0	0	{"goals_completed":3}
+E	29	0	0	0	{"final_condition":10,"goal_descriptions":[],"goal_state":[true,true,true]}
+
+PLAYER
+

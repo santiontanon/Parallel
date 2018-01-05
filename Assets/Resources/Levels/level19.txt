@@ -1,0 +1,52 @@
+METADATA
+level_id	19
+level_title	Optional Level 1
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":2033,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":2025,"type":"delivery","value":2},{"condition":"gt","property":"delivered","id":2032,"type":"delivery","value":1}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	22
+board_height	5
+
+LAYOUT
+------FEEEGEEEEEEEEEEC
+------J---J----------J
+--FEEEI---J-FEGEEEEEEK
+--J-------J-J-J------J
+DEI-------LEI-LEEEEEEI
+
+COLORS
+------                
+------ --- ---------- 
+--     --- -          
+-- ------- - - ------ 
+   -------   -        
+
+DIRECTIONS
+      >>>>V<<<<<<<<<<<
+      A   V          A
+  >>>>A   V >>X>>>>>>A
+  A       V A V      A
+>>A       >>A >>>>>>>A
+
+COMPONENTS
+1002	thread	2	3	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1}
+1027	conditional	14	2	S	L	{"current":0,"color":1,"directions":["South","East"],"passed":0}
+2026	pickup	17	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2031	pickup	15	4	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
+2033	delivery	19	2	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2025	delivery	17	4	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+1001	thread	0	4	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1}
+2030	pickup	4	2	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2032	delivery	6	2	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":2}
+1003	thread	10	4	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1}
+
+EXECUTION
+
+PLAYER
+

@@ -1,0 +1,94 @@
+METADATA
+level_id	6
+level_title	Intro to Parallel
+goal_string	Deliver The Package
+goal_struct	{"desired":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":0}],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"passed","id":5001,"type":"diverter","value":1}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	9
+board_height	8
+
+LAYOUT
+FEEEGEEEC
+J---J---J
+J---J---J
+J---J---J
+J---J---J
+J---J---J
+J---J---J
+LEEEMEEEI
+
+COLORS
+#########
+#---#---#
+#---#---#
+#---#---#
+#---#---#
+#---#---#
+#---#---#
+#########
+
+DIRECTIONS
+V<<<X>>>V
+V   A   V
+V   A   V
+V   A   V
+V   A   V
+V   A   V
+V   A   V
+>>>>A<<<<
+
+COMPONENTS
+5001	diverter	4	0	S	L	{"color":0,"direction_condition":"West","directions_colors":[[],[],[],[]],"passed":0,"directions_types":[["Empty"],[],["Limited"],[]],"direction_default":"West"}
+3001	delivery	6	0	S	L	{"accepted_types":["Limited"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+2001	pickup	4	4	S	L	{"color":1,"picked":0,"passed":0,"type":"Limited"}
+1002	thread	8	5	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+1001	thread	0	5	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+
+EXECUTION
+S	23	1002	7	0	{"speed":0.0}
+S	23	1001	0	6	{"speed":0.0}
+M	0	1001	0	5	
+M	0	1002	8	5	
+M	1	1001	0	6	
+M	1	1002	8	6	
+M	2	1001	0	7	
+M	2	1002	8	7	
+M	6	1001	4	7	
+M	6	1002	4	7	
+M	9	1001	4	4	
+M	9	1002	4	4	
+M	10	1001	4	3	
+M	10	1002	4	3	
+M	13	1001	4	0	
+M	13	1002	4	0	
+M	15	1002	6	0	
+M	17	1001	0	0	
+M	22	1001	0	5	
+M	23	1001	0	6	
+M	23	1002	7	0	
+E	1	3001	6	0	{"denominator":-1}
+E	1	1002	8	5	{"passed":1}
+E	1	1001	0	5	{"passed":1}
+E	10	2001	4	4	{"available":0}
+E	10	2001	4	4	{"picked":1}
+E	10	2001	4	4	{"passed":2}
+E	10	1002	4	4	{"payload":[2001]}
+E	22	5001	4	0	{"passed":2}
+E	22	0	0	0	{"goals_completed":1}
+E	23	3001	6	0	{"delivered":1}
+E	23	3001	6	0	{"passed":1}
+E	23	1001	0	5	{"passed":2}
+E	23	1002	6	0	{"payload":[]}
+E	23	1002	6	0	{"delivered":1}
+D	23	1002	6	0	{"missed_items":[],"delivered_items":[2001],"delivered_to":3001}
+E	23	0	0	0	{"goals_completed":3}
+E	23	0	0	0	{"final_condition":10,"goal_descriptions":[],"goal_state":[true,true,true]}
+
+PLAYER
+
