@@ -1,8 +1,0 @@
-RULE SUBPROBLEMS 1.0 0.5 -1
-    PATTERN A:problem()
-    REPLACEMENT A:track(to:B),B:track(to:C),C:track()
-RULE MAKE_SUBPROBLEM_ABST_SERIAL_TASKS 1.0 0.5 1 SERIAL
-    PATTERN A:{track}(to:B),B:{track}()
-    REPLACEMENT A:{track}(to:B,to:D),B:{track}(to:E),\
-    D:{track}(),E:{track}()
-

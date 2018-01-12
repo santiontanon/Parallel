@@ -1,9 +1,0 @@
-RULE SUBPROBLEMS 1.0 0.5 -1
-    PATTERN A:problem()
-    REPLACEMENT A:track(to:B),B:track(to:C),C:track()
-RULE THIS_WORKS 1.0 0.5 0
-    PATTERN A:track(),B:track(),C:track()
-    REPLACEMENT A:track(),B:track()
-RULE THIS_WORKS_NOT 1.0 0.5 1
-    PATTERN A:track()
-    REPLACEMENT
