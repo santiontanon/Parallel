@@ -1,0 +1,56 @@
+METADATA
+level_id	1
+level_title	PCG Level
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2021,"type":"delivery","value":0}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	15
+board_height	7
+
+LAYOUT
+FEEEEEEEEEEEEEC
+J-------------J
+J---FEEEEEEEGEK
+J---J-------J-J
+J---NEEEEEEEI-J
+J---J---------J
+LEEEMEEEEEEEEEI
+
+COLORS
+               
+ ------------- 
+ ---           
+ --- ------- - 
+ ---         - 
+ --- --------- 
+               
+
+DIRECTIONS
+>>>>>>>>>>>>>>V
+A             V
+A   V<<<<<<<<<<
+A   V       A A
+A   X>>>>>>>A A
+A   V         A
+A<<<X>>>>>>>>>A
+
+COMPONENTS
+1	thread	8	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+1027	conditional	4	4	S	L	{"current":0,"color":1,"directions":["South","East"],"passed":0}
+1024	conditional	4	6	S	L	{"current":0,"color":1,"directions":["East","West"],"passed":0}
+2021	delivery	12	4	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":1}
+2017	pickup	2	6	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+4022	exchange	0	4	S	L	{"delay":0,"color":1,"stop":0,"link":4023,"exchanged":0,"passed":0,"strict":0,"value":0}
+4023	exchange	10	4	S	L	{"delay":0,"color":1,"stop":0,"link":4022,"exchanged":0,"passed":0,"strict":0,"value":0}
+16	thread	6	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+
+EXECUTION
+
+PLAYER
+

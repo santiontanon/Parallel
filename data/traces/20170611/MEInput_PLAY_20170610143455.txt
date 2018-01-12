@@ -1,0 +1,60 @@
+METADATA
+level_id	4
+level_title	Mutual Exclusion
+goal_string	Each arrow delivers the package twice
+goal_struct	{"required":[{"id":3001,"type":"delivery","property":"delivered","value":2,"condition":"eq","thread_id":1001},{"id":3001,"type":"delivery","property":"delivered","value":2,"condition":"eq","thread_id":1002}],"desired":[]}
+player_palette	{"semaphore":{"count":-1},"signal":{"count":-1},"painter":{"count":0},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	8
+
+LAYOUT
+FEEGEEEC
+J--J---J
+J--J---J
+J--J---J
+J--J---J
+J--J---J
+J--J---J
+LEEMEEEI
+
+COLORS
+!!!#""""
+!--#---"
+!--#---"
+!--#---"
+!--#---"
+!--#---"
+!--#---"
+!!!#""""
+
+DIRECTIONS
+>>>V<<<<
+A  V   A
+A  V   A
+A  V   A
+A  V   A
+A  V   A
+A  V   A
+A<<X>>>A
+
+COMPONENTS
+9022	signal	4	7	P	E	{"link":9021,"passed":0}
+9021	semaphore	2	0	P	E	{"value":0,"passed":0}
+9020	semaphore	4	0	P	E	{"value":1,"passed":0}
+9019	signal	2	7	P	E	{"link":9020,"passed":0}
+1001	thread	0	0	S	L	{"color":1,"initial_direction":"East","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+1002	thread	7	0	S	L	{"color":2,"initial_direction":"West","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+2001	pickup	3	1	S	L	{"type":"Unconditional","color":1,"passed":0,"picked":0}
+3001	delivery	3	6	S	L	{"color":0,"accepted_types":["Unconditional"],"accepted_colors":[],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":4,"missed":0}
+4001	intersection	3	0	S	L	{"directions":["South","South","South","South","South","South"],"passed":0}
+4002	intersection	3	7	S	L	{"directions":["West","West","East","West","East","East"],"passed":0}
+
+EXECUTION
+
+PLAYER

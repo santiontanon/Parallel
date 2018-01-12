@@ -1,0 +1,58 @@
+METADATA
+level_id	2
+level_title	More Arrows
+goal_string	Deliver 2 packages per arrow and to each delivery point
+goal_struct	{"required":[{"id":3001,"type":"delivery","property":"delivered","value":1,"condition":"gt","thread_id":0},{"id":3002,"type":"delivery","property":"delivered","value":1,"condition":"gt","thread_id":0}],"desired":[{"id":3001,"type":"delivery","property":"delivered","value":1,"condition":"gt","thread_id":0},{"id":3002,"type":"delivery","property":"delivered","value":1,"condition":"gt","thread_id":0},{"id":1001,"type":"thread","property":"delivered","value":1,"condition":"gt","thread_id":0},{"id":1002,"type":"thread","property":"delivered","value":1,"condition":"gt","thread_id":0}]}
+player_palette	{"semaphore":{"count":-1},"signal":{"count":-1},"painter":{"count":0},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	8
+
+LAYOUT
+FEEEGEEC
+J---J--J
+J---J--J
+J---J--J
+J---J--J
+J---J--J
+J---J--J
+LEEEMEEI
+
+COLORS
+########
+#---#--#
+#---#--#
+#---#--#
+#---#--#
+#---#--#
+#---#--#
+########
+
+DIRECTIONS
+V<<<X>>V
+V   A  V
+V   A  V
+V   A  V
+V   A  V
+V   A  V
+V   A  V
+>>>>A<<<
+
+COMPONENTS
+4001	intersection	4	7	S	L	{"directions":["North","North","North","North","North","North"],"passed":0}
+5001	conditional	4	0	S	L	{"directions":["East","West"],"current":1,"passed":0}
+3002	delivery	7	7	S	L	{"color":0,"accepted_types":["Conditional"],"accepted_colors":["1","2"],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":2,"missed":0}
+3001	delivery	0	7	S	L	{"color":0,"accepted_types":["Conditional"],"accepted_colors":["1","2"],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":2,"missed":0}
+2002	pickup	7	0	S	L	{"type":"Conditional","color":2,"passed":0,"picked":0}
+2001	pickup	0	0	S	L	{"type":"Conditional","color":1,"passed":0,"picked":0}
+1002	thread	4	5	S	L	{"color":2,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+1001	thread	4	2	S	L	{"color":1,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+
+EXECUTION
+
+PLAYER

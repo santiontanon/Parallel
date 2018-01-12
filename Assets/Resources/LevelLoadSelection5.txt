@@ -1,0 +1,200 @@
+{
+  "id":5,
+  "date":"2017-11-14",
+  "levels":{
+    "required":[
+      {
+        "file":"level18",
+        "title":"Level 18"
+      }
+    ],
+    "optional":[
+      {
+        "file":"level54",
+        "title":"Level 54"
+      },
+      {
+        "file":"level56",
+        "title":"Level 56"
+      },
+      {
+        "file":"level57",
+        "title":"Level 57"
+      },
+      {
+        "file":"level58",
+        "title":"Level 58"
+      }
+    ],
+    "previous":[
+      {
+        "file":"level01",
+        "title":"Level 1"
+      },
+      {
+        "file":"level02",
+        "title":"Level 2"
+      },
+      {
+        "file":"level03",
+        "title":"Level 3"
+      },
+      {
+        "file":"level04",
+        "title":"Level 4"
+      },
+      {
+        "file":"level05",
+        "title":"Level 5"
+      },
+      {
+        "file":"level06",
+        "title":"Level 6"
+      },
+      {
+        "file":"level07",
+        "title":"Level 7"
+      },
+      {
+        "file":"level08",
+        "title":"Level 8"
+      },
+      {
+        "file":"level09",
+        "title":"Level 9"
+      },
+      {
+        "file":"level10",
+        "title":"Level 10"
+      },
+      {
+        "file":"level11",
+        "title":"Level 11"
+      },
+      {
+        "file":"level12",
+        "title":"Level 12"
+      },
+      {
+        "file":"level13",
+        "title":"Level 13"
+      },
+      {
+        "file":"level14",
+        "title":"Level 14"
+      },
+      {
+        "file":"level15",
+        "title":"Level 15"
+      },
+      {
+        "file":"level16",
+        "title":"Level 16"
+      },
+      {
+        "file":"level17",
+        "title":"Level 17"
+      },
+      {
+        "file":"level20",
+        "title":"Level 20"
+      },
+      {
+        "file":"level22",
+        "title":"Level 22"
+      },
+      {
+        "file":"level23",
+        "title":"Level 23"
+      },
+      {
+        "file":"level24",
+        "title":"Level 24"
+      },
+      {
+        "file":"level25",
+        "title":"Level 25"
+      },
+      {
+        "file":"level27",
+        "title":"Level 27"
+      },
+      {
+        "file":"level28",
+        "title":"Level 28"
+      },
+      {
+        "file":"level30",
+        "title":"Level 30"
+      },
+      {
+        "file":"level31",
+        "title":"Level 31"
+      },
+      {
+        "file":"level32",
+        "title":"Level 32"
+      },
+      {
+        "file":"level34",
+        "title":"Level 34"
+      },
+      {
+        "file":"level36",
+        "title":"Level 36"
+      },
+      {
+        "file":"level38",
+        "title":"Level 38"
+      },
+      {
+        "file":"level40",
+        "title":"Level 40"
+      },
+      {
+        "file":"level42",
+        "title":"Level 42"
+      },
+      {
+        "file":"level43",
+        "title":"Level 43"
+      },
+      {
+        "file":"level44",
+        "title":"Level 44"
+      },
+      {
+        "file":"level45",
+        "title":"Level 45"
+      },
+      {
+        "file":"level47",
+        "title":"Level 47"
+      },
+      {
+        "file":"level48",
+        "title":"Level 48"
+      },
+      {
+        "file":"level49",
+        "title":"Level 49"
+      },
+      {
+        "file":"level50",
+        "title":"Level 50"
+      },
+      {
+        "file":"level51",
+        "title":"Level 51"
+      },
+      {
+        "file":"level52",
+        "title":"Level 52"
+      },
+      {
+        "file":"level53",
+        "title":"Level 53"
+      }
+    ]
+  }
+}

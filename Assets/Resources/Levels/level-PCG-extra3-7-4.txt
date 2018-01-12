@@ -1,0 +1,71 @@
+METADATA
+level_id	1
+level_title	PCG Level
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2053,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2044,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2050,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2049,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2031,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2040,"type":"delivery","value":2}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	27
+board_height	9
+
+LAYOUT
+FEEEEEEEEEEEEEEEEEEEEEEEEEC
+J-------------------------J
+J---------FEEEEEEEEEEEEEEEK
+J---------J---------------J
+J---------NEEEGEEEEEGEEEEEI
+J---------J---J-----J------
+J-FEEEEEEEK---LEEEEEI------
+J-J-------J----------------
+LEMEEEEEEEI----------------
+
+COLORS
+                           
+ ------------------------- 
+ ---------                 
+ --------- --------------- 
+ ---------                 
+ --------- --- ----- ------
+ -         ---       ------
+ - ------- ----------------
+           ----------------
+
+DIRECTIONS
+>>>>>>>>>>>>>>>>>>>>>>>>>>V
+A                         V
+A         V<<<<<<<<<<<<<<<<
+A         V               A
+A         X>>>X>>>>>>>>>>>A
+A         V   V     A      
+A V<<<<<<<X   >>>>>>A      
+A V       V                
+A<<<<<<<<<<                
+
+COMPONENTS
+1	thread	22	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+1045	conditional	10	4	S	L	{"current":0,"color":1,"directions":["East","South"],"passed":0}
+1033	conditional	10	6	S	L	{"current":0,"color":1,"directions":["South","West"],"passed":0}
+1036	conditional	14	4	S	L	{"current":0,"color":1,"directions":["East","South"],"passed":0}
+2053	delivery	18	0	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2044	delivery	0	4	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2052	pickup	0	0	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2051	pickup	0	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2043	pickup	16	4	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2047	pickup	16	6	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2050	delivery	18	4	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2049	delivery	18	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2048	pickup	8	6	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2035	pickup	8	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
+2031	delivery	6	6	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2040	delivery	6	8	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+24	thread	20	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+
+EXECUTION
+
+PLAYER
+

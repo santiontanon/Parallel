@@ -1,0 +1,61 @@
+METADATA
+level_id	10
+level_title	Intro to Parallel
+goal_string	Each Arrow Delivers Twice
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":1001,"type":"thread","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":1002,"type":"thread","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":3}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	17
+board_height	9
+time_efficiency	101.333336
+
+LAYOUT
+FEEEGEEEEEEEGEEEC
+J---J-------J---J
+J---J-------J---J
+J---J-------J---J
+LEEEOEEEEEEEOEEEI
+----J-------J----
+----J-------J----
+----J-------J----
+----LEEEEEEEI----
+
+COLORS
+!!!!)))))))))!!!!
+!---(-------(---!
+!---(-------(---!
+!---(-------(---!
+!!!!)!!!!!!!)!!!!
+----(-------(----
+----(-------(----
+----(-------(----
+----(((((((((----
+
+DIRECTIONS
+V<<<X<<<<<<<<<<<<
+V   V       A   A
+V   V       A   A
+V   V       A   A
+>>>>X>>>>>>>X>>>A
+    V       A    
+    V       A    
+    V       A    
+    >>>>>>>>A    
+
+COMPONENTS
+1001	thread	0	2	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+1002	thread	5	8	S	L	{"time_pickup_min":-1,"color":4,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+2001	pickup	8	4	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2002	pickup	8	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+3001	delivery	8	0	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":4}
+5001	conditional	12	4	S	L	{"current":1,"color":0,"directions":["North","East"],"passed":0}
+
+EXECUTION
+
+PLAYER
+

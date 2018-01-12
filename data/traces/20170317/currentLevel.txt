@@ -1,0 +1,108 @@
+METADATA
+level_id	5
+level_title	Exchange Points and Race Conditions
+goal_string	Deliver the Package Twice
+goal_struct	{"required":[{"id":3001,"type":"delivery","property":"delivered","value":2,"condition":"eq","thread_id":0}],"desired":[]}
+player_palette	{"semaphore":{"count":-1},"signal":{"count":-1},"painter":{"count":0},"colors":{"count":4}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	15
+board_height	15
+
+LAYOUT
+------FEEEEEEEC
+------J-------J
+------J-------J
+--FEEEMEEEC---J
+--J-------J---J
+--J-------J---J
+FEMEC---FEMEC-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+LEEEMEEEMEEEMEI
+
+COLORS
+------/////////
+------/-------/
+------/-------/
+--/////////---/
+--/-------/---/
+--/-------/---/
+/////---/////-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+///////////////
+
+DIRECTIONS
+      V<<<<<<<<
+      V       A
+      V       A
+  V<<<X>>>V   A
+  V       V   A
+  V       V   A
+V<X>V   V<X>V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+>>>>X>>>X>>>X>A
+
+COMPONENTS
+9061	signal	8	13	P	E	{"link":9058,"passed":0}
+9058	semaphore	14	12	P	E	{"value":1,"passed":0}
+9056	signal	8	9	P	E	{"link":9043,"passed":0}
+9048	signal	4	6	P	E	{"link":9046,"passed":0}
+9044	signal	1	6	P	E	{"link":9043,"passed":0}
+9043	semaphore	10	0	P	E	{"value":1,"passed":0}
+9042	semaphore	8	0	P	E	{"value":1,"passed":0}
+6004	intersection	12	14	S	L	{"directions":["East","East","East","East","East","East"],"passed":0}
+6003	intersection	8	14	S	L	{"directions":["East","East","East","East","East","East"],"passed":0}
+6002	intersection	4	14	S	L	{"directions":["East","East","East","East","East","East"],"passed":0}
+6001	intersection	0	14	S	L	{"directions":["East","East","East","East","East","East"],"passed":0}
+5003	conditional	10	6	S	L	{"directions":["West","East"],"current":0,"passed":0}
+5002	conditional	2	6	S	L	{"directions":["West","East"],"current":0,"passed":0}
+5001	conditional	6	3	S	L	{"directions":["West","East"],"current":0,"passed":0}
+4006	exchange	12	8	S	L	{"link":4005,"color":0,"strict":1,"passed":0}
+4005	exchange	8	12	S	L	{"link":4006,"color":0,"strict":1,"passed":0}
+4004	exchange	8	8	S	L	{"link":4003,"color":0,"strict":1,"passed":0}
+4003	exchange	4	12	S	L	{"link":4004,"color":0,"strict":1,"passed":0}
+4002	exchange	4	8	S	L	{"link":4001,"color":0,"strict":1,"passed":0}
+4001	exchange	0	12	S	L	{"link":4002,"color":0,"strict":1,"passed":0}
+3001	delivery	12	12	S	L	{"color":0,"accepted_types":["Conditional"],"accepted_colors":[],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":2,"missed":0}
+2001	pickup	0	7	S	L	{"type":"Conditional","color":1,"passed":0,"picked":0}
+1004	thread	14	8	S	L	{"color":4,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+1003	thread	14	7	S	L	{"color":3,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+1002	thread	14	6	S	L	{"color":2,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+1001	thread	14	5	S	L	{"color":1,"initial_direction":"North","capacity":-1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+9045	signal	0	9	P	E	{"link":9042,"passed":0}
+9046	semaphore	0	11	P	E	{"value":0,"passed":0}
+9047	signal	0	8	P	E	{"link":5002,"passed":0}
+9049	signal	14	14	P	E	{"link":9043,"passed":0}
+9050	signal	11	14	P	E	{"link":9042,"passed":0}
+9051	signal	14	9	P	E	{"link":5001,"passed":0}
+9052	semaphore	13	14	P	E	{"value":0,"passed":0}
+9053	signal	4	10	P	E	{"link":9052,"passed":0}
+9055	signal	8	10	P	E	{"link":5003,"passed":0}
+9057	signal	4	13	P	E	{"link":9052,"passed":0}
+9060	signal	12	13	P	E	{"link":9052,"passed":0}
+
+EXECUTION
+
+PLAYER

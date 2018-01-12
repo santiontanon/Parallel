@@ -1,0 +1,38 @@
+METADATA
+level_id	666
+level_title	Wider
+goal_string	Deliver Each Package
+goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","property":"delivered","id":3002,"type":"delivery","value":1}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":2}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	40
+board_height	3
+
+LAYOUT
+FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEC
+J--------------------------------------J
+LEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEI
+
+COLORS
+########################################
+#--------------------------------------#
+########################################
+
+DIRECTIONS
+A>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>V
+A                                      V
+A<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+COMPONENTS
+8001	signal	0	0	S	L	{"passed":0,"link":6001}
+6001	semaphore	1	0	S	L	{"value":0,"passed":0}
+
+EXECUTION
+
+
+PLAYER

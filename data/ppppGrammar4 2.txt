@@ -1,0 +1,15 @@
+RULE ADD_MORE_PROBLEMS 1.0 1.0 0
+    PATTERN A:problem()
+    REPLACEMENT A:problem(),B:problem()
+RULE MAKE_SUBPROBLEM_ABST_FORK_MERGE 1.0 1.0 1 FORK
+    PATTERN A:problem()
+    REPLACEMENT A:{track,thread,start_point}(partOf:I,partOf:M,to:B),B:fork(to:J,to:N),C:merge(to:D),D{track,end_point},I:{subproblem_abst,dead_end}(),J:{track,out}(partOf:I),K:{track,in}(to:C,partOf:I),M:{subproblem_abst,dead_end}(),N:{track,out}(partOf:M),O:{track,in}(to:C,partOf:M)
+RULE MAKE_SUBPROBLEM_ABST_LOOP 1.0 1.0 1 LOOP
+    PATTERN A:problem()
+    REPLACEMENT A:{subproblem_abst,loop}(),B:{track,thread,out}(partOf:A),C:{track,in}(partOf:A,to:B)
+RULE MAKE_SUBPROBLEM_ABST_DEAD_END 1.0 1.0 0 DEAD_END
+    PATTERN A:problem()
+    REPLACEMENT A:{subproblem_abst,dead_end}(),B:{thread,out,start_point}(partOf:A),C:{end_point,in}(partOf:A)
+RULE MAKE_SUBPROBLEM_INST_TRIVIAL 1.0 1.0 -1 TRIVIAL
+    PATTERN A:{subproblem_abst,kind_of_iteration}(),B:{track,out}(partOf:A),C:{track,in}(partOf:A)
+    REPLACEMENT A:{subproblem_inst,kind_of_iteration}(),B:track(partOf:A,to:M),C:track(partOf:A),M:{track,pickup}(to:N,partOf:O),N:{track,delivery}(to:C,partOf:O),O:situation_inst(partOf:A)

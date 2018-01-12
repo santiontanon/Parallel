@@ -1,0 +1,1239 @@
+fileFormatVersion: 2
+guid: 038a6495077d0f74abbcd9cc6afa58e2
+timeCreated: 1500904242
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: straight_road
+    21300002: threeway_road
+    21300004: corner_road
+    21300006: fourway_road
+    21300008: package_deliverypoint_03
+    21300010: package_deliverypoint_01
+    21300012: trash
+    21300014: play
+    21300016: pause
+    21300018: reveal_direction
+    21300020: gridsprites_v2_10
+    21300022: gridsprites_v2_11
+    21300024: parallel_logo
+    21300026: package_exchangepoint_03
+    21300028: error
+    21300030: gridsprites_v2_15
+    21300032: gridsprites_v2_16
+    21300034: gridsprites_v2_17
+    21300036: gridsprites_v2_18
+    21300038: package_deliverypoint_02
+    21300040: package_deliverypoint_00
+    21300042: trash_up
+    21300044: play_up
+    21300046: pause_up
+    21300048: dead_End
+    21300050: gridsprites_v2_25
+    21300052: gridsprites_v2_26
+    21300054: parallel_logo_reverse
+    21300056: package_exchangepoint_01
+    21300058: semaphore_up
+    21300060: semaphore_down
+    21300062: semaphore_inactive
+    21300064: semaphore
+    21300066: button_up
+    21300068: button_down
+    21300070: trash_down
+    21300072: question_mark
+    21300074: pause_down
+    21300076: gridsprites_v2_38
+    21300078: gridsprites_v2_39
+    21300080: gridsprites_v2_40
+    21300082: flowArrow
+    21300084: package_exchangepoint_02
+    21300086: direction_switch_1111
+    21300088: direction_switch_0000
+    21300090: direction_switch_pointer_W
+    21300092: direction_switch_pointer_E
+    21300094: direction_switch_pointer_N
+    21300096: direction_switch_pointer_S
+    21300098: diverter_package_01
+    21300100: diverter_package_03
+    21300102: diverter_package_02
+    21300104: menu_up
+    21300106: menu_down
+    21300108: level_exit_up
+    21300110: package_02_empty
+    21300112: package_exchangepoint_00
+    21300114: gridsprites_v2_57
+    21300116: package_01
+    21300118: package_03
+    21300120: package_02
+    21300122: diverter
+    21300124: gridsprites_v2_62
+    21300126: diverter_W
+    21300128: diverter_N
+    21300130: diverter_S
+    21300132: package_tint_01
+    21300134: package_tint_02
+    21300136: package_tint_03
+    21300138: level_select_down
+    21300140: package_01_empty
+    21300142: button_glow
+    21300144: package_glow
+    21300146: train_00
+    21300148: train_01
+    21300150: train_02
+    21300152: train_03
+    21300154: train_04
+    21300156: train_05
+    21300158: gridsprites_v2_79
+    21300160: merge_road
+    21300162: package_logo_01
+    21300164: package_logo_03
+    21300166: package_logo_02
+    21300168: gridsprites_v2_84
+    21300170: package_03_empty
+    21300172: direction_switch_glow
+    21300174: train_glow
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 240
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: straight_road
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 1433
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: threeway_road
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 1432
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: corner_road
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 1432
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: fourway_road
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_deliverypoint_03
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_deliverypoint_01
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: trash
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: play
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: pause
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: reveal_direction
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_10
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_11
+      rect:
+        serializedVersion: 2
+        x: 3156
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: parallel_logo
+      rect:
+        serializedVersion: 2
+        x: 3442
+        y: 1435
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_exchangepoint_03
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 1435
+        width: 281
+        height: 281
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_15
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_16
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 1145
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_17
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 1145
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_18
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 1146
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_deliverypoint_02
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_deliverypoint_00
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: trash_up
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: play_up
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: pause_up
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: dead_End
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_25
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 1145
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_26
+      rect:
+        serializedVersion: 2
+        x: 3156
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: parallel_logo_reverse
+      rect:
+        serializedVersion: 2
+        x: 3442
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_exchangepoint_01
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 1148
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: semaphore_up
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 859
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: semaphore_down
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 859
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: semaphore_inactive
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: semaphore
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 859
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: button_up
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: button_down
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: trash_down
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: question_mark
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: pause_down
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_38
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_39
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_40
+      rect:
+        serializedVersion: 2
+        x: 3156
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: flowArrow
+      rect:
+        serializedVersion: 2
+        x: 3445
+        y: 862
+        width: 278
+        height: 281
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_exchangepoint_02
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 861
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_1111
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_0000
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_pointer_W
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_pointer_E
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_pointer_N
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_pointer_S
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_package_01
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_package_03
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_package_02
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: menu_up
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: menu_down
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: level_exit_up
+      rect:
+        serializedVersion: 2
+        x: 3156
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_02_empty
+      rect:
+        serializedVersion: 2
+        x: 3442
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_exchangepoint_00
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 574
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_01
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_03
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_02
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_62
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_W
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 287
+        width: 281
+        height: 282
+      alignment: 9
+      pivot: {x: 0.7420324, y: 0.4879419}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_N
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 287
+        width: 281
+        height: 282
+      alignment: 9
+      pivot: {x: 0.47579664, y: 0.24676785}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: diverter_S
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 287
+        width: 281
+        height: 282
+      alignment: 9
+      pivot: {x: 0.5, y: 0.75323325}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_tint_01
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_tint_02
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_tint_03
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: level_select_down
+      rect:
+        serializedVersion: 2
+        x: 3156
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_01_empty
+      rect:
+        serializedVersion: 2
+        x: 3442
+        y: 287
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: button_glow
+      rect:
+        serializedVersion: 2
+        x: 3722
+        y: 284
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_00
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_01
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_02
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_03
+      rect:
+        serializedVersion: 2
+        x: 868
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_04
+      rect:
+        serializedVersion: 2
+        x: 1154
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: train_05
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_79
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: merge_road
+      rect:
+        serializedVersion: 2
+        x: 2012
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_logo_01
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_logo_03
+      rect:
+        serializedVersion: 2
+        x: 2584
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_logo_02
+      rect:
+        serializedVersion: 2
+        x: 2870
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: gridsprites_v2_84
+      rect:
+        serializedVersion: 2
+        x: 3154
+        y: 0
+        width: 285
+        height: 285
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: package_03_empty
+      rect:
+        serializedVersion: 2
+        x: 3442
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    - serializedVersion: 2
+      name: direction_switch_glow
+      rect:
+        serializedVersion: 2
+        x: 3728
+        y: 0
+        width: 281
+        height: 282
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: -1
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

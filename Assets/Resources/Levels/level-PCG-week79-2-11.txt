@@ -1,0 +1,87 @@
+METADATA
+level_id	1
+level_title	PCG Level
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2039,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2056,"type":"delivery","value":2}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	35
+board_height	15
+
+LAYOUT
+FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEC
+J---------------------------------J
+J---------------------FEEEEEEEGEEEK
+J---------------------J-------J---J
+J-----FEEEEEEEEEEEEEEEMEEEEEEEI---J
+J-----J---------------------------J
+J-----J---FEGEGEEEGEC-------------J
+J-----J---J-J-J---J-J-------------J
+J-----J---LEI-LEC-J-J-------------J
+J-----J---------J-J-J-------------J
+LEEEEEMEEEEEEEEEI-J-J-------------J
+------------------J-J-------------J
+----------------FEK-LEEEEEEEEEEEEEI
+----------------J-J----------------
+----------------LEI----------------
+
+COLORS
+                                   
+ --------------------------------- 
+ ---------------------             
+ --------------------- ------- --- 
+ -----                         --- 
+ ----- --------------------------- 
+ ----- ---           ------------- 
+ ----- --- - - --- - ------------- 
+ ----- ---   -   - - ------------- 
+ ----- --------- - - ------------- 
+                 - - ------------- 
+------------------ - ------------- 
+----------------   -               
+---------------- - ----------------
+----------------   ----------------
+
+DIRECTIONS
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>V
+A                                 V
+A                     V<<<<<<<X<<<X
+A                     V       V   V
+A     V<<<<<<<<<<<<<<<<<<<<<<<<   V
+A     V                           V
+A     V   >>V<X<<<X<<             V
+A     V   A V V   V A             V
+A     V   A<< >>V V A             V
+A     V         V V A             V
+A<<<<<<<<<<<<<<<< V A             V
+                  V A             V
+                V<< A<<<<<<<<<<<<<<
+                V A                
+                >>A                
+
+COMPONENTS
+1	thread	2	10	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+1040	conditional	34	2	S	L	{"current":0,"color":1,"directions":["South","West"],"passed":0}
+2044	pickup	22	12	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2039	delivery	16	8	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+2045	pickup	20	12	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2056	delivery	16	10	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":3}
+1054	diverter	18	6	S	L	{"color":1,"direction_condition":"West","directions_colors":[[1,2,3,4,5,6],[-1],[],[]],"passed":0,"directions_types":[["Conditional","Unconditional","Limited"],["Empty"],[],[]],"direction_default":"West"}
+1055	diverter	14	6	S	L	{"color":1,"direction_condition":"West","directions_colors":[[-1],[],[1,2,3,4,5,6],[]],"passed":0,"directions_types":[["Empty"],[],["Conditional","Unconditional","Limited"],[]],"direction_default":"West"}
+1026	conditional	30	2	S	L	{"current":0,"color":1,"directions":["South","West"],"passed":0}
+1032	signal	26	2	S	L	{"color":1,"link":0,"passed":0}
+1036	signal	26	4	S	L	{"color":1,"link":0,"passed":0}
+1038	semaphore	24	2	S	L	{"stopped":0,"color":1,"passed":0,"value":0}
+1034	semaphore	24	4	S	L	{"stopped":0,"color":1,"passed":0,"value":0}
+28	thread	0	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+31	thread	0	10	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+
+EXECUTION
+
+PLAYER
+

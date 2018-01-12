@@ -1,0 +1,15 @@
+Rule PROBLEM 1.0 1.0
+    P0:problem()
+    P0:problem(),R0:spawn(),R1:situation(partOf:P0),R2:end(),R3:solution()
+Rule SPAWN_A 1.0 1.0
+    P0:spawn()
+    P0:spawn(),T0:track(is:P0,has:C0),C0:thread()
+Rule END_FEEDBACKLOOP 1.0 1.0
+    P0:track(is:P1),P1:spawn(),P2:end()
+    P0:track(is:P1),P1:spawn(),P2:end(),T0:track(is:P2,to:P0)
+Rule SITUATION_PICKUP_DELIVERY 1.0 1.0
+    P0:situation(),T0:track(is:A0),A0:spawn(),T1:track(is:A1),A1:end()
+    P0:situation(),T0:track(is:A0,to:T2),A0:spawn(),T1:track(is:A1),A1:end(),T2:track(to:T3,has:C0),T3:track(to:T1,has:C1),C0:pickup(),C1:delivery()
+
+
+    

@@ -1,0 +1,143 @@
+METADATA
+level_id	42
+level_title	Optional Level 24
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":2111,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":2080,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":2101,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":2114,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":2089,"type":"delivery","value":0}]}
+player_palette	{"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	73
+board_height	28
+time_efficiency	756.0
+
+LAYOUT
+FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEGEEEEEEEEEEEEEEEA--
+J-----------------------------------------------------J------------------
+J-----------------FEGEGEEEEEEEEEEEEEEEEEC-------------J------------------
+J-----------------J-J-J-----------------J-------------J------------------
+J-----------------LEI-J-----------------NEEEEEEEEEEEEEK------------------
+J---------------------J-----------------J-------------J------------------
+NEEEEEEEGEEEEEEEGEEEEEI-----------------J-------------J------------------
+J-------J-------J-----------------------J-------------J------------------
+LEEEC---J-------J----FEEEEEEEEEEEEEEEEEEI-------------J------------------
+----J---J-------J----J--------------------------------J------------------
+----LEEEI-FEGEEEOEEEEI--------------------------------J------------------
+----------J-J---J-------------------------------------J------------------
+----------LEI---J-------------------------------------J------------------
+----------------J-------------------------------------J------------------
+----------------J---------FEEEEEEEEEEEEEEEEEEEEEGEEEEEK------------------
+----------------J---------J---------------------J-----J------------------
+----------------J---------J-------------FEGEGEEEI-----J------------------
+----------------J---------J-------------J-J-J---------J------------------
+----------------J---------J-------------LEI-J-FEEEGEEEI------------------
+----------------J---------J-----------------J-J---J----------------------
+----------------J---------NEEEEEEEEEEEEEEEEEI-J-FEK----------------------
+----------------J---------J-------------------J-J-J----------------------
+----------------LEEEEEEEEEMEEEEEEEEEEEC-------J-LEI----------------------
+--------------------------------------J-------J--------------------------
+--------------------------------------LEEEEEEEI--------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+COLORS
+                                                                       --
+ ----------------------------------------------------- ------------------
+ -----------------                       ------------- ------------------
+ ----------------- - - ----------------- ------------- ------------------
+ -----------------   - -----------------               ------------------
+ --------------------- ----------------- ------------- ------------------
+                       ----------------- ------------- ------------------
+ ------- ------- ----------------------- ------------- ------------------
+     --- ------- ----                    ------------- ------------------
+---- --- ------- ---- -------------------------------- ------------------
+----     -            -------------------------------- ------------------
+---------- - --- ------------------------------------- ------------------
+----------   --- ------------------------------------- ------------------
+---------------- ------------------------------------- ------------------
+---------------- ---------                             ------------------
+---------------- --------- --------------------- ----- ------------------
+---------------- --------- -------------         ----- ------------------
+---------------- --------- ------------- - - --------- ------------------
+---------------- --------- -------------   - -         ------------------
+---------------- --------- ----------------- - --- ----------------------
+---------------- ---------                   - -   ----------------------
+---------------- --------- ------------------- - - ----------------------
+----------------                       ------- -   ----------------------
+-------------------------------------- ------- --------------------------
+--------------------------------------         --------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+DIRECTIONS
+V<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<X<<<<<<<<<<<<<<<<  
+V                                                     V                  
+V                 V<<<X<<<<<<<<<<<<<<<<<<             V                  
+V                 V A V                 A             V                  
+V                 >>A V                 X<<<<<<<<<<<<<X                  
+V                     V                 V             V                  
+X>>>>>>>>>>>>>>>V<<<<<<                 V             V                  
+V       A       V                       V             V                  
+>>>>V   A       V    V<<<<<<<<<<<<<<<<<<<             V                  
+    V   A       V    V                                V                  
+    >>>>A V<<<<<<<<<<<                                V                  
+          V A   A                                     V                  
+          >>A   A                                     V                  
+                A                                     V                  
+                A         V<<<<<<<<<<<<<<<<<<<<<X<<<<<X                  
+                A         V                     V     V                  
+                A         V             V<<<X<<<<     V                  
+                A         V             V A V         V                  
+                A         V             >>A V V<<<X<<<<                  
+                A         V                 V V   V                      
+                A         V<<<<<<<<<<<<<<<<<< V V<<                      
+                A         V                   V V A                      
+                A<<<<<<<<<<<<<<<<<<<<<<       V >>A                      
+                                      A       V                          
+                                      A<<<<<<<<                          
+                                                                         
+                                                                         
+                                                                         
+
+COMPONENTS
+1	thread	70	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+1107	conditional	54	0	S	L	{"current":0,"color":1,"directions":["South","West"],"passed":0}
+1069	conditional	54	4	S	L	{"current":0,"color":1,"directions":["West","South"],"passed":0}
+1076	conditional	40	4	S	L	{"current":0,"color":1,"directions":["South","North"],"passed":0}
+1083	conditional	54	14	S	L	{"current":0,"color":1,"directions":["West","South"],"passed":0}
+2099	pickup	52	18	S	L	{"color":3,"picked":0,"passed":0,"type":"Conditional"}
+1112	conditional	48	14	S	L	{"current":0,"color":1,"directions":["South","West"],"passed":0}
+2111	delivery	42	24	S	L	{"accepted_types":[],"color":3,"missed":0,"delivered":0,"passed":0,"accepted_colors":[3],"strict":0,"consumer":-1,"denominator":1}
+2092	pickup	24	2	S	L	{"color":2,"picked":0,"passed":0,"type":"Conditional"}
+2097	pickup	13	6	S	L	{"color":2,"picked":0,"passed":0,"type":"Conditional"}
+2075	pickup	34	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2080	delivery	16	6	S	L	{"accepted_types":[],"color":2,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2],"strict":0,"consumer":-1,"denominator":3}
+2101	delivery	32	8	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":1}
+2100	pickup	34	14	S	L	{"color":4,"picked":0,"passed":0,"type":"Unconditional"}
+2102	pickup	46	16	S	L	{"color":5,"picked":0,"passed":0,"type":"Conditional"}
+2114	delivery	32	14	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+2089	delivery	42	20	S	L	{"accepted_types":[],"color":1,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+1068	diverter	44	16	S	L	{"color":1,"direction_condition":"West","directions_colors":[[-1],[1,2,3,4,5,6],[],[]],"passed":0,"directions_types":[["Empty"],["Conditional"],[],[]],"direction_default":"West"}
+1043	conditional	0	6	S	L	{"current":0,"color":1,"directions":["South","East"],"passed":0}
+1049	signal	4	6	S	L	{"color":1,"link":1051,"passed":0}
+1053	signal	4	10	S	L	{"color":1,"link":1055,"passed":0}
+1055	semaphore	6	6	S	L	{"stopped":0,"color":1,"passed":0,"value":0}
+1051	semaphore	6	10	S	L	{"stopped":0,"color":1,"passed":0,"value":0}
+1093	diverter	22	2	S	L	{"color":1,"direction_condition":"West","directions_colors":[[-1],[1,2,3,4,5,6],[],[]],"passed":0,"directions_types":[["Empty"],["Conditional"],[],[]],"direction_default":"West"}
+1085	diverter	50	18	S	L	{"color":1,"direction_condition":"West","directions_colors":[[1,2,3,4,5,6],[-1],[],[]],"passed":0,"directions_types":[["Conditional"],["Empty"],[],[]],"direction_default":"West"}
+56	thread	58	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+59	thread	60	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+60	thread	62	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+61	thread	64	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+62	thread	66	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+63	thread	68	0	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+
+EXECUTION
+
+PLAYER
+
