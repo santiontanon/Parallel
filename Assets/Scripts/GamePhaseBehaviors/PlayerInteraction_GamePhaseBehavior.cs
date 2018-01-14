@@ -51,9 +51,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     [SerializeField]
     float yMax;
     Coroutine zoomRoutine;
+    Coroutine panRoutine;
     Vector3 originalCameraPosition = Vector3.zero;
     Vector3 currentCameraPosition = Vector3.zero;
     bool isZooming = false;
+
+    Vector2 lastMousePos;
+    Vector2 currentMousePos;
+    Vector2 deltaMousePos;
 
     public delegate void OnSimulationStepDelegate(StepData step);
     public static OnSimulationStepDelegate onSimulationStep;
@@ -104,6 +109,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         currentCameraPosition = originalCameraPosition;
         isZooming = false;
 
+        currentMousePos = Input.mousePosition;
+        lastMousePos = Input.mousePosition;
+
         if (PlayerPrefs.HasKey("LinkHover"))
         {
 
@@ -139,7 +147,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.CloseUI();
         LockFlowVisibility(-1);
     }
-
 
 	public void DefineButtonBehaviors()
 	{
@@ -361,6 +368,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         draggableItemScale *= 5f /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
         playerInteraction_UI.draggableElement.transform.localScale = draggableItemScale;
     }
+
 	public void ContinueDrag(MenuOptions selectedOption)
 	{
 		playerInteraction_UI.SetDraggableElementPosition(Input.mousePosition);
@@ -387,6 +395,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			break;
 		}
 	}
+
 	public void EndHover(MenuOptions selectedOption)
 	{
 		GameManager.Instance.tracker.CreateEventExt("endHover",selectedOption.ToString());
@@ -484,7 +493,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		
 	void PlayerInteractionListener()
 	{
-		switch(interactionPhase)
+        lastMousePos = currentMousePos;
+        currentMousePos = Input.mousePosition;
+        deltaMousePos = currentMousePos - lastMousePos;
+        switch (interactionPhase)
 		{
 			case InteractionPhases.ingame_default:
 				if(playerInteraction_UI.IsSubPanelOpen()) return;
@@ -511,6 +523,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         if (!connectVisibility) hoverObject.EndHoverBehavior();
                         hoverObject = null;
+                    }
+                    else
+                    {
+                        UpdatePan();
                     }
                 }
                 /*
@@ -970,8 +986,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
-
-
 	public void ToggleFlowVisibility()
 	{
 		flowVisibility = !flowVisibility;
@@ -984,6 +998,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			else { track.EndInteraction(); }
 		}
 	}
+
 	public void ToggleFlowVisibility(bool setVisibility)
 	{
 		if(setVisibility == flowVisibility) return;
@@ -1021,7 +1036,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
     }
 
-
     public void ToggleConnectionVisibility()
 	{
 		connectVisibility = !connectVisibility;
@@ -1037,6 +1051,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			s.SetHighlight(connectVisibility);
 		}
 	}
+
 	void LockConnectionVisibility()
 	{
 		connectVisibilityLock = !connectVisibilityLock;
@@ -1099,11 +1114,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         {
             if (zoomRoutine != null)
                 StopCoroutine(zoomRoutine);
-            zoomRoutine = StartCoroutine(ZoomOrthographicSizeCoroutine(zoom));
+            zoomRoutine = StartCoroutine(ZoomRoutine(zoom));
         }
     }
 
-    IEnumerator ZoomOrthographicSizeCoroutine(float zoom)
+    IEnumerator ZoomRoutine(float zoom)
     {
         if (zoomLevel < 0.01) //round small enough values off to 0
             zoomLevel = 0;
@@ -1115,13 +1130,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             float targetOrtho = ((maxOrtho - minOrtho) * newZoom) + minOrtho;
 
             Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
-            newTargetPosition = ((originalCameraPosition - newTargetPosition) * newZoom) + newTargetPosition;
-            newTargetPosition.z = GameManager.Instance.GetGridManager().worldCamera.transform.position.z;
+            newTargetPosition = new Vector3(Mathf.Clamp(newTargetPosition.x, 0 + (xMax / 2 * zoomLevel), xMax - (xMax / 2 * zoomLevel)),
+                                            Mathf.Clamp(newTargetPosition.y, 0 + (yMax / 2 * zoomLevel), yMax - (yMax / 2 * zoomLevel)), 
+                                            orthoCam.transform.position.z);
 
             float timeToZoom = 0.5f;
             while (timeToZoom > 0f)
             {
-                Debug.Log("Zoom");
                 timeToZoom -= Time.deltaTime;
                 float mult = (timeToZoom / 0.5f);
                 zoomLevel = newZoom + (zoomLevel - newZoom) * mult;
@@ -1130,6 +1145,25 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
                 yield return null;
             }
+        }
+        yield return null;
+    }
+
+    void UpdatePan()
+    {
+        panRoutine = StartCoroutine(PanRoutine());
+    }
+
+    IEnumerator PanRoutine()
+    {
+        while (Input.GetMouseButton(0))
+        {
+            Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
+            orthoCam.transform.Translate(-deltaMousePos.x * .03f,-deltaMousePos.y * .03f, 0);
+            orthoCam.transform.position = new Vector3(  Mathf.Clamp(orthoCam.transform.position.x, 0 + (xMax/2*zoomLevel), xMax - (xMax/2*zoomLevel)), 
+                                                        Mathf.Clamp(orthoCam.transform.position.y, 0 + (yMax/2*zoomLevel), yMax - (yMax/2*zoomLevel)), 
+                                                        orthoCam.transform.position.z   );
+            yield return new WaitForEndOfFrame();
         }
         yield return null;
     }
