@@ -39,9 +39,18 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     //for zooming
     float originalOrthographicSize = 0f;
-    float currentOrthographicSize = 0f;
-    float zoomLevel = 0f;
-    float maxZoomLevel = 2f;
+    float zoomLevel = 1f;
+    float maxOrtho = 1f;
+    float minOrtho = 4f;
+    [SerializeField]
+    float xMin;
+    [SerializeField]
+    float xMax;
+    [SerializeField]
+    float yMin;
+    [SerializeField]
+    float yMax;
+    Coroutine zoomRoutine;
     Vector3 originalCameraPosition = Vector3.zero;
     Vector3 currentCameraPosition = Vector3.zero;
     bool isZooming = false;
@@ -87,9 +96,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         //for zooming
         originalOrthographicSize = GameManager.Instance.GetGridManager().worldCamera.orthographicSize;
-        currentOrthographicSize = originalOrthographicSize;
-        zoomLevel = 0f;
+        maxOrtho = originalOrthographicSize;
+        zoomLevel = 1f;
         originalCameraPosition = GameManager.Instance.GetGridManager().worldCamera.transform.position;
+        xMax = originalCameraPosition.x * 2;
+        yMax = originalCameraPosition.y * 2;
         currentCameraPosition = originalCameraPosition;
         isZooming = false;
 
@@ -574,12 +585,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                             }
                         }
 
-                        if (!isZooming)
-                        {
-                            float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-                            if (scrollAxis < -0.05f) TriggerZoomOut();
-                            else if (scrollAxis > 0.05f) TriggerZoomIn();
-                        }
+                        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+                        if (scrollAxis != 0)
+                            UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
                     }
                     else //if mouse has moved since last frame 
                     {
@@ -1083,79 +1091,53 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
 	}
 
-    void TriggerZoomIn()
+    void UpdateZoom(float zoom)
     {
-        if (zoomLevel >= maxZoomLevel) return;
-        isZooming = true;
-        StartCoroutine(ZoomCooldownCoroutine());
-        zoomLevel++;
-		playerInteraction_UI.zoomMeter.SetMeterValue( zoomLevel / maxZoomLevel );
-        //Debug.Log("Zoom in triggered.");
-        UpdateZoom();
-    }
-    void TriggerZoomOut()
-    {
-        if (zoomLevel <= 0f) return;
-        isZooming = true;
-        StartCoroutine(ZoomCooldownCoroutine());
-        zoomLevel--;
-		playerInteraction_UI.zoomMeter.SetMeterValue( zoomLevel / maxZoomLevel );
-        //Debug.Log("Zoom out triggered.");
-        UpdateZoom();
-    }
-
-    void UpdateZoom()
-    {
-        zoomLevel = Mathf.Clamp(zoomLevel, 0f, maxZoomLevel);
-        MoveCameraToMousePosition();
-        currentOrthographicSize = originalOrthographicSize - ((originalOrthographicSize * zoomLevel / maxZoomLevel) * 0.5f);
-        //Debug.Log("Should zoom to: " + currentOrthographicSize);
-        //GameManager.Instance.GetGridManager().worldCamera.orthographicSize = currentOrthographicSize;
-        float fromOrthoSize = GameManager.Instance.GetGridManager().worldCamera.orthographicSize;
-        StartCoroutine(ZoomOrthographicSizeCoroutine(fromOrthoSize, currentOrthographicSize));
-    }
-    
-    //TODO: Grid Manager should probably be in charge of Camera position
-    void MoveCameraToMousePosition()
-    {
-        Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
-        if (zoomLevel == 0f) newTargetPosition = originalCameraPosition;
-        newTargetPosition.z = GameManager.Instance.GetGridManager().worldCamera.transform.position.z;
-        iTween.MoveTo(GameManager.Instance.GetGridManager().worldCamera.gameObject, newTargetPosition, 1f);
-        currentCameraPosition = newTargetPosition;
-    }
-
-    IEnumerator ZoomCooldownCoroutine()
-    {
-        yield return new WaitForSeconds (0.5f);
-        isZooming = false;
-    }
-
-    IEnumerator ZoomOrthographicSizeCoroutine(float fromOrthosize, float toOrthosize)
-    {
-        Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
-        float timeToZoom = 0.5f;
-        while (timeToZoom > 0f)
+        if (zoom == 0)
+            return;
+        else
         {
-            timeToZoom -= Time.deltaTime;
-            float percentage = 1f - (timeToZoom / 0.5f);
-
-            orthoCam.orthographicSize = toOrthosize + (fromOrthosize - toOrthosize) *(timeToZoom/0.5f);
-
-            yield return null;
+            if (zoomRoutine != null)
+                StopCoroutine(zoomRoutine);
+            zoomRoutine = StartCoroutine(ZoomOrthographicSizeCoroutine(zoom));
         }
+    }
 
+    IEnumerator ZoomOrthographicSizeCoroutine(float zoom)
+    {
+        if ((zoomLevel != 0f || zoom > 0) && (zoomLevel != 1f || zoom < 0))
+        {
+            float newZoom = zoomLevel + zoom;
+            newZoom = Mathf.Clamp(newZoom, 0f, 1f);
+            Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
+            float targetOrtho = ((maxOrtho - minOrtho) * newZoom) + minOrtho;
+
+            Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
+            newTargetPosition = ((originalCameraPosition - newTargetPosition) * newZoom) + newTargetPosition;
+            newTargetPosition.z = GameManager.Instance.GetGridManager().worldCamera.transform.position.z;
+
+            float timeToZoom = 0.5f;
+            while (timeToZoom > 0f)
+            {
+                timeToZoom -= Time.deltaTime;
+                float mult = (timeToZoom / 0.5f);
+                zoomLevel = newZoom + (zoomLevel - newZoom) * mult;
+                orthoCam.orthographicSize = targetOrtho + (orthoCam.orthographicSize - targetOrtho) * mult;
+                orthoCam.transform.position = newTargetPosition + (orthoCam.transform.position - newTargetPosition) * mult;
+
+                yield return null;
+            }
+        }
         yield return null;
     }
 
     void ResetZoom()
     {
         zoomLevel = 0f;
-        currentOrthographicSize = originalOrthographicSize;
         currentCameraPosition = originalCameraPosition;
         GameManager.Instance.GetGridManager().worldCamera.orthographicSize = originalOrthographicSize;
         GameManager.Instance.GetGridManager().worldCamera.transform.position = originalCameraPosition;
-		playerInteraction_UI.zoomMeter.SetMeterValue( zoomLevel / maxZoomLevel );
+		playerInteraction_UI.zoomMeter.SetMeterValue( 1f );
     }
 
     void PauseSimulation()
