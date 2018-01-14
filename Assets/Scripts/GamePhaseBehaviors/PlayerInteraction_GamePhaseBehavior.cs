@@ -1105,6 +1105,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     IEnumerator ZoomOrthographicSizeCoroutine(float zoom)
     {
+        if (zoomLevel < 0.01) //round small enough values off to 0
+            zoomLevel = 0;
         if ((zoomLevel != 0f || zoom > 0) && (zoomLevel != 1f || zoom < 0))
         {
             float newZoom = zoomLevel + zoom;
@@ -1119,12 +1121,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             float timeToZoom = 0.5f;
             while (timeToZoom > 0f)
             {
+                Debug.Log("Zoom");
                 timeToZoom -= Time.deltaTime;
                 float mult = (timeToZoom / 0.5f);
                 zoomLevel = newZoom + (zoomLevel - newZoom) * mult;
                 orthoCam.orthographicSize = targetOrtho + (orthoCam.orthographicSize - targetOrtho) * mult;
                 orthoCam.transform.position = newTargetPosition + (orthoCam.transform.position - newTargetPosition) * mult;
-
+                playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
                 yield return null;
             }
         }
