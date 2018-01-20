@@ -8,6 +8,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public Button gameStart;
 	public Button gameEnd;
+    public Button preSurvey;
+    public Button postSurvey;
 	public InputField playerIdField;
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
@@ -20,9 +22,18 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	{
         gameStart.onClick.RemoveAllListeners();
         gameEnd.onClick.RemoveAllListeners();
+        postSurvey.onClick.RemoveAllListeners();
+        preSurvey.onClick.RemoveAllListeners();
+        playerIdField.onEndEdit.RemoveAllListeners();
+
+        gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+
 		startGameUI.SetActive(true);
 		gameStart.onClick.AddListener( ()=> StartPlaying() );
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
+        preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
+        postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
         playerIdField.onEndEdit.AddListener(delegate { PlayerFieldChangedEvent(); } );
         // IMPORTANT, COMMENT THE FOLLOWING LINE IF TESTING USING THE EDITOR
         if (PlayerPrefs.HasKey("PlayerId"))
@@ -37,7 +48,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     {
         if (playerIdField.text.Length > 0)
         {
-            gameStart.interactable = true;
+            gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
             GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
         }
         else gameStart.interactable = false;
@@ -72,7 +83,20 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.SetGamePhase( GameManager.GamePhases.LoadScreen );
     }
 
-	public void NoInternetError(){
+    public void PreSurveyButtonClicked()
+    {
+        GameManager.Instance.preSurveyComplete = true;
+        gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+        Application.OpenURL("http://unity3d.com/");
+    }
+    public void PostSurveyButtonClicked()
+    {
+        GameManager.Instance.postSurveyComplete = true;
+
+    }
+
+    public void NoInternetError(){
 		// Show some error message here and do not continue, that is, remove the following line
 		Debug.Log("Show some error message here and do not continue, that is, remove the following line");
         fetchConfigInProgressOverlay.ClosePanel();

@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour {
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
-    
+
+    public bool preSurveyComplete, postSurveyComplete = false;
+
     //FOR DEBUG, REMOVE THIS LATER
     string lastPhase = "";
 
