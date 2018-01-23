@@ -26,6 +26,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     bool paused;
     public bool tutorialMode;
+    bool dragging;
 
     float simulationTime = 0f;
     float stationaryTime = 0f;
@@ -367,6 +368,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         Vector3 draggableItemScale = Vector3.one;
         draggableItemScale *= 5f /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
         playerInteraction_UI.draggableElement.transform.localScale = draggableItemScale;
+        dragging = true;
     }
 
 	public void ContinueDrag(MenuOptions selectedOption)
@@ -383,6 +385,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		{ 
 			GameManager.Instance.GetGridManager().PlaceGridElementAtLocation( Input.mousePosition, selectedOption );
         }
+        dragging = false;
 	}
 
 	public void BeginHover(MenuOptions selectedOption)
@@ -519,14 +522,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                             s.SetHighlight(false);
                         }
                     }
+                    else
+                    {
+                        if(dragging == false)
+                        {
+                            UpdatePan();
+                        }
+                    }
                     if (hoverObject)
                     {
                         if (!connectVisibility) hoverObject.EndHoverBehavior();
                         hoverObject = null;
-                    }
-                    else
-                    {
-                        UpdatePan();
                     }
                 }
                 /*
@@ -645,6 +651,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 }
 			break;
 		case InteractionPhases.ingame_dragging:
+                Debug.Log("dragging");
 			if(Input.GetKey(KeyCode.Mouse0))
 			{
 				if( currentGridObject != null )
@@ -1156,10 +1163,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     IEnumerator PanRoutine()
     {
-        while (Input.GetMouseButton(0))
+        yield return new WaitForSeconds(0.05f);
+        while (Input.GetMouseButton(0) && dragging == false)
         {
             Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
-            orthoCam.transform.Translate(-deltaMousePos.x * .03f,-deltaMousePos.y * .03f, 0);
+            orthoCam.transform.Translate(-deltaMousePos.x * .015f,-deltaMousePos.y * .015f, 0);
             orthoCam.transform.position = new Vector3(  Mathf.Clamp(orthoCam.transform.position.x, 0 + (xMax/2*zoomLevel), xMax - (xMax/2*zoomLevel)), 
                                                         Mathf.Clamp(orthoCam.transform.position.y, 0 + (yMax/2*zoomLevel), yMax - (yMax/2*zoomLevel)), 
                                                         orthoCam.transform.position.z   );
