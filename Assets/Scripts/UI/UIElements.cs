@@ -11,8 +11,10 @@ namespace ParallelProg.UI
 
         public virtual void OpenPanel()
         {
+            Debug.Log("Open panel");
             iTween.Stop(panelContainer.gameObject);
             panelContainer.gameObject.SetActive(true);
+            Debug.Log(isOpen);
             if (isOpen)
             {
                 panelContainer.gameObject.transform.localScale = Vector3.one;
@@ -27,6 +29,7 @@ namespace ParallelProg.UI
 
         public virtual void ClosePanel(bool forceClose = false)
         {
+            Debug.Log("Close panel");
             iTween.Stop(panelContainer.gameObject);
             isOpen = false;
             if (forceClose)

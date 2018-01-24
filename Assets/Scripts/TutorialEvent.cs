@@ -60,7 +60,6 @@ public class TutorialEvent
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.clickPopup)
                 {
-                    Debug.Log("Click popup");
                     GameManager.Instance.SetTutorialPopupClickToClose(this, true);
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSemaphore)
