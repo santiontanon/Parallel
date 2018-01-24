@@ -327,7 +327,12 @@ public class PlayerInteraction_UI
 	[System.Serializable]
 	public class Tooltip_UIOverlay : UIOverlay 
 	{
-		public Text tooltipText;
+        [SerializeField]
+        Canvas canvas;
+        [SerializeField]
+        CanvasScaler scaler;
+
+        public Text tooltipText;
 		public bool tooltipActive = false;
 		public float openTime = 0f;
 
@@ -344,11 +349,119 @@ public class PlayerInteraction_UI
 			tooltipActive = false;
 		}
 
-        public void SetTooltip(string inDescription, Vector3 mousePosition)
+        public void SetTooltip(string inDescription, Vector3 mousePosition, GameObject element)
         {
-            float posX = mousePosition.x - (Screen.width * (0.08f * ((mousePosition.x - Screen.width / 2) / (Screen.width / 2))));
-            float posY = mousePosition.y - (Screen.height * (0.1f * ((mousePosition.y - Screen.height / 2) / (Screen.height / 2) - 0.5f)));
-            panelContainer.position = new Vector2(posX, posY);
+            RectTransform elementRect = element.GetComponent<RectTransform>();
+            panelContainer.position = element.transform.position;
+            float posX = element.transform.position.x;
+            float posY = element.transform.position.y;
+
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+            RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
+
+            float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
+            float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
+            float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
+            float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
+            float ttWidth = tooltip.rect.width * multiplier;
+            float ttHeight = tooltip.rect.height * multiplier;
+
+            float eXMin = elementRect.position.x + elementRect.rect.xMin;
+            float eXMax = elementRect.position.x + elementRect.rect.xMax;
+            float eYMin = elementRect.position.y + elementRect.rect.yMin;
+            float eYMax = elementRect.position.y + elementRect.rect.yMax;
+            float eWidth = elementRect.rect.width * multiplier;
+            float eHeight = elementRect.rect.width * multiplier;
+
+            if (ttXMin < 0)
+            {
+                posX += Mathf.Abs(posX - (ttWidth / 2));
+            }
+            else if (ttXMax > Screen.width)
+            {
+                posX -= (ttWidth / 2) + posX - Screen.width;
+            }
+            if (ttYMin < 0)
+            {
+                posY += Mathf.Abs(posY - (ttHeight / 2));
+            }
+            else if (ttYMax > Screen.height)
+            {
+                posY -= (ttHeight / 2) + posY - Screen.height;
+            }
+
+            ttXMin = posX - (ttWidth / 2);
+            ttXMax = posX + (ttWidth / 2);
+            ttYMin = posY - (ttHeight / 2);
+            ttYMax = posY + (ttHeight / 2);
+
+            float normalizedX = posX / canvas.pixelRect.width;
+            float normalizedY = posY / canvas.pixelRect.height;
+
+            if (ttXMin <= eXMax)
+            {
+                if (ttXMin >= eXMin || ttXMax >= eXMin)
+                {
+                    if (ttYMin <= eYMax)
+                    {
+                        if (ttYMin >= eYMin || ttYMax >= eYMin)
+                        {
+                            if (normalizedX >= 0.5f)
+                            {
+                                if (normalizedY >= 0.5f)
+                                {
+                                    if (normalizedX > normalizedY)
+                                    {
+                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
+                                    }
+                                }
+                                else
+                                {
+                                    if (normalizedX - 0.5f >= 0.5f - normalizedY)
+                                    {
+                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (normalizedY < 0.5f)
+                                {
+                                    if (normalizedX < normalizedY)
+                                    {
+                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
+                                    }
+                                }
+                                else
+                                {
+                                    if (normalizedY - 0.5f >= 0.5f - normalizedX)
+                                    {
+                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
+                                    }
+                                    else
+                                    {
+                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
             tooltipText.text = inDescription;
         }
     }
