@@ -313,16 +313,32 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             string tooltipText = t.tooltipContent.tooltipText;
             string tooltipName = t.tooltipUiElement.name;
             string refString = t.refString;
+            GameObject tooltipElement = t.tooltipUiElement.gameObject;
             beginHover_event.eventID = EventTriggerType.PointerEnter;
             if (t.permanent)
             {
-                beginHover_event.callback.AddListener((eventData) => { if (interactionPhase == InteractionPhases.ingame_default) { playerInteraction_UI.tooltipOverlay.OpenPanel(); playerInteraction_UI.tooltipOverlay.SetTooltip(tooltipText, Input.mousePosition); GameManager.Instance.tracker.CreateEventExt("tooltip", tooltipName); } });
+                beginHover_event.callback.AddListener((eventData) => 
+                {
+                    if (interactionPhase == InteractionPhases.ingame_default)
+                    {
+                        playerInteraction_UI.tooltipOverlay.OpenPanel();
+                        playerInteraction_UI.tooltipOverlay.SetTooltip(tooltipText, tooltipElement);
+                        GameManager.Instance.tracker.CreateEventExt("tooltip", tooltipName);
+                    }
+                });
             }
             else
             {
                 if(!PlayerPrefs.HasKey(refString) || PlayerPrefs.GetInt(refString) == 0)
                 {
-                    beginHover_event.callback.AddListener((eventData) => { if (interactionPhase == InteractionPhases.ingame_default) { playerInteraction_UI.tooltipOverlay.OpenPanel(); playerInteraction_UI.tooltipOverlay.SetTooltip(tooltipText, Input.mousePosition); GameManager.Instance.tracker.CreateEventExt("tooltip", tooltipName); PlayerPrefs.SetInt(refString, 1); beginHover_event.callback.RemoveAllListeners(); } });
+                    beginHover_event.callback.AddListener((eventData) => 
+                    {
+                        if (interactionPhase == InteractionPhases.ingame_default)
+                        {
+                            playerInteraction_UI.tooltipOverlay.OpenPanel(); playerInteraction_UI.tooltipOverlay.SetTooltip(tooltipText, tooltipElement); GameManager.Instance.tracker.CreateEventExt("tooltip", tooltipName);
+                            PlayerPrefs.SetInt(refString, 1); beginHover_event.callback.RemoveAllListeners();
+                        }
+                    });
                 }
             }
             t.tooltipUiElement.triggers.Add(beginHover_event);

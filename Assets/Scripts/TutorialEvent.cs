@@ -60,7 +60,6 @@ public class TutorialEvent
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.clickPopup)
                 {
-                    Debug.Log("Click popup");
                     GameManager.Instance.SetTutorialPopupClickToClose(this, true);
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSemaphore)
@@ -149,9 +148,8 @@ public class TutorialEvent
                     PlayerInteraction_GamePhaseBehavior.delayedUnpause(pauseDuration, this);
                 }
             }
-            Vector3 targetPosition = GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID).transform.position;
-            targetPosition = GameManager.Instance.GetGridManager().worldCamera.WorldToScreenPoint(targetPosition);
-            GameManager.Instance.CreateTutorialPopup(this, targetPosition);
+
+            GameManager.Instance.CreateTutorialPopup(this, GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID));
             Debug.Log("Listen for step!");
             PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;
         }
@@ -174,9 +172,7 @@ public class TutorialEvent
                             }
                         }
                         
-                        Vector3 targetPosition = GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID).transform.position;
-                        targetPosition = GameManager.Instance.GetGridManager().worldCamera.WorldToScreenPoint(targetPosition);
-                        GameManager.Instance.CreateTutorialPopup(this, targetPosition);
+                        GameManager.Instance.CreateTutorialPopup(this, GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID));
                         Debug.Log("Listen for step!");
                         PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;
                     }
