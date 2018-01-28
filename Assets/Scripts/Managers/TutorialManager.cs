@@ -16,28 +16,253 @@ public class TutorialManager : MonoBehaviour {
     {
         public Text tutorialDescription;
         public Button tutorialCloseButton;
+        public Canvas canvas;
+        public CanvasScaler scaler;
 
         public override void OpenPanel()
         {
-            iTween.Stop(panelContainer.gameObject);
             Vector2 pivotOffset = Vector2.zero;
             if (panelContainer.position.x < Screen.width * 0.2f) { pivotOffset.x = 0.0f; }
             if (panelContainer.position.x > Screen.width * 0.8f) { pivotOffset.x = 1.0f; }
 
             if (panelContainer.position.y < Screen.height * 0.2f) { pivotOffset.y = 0.0f; }
             if (panelContainer.position.y > Screen.height * 0.8f) { pivotOffset.y = 1.0f; }
-            panelContainer.pivot = pivotOffset;
+            //panelContainer.pivot = pivotOffset;
             base.OpenPanel();
         }
 
-        public void SetTutorialText(string inDescription)
+        public void SetTooltip(string inDescription, Button button)
         {
+            if(button != null)
+            {
+                RectTransform elementRect = button.gameObject.GetComponent<RectTransform>();
+                panelContainer.position = button.gameObject.transform.position;
+                float posX = button.gameObject.transform.position.x;
+                float posY = button.gameObject.transform.position.y;
+
+                float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+                RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
+
+                float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
+                float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
+                float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
+                float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
+                float ttWidth = tooltip.rect.width * multiplier;
+                float ttHeight = tooltip.rect.height * multiplier;
+
+                float eXMin = elementRect.position.x + elementRect.rect.xMin;
+                float eXMax = elementRect.position.x + elementRect.rect.xMax;
+                float eYMin = elementRect.position.y + elementRect.rect.yMin;
+                float eYMax = elementRect.position.y + elementRect.rect.yMax;
+                float eWidth = elementRect.rect.width * multiplier;
+                float eHeight = elementRect.rect.width * multiplier;
+              
+                if (ttXMin < 0)
+                {
+                    posX += Mathf.Abs(posX - (ttWidth / 2));
+                }
+                else if (ttXMax > Screen.width)
+                {
+                    posX -= (ttWidth / 2) + posX - Screen.width;
+                }
+                if (ttYMin < 0)
+                {
+                    posY += Mathf.Abs(posY - (ttHeight / 2));
+                }
+                else if (ttYMax > Screen.height)
+                {
+                    posY -= (ttHeight / 2) + posY - Screen.height;
+                }
+
+                ttXMin = posX - (ttWidth / 2);
+                ttXMax = posX + (ttWidth / 2);
+                ttYMin = posY - (ttHeight / 2);
+                ttYMax = posY + (ttHeight / 2);
+
+                float normalizedX = posX / canvas.pixelRect.width;
+                float normalizedY = posY / canvas.pixelRect.height;
+
+                if (ttXMin <= eXMax)
+                {
+                    if (ttXMin >= eXMin || ttXMax >= eXMin)
+                    {
+                        if (ttYMin <= eYMax)
+                        {
+                            if (ttYMin >= eYMin || ttYMax >= eYMin)
+                            {
+                                if (normalizedX >= 0.5f)
+                                {
+                                    if (normalizedY >= 0.5f)
+                                    {
+                                        if (normalizedX > normalizedY)
+                                        {
+                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
+                                        }
+                                        else
+                                        {
+                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (normalizedX - 0.5f >= 0.5f - normalizedY)
+                                        {
+                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
+                                        }
+                                        else
+                                        {
+                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (normalizedY < 0.5f)
+                                    {
+                                        if (normalizedX < normalizedY)
+                                        {
+                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
+                                        }
+                                        else
+                                        {
+                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (normalizedY - 0.5f >= 0.5f - normalizedX)
+                                        {
+                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
+                                        }
+                                        else
+                                        {
+                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
+            }
             tutorialDescription.text = inDescription;
         }
-        public void PrepareTutorialPopup(string inDescription, Vector3 inputPosition)
+
+        public void SetTooltip(string inDescription, GameObject element)
         {
-            panelContainer.position = inputPosition;
-            SetTutorialText(inDescription);
+            SpriteRenderer sprite = element.GetComponent<SpriteRenderer>();
+            panelContainer.position = element.transform.position;
+            float posX = element.transform.position.x;
+            float posY = element.transform.position.y;
+
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+            RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
+
+            float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
+            float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
+            float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
+            float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
+            float ttWidth = tooltip.rect.width * multiplier;
+            float ttHeight = tooltip.rect.height * multiplier;
+
+            float eXMin = sprite.bounds.min.x;
+            float eXMax = sprite.bounds.max.x;
+            float eYMin = sprite.bounds.min.y;
+            float eYMax = sprite.bounds.max.y;
+            float eWidth = sprite.bounds.size.x;
+            float eHeight = sprite.bounds.size.y;
+
+            if (ttXMin < 0)
+            {
+                posX += Mathf.Abs(posX - (ttWidth / 2));
+            }
+            else if (ttXMax > Screen.width)
+            {
+                posX -= (ttWidth / 2) + posX - Screen.width;
+            }
+            if (ttYMin < 0)
+            {
+                posY += Mathf.Abs(posY - (ttHeight / 2));
+            }
+            else if (ttYMax > Screen.height)
+            {
+                posY -= (ttHeight / 2) + posY - Screen.height;
+            }
+
+            ttXMin = posX - (ttWidth / 2);
+            ttXMax = posX + (ttWidth / 2);
+            ttYMin = posY - (ttHeight / 2);
+            ttYMax = posY + (ttHeight / 2);
+
+            float normalizedX = posX / canvas.pixelRect.width;
+            float normalizedY = posY / canvas.pixelRect.height;
+
+            if (ttXMin <= eXMax)
+            {
+                if (ttXMin >= eXMin || ttXMax >= eXMin)
+                {
+                    if (ttYMin <= eYMax)
+                    {
+                        if (ttYMin >= eYMin || ttYMax >= eYMin)
+                        {
+                            if (normalizedX >= 0.5f)
+                            {
+                                if (normalizedY >= 0.5f)
+                                {
+                                    if (normalizedX > normalizedY)
+                                    {
+                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
+                                    }
+                                }
+                                else
+                                {
+                                    if (normalizedX - 0.5f >= 0.5f - normalizedY)
+                                    {
+                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (normalizedY < 0.5f)
+                                {
+                                    if (normalizedX < normalizedY)
+                                    {
+                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
+                                    }
+                                    else
+                                    {
+                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
+                                    }
+                                }
+                                else
+                                {
+                                    if (normalizedY - 0.5f >= 0.5f - normalizedX)
+                                    {
+                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
+                                    }
+                                    else
+                                    {
+                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
+            tutorialDescription.text = inDescription;
         }
     }
 
@@ -168,7 +393,7 @@ public class TutorialManager : MonoBehaviour {
                         if (defaultPosition.y > (Screen.height / 2)) { defaultPosition.x -= t.targetButton.GetComponent<RectTransform>().rect.height/2; }
                         else { defaultPosition.x += t.targetButton.GetComponent<RectTransform>().rect.height/2; }
                     }
-                    tutorialOverlay.PrepareTutorialPopup(t.popupDescription,defaultPosition);
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
                     break;

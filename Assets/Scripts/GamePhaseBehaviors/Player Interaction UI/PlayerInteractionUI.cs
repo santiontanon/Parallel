@@ -349,7 +349,7 @@ public class PlayerInteraction_UI
 			tooltipActive = false;
 		}
 
-        public void SetTooltip(string inDescription, Vector3 mousePosition, GameObject element)
+        public void SetTooltip(string inDescription, GameObject element)
         {
             RectTransform elementRect = element.GetComponent<RectTransform>();
             panelContainer.position = element.transform.position;
@@ -412,22 +412,22 @@ public class PlayerInteraction_UI
                                 {
                                     if (normalizedX > normalizedY)
                                     {
-                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin)) - (ttWidth / 2);
+                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
                                     }
                                     else
                                     {
-                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin)) - (ttHeight / 2);
+                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
                                     }
                                 }
                                 else
                                 {
                                     if (normalizedX - 0.5f >= 0.5f - normalizedY)
                                     {
-                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin)) - (ttWidth / 2);
+                                        posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
                                     }
                                     else
                                     {
-                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax)) + (ttHeight / 2);
+                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
                                     }
                                 }
                             }
@@ -437,22 +437,22 @@ public class PlayerInteraction_UI
                                 {
                                     if (normalizedX < normalizedY)
                                     {
-                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax)) + (ttWidth / 2);
+                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
                                     }
                                     else
                                     {
-                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax)) + (ttHeight / 2);
+                                        posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
                                     }
                                 }
                                 else
                                 {
                                     if (normalizedY - 0.5f >= 0.5f - normalizedX)
                                     {
-                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin)) - (ttHeight / 2);
+                                        posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
                                     }
                                     else
                                     {
-                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax)) + (ttWidth / 2);
+                                        posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
                                     }
                                 }
                             }

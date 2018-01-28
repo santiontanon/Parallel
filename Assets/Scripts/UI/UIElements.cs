@@ -15,9 +15,10 @@ namespace ParallelProg.UI
             iTween.Stop(panelContainer.gameObject);
             panelContainer.gameObject.SetActive(true);
             Debug.Log(isOpen);
-            if (isOpen)
+            if (isOpen || iTween.Count(panelContainer.gameObject) > 0)
             {
                 panelContainer.gameObject.transform.localScale = Vector3.one;
+                isOpen = true;
             }
             else
             {
