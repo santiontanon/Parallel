@@ -42,8 +42,14 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             PlayerFieldChangedEvent();
         }
         //gameEnd.interactable = false;
+    }
 
-        JavaCheck.FindJavaVersion();
+    void RequirementsCheck()
+    {
+        if(JavaCheck.FindJavaVersion() == false)
+        {
+            //display error
+        }
     }
 
     void PlayerFieldChangedEvent()
