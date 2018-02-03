@@ -214,18 +214,18 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 22331494, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 2036867998}
-    - target: {fileID: 11432306, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: worldCamera
-      value: 
-      objectReference: {fileID: 2036867998}
     - target: {fileID: 11410252, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: playerInteraction_UI.onHoverLightbox.lightboxElement
       value: 
       objectReference: {fileID: 686196261}
+    - target: {fileID: 11432306, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: worldCamera
+      value: 
+      objectReference: {fileID: 2036867998}
+    - target: {fileID: 22331494, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 2036867998}
     - target: {fileID: 172054, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: m_Name
       value: _Managers
