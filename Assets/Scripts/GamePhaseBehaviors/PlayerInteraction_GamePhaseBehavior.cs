@@ -192,7 +192,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			hover_trash.callback.AddListener( (eventData) => { BeginHover(MenuOptions.trash); } );
 			playerInteraction_UI.trash.triggers.Add(hover_trash);
 
-			EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
+            EventTrigger.Entry click_trash = new EventTrigger.Entry();
+            click_trash.eventID = EventTriggerType.PointerDown;
+            click_trash.callback.AddListener((eventData) => { ResetPlacedObjects(); });
+            playerInteraction_UI.trash.triggers.Add(click_trash);
+
+            EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
 			endHover_trash.eventID = EventTriggerType.PointerExit;
 			endHover_trash.callback.AddListener( (eventData) => { EndHover(MenuOptions.trash); } );
 			playerInteraction_UI.trash.triggers.Add(endHover_trash);
