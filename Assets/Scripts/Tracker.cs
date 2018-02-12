@@ -74,6 +74,7 @@ public class Tracker : MonoBehaviour {
 		url_logs = url + "/log";
 		url_data = url + "/data";
 	}
+
 	public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD){
 		onSuccess = onSuccessD;
 		onFail = onFailD;
@@ -91,6 +92,7 @@ public class Tracker : MonoBehaviour {
 		}
 
 	}
+
 	IEnumerator FetchConfig(){
 		Debug.Log("FetchConfig");
 		DebugInfoLabel = "FetchConfig from " + url_id;
@@ -118,9 +120,11 @@ public class Tracker : MonoBehaviour {
 		SetupTracking();
 		yield return null; 
 	}
+
 	public void UploadData(string data){
 		StartCoroutine(UploadDataWWW(data));
 	}
+
 	IEnumerator UploadDataWWW(string data){
 		Debug.Log("UploadDataWWW");
         Dictionary<string,string> headers = new Dictionary<string, string>();
@@ -137,6 +141,7 @@ public class Tracker : MonoBehaviour {
 			CreateEvent("UploadDataWWW","Error");
 		}
 	}
+
 	public void UploadLogs(){
 		if (log2 != null && (Time.time-logs_uploaded_time)>3.0f) {
 			logs_uploaded_time = Time.time;
@@ -151,6 +156,7 @@ public class Tracker : MonoBehaviour {
 		}
 			
 	}
+
 	IEnumerator UploadLogsWWW(){
 		Debug.Log("UploadLogsWWW");
 		string ourPostData = log2.ToString();
@@ -184,6 +190,7 @@ public class Tracker : MonoBehaviour {
 		}
 
     }
+
 	void SetupTracking(){
 		#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
 		string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
@@ -215,23 +222,26 @@ public class Tracker : MonoBehaviour {
     	if(tracking_message_collection)
 			CreateEvent(event_,"");
 	}
+
 	public void MessageEventData(ArrayList event_data)    {
     	if(tracking_message_collection)
 			CreateEvent((string)event_data[0],(string)event_data[1]);
 	}
+
 	public TrackedEvent CreateEventExt(string tracked_event, string data){
 		DebugInfoLabel = tracked_event + " " + data;
 		return CreateEvent(tracked_event, data);
 	}
+
 	public TrackedEvent CreateEvent(string tracked_event, string data){
 		TrackedEvent e;
 		e.e = tracked_event;
 		e.data = data;
 		e.time = Time.time;
-		e.mouse_x = Input.mousePosition.x;
-		e.mouse_y = Input.mousePosition.y;
+        e.mouse_x = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition).x;
+		e.mouse_y = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition).y;
 
-		string line = System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "\t" 
+        string line = System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "\t" 
 			+ e.e + "\t" + e.data + "\t" + e.time + "\t" 
 			+ e.mouse_x + "\t" + e.mouse_y;
 
@@ -247,9 +257,11 @@ public class Tracker : MonoBehaviour {
 		}
 		return e;
 	}
+
 	void Update(){
 		if(ready) EventCollection();
 	}
+
 	void EventCollection(){
 		// Mouse clicks
 		for(int i=0;i<=2;i++){
@@ -307,6 +319,7 @@ public class Tracker : MonoBehaviour {
 			mouse_position_last = Input.mousePosition;
 		}
 	}
+
 	void OnGUI() {
 		if(ShowDebugInfoLabel){
 			GUI.Label(new Rect(2,2,3000,500),DebugInfoLabel);
