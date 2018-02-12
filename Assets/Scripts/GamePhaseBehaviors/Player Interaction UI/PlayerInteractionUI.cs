@@ -135,7 +135,7 @@ public class PlayerInteraction_UI
 	public class Goal_UIOverlay : UIOverlay
 	{
 		public Text feedbackText;
-		public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext;
+		public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext, goalVisualToggle;
 
         public GameObject starContainer;
         public Image star_1, star_2, star_3;
@@ -146,6 +146,9 @@ public class PlayerInteraction_UI
         public bool waitForUserInput = false;
 		public enum UserInputs {none, retry, replay, levels, exit, levelsNext, stop}
 		public UserInputs userInput = UserInputs.none;
+
+        bool visibilityToggle = true;
+        bool[] visibilitySettings = new bool[] { false, false, false };
 
 		public override void OpenPanel()
 		{
@@ -229,6 +232,23 @@ public class PlayerInteraction_UI
             exitConfirm.onClick.AddListener(() => { GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame);/* /*ClosePanel();*/ });
             exitDeny.onClick.AddListener(() => OpenRootScreen());
 
+            goalVisualToggle.onClick.RemoveAllListeners();
+            goalVisualToggle.onClick.AddListener(() => ToggleGoalVisibility());
+        }
+
+        void ToggleGoalVisibility()
+        {
+            visibilityToggle = !visibilityToggle;
+            if (visibilityToggle == false)
+            {
+                visibilitySettings[0] = rootOverlay.isOpen;
+                visibilitySettings[1] = confirmLevelsOverlay.isOpen;
+                visibilitySettings[2] = confirmLevelsOverlay.isOpen;
+            }
+            rootOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[0]);
+            confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[1]);
+            confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[2]);
+            
         }
 	}
 

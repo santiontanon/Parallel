@@ -86,7 +86,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	public void StartPlayingWithLevelInformation(string json){
 		// Get the level selection from the json
 		Debug.Log("Get the level selection from the json: "+json);
-        if(!GameManager.Instance.GetDataManager().debugLevelLoader) GameManager.Instance.GetDataManager().GetLevels(json);
+        //if(!GameManager.Instance.GetDataManager().debugLevelLoader) GameManager.Instance.GetDataManager().GetLevels(json);
         fetchConfigInProgressOverlay.ClosePanel(true);
         GameManager.Instance.SetGamePhase( GameManager.GamePhases.LoadScreen );
     }
