@@ -850,6 +850,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 							string goalString = "";
                             string levelFileName = "";
                             if(GameManager.Instance.currentLevelReferenceObject!=null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
+
+                            /* allowed attempts */
+                            bool foundSolution = false;
+                            LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
+
                             switch (step.componentStatus.final_condition)
 							{
 							case 2:
@@ -862,12 +867,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                                         goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
                                         score.completed = true;
 
+                                        if (foundSolution)
+                                        {
+                                            goalString += "\n• Attempts Allowed: " + solution.attemptCount;
+                                        }
+
                                         //get current score
                                         int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
                                         //update saved score
                                         GameManager.Instance.GetScoreManager().ScoreLevel(score);
                                         int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
-
+                                        
                                         GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
                                         GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
 
@@ -925,6 +935,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                                     }
                                 }
                                 foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
+                                
+                                if (foundSolution)
+                                {
+                                    goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
+                                }
 
                                 break;
 							}

@@ -103,6 +103,20 @@ public class ScoreManager : MonoBehaviour {
         return _score;
     }
 
+    public LevelScore GetSolutionInfo(LevelScore score, out bool success)
+    {
+        if (solutions.Length > score.index)
+        {
+            success = true;
+            return solutions[score.index];
+        }
+        else
+        {
+            success = false;
+            return score;
+        }
+    }
+
     /// <summary>
     /// Gets a LevelScore object from scores and then
     /// calls the main GetCalculatedScore function
