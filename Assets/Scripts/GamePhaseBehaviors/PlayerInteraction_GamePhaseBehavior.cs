@@ -155,78 +155,73 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		foreach(Transform t in playerInteraction_UI.hint_button_container) { Destroy(t.gameObject); }
 
 		/* semaphore placement events */
-			EventTrigger.Entry beginDrag_semaphore = new EventTrigger.Entry();
-			beginDrag_semaphore.eventID = EventTriggerType.BeginDrag;
-			beginDrag_semaphore.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.semaphore); } );
-			playerInteraction_UI.place_semaphore.triggers.Add(beginDrag_semaphore);
+		EventTrigger.Entry beginDrag_semaphore = new EventTrigger.Entry();
+		beginDrag_semaphore.eventID = EventTriggerType.BeginDrag;
+		beginDrag_semaphore.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.semaphore); } );
+		playerInteraction_UI.place_semaphore.triggers.Add(beginDrag_semaphore);
 
-			EventTrigger.Entry continueDrag_semaphore = new EventTrigger.Entry();
-			continueDrag_semaphore.eventID = EventTriggerType.Drag;
-			continueDrag_semaphore.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.semaphore); } );
-			playerInteraction_UI.place_semaphore.triggers.Add(continueDrag_semaphore);
+		EventTrigger.Entry continueDrag_semaphore = new EventTrigger.Entry();
+		continueDrag_semaphore.eventID = EventTriggerType.Drag;
+		continueDrag_semaphore.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.semaphore); } );
+		playerInteraction_UI.place_semaphore.triggers.Add(continueDrag_semaphore);
 
-			EventTrigger.Entry endDrag_semaphore = new EventTrigger.Entry();
-			endDrag_semaphore.eventID = EventTriggerType.EndDrag;
-			endDrag_semaphore.callback.AddListener( (eventData) => { EndDrag(MenuOptions.semaphore); } );
-			playerInteraction_UI.place_semaphore.triggers.Add(endDrag_semaphore);
+		EventTrigger.Entry endDrag_semaphore = new EventTrigger.Entry();
+		endDrag_semaphore.eventID = EventTriggerType.EndDrag;
+		endDrag_semaphore.callback.AddListener( (eventData) => { EndDrag(MenuOptions.semaphore); } );
+		playerInteraction_UI.place_semaphore.triggers.Add(endDrag_semaphore);
 
 		/* signal placement events */
-			EventTrigger.Entry beginDrag_button = new EventTrigger.Entry();
-			beginDrag_button.eventID = EventTriggerType.BeginDrag;
-			beginDrag_button.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.button); } );
-			playerInteraction_UI.place_button.triggers.Add(beginDrag_button);
+		EventTrigger.Entry beginDrag_button = new EventTrigger.Entry();
+		beginDrag_button.eventID = EventTriggerType.BeginDrag;
+		beginDrag_button.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.button); } );
+		playerInteraction_UI.place_button.triggers.Add(beginDrag_button);
 				
-			EventTrigger.Entry continueDrag_button = new EventTrigger.Entry();
-			continueDrag_button.eventID = EventTriggerType.Drag;
-			continueDrag_button.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.button); } );
-			playerInteraction_UI.place_button.triggers.Add(continueDrag_button);
+		EventTrigger.Entry continueDrag_button = new EventTrigger.Entry();
+		continueDrag_button.eventID = EventTriggerType.Drag;
+		continueDrag_button.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.button); } );
+		playerInteraction_UI.place_button.triggers.Add(continueDrag_button);
 
-			EventTrigger.Entry endDrag_button = new EventTrigger.Entry();
-			endDrag_button.eventID = EventTriggerType.EndDrag;
-			endDrag_button.callback.AddListener( (eventData) => { EndDrag(MenuOptions.button); } );
-			playerInteraction_UI.place_button.triggers.Add(endDrag_button);
+		EventTrigger.Entry endDrag_button = new EventTrigger.Entry();
+		endDrag_button.eventID = EventTriggerType.EndDrag;
+		endDrag_button.callback.AddListener( (eventData) => { EndDrag(MenuOptions.button); } );
+		playerInteraction_UI.place_button.triggers.Add(endDrag_button);
 
 		/* trash events */
-			EventTrigger.Entry hover_trash = new EventTrigger.Entry();
-			hover_trash.eventID = EventTriggerType.PointerEnter;
-			hover_trash.callback.AddListener( (eventData) => { BeginHover(MenuOptions.trash); } );
-			playerInteraction_UI.trash.triggers.Add(hover_trash);
+		EventTrigger.Entry hover_trash = new EventTrigger.Entry();
+		hover_trash.eventID = EventTriggerType.PointerEnter;
+		hover_trash.callback.AddListener( (eventData) => { BeginHover(MenuOptions.trash); } );
+		playerInteraction_UI.trash.triggers.Add(hover_trash);
 
-            EventTrigger.Entry click_trash = new EventTrigger.Entry();
-            click_trash.eventID = EventTriggerType.PointerDown;
-            click_trash.callback.AddListener((eventData) => { ResetPlacedObjects(); });
-            playerInteraction_UI.trash.triggers.Add(click_trash);
+        EventTrigger.Entry click_trash = new EventTrigger.Entry();
+        click_trash.eventID = EventTriggerType.PointerDown;
+        click_trash.callback.AddListener((eventData) => { ResetPlacedObjects(); });
+        playerInteraction_UI.trash.triggers.Add(click_trash);
 
-            EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
-			endHover_trash.eventID = EventTriggerType.PointerExit;
-			endHover_trash.callback.AddListener( (eventData) => { EndHover(MenuOptions.trash); } );
-			playerInteraction_UI.trash.triggers.Add(endHover_trash);
-		
-        /* Bezier Visibility */
-			/*Button flowButton = playerInteraction_UI.preview.GetComponent<Button>();
-			flowButton.onClick.RemoveAllListeners();
-			flowButton.onClick.AddListener( ()=> ToggleConnectionVisibility() );
-            */
-            EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
-            hover_bezier.eventID = EventTriggerType.PointerEnter;
-            hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
-            playerInteraction_UI.preview.triggers.Add(hover_bezier);
+        EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
+		endHover_trash.eventID = EventTriggerType.PointerExit;
+		endHover_trash.callback.AddListener( (eventData) => { EndHover(MenuOptions.trash); } );
+		playerInteraction_UI.trash.triggers.Add(endHover_trash);
 
-			EventTrigger.Entry click_bezier = new EventTrigger.Entry();
-			click_bezier.eventID = EventTriggerType.PointerDown;
-			click_bezier.callback.AddListener((eventData) => { LockConnectionVisibility(); });
-			playerInteraction_UI.preview.triggers.Add(click_bezier);
+        EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
+        hover_bezier.eventID = EventTriggerType.PointerEnter;
+        hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
+        playerInteraction_UI.preview.triggers.Add(hover_bezier);
 
-            EventTrigger.Entry endHover_bezier = new EventTrigger.Entry();
-            endHover_trash.eventID = EventTriggerType.PointerExit;
-            endHover_trash.callback.AddListener((eventData) => { connectVisibility = true; ToggleConnectionVisibility(); });
-            playerInteraction_UI.preview.triggers.Add(endHover_trash);
+		EventTrigger.Entry click_bezier = new EventTrigger.Entry();
+		click_bezier.eventID = EventTriggerType.PointerDown;
+		click_bezier.callback.AddListener((eventData) => { LockConnectionVisibility(); });
+		playerInteraction_UI.preview.triggers.Add(click_bezier);
 
-        /* Exit */
-            //Note: Exit Button behavior is handled in playerInteraction_UI.pauseOverlay
+        EventTrigger.Entry endHover_bezier = new EventTrigger.Entry();
+        endHover_trash.eventID = EventTriggerType.PointerExit;
+        endHover_trash.callback.AddListener((eventData) => { connectVisibility = true; ToggleConnectionVisibility(); });
+        playerInteraction_UI.preview.triggers.Add(endHover_trash);
 
+        playerInteraction_UI.exitButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.simulationButton.onClick.AddListener(() => ToggleExitMenu());
+        playerInteraction_UI.exitButton.interactable = true;
 
-		LinkJava.SimulationTypes playSimulation = LinkJava.SimulationTypes.Play;
+        LinkJava.SimulationTypes playSimulation = LinkJava.SimulationTypes.Play;
 		playerInteraction_UI.simulationButton.onClick.RemoveAllListeners();
         playerInteraction_UI.simulationButton.onClick.AddListener(() => TriggerSimulation(playSimulation)/*GameManager.Instance.SubmitCurrentLevel(playSimulation)*/ );
         playerInteraction_UI.simulationButton.onClick.AddListener( ()=> playerInteraction_UI.simulationButton.interactable = false );
@@ -1102,7 +1097,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.topPanelConnectionLock.enabled =  connectVisibilityLock;
 	}
 
-	public void TogglePauseMenu()
+	public void ToggleExitMenu()
 	{
 		if(playerInteraction_UI.pauseOverlay.isPaused)
 		{

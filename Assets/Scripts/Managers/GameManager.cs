@@ -56,6 +56,49 @@ public class GameManager : MonoBehaviour {
         scoreManager.Init();
 	}
 
+    void FindGamePhaseObjects()
+    {
+        if (FindObjectOfType<Start_GamePhaseBehavior>() != null)
+            startScreenBehavior = FindObjectOfType<Start_GamePhaseBehavior>();
+        if (startScreenBehavior == null)
+            Debug.LogError("StartBehavior not found or set.");
+
+        if (FindObjectOfType<Load_GamePhaseBehavior>() != null)
+            loadScreenBehavior = FindObjectOfType<Load_GamePhaseBehavior>();
+        if (loadScreenBehavior == null)
+            Debug.LogError("LoadBehavior not found or set.");
+
+        if (FindObjectOfType<Generate_GamePhaseBehavior>() != null)
+            generateTrackBehavior = FindObjectOfType<Generate_GamePhaseBehavior>();
+        if (generateTrackBehavior == null)
+            Debug.LogError("GenerateTrackBehavior not found or set.");
+
+        if (FindObjectOfType<PlayerInteraction_GamePhaseBehavior>() != null)
+            playerInteractionBehavior = FindObjectOfType<PlayerInteraction_GamePhaseBehavior>();
+        if (playerInteractionBehavior == null)
+            Debug.LogError("PlayerInteractionBehavior not found or set.");
+
+        if (FindObjectOfType<GradeSubmission_GamePhaseBehavior>() != null)
+            gradeSubmissionBehavior = FindObjectOfType<GradeSubmission_GamePhaseBehavior>();
+        if (gradeSubmissionBehavior == null)
+            Debug.LogError("GradeSubmissionBehavior not found or set.");
+
+        if (FindObjectOfType<GradeReport_GamePhaseBehavior>() != null)
+            gradeReportBehavior = FindObjectOfType<GradeReport_GamePhaseBehavior>();
+        if (gradeReportBehavior == null)
+            Debug.LogError("GradeReportBehavior not found or set.");
+
+        if (FindObjectOfType<EndScreen_GamePhaseBehavior>() != null)
+            endScreenBehavior = FindObjectOfType<EndScreen_GamePhaseBehavior>();
+        if (endScreenBehavior == null)
+            Debug.LogError("EndScreenBehavior not found or set.");
+
+        if (FindObjectOfType<Exit_GamePhaseBehavior>() != null)
+            exitGameBehavior = FindObjectOfType<Exit_GamePhaseBehavior>();
+        if (exitGameBehavior == null)
+            Debug.LogError("ExitBehavior not found or set.");
+    }
+
 	void Start()
 	{
 		SetGamePhase(GamePhases.StartScreen);
