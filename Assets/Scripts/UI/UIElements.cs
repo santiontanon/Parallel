@@ -11,10 +11,8 @@ namespace ParallelProg.UI
 
         public virtual void OpenPanel()
         {
-            Debug.Log("Open panel");
             iTween.Stop(panelContainer.gameObject);
             panelContainer.gameObject.SetActive(true);
-            Debug.Log(isOpen);
             if (isOpen || iTween.Count(panelContainer.gameObject) > 0)
             {
                 panelContainer.gameObject.transform.localScale = Vector3.one;

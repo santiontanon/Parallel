@@ -218,7 +218,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.preview.triggers.Add(endHover_trash);
 
         playerInteraction_UI.exitButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.simulationButton.onClick.AddListener(() => ToggleExitMenu());
+        playerInteraction_UI.exitButton.onClick.AddListener(() => ToggleExitMenu());
         playerInteraction_UI.exitButton.interactable = true;
 
         LinkJava.SimulationTypes playSimulation = LinkJava.SimulationTypes.Play;
@@ -1101,12 +1101,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(playerInteraction_UI.pauseOverlay.isPaused)
 		{
-			playerInteraction_UI.pauseOverlay.ClosePanel();	
+            playerInteraction_UI.pauseOverlay.ClosePanel();	
 			GameManager.Instance.tracker.CreateEventExt("ClosePausePanel","");
 		}
 		else 
 		{
-			playerInteraction_UI.pauseOverlay.OpenPanel();
+            playerInteraction_UI.pauseOverlay.OpenPanel();
 			GameManager.Instance.tracker.CreateEventExt("OpenPausePanel","");
 		}
 	}
