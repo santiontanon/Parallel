@@ -33,7 +33,7 @@ public class PlayerInteraction_UI
 	public Button stopSimulationButton;
 	public Button submitButton;
 	public Button revealHintsButton;
-	public Button pauseButton;
+	public Button exitButton;
 	public EventTrigger[] rightPanelColors;
 	public HintButton[] hintButtons;
 	public TooltipEvent[] tooltipEvents;
