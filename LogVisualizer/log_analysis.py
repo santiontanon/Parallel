@@ -55,7 +55,20 @@ def get_file_status(writer):
         if data['id']==int(data['id']) and data['id'] > largest_id:
             largest_id = data['id']
     for i in os.listdir(path + '/log'):
-        data = get_file_data(path + '/log/' + i,files,missing_files)
+        # We can start a link in a different time frame...and finish in another time frame. Furthermore, we could be on a mouse position starting in a different time frame
+        cur_mouse_comp = [""]
+        cur_mouse_time = [0.0]
+        linking = False
+        cur_track = [-1]
+
+        # Persistent level variables 
+        comp_color_map = {}
+        comp_link_map = {}
+        comp_loc_map = {}
+        direction_layout = [] 
+        color_layout = []
+
+        data = get_file_data(path + '/log/' + i,files, cur_mouse_comp, cur_mouse_time, cur_track, linking, comp_color_map, comp_link_map, comp_loc_map, direction_layout, color_layout, missing_files)
         data['filename']=i
         data['seq'] = ' '.join(data['seq'])
         if 'id' in data and data['id'].isdigit():
@@ -303,7 +316,8 @@ def get_file_data(fname, files, curMouseComp, curMouseTime, curTrack, linking, c
     fd_coord = ( ) # endDrag
 
     attempt['start_time'] = 0.0
-    
+    attempt['_t_d_component_dragged_me_lst'] = []
+
     last_line = None
     last_event_time = None
     slice_found = False
@@ -686,7 +700,20 @@ def get_attempt_data(print_stats=False):
     all_attempts = []
     print 'id\tuser\t'+'\t'.join(get_file_data_labels())
     for i in os.listdir(path + '/log'):
-        data = get_file_data(path + '/log/' + i,[],[])
+        # We can start a link in a different time frame...and finish in another time frame. Furthermore, we could be on a mouse position starting in a different time frame
+        cur_mouse_comp = [""]
+        cur_mouse_time = [0.0]
+        linking = False
+        cur_track = [-1]
+
+        # Persistent level variables 
+        comp_color_map = {}
+        comp_link_map = {}
+        comp_loc_map = {}
+        direction_layout = [] 
+        color_layout = []
+
+        data = get_file_data(path + '/log/' + i,[], cur_mouse_comp, cur_mouse_time, cur_track, linking, comp_color_map, comp_link_map, comp_loc_map,direction_layout, color_layout, [])
         if not data: continue
         all_attempts.append(data)
         data['filename']=i
