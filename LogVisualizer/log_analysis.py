@@ -11,11 +11,20 @@
 # exit
 # scp jv384@magic:saved_data.tgz .
 
+# Things to do: 
+#   - Clean up code
+#   - 
+#
+
 import os,sys
 import json
 import collections
 import util
-DATA_PATH = 'saved_data'
+import math
+import ast
+
+#DATA_PATH = "saved_data"
+DATA_PATH = '../35_saved_data/'
 counter_ForkingMixIn = 3100
 
 '''This is used for the web status panel'''
@@ -120,6 +129,22 @@ def finalize_attempt_data(attempt, start_time):
     for i in ['tests', 'submissions', 'replays']:
         if attempt['total_time']:
             attempt['r_me_'+i+'_per_minute'] = 1.0*attempt['me_'+i] / (attempt['total_time'] / 60.0)
+
+            attempt['r_num_tracks_used_per_minute'] = 1.0*attempt['num_tracks_used'] / (attempt['total_time'] / 60.0)
+            attempt['r_num_track_no_changes_per_minute'] = 1.0*attempt['num_track_no_changes'] / (attempt['total_time'] / 60.0)
+            attempt['r_num_track_changes_per_minute'] = 1.0*attempt['num_track_changes'] / (attempt['total_time'] / 60.0)
+            attempt['r_mouse_on_comp_per_minute'] = 1.0*attempt['num_mouse_on_comp'] / (attempt['total_time'] / 60.0)
+            attempt['r_dragged_components_per_minute'] = 1.0*attempt['dragged'] / ( attempt['total_time'] / 60.0 )
+            attempt['r_hover_components_per_minute'] = 1.0*attempt['hover'] / ( attempt['total_time'] / 60.0 )
+            #attempt['r_reposition_dist_per_minute'] = 10.*attempt['reposition_distance_sum'] / (attempt['total_time'] / 60.0)
+
+        if attempt['num_mouse_on_comp'] != 0:
+            attempt['avg_time_on_component'] = 1.0*attempt['total_time_on_component'] / ( 1.0*attempt['num_mouse_on_comp'] )
+        if attempt['dragged'] != 0:
+            attempt['avg_dragged_components_dist'] = 1.0*attempt['total_dragged_components_dist'] / ( 1.0*attempt['dragged'] )
+        if attempt['num_tracks_used'] != 0:
+            attempt['tracks_used_components_per_track_avg'] = 1.0*attempt['total_components'] / ( 1.0*attempt["num_tracks_used"] )
+
         if me_total:
             attempt['r_me_' + i] = 1.0*attempt['me_' + i] / me_total
     for i in ['_tests', '_submissions','']:
@@ -187,16 +212,35 @@ def get_file_data_labels():
         'r_me_tests',
         'r_me_submissions',
         'r_me_replays',
+
+        'r_num_tracks_used_per_minute',
+        'r_num_track_no_changes_per_minute',
+        'r_num_track_changes_per_minute',
+        'r_num_mouse_on_comp_per_minute',
+        'r_dragged_components_per_minute',
+        'r_hover_components_per_minute',
+
+        #'r_reposition_dist_per_minute',
         't_d_component_dragged_me_avg',
         't_d_component_dragged_me_tests_avg',
         't_d_component_dragged_me_submissions_avg',
-        't_d_component_dragged_me_min',
+        't_d_component_dragged_me_min', # This is apparently helpful...why...
         't_d_component_dragged_me_tests_min',
         't_d_component_dragged_me_submissions_min',
-        'tracks_used_count',
-        'tracks_used_components_per_track_avg',
-        'dragged_components_per_minute',
-        'dragged_components_distance_avg'
+
+        'num_tracks_used',    # Number of tracks used at the time period
+        'num_track_no_changes',
+        'num_track_changes',
+        'num_mouse_on_comp',    # Number of tracks used at the time period
+
+        'total_time_on_component',  # Total amount of time on components 
+        'avg_time_on_component', # Computed as: total time on component / num_mouse_on_comp
+
+        'total_components', # Total number of components over all used track...
+        'tracks_used_components_per_track_avg', # Total number of components over all used track / tracks used
+        'avg_dragged_components_dist',
+        'total_dragged_components_dist'
+        #'total_reposition_dist'   # Total reposition euclidean distance
     ]
 def get_additional_features():
     return [
@@ -243,21 +287,34 @@ class LevelData(object):
         self.colors = colors
         self.directions = directions
 
-def get_file_data(fname,files,missing_files, slice=None, level_data=None):
+def get_file_data(fname, files, curMouseComp, curMouseTime, curTrack, linking, compColorMap, compLinkMap, compLocMap, direction_layout, color_layout, missing_files, slice=None, level_data=None):
 
     data = {'levels': 0, 'me': 0, 'uploaded': 0,'seq':[], 'attempts':[]}
     attempt = dict([(i, 0) for i in get_file_data_labels()])
+    #attempt.update(dict([(i, [] if i.endswith('_lst') else None) for i in get_additional_features()]))
+
+    ir_coord = ( ) # BeginReposition
+    fr_coord = ( ) # EndReposition 
+
+    il_coord = ( ) # BeginLink
+    fl_coord = ( ) # LinkTo
+
+    id_coord = ( ) # startDrag
+    fd_coord = ( ) # endDrag
+
     attempt['start_time'] = 0.0
+    
     last_line = None
     last_event_time = None
     slice_found = False
     start_time = None
 
+    #print "Starting file {0} at slice {1}".format(fname,slice)
     with open(fname) as f:
         for line in f:
             #print line
             try:
-                t_, e_, d_, s__, _ = line.split('\t', 4)
+                t_, e_, d_, s__, x_, y_ = line.split('\t') # Changed by Pavan 
                 s_ = datetime.datetime.strptime(t_,'%m-%d-%y-%H-%M-%S')
                 s_ = (s_ - epoch).total_seconds()
                 if not start_time:
@@ -285,7 +342,7 @@ def get_file_data(fname,files,missing_files, slice=None, level_data=None):
                     if CURRENTLY_INVESTIGATING and sid not in CURRENTLY_INVESTIGATING:
                         return {}
                 except:
-                    pass
+                    passw
             if 'SessionUser' not in data and e_=='SessionUser':
                 data['user'] = d_
             if slice:
@@ -304,8 +361,10 @@ def get_file_data(fname,files,missing_files, slice=None, level_data=None):
                 else:
                     continue
             if e_ == 'TriggerLoadLevel':
+                trackUsed = -1
                 if d_:
                     if d_.startswith('l'):
+                        #print "Level (doesn't have "/data" associated with it): " , d_
                         level_num = d_.replace('level', '').replace('-', '')
                         if level_num: data['seq'].append(level_num)
                         data['levels'] += 1
@@ -315,21 +374,99 @@ def get_file_data(fname,files,missing_files, slice=None, level_data=None):
                         else:
                             pass
                     else:
+                        # Read the data file, get all the components. Reset only when we start a new level (excluding reset).
+                        if len(compColorMap) != 0:
+                            #print "Resetting component -> track color map"
+                            compColorMap = {}
+                        if len(compLinkMap) != 0:
+                            #print "Resetting component -> link map"
+                            compLinkMap = {}
+                        if len(compLocMap) != 0:
+                            #print "Resetting component -> x,y location map"
+                            compLocMap = {}            
+                        if len(direction_layout) != 0:
+                            #print "Resetting level layout"
+                            direction_layout = []
+                        if len(color_layout) != 0:
+                            #print "Resetting level layout"
+                            color_layout = []
+
+                        curTrack = [-1]
+                        curMouseComp = [""]
+                        curMouseTime = [0.0]
+
                         data['me'] += 1
                         if d_ in files:
+                            dfile = open(path + '/data' + "/" + files[d_][0],'r')
+                            dfiledata = [ d.strip("\n") for d in dfile.readlines() ]
+#                            print "File, number of files (should be 1): {0},{1}".format(files[d_][0],len(files[d_]))
+                            # Find components section, and get components
+                            startParse = False
+                            height = 0
+                            width = 0
+                            incr = 0
+                            for line in dfiledata:
+                                if line.startswith("board_width"):
+                                    width = int(line.split("\t")[1])
+                                if line.startswith("board_height"):
+                                    height = int(line.split("\t")[1])
+                                if line.startswith('DIRECTIONS'):
+                                    for i in range(incr+1,incr+height+1):
+                                        direction_layout.append(dfiledata[i])
+                                if line.startswith('COLORS'):
+                                    for i in range(incr+1,incr+height+1):
+                                        color_layout.append(dfiledata[i])
+
+                                if line.startswith('COMPONENTS'): 
+                                    startParse = True 
+                                else:
+                                    if startParse:
+                                        if len(line) == 0: # End of components section
+                                            startParse = False 
+                                        else:
+                                            tmp = line.split("\t")
+                                            compData = ast.literal_eval(tmp[6])
+                                            if "color" in compData.keys():
+                                                # CompID -> color
+                                                compColorMap[tmp[0]] = int(compData["color"])
+                                            if "link" in compData.keys():                             
+                                                # CompID -> LinkedID
+                                                compLinkMap[tmp[0]] = str(compData["link"])
+                                incr += 1
+                            dfile.close()
                             data['uploaded'] += 1
                         else:
                             missing_files.append(d_)
+
                 else:
                     data['seq'].append('R')
                     attempt['me_replays'] += 1
             elif e_=='endTutorial':
                 attempt['tutorial_time'] = (float(s_) - attempt['start_time']) / 60.0
             elif e_=='SubmitCurrentLevelPlay':
+                # Reset all level data (this is actually reset before starting a level...but redundancy isn't bad.
+                if len(compColorMap) != 0:
+                    #print "Resetting component -> track color map"
+                    compColorMap = {}
+                if len(compLinkMap) != 0:
+                    #print "Resetting component -> link map"
+                    compLinkMap = {}
+                if len(direction_layout) != 0:
+                    #print "Resetting level layout"
+                    direction_layout = []
+                if len(color_layout) != 0:
+                    #print "Resetting level layout"
+                    color_layout = []
+
+                curTrack = [-1]
+                curMouseComp = [""]
+                curMouseTime = [0.0]
+
                 data['seq'].append('T')
                 attempt['me_tests']+=1
                 if attempt['_timestamp_last_dragged_component']:
                     attempt['_t_d_component_dragged_me_lst'].append(('tests',float(s_)-attempt['_timestamp_last_dragged_component']))
+
             elif e_=='SubmitCurrentLevelME':
                 data['seq'].append('S')
                 attempt['me_submissions'] += 1
@@ -342,13 +479,155 @@ def get_file_data(fname,files,missing_files, slice=None, level_data=None):
                 attempt['dragged'] += 1
                 attempt['dragged_'+d_] = attempt.get('dragged_'+d_,0)+1
                 attempt['_timestamp_last_dragged_component'] = float(s_)
+                # Coordinates for Start Drag 
+                id_coord = ( float(x_), float(y_) )
+            elif e_=="endDrag":
+                # Coordinates for End Drag
+                fd_coord = ( float(x_), float(y_) )
+                # Euclidean distance 
+                dist = 0.0
+                if ( len(id_coord) != 0 ): 
+                    dist = math.sqrt( math.pow((fd_coord[0]-id_coord[0]),2.0) + math.pow((fd_coord[1]-id_coord[1]),2.0) )
+                else: 
+                    dist = 0.0
+                id_coord = ()
+                fd_coord = ()
+                attempt['total_dragged_components_dist'] += dist
             elif e_=='Destroying':
                 attempt['trashed'] += 1
                 attempt['trashed_'+d_] = attempt.get('trashed_'+d_,0)+1
             elif e_=='OnHoverBehavior':
+                # This implies that we are on a track...but we hover on an object though..?
                 attempt['hover'] += 1
                 attempt['hover_'+d_] = attempt.get('hover_'+d_,0)+1
+            elif e_=="BeginReposition":
+                ir_coord = ( float(x_), float(y_) )
+            elif e_=="EndReposition":
+                # Check to see if we swap threads. 
+                if len(curMouseComp[0]) == 0:
+                    continue;
+                tmp = curMouseComp[0].split("/")
+                compID = tmp[1]
+                if tmp[1] not in compColorMap.keys(): 
+                    # Component was thrown away. 
+                    continue
 
+                attempt['num_tracks_used'] += 1
+                color = compColorMap[tmp[1]]
+                for c in compColorMap.keys():
+                    if color == compColorMap[c]:
+                        attempt['total_components'] += 1 
+
+                fr_coord = ( float(x_), float(y_) )
+
+                # Euclidean distance ( don't actually use this, but keeping this in here for future use )
+                dist = 0.0
+                if ( len(ir_coord) != 0 ): 
+                    dist = math.sqrt( math.pow((fr_coord[0]-ir_coord[0]),2.0) + math.pow((fr_coord[1]-ir_coord[1]),2.0) )
+                else: 
+                    dist = 0.0
+                #attempt['reposition_distance_sum'] += dist
+
+                ## IF the player linked before repositioning, then we can get the direction and distance relative to the linked component 
+                #tmp = curMouseComp.split("/")
+                #if ( len(tmp[0]) == 0 ):
+                #    continue; 
+                #if tmp[1] in compLinkMap.keys():  
+                #    linkComp = compLinkMap[tmp[1]] 
+                #    #print "Seen {0} {1}".format(tmp[1],linkComp)
+                #    if linkComp in compLocMap.keys():
+                #        pass
+                #        # We have seen the linked component 
+                #        #print "Linked: {0} to {1} with {1} at ({2},{3})".format(tmp[1],linkComp,compLocMap[linkComp][0],compLocMap[linkComp][1])
+                #        # Now...can we get both the distance and direction of the repositioning?
+                #    
+
+                ir_coord = ( )
+                fr_coord = ( )
+            elif e_ == "BeginLink":
+                # Before we even link, we need to be over a component
+                if len(curMouseComp[0]) == 0:
+                    continue;
+                tmp = curMouseComp[0].split("/")
+                compID = tmp[1]
+                if tmp[1] not in compColorMap.keys(): 
+                    # Component was thrown away. 
+                    continue
+
+                attempt['num_tracks_used'] += 1
+                color = compColorMap[tmp[1]]
+                for c in compColorMap.keys():
+                    if color == compColorMap[c]:
+                        attempt['total_components'] += 1 
+
+                il_coord = ( float(x_), float(y_) ) 
+            elif e_ == "LinkTo":
+                linking = True
+                fl_coord = ( float(x_), float(y_) ) 
+                dist = 0.0
+                if ( len(il_coord) != 0 ): 
+                    dist = math.sqrt( math.pow((fl_coord[0]-il_coord[0]),2.0) + math.pow((fl_coord[1]-il_coord[1]),2.0) )
+                else: 
+                    dist = 0.0
+
+                ## We want to find the direction of the signal
+                #xtmp = fr_coord[0] - ir_coord[0]
+                #ytmp = fr_coord[1] - ir_coord[1]
+                #direct = 0.0 
+                #if ( len(im_coord) != 0 ): 
+                #    if ( abs(xtmp) < 0.00000000000001 and abs(tmp) > 0.00000000000001 ):
+                #        direct = Math.atan( ( ytmp/xtmp ) )
+                #else: 
+                #    direct = 0.0 
+                #attempt[''] += direct
+                il_coord = ( )
+                fl_coord = ( )
+            elif e_ == "OnMouseComponent":
+                attempt['num_mouse_on_comp'] += 1
+                curMouseComp[0] = d_ 
+
+                # Get current time..
+                curMouseTime[0] = float(s__)
+
+                # Keep a list of components IDs and their corresponding locations
+                y_ = y_.strip("\n")
+                tmp = d_.split("/")
+                compLocMap[tmp[1]] = (float(x_),float(y_)) 
+
+                if ( len(compColorMap.keys()) != 0 and tmp[1] in compColorMap ): 
+                    if curTrack[0] == -1:
+                        curTrack[0] = compColorMap[tmp[1]]
+                    else:
+                        # Check to see if we changed tracks here
+                        if curTrack[0] != compColorMap[tmp[1]]:
+                            attempt['num_track_changes'] += 1
+                            curTrack[0] = compColorMap[tmp[1]]
+                        else:
+                            # Staying on the same track
+                            attempt['num_track_no_changes'] += 1
+                if linking:  
+                    if ( len(compColorMap.keys()) != 0 ): 
+                        tmp = d_.split("/")  
+                        if ( tmp[1] in compColorMap ):
+                            attempt['num_tracks_used'] += 1
+                            color = compColorMap[tmp[1]]
+                            for c in compColorMap.keys():
+                                if color == compColorMap[c]:
+                                    attempt['total_components'] += 1 
+
+                    #        #print "Color of comoponent {0}: {1}".format(tmp[1],compDict[tmp[1]])  
+                    #        # Now that we have the color of the component...if the player places signals on two different tracks consecutively, then they're thinking in parallel
+                    #        if trackUsed == -1:
+                    #            trackUsed = compColorMap[tmp[1]] 
+                    #        else:
+                    #            if trackUsed == compColorMap[tmp[1]]:
+                    #                attempt['single_track_consecutive'] += 1 
+                    #            else:
+                    #                trackUsed = compColorMap[tmp[1]] 
+                linking = False  
+            elif e_=="OutMouseComponent":
+                endTime = float(s__)
+                attempt['total_time_on_component'] += (endTime - curMouseTime[0])
             elif e_=='ToggleConnectionVisibility' and d_=='True':
                 attempt['connection_visibility'] += 1
             elif e_ == 'ToggleFlowVisibility' and d_ == 'True':
@@ -419,10 +698,25 @@ def get_attempt_data(print_stats=False):
                     print data['id']+'\t'+data['user']+'\t'+'\t'.join([str(attempt[i]) for i in get_file_data_labels()])
     return all_attempts
 
-def print_sliced_data(all_data,slice):
+def print_sliced_data(all_data,slice, cur_mouse_comp, cur_mouse_time, cur_track, linking, comp_color_map, comp_link_map, comp_loc_map, direction_layout, color_layout):
+    # Need to keep a map of filename -> data filename
+    filesDict = {} 
+    for i in os.listdir(path + '/data'):
+        with open(path + '/data/' + i) as f:
+            for line in f:
+                if line.startswith('filename'):
+                    filename = line.split('\t')[1].strip()
+                    if filename in filesDict: 
+                        print "Duplicates detected"
+                        filesDict[filename].append(i) 
+                    else:
+                        filesDict[filename] = [i]
+
+    
     for data_ in all_data:
         if 'user' in data_ and slice[0] == data_['user']:
-            data = get_file_data(path + '/log/' + data_['filename'], [], [], slice)
+            #data = get_file_data(path + '/log/' + data_['filename'], [], [], slice)
+            data = get_file_data(path + '/log/' + data_['filename'], filesDict, cur_mouse_comp, cur_mouse_time, cur_track, linking, comp_color_map, comp_link_map, comp_loc_map, direction_layout, color_layout, [], slice)
             if 'slice' in data:
                 print data['id'] + '\t' + data['user'] + '\t' +data_['filename'] +'\t'+ '\t'.join([str(data['slice'][i]) for i in get_file_data_labels()])+'\t'+slice[-2]+'\t'+slice[-1]
             else:
@@ -480,8 +774,6 @@ def parse_forms_data():
     return labels,data
 
 
-
-
 if __name__=="__main__":
     import jsonpickle
     import argparse
@@ -489,7 +781,7 @@ if __name__=="__main__":
     if False: # print the data that's in the web pannel
         get_file_status(None)
         sys.exit()
-    print 'PARSING DATA'
+    #print 'PARSING DATA'
     try:
         data = jsonpickle.loads(open('index-files.json','rb').read())
     except:
@@ -513,8 +805,22 @@ if __name__=="__main__":
             if i[COL_USER].strip().lower()=='5-1':
                 pass
             slices_.append([i[COL_USER].strip().lower(),float(i[COL_OFFSET]),float(i[COL_START]),float(i[COL_END]),i[COL_LABEL].strip().lower(),i[COL_LEVEL].strip()])
+
+        # We can start a link in a different time frame...and finish in another time frame. Furthermore, we could be on a mouse position starting in a different time frame
+        cur_mouse_comp = [""]
+        cur_mouse_time = [0.0]
+        linking = False
+        cur_track = [-1]
+
+        # Persistent level variables 
+        comp_color_map = {}
+        comp_link_map = {}
+        comp_loc_map = {}
+        direction_layout = [] 
+        color_layout = []
+
         for slice in slices_:
-            print_sliced_data(data,slice)
+            print_sliced_data(data,slice, cur_mouse_comp, cur_mouse_time, cur_track, linking, comp_color_map, comp_link_map, comp_loc_map, direction_layout, color_layout)
     else:
         print 'AGGREGATES'
         print_aggregates(data)
