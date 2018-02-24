@@ -46,35 +46,7 @@ public class NotificationUIBehavior : MonoBehaviour
         // UI Text Components
         title = obj_title.GetComponent<Text>();
         description = obj_description.GetComponent<Text>();
-
-        // Testing the Notification System
-        //UINotifications.Notification test = new UINotifications.Notification("Look Here", "This is a test of the notification system");
-        //test.AddButton("Button 1", TestMethod1);
-        //test.AddButton("Button 2", TestMethod2);
-        //test.AddButton("Button 3", TestMethod3);
-
-        //test.RemoveButton(1);
-        //test.SetButton(0, "New One", TestMethod2);
-
-        //UINotifications.Notify(test);
     }
-
-    // Test Notification System Methods
-
-    //private void TestMethod1()
-    //{
-    //    Debug.Log("Button 1");
-    //}
-
-    //private void TestMethod2()
-    //{
-    //    Debug.Log("Button 2");
-    //}
-
-    //private void TestMethod3()
-    //{
-    //    Debug.Log("Button 3");
-    //}
 
     /// 
     /// Notification UI Methods
