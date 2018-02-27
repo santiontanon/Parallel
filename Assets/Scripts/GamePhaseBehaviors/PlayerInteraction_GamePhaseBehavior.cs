@@ -133,7 +133,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void UpdatePhase()
 	{
-        Debug.Log(GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition));
 		if(interactionPhase == InteractionPhases.simulation)
 		{
 			GameManager.Instance.TriggerTrackUpdate();
