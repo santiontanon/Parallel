@@ -1024,6 +1024,280 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
+    IEnumerator ParseSteps()
+    {
+        Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
+        Debug.Log(lvl.execution.Count);
+        int maxStep = 0;
+        Dictionary<int, List<StepData>> stepDictionary = new Dictionary<int, List<StepData>>();
+        Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
+
+        for (int i = 0; i < lvl.execution.Count; i++)
+        {
+            StepData step = lvl.execution[i];
+
+            if (step.timeStep > maxStep)
+            {
+                maxStep = step.timeStep;
+            }
+
+            if (step.eventType == "M")
+            {
+                if (!componentStepsDictionary.ContainsKey(step.componentID)) { componentStepsDictionary.Add(step.componentID, new List<int>()); componentStepsDictionary[step.componentID].Add(i); }
+                else { componentStepsDictionary[step.componentID].Add(i); }
+            }
+
+            if (stepDictionary.ContainsKey(step.timeStep))
+            {
+                if (step.eventType == "D")
+                {
+                    stepDictionary[step.timeStep].Insert(0, step);
+                }
+                else
+                {
+                    stepDictionary[step.timeStep].Add(step);
+                }
+            }
+            else
+            {
+                stepDictionary[step.timeStep] = new List<StepData>();
+                stepDictionary[step.timeStep].Add(step);
+            }
+        }
+
+        foreach (int componentId in componentStepsDictionary.Keys)
+        {
+            //componentStepsDictionary[componentId].Sort();
+            for (int listIndex = 0; listIndex < componentStepsDictionary[componentId].Count - 1; listIndex++)
+            {
+                int executionIndex = componentStepsDictionary[componentId][listIndex];
+                int nextExecutionIndex = componentStepsDictionary[componentId][listIndex + 1];
+                lvl.execution[executionIndex].SetNextStep(nextExecutionIndex);
+            }
+        }
+    }
+
+    IEnumerator PlaySimulation(Dictionary<int, List<StepData>> stepDictionary, int maxStep)
+    {
+        int currentStep = 0;
+        int maxGoalsCompleted = 0;
+        bool nextLevelButtonVisibility = false;
+        while (interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
+        {
+            if (stepDictionary.ContainsKey(currentStep))
+            {
+                float waitTime = 0f;
+                int count = 0;
+                foreach (StepData step in stepDictionary[currentStep])
+                {
+                    count++;
+                    if (step.componentID == 0)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                        if (step.componentStatus == null) continue;
+                        if (step.componentStatus.goals_completed != null && step.componentStatus.final_condition != -1)
+                        {
+                            if (maxGoalsCompleted < step.componentStatus.goals_completed) { maxGoalsCompleted = step.componentStatus.goals_completed; }
+                        }
+                        if (step.componentStatus.final_condition != null && step.componentStatus.final_condition != -1)
+                        {
+                            score.stepCount = maxStep;
+                            string titleFormatString = "<size=18><b>{0}</b></size>\n";
+                            string titleString = "";
+                            string goalString = "";
+                            string levelFileName = "";
+                            if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
+
+                            /* allowed attempts */
+                            bool foundSolution = false;
+                            LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
+
+                            switch (step.componentStatus.final_condition)
+                            {
+                                case 2:
+                                case 8:
+                                case 10:
+                                    //if "test" versus "submit" change this text
+                                    if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                                    {
+                                        titleString = "SUCCESSFUL SOLUTION";
+                                        goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
+                                        score.completed = true;
+
+                                        if (foundSolution)
+                                        {
+                                            goalString += "\n• Attempts Allowed: " + solution.attemptCount;
+                                        }
+
+                                        //get current score
+                                        int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
+                                        //update saved score
+                                        GameManager.Instance.GetScoreManager().ScoreLevel(score);
+                                        int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
+
+                                        GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
+                                        GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
+
+                                        //use 'current' not 'best' score for the feedback
+                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(currentScore);
+
+                                        nextLevelButtonVisibility = true;
+                                    }
+                                    else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                                    {
+                                        titleString = "TEST COMPLETE";
+                                        goalString += "\n• This solution was successful this time. Submit to check if it's always successful.";
+                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
+                                    }
+                                    break;
+                                default:
+                                    //if "test" versus "submit" change this text
+                                    if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                                    {
+                                        titleString = "UNSUCCESSFUL SOLUTION";
+                                    }
+                                    else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                                    {
+                                        titleString = "TEST COMPLETE";
+                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
+                                    }
+
+                                    goalString = "";
+                                    if ((step.componentStatus.final_condition & 1) != 0)
+                                    {
+                                        goalString += "• Make sure arrows aren't blocked.\n";
+                                    }
+                                    if ((step.componentStatus.final_condition & 4) != 0)
+                                    {
+                                        goalString += "• This solution was unsuccessful.\n";
+                                    }
+                                    if ((step.componentStatus.final_condition & 16) != 0)
+                                    {
+                                        goalString += "• Make sure arrows can't deliver at the same time.\n";
+                                    }
+                                    if ((step.componentStatus.final_condition & 32) != 0)
+                                    {
+                                        goalString += "• Make sure all arrows can move.\n";
+                                    }
+                                    if ((step.componentStatus.final_condition & 64) != 0)
+                                    {
+                                        goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
+                                    }
+                                    if ((step.componentStatus.final_condition & 512) != 0)
+                                    {
+                                        goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
+                                    }
+                                    List<string> errorFeedback = new List<string>();
+                                    foreach (string errorKey in step.componentStatus.goal_descriptions)
+                                    {
+                                        string key = errorKey.Substring(0, 3);
+                                        if (Constants.GoalFeedbackValues.GoalErrorFeedback.ContainsKey(key))
+                                        {
+                                            if (!errorFeedback.Contains(Constants.GoalFeedbackValues.GoalErrorFeedback[key]))
+                                                errorFeedback.Add(Constants.GoalFeedbackValues.GoalErrorFeedback[key]);
+                                        }
+                                    }
+                                    foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
+
+                                    if (foundSolution)
+                                    {
+                                        goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
+                                    }
+
+                                    break;
+                            }
+
+                            goalString = string.Format(titleFormatString, titleString) + goalString;
+
+                            if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                            {
+                                playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
+                            }
+                            else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                            {
+                                playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
+                            }
+
+                            yield return StartCoroutine(playerInteraction_UI.TriggerGoalPopUp(goalString));
+                        }
+                    }
+                    else
+                    {
+                        GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(step.componentID);
+                        if (g != null)
+                        {
+                            float time = g.DoStep(step);
+                            if (time > waitTime)
+                                waitTime = time;
+                        }
+                        else { Debug.Log("Could not find " + step.componentID); }
+                    }
+
+                    if (onSimulationStep != null)
+                    {
+                        onSimulationStep(step);
+                        //PauseSimulation();
+                        //UnpauseAfterDelay(5);
+                    }
+                }
+                while (paused) yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(waitTime);
+            }
+            currentStep++;
+            //Debug.Log(currentStep);
+        }
+    }
+
+    IEnumerator FinishSimulation()
+    {
+        if (onCompletion != null) onCompletion();
+
+        //yield return new WaitForSeconds(1f);
+        //todo: switch statement of the selected goal option
+
+        ResetStartValues();
+
+        switch (playerInteraction_UI.goalOverlay.userInput)
+        {
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.exit:
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levels:
+                TriggerPlayPhaseEnd();
+                Debug.Log("User input for exit or levels hit.");
+                EndSimulation();
+                break;
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.stop:
+                TriggerPlayPhaseEnd();
+                Debug.Log("User input for exit or levels hit.");
+                EndSimulation();
+                break;
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
+
+                Debug.Log("REPLAY");
+                //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
+                interactionPhase = InteractionPhases.awaitingSimulation;
+                GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
+
+                break;
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
+                Debug.Log("Retry");
+                interactionPhase = InteractionPhases.ingame_default;
+                EndSimulation();
+                GameManager.Instance.TriggerLevelTutorial
+                (
+                    GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
+                    interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
+                );
+                break;
+            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levelsNext:
+                TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
+                break;
+            default:
+                Debug.Log("No case defined for " + playerInteraction_UI.goalOverlay.userInput.ToString());
+                interactionPhase = InteractionPhases.ingame_default;
+                break;
+        }
+    }
+
 	public void ToggleFlowVisibility()
 	{
 		flowVisibility = !flowVisibility;
