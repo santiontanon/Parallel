@@ -78,7 +78,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public delegate void OnMenuInteractionDelegate(MenuOptions inputMenuOption);
     public static OnMenuInteractionDelegate onMenuInteraction;
-
+    
     public override void BeginPhase()
     {
         Debug.Log("BeginPhase");
@@ -351,6 +351,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.hintOverlay.OpenPanel();
 		playerInteraction_UI.hintOverlay.SetHint(title,description,texture);
 	}
+
+    public void TriggerHint(string objectName)
+    {
+        bool success = false;
+        HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(objectName, out success);
+        if (success)
+            TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+        else
+            Debug.LogWarning("Failed to find hint for component of type: " + objectName);
+    }
 
 	public void BeginDrag(MenuOptions selectedOption)
 	{
@@ -782,10 +792,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         // Display its hint UI
                         string obj_name = current_object.component.type;
-
-                        // TriggerHint needs a new set of parameters, the line below will work when its updated
-                        //TriggerHint(obj_name);
-
+                        TriggerHint(obj_name);
                         // Testing to make sure the interaction worked, always displays Track Hint
                         //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
                         //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
