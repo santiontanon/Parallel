@@ -149,48 +149,48 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         LockFlowVisibility(-1);
     }
 
-	public void DefineButtonBehaviors()
-	{
-		playerInteraction_UI.ClearButtonBehaviors();
-		foreach(Transform t in playerInteraction_UI.hint_button_container) { Destroy(t.gameObject); }
+    public void DefineButtonBehaviors()
+    {
+        playerInteraction_UI.ClearButtonBehaviors();
+        foreach (Transform t in playerInteraction_UI.hint_button_container) { Destroy(t.gameObject); }
 
-		/* semaphore placement events */
-		EventTrigger.Entry beginDrag_semaphore = new EventTrigger.Entry();
-		beginDrag_semaphore.eventID = EventTriggerType.BeginDrag;
-		beginDrag_semaphore.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.semaphore); } );
-		playerInteraction_UI.place_semaphore.triggers.Add(beginDrag_semaphore);
+        /* semaphore placement events */
+        EventTrigger.Entry beginDrag_semaphore = new EventTrigger.Entry();
+        beginDrag_semaphore.eventID = EventTriggerType.BeginDrag;
+        beginDrag_semaphore.callback.AddListener((eventData) => { BeginDrag(MenuOptions.semaphore); });
+        playerInteraction_UI.place_semaphore.triggers.Add(beginDrag_semaphore);
 
-		EventTrigger.Entry continueDrag_semaphore = new EventTrigger.Entry();
-		continueDrag_semaphore.eventID = EventTriggerType.Drag;
-		continueDrag_semaphore.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.semaphore); } );
-		playerInteraction_UI.place_semaphore.triggers.Add(continueDrag_semaphore);
+        EventTrigger.Entry continueDrag_semaphore = new EventTrigger.Entry();
+        continueDrag_semaphore.eventID = EventTriggerType.Drag;
+        continueDrag_semaphore.callback.AddListener((eventData) => { ContinueDrag(MenuOptions.semaphore); });
+        playerInteraction_UI.place_semaphore.triggers.Add(continueDrag_semaphore);
 
-		EventTrigger.Entry endDrag_semaphore = new EventTrigger.Entry();
-		endDrag_semaphore.eventID = EventTriggerType.EndDrag;
-		endDrag_semaphore.callback.AddListener( (eventData) => { EndDrag(MenuOptions.semaphore); } );
-		playerInteraction_UI.place_semaphore.triggers.Add(endDrag_semaphore);
+        EventTrigger.Entry endDrag_semaphore = new EventTrigger.Entry();
+        endDrag_semaphore.eventID = EventTriggerType.EndDrag;
+        endDrag_semaphore.callback.AddListener((eventData) => { EndDrag(MenuOptions.semaphore); });
+        playerInteraction_UI.place_semaphore.triggers.Add(endDrag_semaphore);
 
-		/* signal placement events */
-		EventTrigger.Entry beginDrag_button = new EventTrigger.Entry();
-		beginDrag_button.eventID = EventTriggerType.BeginDrag;
-		beginDrag_button.callback.AddListener( (eventData) => { BeginDrag(MenuOptions.button); } );
-		playerInteraction_UI.place_button.triggers.Add(beginDrag_button);
-				
-		EventTrigger.Entry continueDrag_button = new EventTrigger.Entry();
-		continueDrag_button.eventID = EventTriggerType.Drag;
-		continueDrag_button.callback.AddListener( (eventData) => { ContinueDrag(MenuOptions.button); } );
-		playerInteraction_UI.place_button.triggers.Add(continueDrag_button);
+        /* signal placement events */
+        EventTrigger.Entry beginDrag_button = new EventTrigger.Entry();
+        beginDrag_button.eventID = EventTriggerType.BeginDrag;
+        beginDrag_button.callback.AddListener((eventData) => { BeginDrag(MenuOptions.button); });
+        playerInteraction_UI.place_button.triggers.Add(beginDrag_button);
 
-		EventTrigger.Entry endDrag_button = new EventTrigger.Entry();
-		endDrag_button.eventID = EventTriggerType.EndDrag;
-		endDrag_button.callback.AddListener( (eventData) => { EndDrag(MenuOptions.button); } );
-		playerInteraction_UI.place_button.triggers.Add(endDrag_button);
+        EventTrigger.Entry continueDrag_button = new EventTrigger.Entry();
+        continueDrag_button.eventID = EventTriggerType.Drag;
+        continueDrag_button.callback.AddListener((eventData) => { ContinueDrag(MenuOptions.button); });
+        playerInteraction_UI.place_button.triggers.Add(continueDrag_button);
 
-		/* trash events */
-		EventTrigger.Entry hover_trash = new EventTrigger.Entry();
-		hover_trash.eventID = EventTriggerType.PointerEnter;
-		hover_trash.callback.AddListener( (eventData) => { BeginHover(MenuOptions.trash); } );
-		playerInteraction_UI.trash.triggers.Add(hover_trash);
+        EventTrigger.Entry endDrag_button = new EventTrigger.Entry();
+        endDrag_button.eventID = EventTriggerType.EndDrag;
+        endDrag_button.callback.AddListener((eventData) => { EndDrag(MenuOptions.button); });
+        playerInteraction_UI.place_button.triggers.Add(endDrag_button);
+
+        /* trash events */
+        EventTrigger.Entry hover_trash = new EventTrigger.Entry();
+        hover_trash.eventID = EventTriggerType.PointerEnter;
+        hover_trash.callback.AddListener((eventData) => { BeginHover(MenuOptions.trash); });
+        playerInteraction_UI.trash.triggers.Add(hover_trash);
 
         EventTrigger.Entry click_trash = new EventTrigger.Entry();
         click_trash.eventID = EventTriggerType.PointerDown;
@@ -198,19 +198,19 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.trash.triggers.Add(click_trash);
 
         EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
-		endHover_trash.eventID = EventTriggerType.PointerExit;
-		endHover_trash.callback.AddListener( (eventData) => { EndHover(MenuOptions.trash); } );
-		playerInteraction_UI.trash.triggers.Add(endHover_trash);
+        endHover_trash.eventID = EventTriggerType.PointerExit;
+        endHover_trash.callback.AddListener((eventData) => { EndHover(MenuOptions.trash); });
+        playerInteraction_UI.trash.triggers.Add(endHover_trash);
 
         EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
         hover_bezier.eventID = EventTriggerType.PointerEnter;
         hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
         playerInteraction_UI.preview.triggers.Add(hover_bezier);
 
-		EventTrigger.Entry click_bezier = new EventTrigger.Entry();
-		click_bezier.eventID = EventTriggerType.PointerDown;
-		click_bezier.callback.AddListener((eventData) => { LockConnectionVisibility(); });
-		playerInteraction_UI.preview.triggers.Add(click_bezier);
+        EventTrigger.Entry click_bezier = new EventTrigger.Entry();
+        click_bezier.eventID = EventTriggerType.PointerDown;
+        click_bezier.callback.AddListener((eventData) => { LockConnectionVisibility(); });
+        playerInteraction_UI.preview.triggers.Add(click_bezier);
 
         EventTrigger.Entry endHover_bezier = new EventTrigger.Entry();
         endHover_trash.eventID = EventTriggerType.PointerExit;
@@ -222,15 +222,20 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.exitButton.interactable = true;
 
         LinkJava.SimulationTypes playSimulation = LinkJava.SimulationTypes.Play;
-		playerInteraction_UI.simulationButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.simulationButton.onClick.RemoveAllListeners();
         playerInteraction_UI.simulationButton.onClick.AddListener(() => TriggerSimulation(playSimulation)/*GameManager.Instance.SubmitCurrentLevel(playSimulation)*/ );
-        playerInteraction_UI.simulationButton.onClick.AddListener( ()=> playerInteraction_UI.simulationButton.interactable = false );
-		playerInteraction_UI.simulationButton.interactable = true;
+        playerInteraction_UI.simulationButton.onClick.AddListener(() => playerInteraction_UI.simulationButton.interactable = false);
+        playerInteraction_UI.simulationButton.interactable = true;
 
-		playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-		playerInteraction_UI.stopSimulationButton.onClick.AddListener( ()=> { EndSimulation(); Debug.Log("End Simulation Button hit."); });
-		playerInteraction_UI.stopSimulationButton.interactable = false;
-		playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
+        playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); Debug.Log("End Simulation Button hit."); });
+        playerInteraction_UI.stopSimulationButton.interactable = false;
+        playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
+
+        playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(() => { PauseSimulation(); });
+        playerInteraction_UI.pauseSimulationButton.interactable = false;
+        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
 
 		LinkJava.SimulationTypes fullSimulation = LinkJava.SimulationTypes.ME;
 		playerInteraction_UI.submitButton.onClick.RemoveAllListeners();
@@ -481,6 +486,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		//playerInteraction_UI.submitButton.gameObject.SetActive(false);
 		playerInteraction_UI.stopSimulationButton.interactable = true;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
+        playerInteraction_UI.pauseSimulationButton.interactable = true;
+        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
+        playerInteraction_UI.playbackSlider.interactable = true;
+        playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
 
         //reset zoom stuff
         ResetZoom();
@@ -488,13 +497,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         simulationTime = 0f;
 		playerInteraction_UI.goalOverlay.userInput = PlayerInteraction_UI.Goal_UIOverlay.UserInputs.none;
-		StartCoroutine( SimulationBehavior() );
+		StartCoroutine( ParseSteps() );
 	}
 
 	void EndSimulation()
 	{
         Debug.Log("EndSimulation");
-		StopCoroutine( SimulationBehavior() );
+		StopCoroutine( ParseSteps() );
 
         tutorialMode = false;
 
@@ -764,266 +773,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	}
 
-    //this makes the level do
-	IEnumerator SimulationBehavior()
-	{
-		Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        Debug.Log(lvl.execution.Count);
-        int currentStep = 0;
-		int maxStep = 0;
-		int maxGoalsCompleted = 0;
-        bool nextLevelButtonVisibility = false;
-		Dictionary<int,List<StepData>> stepDictionary = new Dictionary<int, List<StepData>>();
-		Dictionary<int,List<int>> componentStepsDictionary = new Dictionary<int,List<int>>();
-
-		for( int i = 0; i < lvl.execution.Count; i++ ) 
-		{
-			StepData step = lvl.execution[i];
-
-			if(step.timeStep > maxStep)
-			{
-				maxStep = step.timeStep;
-			}
-
-			if( step.eventType == "M") 
-			{
-				if( !componentStepsDictionary.ContainsKey( step.componentID ) ) { componentStepsDictionary.Add(step.componentID, new List<int>()); componentStepsDictionary[step.componentID].Add(i); }
-				else { componentStepsDictionary[step.componentID].Add(i); }
-			}
-
-			if( stepDictionary.ContainsKey( step.timeStep ) )
-			{
-				if(step.eventType=="D")
-				{
-					stepDictionary[ step.timeStep ].Insert( 0, step );
-				}
-				else
-				{
-					stepDictionary[ step.timeStep ].Add( step );	
-				}
-			}
-			else 
-			{
-				stepDictionary[ step.timeStep ] = new List<StepData>();
-				stepDictionary[ step.timeStep ].Add( step );
-			}
-		}
-
-		foreach( int componentId in componentStepsDictionary.Keys )
-		{
-			//componentStepsDictionary[componentId].Sort();
-			for(int listIndex = 0; listIndex < componentStepsDictionary[componentId].Count-1; listIndex++)
-			{
-				int executionIndex = componentStepsDictionary[componentId][listIndex];
-				int nextExecutionIndex = componentStepsDictionary[componentId][listIndex+1];
-				lvl.execution[executionIndex].SetNextStep(nextExecutionIndex);
-			}
-		}
-			
-		while(interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
-		{
-			if( stepDictionary.ContainsKey(currentStep) ) 
-			{
-                float waitTime = 0f;
-                int count = 0;
-				foreach( StepData step in stepDictionary[currentStep] )
-				{
-                    count++;
-					if(step.componentID==0)
-					{
-                        yield return new WaitForSeconds(0.5f);
-						if(step.componentStatus == null) continue;
-						if(step.componentStatus.goals_completed != null && step.componentStatus.final_condition != -1)
-						{
-							if(maxGoalsCompleted < step.componentStatus.goals_completed) { maxGoalsCompleted = step.componentStatus.goals_completed; }
-						}
-						if(step.componentStatus.final_condition != null && step.componentStatus.final_condition != -1)
-						{
-                            score.stepCount = maxStep;
-							string titleFormatString = "<size=18><b>{0}</b></size>\n";
-							string titleString = "";
-							string goalString = "";
-                            string levelFileName = "";
-                            if(GameManager.Instance.currentLevelReferenceObject!=null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
-
-                            /* allowed attempts */
-                            bool foundSolution = false;
-                            LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
-
-                            switch (step.componentStatus.final_condition)
-							{
-							case 2:
-							case 8:
-							case 10:
-                                    //if "test" versus "submit" change this text
-                                    if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                    {
-										titleString = "SUCCESSFUL SOLUTION";
-                                        goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
-                                        score.completed = true;
-
-                                        if (foundSolution)
-                                        {
-                                            goalString += "\n• Attempts Allowed: " + solution.attemptCount;
-                                        }
-
-                                        //get current score
-                                        int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
-                                        //update saved score
-                                        GameManager.Instance.GetScoreManager().ScoreLevel(score);
-                                        int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
-                                        
-                                        GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
-                                        GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
-
-                                        //use 'current' not 'best' score for the feedback
-                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(currentScore);
-
-                                        nextLevelButtonVisibility = true;
-                                    }
-                                    else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-									{
-										titleString = "TEST COMPLETE";
-                                        goalString += "\n• This solution was successful this time. Submit to check if it's always successful.";
-                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                    }
-								break;
-							default:
-								//if "test" versus "submit" change this text
-								if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-								{
-									titleString = "UNSUCCESSFUL SOLUTION";
-								}
-								else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-								{
-									titleString = "TEST COMPLETE";
-                                    playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                    }
-
-								goalString = "";
-								if ((step.componentStatus.final_condition & 1)!=0) {
-									goalString += "• Make sure arrows aren't blocked.\n";
-								}
-								if ((step.componentStatus.final_condition & 4)!=0) {
-									goalString += "• This solution was unsuccessful.\n";
-								}
-								if ((step.componentStatus.final_condition & 16)!=0) {
-									goalString += "• Make sure arrows can't deliver at the same time.\n";
-								}
-								if ((step.componentStatus.final_condition & 32)!=0) {
-									goalString += "• Make sure all arrows can move.\n";
-								}
-								if ((step.componentStatus.final_condition & 64)!=0) {
-									goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
-								}
-								if ((step.componentStatus.final_condition & 512)!=0) {
-									goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
-								}
-                                List<string> errorFeedback = new List<string>();
-                                foreach (string errorKey in step.componentStatus.goal_descriptions)
-                                {
-                                    string key = errorKey.Substring(0, 3);
-                                    if (Constants.GoalFeedbackValues.GoalErrorFeedback.ContainsKey(key))
-                                    {
-                                        if( !errorFeedback.Contains( Constants.GoalFeedbackValues.GoalErrorFeedback[key] ))
-                                            errorFeedback.Add(Constants.GoalFeedbackValues.GoalErrorFeedback[key]);
-                                    }
-                                }
-                                foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
-                                
-                                if (foundSolution)
-                                {
-                                    goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
-                                }
-
-                                break;
-							}
-
-							goalString = string.Format(titleFormatString, titleString) + goalString;
-                            
-							if (GameManager.Instance.GetCurrentSimulationType () == LinkJava.SimulationTypes.ME) {
-								playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
-							} else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play) {
-								playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
-							}
-
-							yield return StartCoroutine( playerInteraction_UI.TriggerGoalPopUp(goalString) );
-						}
-					}
-					else
-					{
-						GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID( step.componentID );
-						if(g!=null) 
-						{
-							float time = g.DoStep( step );
-                            if (time > waitTime)
-                                waitTime = time;
-						}
-						else { Debug.Log("Could not find " + step.componentID); }
-					}
-
-                    if (onSimulationStep != null)
-                    {
-                        onSimulationStep(step);
-                        //PauseSimulation();
-                        //UnpauseAfterDelay(5);
-                    }
-                }
-                while (paused) yield return new WaitForSeconds(0.1f);
-				yield return new WaitForSeconds(waitTime);
-			}
-			currentStep ++;
-			//Debug.Log(currentStep);
-		}
-
-        if (onCompletion != null) onCompletion();
-
-		//yield return new WaitForSeconds(1f);
-		//todo: switch statement of the selected goal option
-
-		ResetStartValues();
-
-		switch( playerInteraction_UI.goalOverlay.userInput )
-		{
-			case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.exit:
-			case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levels:
-				TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
-                EndSimulation();
-			    break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.stop:
-                TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
-                EndSimulation();
-                break;
-			case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
-
-                Debug.Log("REPLAY");
-                //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
-                interactionPhase = InteractionPhases.awaitingSimulation;
-				GameManager.Instance.TriggerLevelSimulation( LinkJava.SimulationFeedback.none );
-
-			break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
-                Debug.Log("Retry");
-                interactionPhase = InteractionPhases.ingame_default;
-                EndSimulation();
-                GameManager.Instance.TriggerLevelTutorial
-                (
-                    GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-                    interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-                );
-                break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levelsNext:
-                TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
-                break;
-			default:
-                Debug.Log("No case defined for " + playerInteraction_UI.goalOverlay.userInput.ToString());
-                interactionPhase = InteractionPhases.ingame_default;
-			    break;
-		}
-	}
-
     IEnumerator ParseSteps()
     {
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
@@ -1031,9 +780,19 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         int maxStep = 0;
         Dictionary<int, List<StepData>> stepDictionary = new Dictionary<int, List<StepData>>();
         Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
+        List<GridComponent> threads = new List<GridComponent>();
+
+        foreach (GridComponent g in lvl.components)
+        {
+            if(g.type == "thread")
+            {
+                threads.Add(g);
+            }
+        }
 
         for (int i = 0; i < lvl.execution.Count; i++)
         {
+            yield return new WaitForEndOfFrame();
             StepData step = lvl.execution[i];
 
             if (step.timeStep > maxStep)
@@ -1065,16 +824,192 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             }
         }
 
-        foreach (int componentId in componentStepsDictionary.Keys)
+        Debug.Log("threadCount: " + threads.Count);
+        //create in between steps for thread movements
+        for(int i = 0; i <= maxStep; i++)
         {
-            //componentStepsDictionary[componentId].Sort();
-            for (int listIndex = 0; listIndex < componentStepsDictionary[componentId].Count - 1; listIndex++)
+            if (stepDictionary.ContainsKey(i) == false)
+                stepDictionary.Add(i, new List<StepData>());
+            if (stepDictionary[i] == null)
+                stepDictionary[i] = new List<StepData>();
+            if(stepDictionary[i].Count == 0)
             {
-                int executionIndex = componentStepsDictionary[componentId][listIndex];
-                int nextExecutionIndex = componentStepsDictionary[componentId][listIndex + 1];
-                lvl.execution[executionIndex].SetNextStep(nextExecutionIndex);
+                Debug.Log("Key found, no data");
+                for(int j = 0; j < threads.Count; j++)
+                {
+                    Vector2 prevPos = new Vector2();
+                    for(int k = 0; k < stepDictionary[i-1].Count; k++)
+                    {
+                        if(stepDictionary[i-1][k].eventType == "M" && stepDictionary[i-1][k].componentID == threads[j].id)
+                        {
+                            prevPos = stepDictionary[i - 1][k].componentPos;
+                        }
+                    }
+
+                    Vector2 nextPos = prevPos;
+                    bool end = false;
+                    for (int k = i + 1; k < stepDictionary.Count; k++)
+                    {
+                        if (stepDictionary.ContainsKey(k))
+                            {
+                                for (int l = 0; l < stepDictionary[k].Count; l++)
+                                {
+                                    if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
+                                    {
+                                        if (stepDictionary[k][l].componentPos != prevPos)
+                                        {
+                                            if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
+                                            {
+                                                if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
+                                                {
+                                                    if (prevPos.x != stepDictionary[k][l].componentPos.x)
+                                                    {
+                                                        if (prevPos.x > stepDictionary[k][l].componentPos.x)
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x - 1, nextPos.y);
+                                                        }
+                                                        else
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x + 1, nextPos.y);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (prevPos.y > stepDictionary[k][l].componentPos.y)
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x, nextPos.y - 1);
+                                                        }
+                                                        else
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x, nextPos.y + 1);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        end = true;
+                                        break;
+                                    }
+                                }
+                                if (end == true)
+                                {
+                                    break;
+                                }
+                            }
+                    }
+
+                    StepData newStep = new StepData();
+                    newStep.componentID = threads[j].id;
+                    newStep.componentPos = nextPos;
+                    newStep.eventType = "M";
+                    newStep.timeStep = i;
+
+                    stepDictionary[i].Add(newStep);
+                }
+                
             }
+            else
+            {
+                Debug.Log("Key found, some data data");
+                List<bool> hasTimeStepData = new List<bool>();
+                for (int j = 0; j < threads.Count; j++)
+                {
+                    hasTimeStepData.Add(false);
+                }
+
+                for (int j = 0; j < stepDictionary[i].Count; j++)
+                {
+                    if(stepDictionary[i][j].eventType == "M")
+                    {
+                        for (int k = 0; k < threads.Count; k++)
+                        {
+                            if(threads[k].id == stepDictionary[i][j].componentID)
+                            {
+                                hasTimeStepData[k] = true;
+                            }
+                        }
+                    }
+                }
+
+                for(int j = 0; j < hasTimeStepData.Count; j++)
+                {
+                    if(hasTimeStepData[j] == false)
+                    {
+                        Vector2 prevPos = new Vector2();
+                        for (int k = 0; k < stepDictionary[i - 1].Count; k++)
+                        {
+                            if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                            {
+                                prevPos = stepDictionary[i - 1][k].componentPos;
+                            }
+                        }
+
+                        Vector2 nextPos = prevPos;
+                        bool end = false;
+                        for (int k = i + 1; k < stepDictionary.Count; k++)
+                        {
+                            if (stepDictionary.ContainsKey(k))
+                            {
+                                for (int l = 0; l < stepDictionary[k].Count; l++)
+                                {
+                                    if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
+                                    {
+                                        if (stepDictionary[k][l].componentPos != prevPos)
+                                        {
+                                            if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
+                                            {
+                                                if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
+                                                {
+                                                    if (prevPos.x != stepDictionary[k][l].componentPos.x)
+                                                    {
+                                                        if (prevPos.x > stepDictionary[k][l].componentPos.x)
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x - 1, nextPos.y);
+                                                        }
+                                                        else
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x + 1, nextPos.y);
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (prevPos.y > stepDictionary[k][l].componentPos.y)
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x, nextPos.y - 1);
+                                                        }
+                                                        else
+                                                        {
+                                                            nextPos = new Vector2(nextPos.x, nextPos.y + 1);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        end = true;
+                                        break;
+                                    }
+                                }
+                                if (end == true)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        StepData newStep = new StepData();
+                        newStep.componentID = threads[j].id;
+                        newStep.componentPos = nextPos;
+                        newStep.eventType = "M";
+                        newStep.timeStep = i;
+
+                        stepDictionary[i].Add(newStep);
+                    }
+                }
+            }
+            Debug.Log("timeStep " + i + " move count: " + stepDictionary[i].Count);
         }
+
+        yield return PlaySimulation(stepDictionary, maxStep);
     }
 
     IEnumerator PlaySimulation(Dictionary<int, List<StepData>> stepDictionary, int maxStep)
@@ -1084,172 +1019,183 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         bool nextLevelButtonVisibility = false;
         while (interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
         {
-            if (stepDictionary.ContainsKey(currentStep))
+            if(paused != true)
             {
-                float waitTime = 0f;
-                int count = 0;
-                foreach (StepData step in stepDictionary[currentStep])
+                if (stepDictionary.ContainsKey(currentStep))
                 {
-                    count++;
-                    if (step.componentID == 0)
+                    float waitTime = 0f;
+                    int count = 0;
+                    foreach (StepData step in stepDictionary[currentStep])
                     {
-                        yield return new WaitForSeconds(0.5f);
-                        if (step.componentStatus == null) continue;
-                        if (step.componentStatus.goals_completed != null && step.componentStatus.final_condition != -1)
+                        count++;
+                        if (step.componentID == 0)
                         {
-                            if (maxGoalsCompleted < step.componentStatus.goals_completed) { maxGoalsCompleted = step.componentStatus.goals_completed; }
-                        }
-                        if (step.componentStatus.final_condition != null && step.componentStatus.final_condition != -1)
-                        {
-                            score.stepCount = maxStep;
-                            string titleFormatString = "<size=18><b>{0}</b></size>\n";
-                            string titleString = "";
-                            string goalString = "";
-                            string levelFileName = "";
-                            if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
-
-                            /* allowed attempts */
-                            bool foundSolution = false;
-                            LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
-
-                            switch (step.componentStatus.final_condition)
+                            yield return new WaitForSeconds(0.5f);
+                            if (step.componentStatus == null) continue;
+                            if (step.componentStatus.goals_completed != null && step.componentStatus.final_condition != -1)
                             {
-                                case 2:
-                                case 8:
-                                case 10:
-                                    //if "test" versus "submit" change this text
-                                    if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                    {
-                                        titleString = "SUCCESSFUL SOLUTION";
-                                        goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
-                                        score.completed = true;
+                                if (maxGoalsCompleted < step.componentStatus.goals_completed) { maxGoalsCompleted = step.componentStatus.goals_completed; }
+                            }
+                            if (step.componentStatus.final_condition != null && step.componentStatus.final_condition != -1)
+                            {
+                                score.stepCount = maxStep;
+                                string titleFormatString = "<size=18><b>{0}</b></size>\n";
+                                string titleString = "";
+                                string goalString = "";
+                                string levelFileName = "";
+                                if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
+
+                                /* allowed attempts */
+                                bool foundSolution = false;
+                                LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
+
+                                switch (step.componentStatus.final_condition)
+                                {
+                                    case 2:
+                                    case 8:
+                                    case 10:
+                                        //if "test" versus "submit" change this text
+                                        if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                                        {
+                                            titleString = "SUCCESSFUL SOLUTION";
+                                            goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
+                                            score.completed = true;
+
+                                            if (foundSolution)
+                                            {
+                                                goalString += "\n• Attempts Allowed: " + solution.attemptCount;
+                                            }
+
+                                            //get current score
+                                            int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
+                                            //update saved score
+                                            GameManager.Instance.GetScoreManager().ScoreLevel(score);
+                                            int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
+
+                                            GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
+                                            GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
+
+                                            //use 'current' not 'best' score for the feedback
+                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(currentScore);
+
+                                            nextLevelButtonVisibility = true;
+                                        }
+                                        else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                                        {
+                                            titleString = "TEST COMPLETE";
+                                            goalString += "\n• This solution was successful this time. Submit to check if it's always successful.";
+                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
+                                        }
+                                        break;
+                                    default:
+                                        //if "test" versus "submit" change this text
+                                        if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                                        {
+                                            titleString = "UNSUCCESSFUL SOLUTION";
+                                        }
+                                        else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                                        {
+                                            titleString = "TEST COMPLETE";
+                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
+                                        }
+
+                                        goalString = "";
+                                        if ((step.componentStatus.final_condition & 1) != 0)
+                                        {
+                                            goalString += "• Make sure arrows aren't blocked.\n";
+                                        }
+                                        if ((step.componentStatus.final_condition & 4) != 0)
+                                        {
+                                            goalString += "• This solution was unsuccessful.\n";
+                                        }
+                                        if ((step.componentStatus.final_condition & 16) != 0)
+                                        {
+                                            goalString += "• Make sure arrows can't deliver at the same time.\n";
+                                        }
+                                        if ((step.componentStatus.final_condition & 32) != 0)
+                                        {
+                                            goalString += "• Make sure all arrows can move.\n";
+                                        }
+                                        if ((step.componentStatus.final_condition & 64) != 0)
+                                        {
+                                            goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
+                                        }
+                                        if ((step.componentStatus.final_condition & 512) != 0)
+                                        {
+                                            goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
+                                        }
+                                        List<string> errorFeedback = new List<string>();
+                                        foreach (string errorKey in step.componentStatus.goal_descriptions)
+                                        {
+                                            string key = errorKey.Substring(0, 3);
+                                            if (Constants.GoalFeedbackValues.GoalErrorFeedback.ContainsKey(key))
+                                            {
+                                                if (!errorFeedback.Contains(Constants.GoalFeedbackValues.GoalErrorFeedback[key]))
+                                                    errorFeedback.Add(Constants.GoalFeedbackValues.GoalErrorFeedback[key]);
+                                            }
+                                        }
+                                        foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
 
                                         if (foundSolution)
                                         {
-                                            goalString += "\n• Attempts Allowed: " + solution.attemptCount;
+                                            goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
                                         }
 
-                                        //get current score
-                                        int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
-                                        //update saved score
-                                        GameManager.Instance.GetScoreManager().ScoreLevel(score);
-                                        int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
+                                        break;
+                                }
 
-                                        GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
-                                        GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
+                                goalString = string.Format(titleFormatString, titleString) + goalString;
 
-                                        //use 'current' not 'best' score for the feedback
-                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(currentScore);
+                                if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
+                                {
+                                    playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
+                                }
+                                else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
+                                {
+                                    playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
+                                }
 
-                                        nextLevelButtonVisibility = true;
-                                    }
-                                    else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                                    {
-                                        titleString = "TEST COMPLETE";
-                                        goalString += "\n• This solution was successful this time. Submit to check if it's always successful.";
-                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                    }
-                                    break;
-                                default:
-                                    //if "test" versus "submit" change this text
-                                    if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                    {
-                                        titleString = "UNSUCCESSFUL SOLUTION";
-                                    }
-                                    else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                                    {
-                                        titleString = "TEST COMPLETE";
-                                        playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                    }
-
-                                    goalString = "";
-                                    if ((step.componentStatus.final_condition & 1) != 0)
-                                    {
-                                        goalString += "• Make sure arrows aren't blocked.\n";
-                                    }
-                                    if ((step.componentStatus.final_condition & 4) != 0)
-                                    {
-                                        goalString += "• This solution was unsuccessful.\n";
-                                    }
-                                    if ((step.componentStatus.final_condition & 16) != 0)
-                                    {
-                                        goalString += "• Make sure arrows can't deliver at the same time.\n";
-                                    }
-                                    if ((step.componentStatus.final_condition & 32) != 0)
-                                    {
-                                        goalString += "• Make sure all arrows can move.\n";
-                                    }
-                                    if ((step.componentStatus.final_condition & 64) != 0)
-                                    {
-                                        goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
-                                    }
-                                    if ((step.componentStatus.final_condition & 512) != 0)
-                                    {
-                                        goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
-                                    }
-                                    List<string> errorFeedback = new List<string>();
-                                    foreach (string errorKey in step.componentStatus.goal_descriptions)
-                                    {
-                                        string key = errorKey.Substring(0, 3);
-                                        if (Constants.GoalFeedbackValues.GoalErrorFeedback.ContainsKey(key))
-                                        {
-                                            if (!errorFeedback.Contains(Constants.GoalFeedbackValues.GoalErrorFeedback[key]))
-                                                errorFeedback.Add(Constants.GoalFeedbackValues.GoalErrorFeedback[key]);
-                                        }
-                                    }
-                                    foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
-
-                                    if (foundSolution)
-                                    {
-                                        goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
-                                    }
-
-                                    break;
+                                yield return StartCoroutine(playerInteraction_UI.TriggerGoalPopUp(goalString));
                             }
-
-                            goalString = string.Format(titleFormatString, titleString) + goalString;
-
-                            if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                            {
-                                playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
-                            }
-                            else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                            {
-                                playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
-                            }
-
-                            yield return StartCoroutine(playerInteraction_UI.TriggerGoalPopUp(goalString));
                         }
-                    }
-                    else
-                    {
-                        GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(step.componentID);
-                        if (g != null)
+                        else
                         {
-                            float time = g.DoStep(step);
-                            if (time > waitTime)
-                                waitTime = time;
+                            GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(step.componentID);
+                            if (g != null)
+                            {
+                                float time = g.DoStep(step, stepDictionary);
+                                if (time > waitTime)
+                                    waitTime = time;
+                            }
+                            else { Debug.Log("Could not find " + step.componentID); }
                         }
-                        else { Debug.Log("Could not find " + step.componentID); }
-                    }
 
-                    if (onSimulationStep != null)
-                    {
-                        onSimulationStep(step);
-                        //PauseSimulation();
-                        //UnpauseAfterDelay(5);
+                        if (onSimulationStep != null)
+                        {
+                            onSimulationStep(step);
+                            //PauseSimulation();
+                            //UnpauseAfterDelay(5);
+                        }
                     }
+                    while (paused) yield return new WaitForSeconds(0.1f);
+                    yield return new WaitForSeconds(waitTime);
                 }
-                while (paused) yield return new WaitForSeconds(0.1f);
-                yield return new WaitForSeconds(waitTime);
+                currentStep++;
+                //Debug.Log(currentStep);
             }
-            currentStep++;
-            //Debug.Log(currentStep);
+            else
+            {
+                yield return new WaitForEndOfFrame();
+            }
         }
+
+        yield return StartCoroutine(FinishSimulation());
     }
 
     IEnumerator FinishSimulation()
     {
+        yield return new WaitForEndOfFrame();
+
         if (onCompletion != null) onCompletion();
 
         //yield return new WaitForSeconds(1f);
@@ -1494,12 +1440,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     {
         paused = true;
 		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
+        playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(UnpauseSimulation);
     }
 
     void UnpauseSimulation()
     {
         paused = false;
 		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
+        playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
+        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(PauseSimulation);
     }
 
     void DelayedUnpause(float delay = 0, TutorialEvent t = null)
