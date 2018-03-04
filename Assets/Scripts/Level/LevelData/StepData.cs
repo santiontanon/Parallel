@@ -7,7 +7,7 @@ Status (string_json): A json object representing a map of key-value pairs.
 */
 
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class StepData {
@@ -17,9 +17,15 @@ public class StepData {
 	public Vector2 componentPos = new Vector2(-1,-1);
 	public Status componentStatus = new Status();
 
-	public int nextStepIndex = -1;
-	public void SetNextStep(int inStep){nextStepIndex = inStep;}
-	public int GetNextStep(){return nextStepIndex;}
+    public StepData GetNextMove(Dictionary<int, List<StepData>> dictionary)
+    {
+        for(int i = 0; i < dictionary[timeStep].Count; i++)
+        {
+            if (dictionary[timeStep][i].componentID == componentID && dictionary[timeStep][i].eventType == "M")
+                return dictionary[timeStep][i];
+        }
+        return null;
+    }
 }
 
 [System.Serializable]

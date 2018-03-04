@@ -66,16 +66,16 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 	}
 
 
-	public override float DoStep(StepData inputStep)
+	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
 		if(behaviorType==BehaviorTypes.component && component!=null)
 		{
             if (inputStep.eventType == "M")
             {
                 Vector2 reverseYposition = new Vector2(inputStep.componentPos.x, GameManager.Instance.GetLevelHeight() - inputStep.componentPos.y);
-                if (inputStep.GetNextStep() != -1)
+                if (inputStep.GetNextMove(dictionary) != null)
                 {
-                    StepData nextStep = GameManager.Instance.GetDataManager().currentLevelData.execution[inputStep.GetNextStep()];
+                    StepData nextStep = inputStep.GetNextMove(dictionary);
                     reverseYposition = new Vector2(nextStep.componentPos.x, GameManager.Instance.GetLevelHeight() - nextStep.componentPos.y);
                 }
 

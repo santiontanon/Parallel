@@ -204,7 +204,7 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 		GetComponent<SpriteRenderer>().color = Color.white;
 	}
 
-	public override float DoStep(StepData inputStep)
+	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
         Debug.Log("Delivery Do Step: " + inputStep.eventType);
 		base.DoStep(inputStep);
