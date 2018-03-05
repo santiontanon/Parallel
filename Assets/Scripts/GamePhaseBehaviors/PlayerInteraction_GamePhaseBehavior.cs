@@ -237,6 +237,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.pauseSimulationButton.interactable = false;
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
 
+        playerInteraction_UI.playbackSlider.onValueChanged.RemoveAllListeners();
+        //playerInteraction_UI.playbackSlider.onValueChanged.AddListener(() => {  });
+        playerInteraction_UI.playbackSlider.interactable = false;
+        playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
+
 		LinkJava.SimulationTypes fullSimulation = LinkJava.SimulationTypes.ME;
 		playerInteraction_UI.submitButton.onClick.RemoveAllListeners();
 		playerInteraction_UI.submitButton.onClick.AddListener( ()=> TriggerSimulation(fullSimulation)/*GameManager.Instance.SubmitCurrentLevel(fullSimulation)*/ );
@@ -516,7 +521,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.submitButton.interactable = true;
 		playerInteraction_UI.stopSimulationButton.interactable = false;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
-
+        playerInteraction_UI.pauseSimulationButton.interactable = false;
+        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
+        playerInteraction_UI.playbackSlider.interactable = false;
+        playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 	}
 		
 	void PlayerInteractionListener()
@@ -1012,9 +1020,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         yield return PlaySimulation(stepDictionary, maxStep);
     }
 
+    int currentStep = 0;
+
     IEnumerator PlaySimulation(Dictionary<int, List<StepData>> stepDictionary, int maxStep)
     {
-        int currentStep = 0;
         int maxGoalsCompleted = 0;
         bool nextLevelButtonVisibility = false;
         while (interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
@@ -1190,6 +1199,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
 
         yield return StartCoroutine(FinishSimulation());
+    }
+
+    void ChangePlaybackStep()
+    {
+
     }
 
     IEnumerator FinishSimulation()
@@ -1450,6 +1464,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
         playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
         playerInteraction_UI.pauseSimulationButton.onClick.AddListener(PauseSimulation);
+    }
+
+    void OnTimeSliderValueChanged(int i)
+    {
+        PauseSimulation();
+        currentStep = i;
+        ChangePlaybackStep();
     }
 
     void DelayedUnpause(float delay = 0, TutorialEvent t = null)
