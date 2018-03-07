@@ -389,6 +389,13 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 	}
 
+    public virtual void ReturnToStep(StepData step)
+    {
+        iTween.Stop(gameObject);
+        gameObject.transform.position = new Vector3(step.componentPos.x, GameManager.Instance.GetLevelHeight() - step.componentPos.y, 0);
+        lastSimulationPosition = gameObject.transform.position;
+    }
+
 	public virtual void OnHoverBehavior()
 	{
 		if(component!=null)

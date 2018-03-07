@@ -238,7 +238,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
 
         playerInteraction_UI.playbackSlider.onValueChanged.RemoveAllListeners();
-        //playerInteraction_UI.playbackSlider.onValueChanged.AddListener(() => {  });
+        playerInteraction_UI.playbackSlider.onValueChanged.AddListener((float value) => { OnTimeSliderValueChanged((int)value); });
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 
@@ -781,13 +781,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	}
 
+    Dictionary<int, List<StepData>> stepDictionary;
+    List<TimeStepData> timeSteps;
+
     IEnumerator ParseSteps()
     {
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
         Debug.Log(lvl.execution.Count);
         int maxStep = 0;
-        Dictionary<int, List<StepData>> stepDictionary = new Dictionary<int, List<StepData>>();
+        stepDictionary = new Dictionary<int, List<StepData>>();
         Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
+        timeSteps = new List<TimeStepData>();
         List<GridComponent> threads = new List<GridComponent>();
 
         foreach (GridComponent g in lvl.components)
@@ -832,7 +836,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             }
         }
 
-        Debug.Log("threadCount: " + threads.Count);
         //create in between steps for thread movements
         for(int i = 0; i <= maxStep; i++)
         {
@@ -842,7 +845,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 stepDictionary[i] = new List<StepData>();
             if(stepDictionary[i].Count == 0)
             {
-                Debug.Log("Key found, no data");
                 for(int j = 0; j < threads.Count; j++)
                 {
                     Vector2 prevPos = new Vector2();
@@ -918,7 +920,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             }
             else
             {
-                Debug.Log("Key found, some data data");
                 List<bool> hasTimeStepData = new List<bool>();
                 for (int j = 0; j < threads.Count; j++)
                 {
@@ -1014,8 +1015,65 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     }
                 }
             }
-            Debug.Log("timeStep " + i + " move count: " + stepDictionary[i].Count);
         }
+
+        TimeStepData timeStep = new TimeStepData();
+        for(int i = 0; i < lvl.components.Count; i++)
+        {
+            switch (lvl.components[i].type)
+            {
+                case "thread":
+                    ThreadData thread = new ThreadData();
+                    thread.id = lvl.components[i].id;
+                    thread.pos = Vector2.zero;
+                    thread.rotation = Vector2.up;
+                    thread.packages = new Dictionary<int, bool>();
+                    timeStep.threads.Add(thread);
+                    break;
+
+                case "delivery":
+                    DeliveryData delivery = new DeliveryData();
+                    delivery.id = lvl.components[i].id;
+                    delivery.deliveries = 0;
+                    timeStep.deliveryPoints.Add(delivery);
+                     break;
+
+                case "semaphore":
+                    SemaphoreData semaphore = new SemaphoreData();
+                    semaphore.id = lvl.components[i].id;
+                    semaphore.open = false;
+                    break;
+
+            }
+        }
+
+        for (int i = 0; i < stepDictionary.Count; i++)
+        {
+            for(int j = 0; j < stepDictionary[i].Count; j++)
+            {
+                switch (stepDictionary[i][j].eventType)
+                {
+                    case "M":
+
+                        break;
+                    case "D":
+                        for(int k = 0; k < timeStep.deliveryPoints.Count; k++)
+                        {
+                            if(timeStep.deliveryPoints[k].id == stepDictionary[i][j].componentStatus.delivered_to)
+                            {
+                                timeStep.deliveryPoints[k].deliveries++;
+                            }
+                        }
+                        break;
+                    case "E":
+
+                        break;
+                }
+            }
+            timeSteps.Add(timeStep);
+        }
+
+        playerInteraction_UI.playbackSlider.maxValue = maxStep;
 
         yield return PlaySimulation(stepDictionary, maxStep);
     }
@@ -1025,6 +1083,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     IEnumerator PlaySimulation(Dictionary<int, List<StepData>> stepDictionary, int maxStep)
     {
         int maxGoalsCompleted = 0;
+        currentStep = 0;
         bool nextLevelButtonVisibility = false;
         while (interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
         {
@@ -1190,6 +1249,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     yield return new WaitForSeconds(waitTime);
                 }
                 currentStep++;
+                playerInteraction_UI.playbackSlider.value = currentStep;
                 //Debug.Log(currentStep);
             }
             else
@@ -1203,7 +1263,21 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     void ChangePlaybackStep()
     {
-
+        Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
+        for (int i = 0; i < lvl.components.Count; i++)
+        {
+            if(lvl.components[i].type == "thread")
+            {
+                GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(lvl.components[i].id);
+                for(int j = 0; j < stepDictionary[currentStep].Count; j++)
+                {
+                    if(stepDictionary[currentStep][j].eventType == "M" && stepDictionary[currentStep][j].componentID == lvl.components[i].id)
+                    {
+                        g.ReturnToStep(stepDictionary[currentStep][j]);
+                    }
+                }
+            }
+        }
     }
 
     IEnumerator FinishSimulation()
@@ -1468,9 +1542,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     void OnTimeSliderValueChanged(int i)
     {
-        PauseSimulation();
-        currentStep = i;
-        ChangePlaybackStep();
+        if(i != currentStep)
+        {
+            PauseSimulation();
+            currentStep = i;
+            ChangePlaybackStep();
+        }
     }
 
     void DelayedUnpause(float delay = 0, TutorialEvent t = null)

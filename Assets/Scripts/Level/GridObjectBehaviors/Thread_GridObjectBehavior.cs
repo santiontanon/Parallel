@@ -50,6 +50,11 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 		ClearCabooses();
 	}
 
+    public override void ReturnToStep(StepData step)
+    {
+        base.ReturnToStep(step);
+    }
+
 	public void ClearCabooses()
 	{
 		if(trailObjectList.Count > 0)

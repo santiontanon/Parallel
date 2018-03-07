@@ -19,10 +19,26 @@ public class StepData {
 
     public StepData GetNextMove(Dictionary<int, List<StepData>> dictionary)
     {
-        for(int i = 0; i < dictionary[timeStep].Count; i++)
+        if(timeStep + 1 < dictionary.Count)
         {
-            if (dictionary[timeStep][i].componentID == componentID && dictionary[timeStep][i].eventType == "M")
-                return dictionary[timeStep][i];
+            for (int i = 0; i < dictionary[timeStep + 1].Count; i++)
+            {
+                if (dictionary[timeStep + 1][i].componentID == componentID && dictionary[timeStep + 1][i].eventType == "M")
+                    return dictionary[timeStep + 1][i];
+            }
+        }
+        return null;
+    }
+
+    public StepData GetPreviousMove(Dictionary<int, List<StepData>> dictionary)
+    {
+        if(timeStep - 1 > -1)
+        {
+            for (int i = 0; i < dictionary[timeStep - 1].Count; i++)
+            {
+                if (dictionary[timeStep - 1][i].componentID == componentID && dictionary[timeStep - 1][i].eventType == "M")
+                    return dictionary[timeStep - 1][i];
+            }
         }
         return null;
     }
