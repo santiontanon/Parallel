@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
-    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, simulation, awaitingSimulation }
+    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, ingame_help, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
     public enum InGamePhases { none, optionClicked, movingObject, placingObject }
@@ -78,7 +78,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public delegate void OnMenuInteractionDelegate(MenuOptions inputMenuOption);
     public static OnMenuInteractionDelegate onMenuInteraction;
-
+    
     public override void BeginPhase()
     {
         Debug.Log("BeginPhase");
@@ -133,7 +133,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void UpdatePhase()
 	{
-        Debug.Log(GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition));
 		if(interactionPhase == InteractionPhases.simulation)
 		{
 			GameManager.Instance.TriggerTrackUpdate();
@@ -353,6 +352,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.hintOverlay.SetHint(title,description,texture);
 	}
 
+    public void TriggerHint(string objectName)
+    {
+        bool success = false;
+        HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(objectName, out success);
+        if (success)
+            TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+        else
+            Debug.LogWarning("Failed to find hint for component of type: " + objectName);
+    }
+
 	public void BeginDrag(MenuOptions selectedOption)
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
@@ -511,13 +520,19 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	}
 		
+
+    // Behavior for Player Interaction
 	void PlayerInteractionListener()
 	{
+        // Mouse movement tracking
         lastMousePos = currentMousePos;
         currentMousePos = Input.mousePosition;
         deltaMousePos = currentMousePos - lastMousePos;
+
+        // Interaction Phases
         switch (interactionPhase)
 		{
+            // Default Phase
 			case InteractionPhases.ingame_default:
 				if(playerInteraction_UI.IsSubPanelOpen()) return;
                 /*
@@ -667,6 +682,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                 }
 			break;
+
+        // Dragging Phase
 		case InteractionPhases.ingame_dragging:
                 Debug.Log("dragging");
 			if(Input.GetKey(KeyCode.Mouse0))
@@ -721,6 +738,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 			}
 		break;
+
+        // Connection Phase
 		case InteractionPhases.ingame_connecting:
 
 			if(Input.GetKeyDown(KeyCode.Mouse1))
@@ -758,6 +777,30 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				currentGridObject.ContinueInteraction();
 			}
 		break;
+
+        // Help Phase
+        case InteractionPhases.ingame_help:
+            // On Left Click
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                    // Get Object at Mouse Position
+                    GridManager grid = GameManager.Instance.GetGridManager();
+                    GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
+
+                    // If there is an object here
+                    if (current_object)
+                    {
+                        // Display its hint UI
+                        string obj_name = current_object.component.type;
+                        TriggerHint(obj_name);
+                        // Testing to make sure the interaction worked, always displays Track Hint
+                        //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
+                        //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+                    }
+                }
+            break;
+
+        // Simulation Phase
 		case InteractionPhases.simulation:
 			simulationTime+=Time.deltaTime;
 		break;
@@ -1114,9 +1157,25 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	void ToggleHintsVisibility()
 	{
-		GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
-		if(playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf) { playerInteraction_UI.hintOverlay.ClosePanel(); }
-		playerInteraction_UI.UIOverlay_Hint_Container.gameObject.SetActive( !playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf );
+        // If the game is in the help phase
+        if (interactionPhase == InteractionPhases.ingame_help)
+        {
+            // Turn it off
+            interactionPhase = InteractionPhases.ingame_default;
+            GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
+        }
+        else
+        {
+            // Else, turn it on
+            interactionPhase = InteractionPhases.ingame_help;
+            GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
+        }
+
+
+        // Old Hint System
+		//GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
+		//if(playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf) { playerInteraction_UI.hintOverlay.ClosePanel(); }
+		//playerInteraction_UI.UIOverlay_Hint_Container.gameObject.SetActive( !playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf );
 
 	}
 

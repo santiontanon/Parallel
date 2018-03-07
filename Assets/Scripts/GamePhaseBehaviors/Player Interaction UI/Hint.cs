@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 [System.Serializable]
 public class HintConstructor {
+    public string hint_component_type;
 	public string hintTitle;
 	public string hintDescription;
 	public Sprite hintImage;
