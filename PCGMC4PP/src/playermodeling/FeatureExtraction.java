@@ -1,5 +1,7 @@
 package playermodeling;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -90,7 +92,7 @@ public class FeatureExtraction {
             "total_time_on_component",                      // Total amount of time on components
             "avg_time_on_component",                        // Computed as: total time on component / num_mouse_on_comp
 
-            "total_components",                             // Total number of components over all used track...
+            "total_components",                             // Total number of components over all USED track ( doing something on it...not just mousing/hovering )
             "tracks_used_components_per_track_avg",         // Total number of components over all used track / tracks used
             "avg_dragged_components_dist",
             "total_dragged_components_dist"
@@ -110,31 +112,34 @@ public class FeatureExtraction {
 
     }
 
-    private HashMap<String,String> parseComponentInformation( String comp_info ) {
-        /* TODO: Check whether this is actually right */
-        HashMap< String, String > info = new HashMap< String, String >();
-
-        String pruned = comp_info.substring(1,comp_info.length()-1);
-        pruned = pruned.replace("\"","");
-        String brackets = "\\[\\]";
-        String regex = String.format(",(?=([^%s]*:\\[.*\\])*[^%s]*$)",brackets,brackets);
-        String [] tmp = pruned.split(regex);
-        //String [] tmp = str.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-        //String [] tmp = pruned.split(",(?=([^\"]*:\".*\")*[^\"]*$)");
-        //String [] tmp = pruned.split(",");
-        for ( int i = 0; i < tmp.length; i++ ) {
-            String [] tmp2 = tmp[i].split(":");
-            //System.out.println("tmp: " + pruned + "&" + tmp[i]);
-            //System.out.println("Saved: " + saved);
-            info.put(tmp2[0],tmp2[1]);
-        }
-//        System.out.println("Component data: " + comp_info);
-//        System.out.println("--------------------------------------");
-//        for ( String s : info.keySet() ) {
-//            System.out.println("key,value: " + s + ":" + info.get(s));
-//        }
-//        System.out.println("--------------------------------------");
+    private HashMap<String,Object> parseComponentInformation( String comp_info ) {
+        /* TODO: Check whether this is actually right...apparently this is GSON.*/
+        Gson gson = new Gson();
+        HashMap<String,Object> info = gson.fromJson(comp_info,HashMap.class);
         return info;
+
+//        HashMap< String, String > info = new HashMap< String, String >();
+//        String pruned = comp_info.substring(1,comp_info.length()-1);
+//        pruned = pruned.replace("\"","");
+//        String brackets = "\\[\\]";
+//        String regex = String.format(",(?=([^%s]*:\\[.*\\])*[^%s]*$)",brackets,brackets);
+//        String [] tmp = pruned.split(regex);
+//        //String [] tmp = str.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+//        //String [] tmp = pruned.split(",(?=([^\"]*:\".*\")*[^\"]*$)");
+//        //String [] tmp = pruned.split(",");
+//        for ( int i = 0; i < tmp.length; i++ ) {
+//            String [] tmp2 = tmp[i].split(":");
+//            //System.out.println("tmp: " + pruned + "&" + tmp[i]);
+//            //System.out.println("Saved: " + saved);
+//            info.put(tmp2[0],tmp2[1]);
+//        }
+////        System.out.println("Component data: " + comp_info);
+////        System.out.println("--------------------------------------");
+////        for ( String s : info.keySet() ) {
+////            System.out.println("key,value: " + s + ":" + info.get(s));
+////        }
+////        System.out.println("--------------------------------------");
+//        return info;
     }
 
 
@@ -143,34 +148,24 @@ public class FeatureExtraction {
                                                           HashMap<String, ArrayList< String > > data_files) {
         HashMap< String, Double > feature_vector = new HashMap< String, Double >();
 
+        /* Used to store list of values for later computation */
         HashMap< String, ArrayList<Double> > list_map = new HashMap< String, ArrayList<Double> >();
 
-        Pair<Double,Double> ir_coord = new Pair<Double,Double>();
-        Pair<Double,Double> fr_coord = new Pair<Double,Double>();
-
-        Pair<Double,Double> il_coord = new Pair<Double,Double>();
-        Pair<Double,Double> fl_coord = new Pair<Double,Double>();
-
-        Pair<Double,Double> id_coord = new Pair<Double,Double>();
-        Pair<Double,Double> fd_coord = new Pair<Double,Double>();
+        Pair<Double,Double> ir_coord = new Pair<Double,Double>(), fr_coord = new Pair<Double,Double>();
+        Pair<Double,Double> il_coord = new Pair<Double,Double>(), fl_coord = new Pair<Double,Double>();
+        Pair<Double,Double> id_coord = new Pair<Double,Double>(), fd_coord = new Pair<Double,Double>();
 
         /* Initialize feature vector */
         for ( String f : features ) {
             feature_vector.put(f,0.0);
         }
 
-//        feature_vector['level'] = "slice"
-//        feature_vector['tutorial_time'] = 0.0
-
         if ( telemetry_at_interval.size() == 0 ) {
             return feature_vector;
         }
 
         String [] data = telemetry_at_interval.get(0).split("\t");
-        String date_ = data[0], name_ = data[1], data_ = data[2];
-        double time_ = Double.parseDouble(data[3]);
-        double x_ = Double.parseDouble(data[4]);
-        double y_ = Double.parseDouble(data[5]);
+        String date_ = data[0];
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
         LocalDateTime time = LocalDateTime.parse(date_,formatter);
@@ -179,27 +174,24 @@ public class FeatureExtraction {
         long s_ = ( time.toInstant(ZoneOffset.ofHours(0)).toEpochMilli() / 1000 );
 
         if ( !persistent_data.containsKey("start_time") ) {
+            //System.out.println("Time: " + s_);
             persistent_data.put("start_time", s_ );
         }
 
-//        feature_vector['start_date'] = date_
-//        feature_vector['start_time'] = float(s_ - persistent_data['start_time'])
-//
-//        feature_vector['_t_d_component_dragged_me_lst'] = []
-//        feature_vector['_timestamp_last_dragged_component'] = 0.0
-//
-//        start_time = None
-//        missing_files = []
+        /* Bad things happen in WEKA if we leave the date as is...so we convert it to the number of seconds since the epoch */
+        /* NOTE: We could convert this to a numerical version of the date.. */
+        feature_vector.replace("start_date", (double)s_);
+        feature_vector.replace("start_time", ((double)s_) - ((Long)persistent_data.get("start_time")).doubleValue() );
 
         for ( String telemetry : telemetry_at_interval ) {
             data = telemetry.split("\t");
             date_ = data[0];
-            name_ = data[1];
-            data_ = data[2];
+            String name_ = data[1];
+            String data_ = data[2];
 
-            time_ = Double.parseDouble(data[3]);
-            x_ = Double.parseDouble(data[4]);
-            y_ = Double.parseDouble(data[5]);
+            double time_ = Double.parseDouble(data[3]);
+            double x_ = Double.parseDouble(data[4]);
+            double y_ = Double.parseDouble(data[5]);
 
             formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
             time = LocalDateTime.parse(date_, formatter);
@@ -214,6 +206,7 @@ public class FeatureExtraction {
 
                     if (data_.length() != 0) {
                         if (data_.startsWith("l")) {
+                            /* If we have map information, that would be 100% useful to get more accurate feature... */
 
                             Long start_time = (Long)persistent_data.get("start_time");
 
@@ -224,12 +217,12 @@ public class FeatureExtraction {
                             persistent_data.put("cur_mouse_comp", "");
                             persistent_data.put("cur_mouse_time", 0.0);
                             persistent_data.put("linking", false);
+                            persistent_data.put("filename", data_);
 
                             persistent_data.put("direction_layout",new ArrayList<String>());
                             persistent_data.put("color_layout",new ArrayList<String>());
                             persistent_data.put("comp_link_map",new HashMap<String, String >());
                             persistent_data.put("comp_color_map",new HashMap<String, String >());
-
 
                             //level_num = data_.replace('level', '').replace('-', '')
                             //if level_num: data['seq'].append(level_num)
@@ -244,6 +237,7 @@ public class FeatureExtraction {
                             persistent_data.put("cur_mouse_comp", "");
                             persistent_data.put("cur_mouse_time", 0.0);
                             persistent_data.put("linking", false);
+                            persistent_data.put("filename", data_);
 
                             persistent_data.put("direction_layout",new ArrayList<String>());
                             persistent_data.put("color_layout",new ArrayList<String>());
@@ -292,21 +286,21 @@ public class FeatureExtraction {
                                                 } else {
                                                     String[] comp_info = line.split("\t");
                                                     /* Actual information about the component is located at index 6 */
-                                                    HashMap<String, String> info = parseComponentInformation(comp_info[6]);
+                                                    HashMap<String, Object> info = parseComponentInformation(comp_info[6]);
 
-                                                    if (info.containsKey("color")) {
+                                                    if ( info.containsKey("color") ) {
                                                         if ( persistent_data.containsKey("comp_color_map") ) {
                                                             HashMap<String, String > color_map = new HashMap<String,String>();
-                                                            color_map.put(comp_info[0],info.get("color"));
+                                                            color_map.put(comp_info[0],(String)info.get("color"));
                                                             persistent_data.replace("comp_color_map",color_map);
                                                         }
                                                         //persistent_data.put("comp_color_map") + comp_info[0], info.get("color"));
                                                     }
 
-                                                    if (info.containsKey("link")) {
+                                                    if ( info.containsKey("link") ) {
                                                         if ( persistent_data.containsKey("comp_link_map") ) {
                                                             HashMap<String, String > color_map = new HashMap<String,String>();
-                                                            color_map.put(comp_info[0],info.get("link"));
+                                                            color_map.put(comp_info[0],(String)info.get("link"));
                                                             persistent_data.replace("comp_link_map",color_map);
                                                         }
                                                         //persistent_data.put("comp_link_map_ " + comp_info[0], info.get("link"));
@@ -318,13 +312,12 @@ public class FeatureExtraction {
                                         incr++;
                                     }
                                     br.close();
-                                    // data['uploaded'] += 1
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
 
                             } else {
-                                /* File's missing */
+                                /* File's missing. This means a restart. */
                                 double n = feature_vector.get("me_replays");
                                 feature_vector.replace("me_replays", n + 1);
                             }
@@ -336,12 +329,11 @@ public class FeatureExtraction {
                     break;
                 case "endTutorial":
                     feature_vector.replace("tutorial_time", (s_ - feature_vector.get("start_time")) / 60.0);
-                    //feature_vector['tutorial_time'] = (float(s_) - feature_vector['start_time']) / 60.0
                     break;
                 case "SubmitCurrentLevelPlay":
                     double val = feature_vector.get("me_tests");
                     feature_vector.replace("me_tests", val + 1);
-                    if (feature_vector.containsKey("_timestamp_last_dragged_component")) {
+                    if ( feature_vector.containsKey("_timestamp_last_dragged_component") ) {
                         double t = s_ - feature_vector.get("_timestamp_last_dragged_component");
 
                         if (list_map.get("_t_d_component_dragged_me_lst_tests") == null) {
@@ -408,6 +400,7 @@ public class FeatureExtraction {
 
                     id_coord.reset();
                     fd_coord.reset();
+
                     n = feature_vector.get("total_dragged_components_dist");
                     feature_vector.replace("total_dragged_components_dist", n + dist);
 
@@ -437,9 +430,9 @@ public class FeatureExtraction {
                         continue;
                     }
                     String comp_id =  ((String)persistent_data.get("cur_mouse_comp")).split("/")[1];
-                    HashMap<String,String> tmp = (HashMap<String,String>) persistent_data.get("comp_color_map");
+                    HashMap<String,String> comp_color_map = (HashMap<String,String>) persistent_data.get("comp_color_map");
 
-                    if ( !tmp.containsKey(comp_id) ) {
+                    if ( !comp_color_map.containsKey(comp_id) ) {
                         continue;
                     }
 
@@ -448,9 +441,10 @@ public class FeatureExtraction {
 
                     double total_components = feature_vector.get("total_components");
 
-                    String color = tmp.get(comp_id);
-                    for ( String c : tmp.keySet() ) {
-                        if ( color.equals( tmp.get(c)) ) {
+                    String color = comp_color_map.get(comp_id);
+                    for ( String c : comp_color_map.keySet() ) {
+                        /* If we're on the same track.. */
+                        if ( color.equals( comp_color_map.get(c) ) ) {
                             total_components++;
                         }
                     }
@@ -468,10 +462,10 @@ public class FeatureExtraction {
                         continue;
                     }
                     comp_id =  ((String)persistent_data.get("cur_mouse_comp")).split("/")[1];
-                    tmp = (HashMap<String,String>) persistent_data.get("comp_color_map");
+                    comp_color_map = (HashMap<String,String>) persistent_data.get("comp_color_map");
 
 
-                    if ( !tmp.containsKey(comp_id) ) {
+                    if ( !comp_color_map.containsKey(comp_id) ) {
                         continue;
                     }
 
@@ -480,9 +474,9 @@ public class FeatureExtraction {
 
                     total_components = feature_vector.get("total_components");
 
-                    color = tmp.get(comp_id);
-                    for ( String c : tmp.keySet() ) {
-                        if ( color.equals( tmp.get(c)) ) {
+                    color = comp_color_map.get(comp_id);
+                    for ( String c : comp_color_map.keySet() ) {
+                        if ( color.equals( comp_color_map.get(c)) ) {
                             total_components++;
                         }
                     }
@@ -515,30 +509,30 @@ public class FeatureExtraction {
                     persistent_data.replace("cur_mouse_comp",data_);
                     persistent_data.replace("cur_mouse_time",time_);
 
-                    tmp = (HashMap<String,String>) persistent_data.get("comp_loc_map");
+                    HashMap<String,String> comp_loc_map = (HashMap<String,String>) persistent_data.get("comp_loc_map");
                     comp_id = data_.split("/")[1];
-                    if ( tmp == null ) {
+                    if ( comp_loc_map == null ) {
                         HashMap<String,String> loc_map = new HashMap<String,String>();
                         loc_map.put(comp_id,String.format("%f,%f",x_,y_));
                         persistent_data.put("comp_loc_map",loc_map);
                     } else {
-                        tmp.put(comp_id,String.format("%f,%f",x_,y_));
-                        persistent_data.put("comp_loc_map",tmp);
+                        comp_loc_map.put(comp_id,String.format("%f,%f",x_,y_));
+                        persistent_data.put("comp_loc_map",comp_loc_map);
                     }
 
-                    /* TODO: Finish translating this */
-                    HashMap< String, String > color_map = (HashMap< String, String >)persistent_data.get("comp_color_map");
-                    if ( color_map == null ) {
+                    comp_color_map = (HashMap< String, String >)persistent_data.get("comp_color_map");
+                    if ( comp_color_map == null ) {
+                        /* This really should never happen.. */
                         continue;
                     }
 
-                    if ( color_map.size() != 0 && color_map.containsKey(comp_id) ) {
+                    if ( comp_color_map.size() != 0 && comp_color_map.containsKey(comp_id) ) {
                         if ((Integer) persistent_data.get("cur_track") == -1) {
-                            persistent_data.replace("cur_track", Integer.parseInt(color_map.get(comp_id)));
-                        } else if ((Integer) persistent_data.get("cur_track") != Integer.parseInt(color_map.get(comp_id))) {
+                            persistent_data.replace("cur_track", Integer.parseInt(comp_color_map.get(comp_id)));
+                        } else if ((Integer) persistent_data.get("cur_track") != Integer.parseInt(comp_color_map.get(comp_id))) {
                             n = feature_vector.get("num_track_changes");
                             feature_vector.replace("num_track_changes", n + 1);
-                            persistent_data.replace("cur_track", color_map.get(comp_id));
+                            persistent_data.replace("cur_track", comp_color_map.get(comp_id));
                         } else {
                             n = feature_vector.get("num_track_no_changes");
                             feature_vector.replace("num_track_no_changes", n + 1);
@@ -546,22 +540,22 @@ public class FeatureExtraction {
                     }
 
                     if ( (Boolean)persistent_data.get("linking") ) {
-                            if ( color_map.size() != 0 ) {
-                                if ( color_map.containsKey(comp_id) ) {
-                                    n = feature_vector.get("num_tracks_used");
-                                    feature_vector.replace("num_tracks_used", n + 1);
+                        if ( comp_color_map.size() != 0 ) {
+                            if ( comp_color_map.containsKey(comp_id) ) {
+                                n = feature_vector.get("num_tracks_used");
+                                feature_vector.replace("num_tracks_used", n + 1);
 
-                                    total_components = feature_vector.get("total_components");
+                                total_components = feature_vector.get("total_components");
 
-                                    color = tmp.get(comp_id);
-                                    for (String c : tmp.keySet()) {
-                                        if (color.equals(tmp.get(c))) {
-                                            total_components++;
-                                        }
+                                color = comp_color_map.get(comp_id);
+                                for (String c : comp_color_map.keySet()) {
+                                    if (color.equals(comp_color_map.get(c))) {
+                                        total_components++;
                                     }
-                                    feature_vector.replace("total_components", total_components);
                                 }
+                                feature_vector.replace("total_components", total_components);
                             }
+                        }
                     }
                     persistent_data.replace("linking",false);
                     break;
@@ -600,6 +594,7 @@ public class FeatureExtraction {
 
                         n = feature_vector.get("popup_error");
                         feature_vector.replace("popup_error", n + 1);
+
                     } else if ( data_.contains("dead") ) {
 
                         n = feature_vector.get("popup_error_deadend");
@@ -629,9 +624,9 @@ public class FeatureExtraction {
         String last_line = telemetry_at_interval.get(telemetry_at_interval.size()-1);
         String [] split_last_line = last_line.split("\t");
         date_ = split_last_line[0];
-        name_ = split_last_line[1];
-        data_ = split_last_line[2];
-        time_ = Double.parseDouble(data[3]);
+        String name_ = split_last_line[1];
+        String data_ = split_last_line[2];
+        double time_ = Double.parseDouble(split_last_line[3]);
 
         formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
         time = LocalDateTime.parse(date_,formatter);
@@ -654,35 +649,36 @@ public class FeatureExtraction {
             me_total += feature_vector.get("me_" + s);
         }
 
+        /* NOTE: I'm not sure how good double comparison is here...but we'll use it for now... */
         if ( Double.compare(feature_vector.get("total_time"),0.0) != 0 ) {
             feature_vector.put("r_me_per_minute", me_total/(feature_vector.get("total_time")/60.0));
 
-            feature_vector.put("r_num_tracks_used_per_minute", feature_vector.get("num_tracks_used") / (feature_vector.get("total_time") / 60.0));
-            feature_vector.put("r_num_track_no_changes_per_minute", feature_vector.get("num_track_no_changes") / (feature_vector.get("total_time") / 60.0));
-            feature_vector.put("r_num_track_changes_per_minute", feature_vector.get("num_track_changes") / (feature_vector.get("total_time") / 60.0));
-            feature_vector.put("r_mouse_on_comp_per_minute",  feature_vector.get("num_mouse_on_comp") / (feature_vector.get("total_time") / 60.0));
-            feature_vector.put("r_dragged_components_per_minute", feature_vector.get("dragged") / (feature_vector.get("total_time") / 60.0));
-            feature_vector.put("r_hover_components_per_minute", feature_vector.get("hover") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_num_tracks_used_per_minute", feature_vector.get("num_tracks_used") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_num_track_no_changes_per_minute", feature_vector.get("num_track_no_changes") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_num_track_changes_per_minute", feature_vector.get("num_track_changes") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_mouse_on_comp_per_minute",  feature_vector.get("num_mouse_on_comp") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_dragged_components_per_minute", feature_vector.get("dragged") / (feature_vector.get("total_time") / 60.0));
+            feature_vector.replace("r_hover_components_per_minute", feature_vector.get("hover") / (feature_vector.get("total_time") / 60.0));
         }
 
         if ( Double.compare(feature_vector.get("num_mouse_on_comp"),0) != 0 ) {
-            feature_vector.put("avg_time_on_component", feature_vector.get("total_time_on_component") / feature_vector.get("num_mouse_on_comp") );
+            feature_vector.replace("avg_time_on_component", feature_vector.get("total_time_on_component") / feature_vector.get("num_mouse_on_comp") );
         }
 
         if ( Double.compare(feature_vector.get("dragged"),0) != 0 ) {
-            feature_vector.put("avg_dragged_components_dist", feature_vector.get("total_dragged_components_dist") / feature_vector.get("dragged") );
+            feature_vector.replace("avg_dragged_components_dist", feature_vector.get("total_dragged_components_dist") / feature_vector.get("dragged") );
         }
         if ( Double.compare(feature_vector.get("num_tracks_used"),0) != 0 ) {
-            feature_vector.put("tracks_used_components_per_track_avg", feature_vector.get("total_components") / feature_vector.get("num_tracks_used") );
+            feature_vector.replace("tracks_used_components_per_track_avg", feature_vector.get("total_components") / feature_vector.get("num_tracks_used") );
         }
 
         for ( String s : tsr  ) {
             if (Double.compare(feature_vector.get("total_time"), 0.0) != 0) {
-                feature_vector.put("r_me_" + s + "_per_minute", 1.0 * feature_vector.get("me_" + s) / (feature_vector.get("total_time") / 60.0));
+                feature_vector.replace("r_me_" + s + "_per_minute", 1.0 * feature_vector.get("me_" + s) / (feature_vector.get("total_time") / 60.0));
             }
 
             if ( Double.compare(me_total,0.0) != 0 ) {
-                feature_vector.put("r_me_" + s, feature_vector.get("me_" + s) / me_total);
+                feature_vector.replace("r_me_" + s, feature_vector.get("me_" + s) / me_total);
             }
         }
 
@@ -692,7 +688,6 @@ public class FeatureExtraction {
 
             for ( String j : list_map.keySet() ) {
                 if ( j.contains(s) || s.length() == 0 ) {
-
                     lst_.addAll(list_map.get(s));
                 }
             }
@@ -704,8 +699,8 @@ public class FeatureExtraction {
             avg = ( avg / (double)lst_.size() );
 
             if ( lst_.size() != 0 ) {
-                feature_vector.put("t_d_component_dragged_me" + s + "_avg", avg);
-                feature_vector.put("t_d_component_dragged_me" + s + "_min", Collections.min(lst_));
+                feature_vector.replace("t_d_component_dragged_me_" + s + "_avg", avg);
+                feature_vector.replace("t_d_component_dragged_me_" + s + "_min", Collections.min(lst_));
             }
         }
 

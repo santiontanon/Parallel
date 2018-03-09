@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 
 public class Simulation {
 
+
     private Classifier classifier;
     private TelemetryUtils tel_utils;
     private FeatureExtraction feat_extract;
@@ -33,27 +34,28 @@ public class Simulation {
 
     private ArrayList<Attribute> attributes;
     private Instances instances;
+    private String cur_level;
 
     public Simulation(String p, String slicefile, double ivl) {
         path = p;
         slices_file = slicefile;
         interval = ivl;
+        cur_level = "";
 
         classifier = new NaiveBayes();
         analyzer = new SkillAnalysis();
         tel_utils = new TelemetryUtils(path);
         feat_extract = new FeatureExtraction();
 
-
         /* Setup attributes */
         attributes = new ArrayList<Attribute>();
         for ( int i = 0; i < feat_extract.features.length; i++ ) {
             attributes.add(new Attribute(feat_extract.features[i]));
         }
+
         ArrayList<String> annotation_values = new ArrayList<String>();
         annotation_values.add("A"); annotation_values.add("B"); annotation_values.add("C");
         attributes.add(new Attribute("annotations",annotation_values));
-
     }
 
     private Instances getTrainingDataset(ArrayList<String> train_files) {
@@ -82,6 +84,7 @@ public class Simulation {
             persistent_data.put("cur_mouse_comp", "");
             persistent_data.put("cur_mouse_time", 0.0);
             persistent_data.put("linking", false);
+            persistent_data.put("filename","");
 
             persistent_data.put("direction_layout",new ArrayList<String>());
             persistent_data.put("color_layout",new ArrayList<String>());
@@ -149,13 +152,17 @@ public class Simulation {
                         break;
                     }
                 }
-//                System.out.println("----------------------------------");
-//                int i = 0;
-//                for ( String s : feat_extract.features ) {
-//                    System.out.print((i == feature_vector.size()-1) ? feature_vector.get(s) + "\n" : feature_vector.get(s) + ",");
-//                    i++;
-//                }
-//                System.out.println("----------------------------------");
+                System.out.println("----------------------------------");
+                int i = 0;
+                for ( String s : feat_extract.features ) {
+                    if( feature_vector.get(s) < 0.0 ) {
+                        System.err.println("A feature value is negative. This is inappropriate behavior. Exiting");
+                        System.exit(-1);
+                    }
+                    //System.out.print((i == feature_vector.size()-1) ? feature_vector.get(s) + "\n" : feature_vector.get(s) + ",");
+                    i++;
+                }
+                System.out.println("----------------------------------");
                 Instance new_instance = new DenseInstance(feature_vector.size()+1);
                 for ( Attribute a : attributes ) {
                     if ( a.name().equals("annotations") ) {
@@ -226,6 +233,7 @@ public class Simulation {
             persistent_data.put("cur_mouse_comp", "");
             persistent_data.put("cur_mouse_time", 0.0);
             persistent_data.put("linking", false);
+            persistent_data.put("filename","");
 
             persistent_data.put("direction_layout",new ArrayList<String>());
             persistent_data.put("color_layout",new ArrayList<String>());
@@ -243,15 +251,22 @@ public class Simulation {
 //                System.out.println(print_statement);
 //                System.out.println("---------------------------------------");
 //                for ( String s : tmp.p1 ) {
-//                    System.out.printlnCyanide and Happiness' (s);
+//                    System.out.println' (s);
 //                }
 //                System.out.println("---------------------------------------");
                 HashMap<String, Double> feature_vector = feat_extract.extractFeatureVector(path, tmp, persistent_data, data_files);
+                String level = (String)persistent_data.get("filename");
+                if ( !cur_level.equals(level) && level.startsWith("l") ) {
+                    // For now, only consider non-PCG levels
+                    cur_level = (String)persistent_data.get("filename");
+                    analyzer.reset();
+                    analyzer.readSkillList(cur_level);
+                }
 
                 double classification = classifyInstance(feature_vector);
-                System.out.println("Classified as: " + instances.classAttribute().value((int)classification));
+                //System.out.println("Classified as: " + instances.classAttribute().value((int)classification));
 
-
+                analyzer.updateSkills(instances.classAttribute().value((int)classification));
 
                 t1 += interval / 2.0;
                 t2 = t1 + interval;
@@ -339,6 +354,9 @@ public class Simulation {
                 return tmp[2];
             }
         }
+        System.err.println("Should never be here");
+        System.exit(-1);
+
         return "";
     }
 
