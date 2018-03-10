@@ -27,7 +27,7 @@ public class TimeStepData{
             ThreadData thread = new ThreadData();
             thread.id = _timeStep.threads[i].id;
             thread.pos = new Vector2(_timeStep.threads[i].pos.x, _timeStep.threads[i].pos.y);
-            thread.rotation = new Vector2(_timeStep.threads[i].rotation.x, _timeStep.threads[i].rotation.y);
+            thread.rotation = new Vector3(_timeStep.threads[i].rotation.x, _timeStep.threads[i].rotation.y, _timeStep.threads[i].rotation.z);
             timeStep.threads.Add(thread);
         }
         for (int i = 0; i < _timeStep.deliveryPoints.Count; i++)
@@ -90,7 +90,7 @@ public class ThreadData
 {
     public int id;
     public Vector2 pos;
-    public Vector2 rotation;
+    public Vector3 rotation;
     public Dictionary<int, bool> packages;
 }
 

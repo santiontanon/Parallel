@@ -54,6 +54,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
     {
         iTween.Stop(gameObject);
         gameObject.transform.position = new Vector3(timeStep.GetThread(component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(component.id).pos.y, 0);
+        gameObject.transform.eulerAngles = timeStep.GetThread(component.id).rotation;
         lastSimulationPosition = gameObject.transform.position;
     }
 

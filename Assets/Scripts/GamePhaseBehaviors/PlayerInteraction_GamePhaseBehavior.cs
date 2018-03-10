@@ -1027,7 +1027,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     ThreadData thread = new ThreadData();
                     thread.id = lvl.components[i].id;
                     thread.pos = Vector2.zero;
-                    thread.rotation = Vector2.up;
+                    Debug.Log(lvl.components[i].configuration.initial_direction);
+                    switch (lvl.components[i].configuration.initial_direction)
+                    {
+                        case "North": thread.rotation = new Vector3(0, 0, 90);  break;
+                        case "South": thread.rotation = new Vector3(0, 0, -90); break;
+                        case "East": thread.rotation = new Vector3(0, 0, 0); break;
+                        case "West": thread.rotation = new Vector3(0, 0, 180); break;
+                    }
                     thread.packages = new Dictionary<int, bool>();
                     timeStep.threads.Add(thread);
                     break;
@@ -1061,6 +1068,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 {
                     case "M":
                         timeStep.GetThread(stepDictionary[i][j].componentID).pos = stepDictionary[i][j].componentPos;
+                        if(i != 0)
+                        {
+                            Vector2 difference = timeSteps[timeSteps.Count - 1].GetThread(stepDictionary[i][j].componentID).pos - timeStep.GetThread(stepDictionary[i][j].componentID).pos;
+                            if (difference.x > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 180); }
+                            else if (difference.x < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 0); }
+                            else if (difference.y > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 90); }
+                            else if (difference.y < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, -90); }
+                        }
                         break;
                     case "D":
                         timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;

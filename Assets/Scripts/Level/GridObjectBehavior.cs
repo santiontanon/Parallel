@@ -393,7 +393,6 @@ public class GridObjectBehavior : MonoBehaviour
     {
         if (gameObject != null)
         {
-            iTween.Stop();
             switch (component.type)
             {
                 case "semaphore":
