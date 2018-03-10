@@ -389,11 +389,19 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 	}
 
-    public virtual void ReturnToStep(StepData step)
+    public virtual void ReturnToStep(TimeStepData timeStep)
     {
-        iTween.Stop(gameObject);
-        gameObject.transform.position = new Vector3(step.componentPos.x, GameManager.Instance.GetLevelHeight() - step.componentPos.y, 0);
-        lastSimulationPosition = gameObject.transform.position;
+        if (gameObject != null)
+        {
+            iTween.Stop();
+            switch (component.type)
+            {
+                case "semaphore":
+                    component.configuration.value = timeStep.GetSemaphore(component.id).open;
+                    GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite(component);
+                    break;
+            }
+        }
     }
 
 	public virtual void OnHoverBehavior()

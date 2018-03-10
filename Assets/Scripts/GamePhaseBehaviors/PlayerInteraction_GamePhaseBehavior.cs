@@ -782,12 +782,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	}
 
     Dictionary<int, List<StepData>> stepDictionary;
+
+    [SerializeField]
     List<TimeStepData> timeSteps;
 
     IEnumerator ParseSteps()
     {
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        Debug.Log(lvl.execution.Count);
         int maxStep = 0;
         stepDictionary = new Dictionary<int, List<StepData>>();
         Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
@@ -1041,7 +1042,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 case "semaphore":
                     SemaphoreData semaphore = new SemaphoreData();
                     semaphore.id = lvl.components[i].id;
-                    semaphore.open = false;
+                    semaphore.open = lvl.components[i].configuration.value;
+                    timeStep.sempahores.Add(semaphore);
                     break;
 
             }
@@ -1049,24 +1051,25 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         for (int i = 0; i < stepDictionary.Count; i++)
         {
-            for(int j = 0; j < stepDictionary[i].Count; j++)
+            if (i != 0)
+            {
+                timeStep = timeStep.Copy(timeSteps[i - 1]);
+            }
+            for (int j = 0; j < stepDictionary[i].Count; j++)
             {
                 switch (stepDictionary[i][j].eventType)
                 {
                     case "M":
-
+                        timeStep.GetThread(stepDictionary[i][j].componentID).pos = stepDictionary[i][j].componentPos;
                         break;
                     case "D":
-                        for(int k = 0; k < timeStep.deliveryPoints.Count; k++)
-                        {
-                            if(timeStep.deliveryPoints[k].id == stepDictionary[i][j].componentStatus.delivered_to)
-                            {
-                                timeStep.deliveryPoints[k].deliveries++;
-                            }
-                        }
+                        timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
                         break;
                     case "E":
-
+                        if(timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
+                        {
+                            timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
+                        }
                         break;
                 }
             }
@@ -1266,17 +1269,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
         for (int i = 0; i < lvl.components.Count; i++)
         {
-            if(lvl.components[i].type == "thread")
-            {
-                GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(lvl.components[i].id);
-                for(int j = 0; j < stepDictionary[currentStep].Count; j++)
-                {
-                    if(stepDictionary[currentStep][j].eventType == "M" && stepDictionary[currentStep][j].componentID == lvl.components[i].id)
-                    {
-                        g.ReturnToStep(stepDictionary[currentStep][j]);
-                    }
-                }
-            }
+            GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(lvl.components[i].id);
+            g.ReturnToStep(timeSteps[currentStep]);
         }
     }
 

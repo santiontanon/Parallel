@@ -83,7 +83,7 @@ public class Diverter_GridObjectBehavior : GridObjectBehavior {
 			break;
 		}
 	}
-	/*
+    /*
 	public override void BeginInteraction()
 	{
 	}
@@ -96,7 +96,8 @@ public class Diverter_GridObjectBehavior : GridObjectBehavior {
 	{
 	}
 	*/
-	public override void OnHoverBehavior()
+
+    public override void OnHoverBehavior()
 	{
 		if(component!=null)
 		{

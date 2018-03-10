@@ -50,9 +50,11 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 		ClearCabooses();
 	}
 
-    public override void ReturnToStep(StepData step)
+    public override void ReturnToStep(TimeStepData timeStep)
     {
-        base.ReturnToStep(step);
+        iTween.Stop(gameObject);
+        gameObject.transform.position = new Vector3(timeStep.GetThread(component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(component.id).pos.y, 0);
+        lastSimulationPosition = gameObject.transform.position;
     }
 
 	public void ClearCabooses()

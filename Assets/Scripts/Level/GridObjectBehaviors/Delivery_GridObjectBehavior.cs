@@ -66,6 +66,13 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 			fractionText.text = numerator.ToString() + "/" + denominator.ToString();
 		}
 
+        public void SetTo(int i)
+        {
+            numerator = i;
+            if (denominator == -1) return;
+            fractionText.text = numerator.ToString() + "/" + denominator.ToString();
+        }
+
 	}
 	public DeliveryFractionPopUp deliveryPopup;
 
@@ -196,6 +203,7 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 			}
 		}
 	}
+
 	public override void ResetPosition()
 	{
 		iTween.Stop(gameObject);
@@ -204,14 +212,13 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 		GetComponent<SpriteRenderer>().color = Color.white;
 	}
 
-    public override void ReturnToStep(StepData step)
+    public override void ReturnToStep(TimeStepData timeStep)
     {
-        deliveries = 0;
+        deliveryPopup.SetTo(timeStep.GetDeliveryPoint(component.id).deliveries);
     }
 
     public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
-        Debug.Log("Delivery Do Step: " + inputStep.eventType);
 		base.DoStep(inputStep);
 		if(inputStep.componentStatus.delivered != null)
 		{
@@ -228,7 +235,7 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 	public override void SuccessBehavior(Color successColor)
 	{
         Debug.Log("Success Behavior");
-		deliveries++;
+		//deliveries++;
 		if(GetComponent<iTween>()) return;
 		iTween.ScaleFrom( gameObject, Vector3.one*1.4f, 1.5f );
         iTween.ColorFrom(gameObject, Color.green, 1.5f);
