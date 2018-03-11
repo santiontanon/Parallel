@@ -1170,7 +1170,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
         }
-
+        TriggerHintFader();
 
         // Old Hint System
 		//GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
@@ -1178,6 +1178,33 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		//playerInteraction_UI.UIOverlay_Hint_Container.gameObject.SetActive( !playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf );
 
 	}
+
+    void TriggerHintFader()
+    {
+        bool fadeNonInteractables = (interactionPhase == InteractionPhases.ingame_help);
+        GridObjectBehavior[] gridObjects = GameManager.Instance.GetGridManager().RetrieveComponentsOfType();
+        foreach (GridObjectBehavior g in gridObjects)
+        {
+            bool success = false;
+            HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
+            if (success == false)
+            {
+                SpriteRenderer s = g.GetComponent<SpriteRenderer>();
+                s.color = new Color(s.color.r, s.color.g, s.color.b, fadeNonInteractables ? 0.5f : 1f);
+            } 
+            else { Debug.Log("Keeping Active: " + g.component.type); }
+        }
+
+        gridObjects = GameManager.Instance.GetGridManager().RetrieveTracks();
+        foreach (GridObjectBehavior g in gridObjects)
+        {
+            SpriteRenderer s = g.GetComponent<SpriteRenderer>();
+            s.color = new Color(s.color.r, s.color.g, s.color.b, fadeNonInteractables ? 0.5f : 1f);
+        }
+
+        Image backgroundImage = playerInteraction_UI.UICameraContainer.GetComponentInChildren<Image>();
+        backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, fadeNonInteractables ? 0.5f : 1f);
+    }
 
     void EndHoverEvent()
     {
