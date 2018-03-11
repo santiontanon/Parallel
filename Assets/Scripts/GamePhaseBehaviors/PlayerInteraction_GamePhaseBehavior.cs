@@ -1027,7 +1027,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     ThreadData thread = new ThreadData();
                     thread.id = lvl.components[i].id;
                     thread.pos = Vector2.zero;
-                    Debug.Log(lvl.components[i].configuration.initial_direction);
                     switch (lvl.components[i].configuration.initial_direction)
                     {
                         case "North": thread.rotation = new Vector3(0, 0, 90);  break;
@@ -1064,9 +1063,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         for (int i = 0; i < stepDictionary.Count; i++)
         {
+            for(int j = 0; j < timeStep.threads.Count; j++)
+            {
+                Debug.Log(timeStep.threads[j].packages.Count);
+            }
             if (i != 0)
             {
                 timeStep = timeStep.Copy(timeSteps[i - 1]);
+                timeStep.timeStep = i;
                 timeStep.previousStep = timeSteps[i - 1];
                 timeSteps[i - 1].nextStep = timeStep;
             }
@@ -1097,31 +1101,40 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         {
                             timeStep.GetPickup(stepDictionary[i][j].componentID).available = stepDictionary[i][j].componentStatus.available;
                         }
-                        /*else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
+                        else if (timeStep.GetThread(stepDictionary[i][j].componentID) != null)
                         {
+                            Debug.Log(i + " E Thread: " + stepDictionary[i][j].componentID);
                             if(stepDictionary[i][j].componentStatus.payload != null)
                             {
-                                for(int k = 0; k < i; k++)
+                                Debug.Log("Payload Data Found");
+                                timeStep.GetThread(stepDictionary[i][j].componentID).DisablePackages();
+                                for (int k = 0; k < stepDictionary[i][j].componentStatus.payload.Length; k++)
                                 {
-                                    if (timeSteps[k].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[0]))
+                                    for (int l = 0; l < i; l++)
                                     {
-
+                                        if (timeSteps[l].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]) == false)
+                                        {
+                                            PackageData package = new PackageData();
+                                            package.active = false;
+                                            package.id = stepDictionary[i][j].componentStatus.payload[k];
+                                            timeSteps[l].GetThread(stepDictionary[i][j].componentID).packages.Add(package);
+                                        }
+                                    }
+                                    if (timeStep.GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]))
+                                    {
+                                        timeStep.GetThread(stepDictionary[i][j].componentID).GetPackage(stepDictionary[i][j].componentStatus.payload[k]).active = true;
                                     }
                                     else
                                     {
-                                        timeSteps[k].GetThread(stepDictionary[i][j].componentID).packages.Add(timeSteps[k].GetThread(stepDictionary[i][j].componentID).packages.Count, true);
+                                        Debug.Log("Creating new package");
+                                        PackageData package = new PackageData();
+                                        package.active = true;
+                                        package.id = stepDictionary[i][j].componentStatus.payload[k];
+                                        timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(package);
                                     }
                                 }
-                                if ()
-                                {
-
-                                }
-                                else
-                                {
-                                    timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(timeStep.GetThread(stepDictionary[i][j].componentID).packages.Count, true);
-                                }
                             }
-                        }*/
+                        }
                         break;
                 }
             }

@@ -33,6 +33,14 @@ public class TimeStepData{
             thread.id = _timeStep.threads[i].id;
             thread.pos = new Vector2(_timeStep.threads[i].pos.x, _timeStep.threads[i].pos.y);
             thread.rotation = new Vector3(_timeStep.threads[i].rotation.x, _timeStep.threads[i].rotation.y, _timeStep.threads[i].rotation.z);
+            thread.packages = new List<PackageData>();
+            for(int j = 0; j < _timeStep.threads[i].packages.Count; j++)
+            {
+                PackageData package = new PackageData();
+                package.id = _timeStep.threads[i].packages[j].id;
+                package.active = _timeStep.threads[i].packages[j].active;
+                thread.packages.Add(package);
+            }
             timeStep.threads.Add(thread);
         }
         for (int i = 0; i < _timeStep.pickups.Count; i++)
@@ -115,11 +123,11 @@ public class ThreadData
     public int id;
     public Vector2 pos;
     public Vector3 rotation;
-    public Dictionary<int, PackageData> packages;
+    public List<PackageData> packages;
 
     public ThreadData()
     {
-        packages = new Dictionary<int, PackageData>();
+        packages = new List<PackageData>();
     }
 
     public bool ContainsPackage(int id)
@@ -132,6 +140,30 @@ public class ThreadData
             }
         }
         return false;
+    }
+
+    public PackageData GetPackage(int id)
+    {
+        for (int i = 0; i < packages.Count; i++)
+        {
+            if (packages[i].id == id)
+            {
+                return packages[i] ;
+            }
+        }
+        return null;
+    }
+
+    public void DisablePackages()
+    {
+        Debug.Log("Disable Packages");
+        Debug.Log("pakcage count: " + packages.Count);
+        for(int i = 0; i < packages.Count; i++)
+        {
+            Debug.Log(i);
+            packages[i].active = false;
+            Debug.Log(packages[i].active);
+        }
     }
 }
 
