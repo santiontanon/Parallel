@@ -1299,6 +1299,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                             GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(step.componentID);
                             if (g != null)
                             {
+                                if (g.timeStep == null)
+                                    g.SetTimestep(timeSteps[currentStep]);
                                 float time = g.DoStep(step, stepDictionary);
                                 if (time > waitTime)
                                     waitTime = time;

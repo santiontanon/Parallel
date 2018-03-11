@@ -18,6 +18,7 @@ public class GridObjectBehavior : MonoBehaviour
 	public GameObject teleportTrail;
 	public GameObject lockObject;
 	public Vector2 lastSimulationPosition;
+    public TimeStepData timeStep;
 	#endregion
 	[Header("Track")]
 	#region tracks
@@ -284,6 +285,10 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 	}
 
+    public void SetTimestep(TimeStepData timeStep)
+    {
+        this.timeStep = timeStep;
+    }
 
 	public virtual float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{

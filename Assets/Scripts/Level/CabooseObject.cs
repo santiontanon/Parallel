@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CabooseObject : MonoBehaviour {
-	public Transform followObject;
+	public Thread_GridObjectBehavior followObject;
 	public float followDistance;
 	public int packageOriginID;
 	Sprite cabooseSprite;
@@ -19,7 +19,7 @@ public class CabooseObject : MonoBehaviour {
 	void Update () {
 		if(!followObjectPassed)
 		{
-			if(Vector3.Distance(transform.position, followObject.position) <= 0.1f ) 
+			if(Vector3.Distance(transform.position, followObject.gameObject.transform.position) <= 0.1f ) 
 			{
 				Appear();
 				followObjectPassed = true;
@@ -32,7 +32,7 @@ public class CabooseObject : MonoBehaviour {
 
 	}
 
-	public void BeginFollow(Transform inputObject, float inputDistance, int inputOriginID)
+	public void BeginFollow(Thread_GridObjectBehavior inputObject, float inputDistance, int inputOriginID)
 	{
 		followObject = inputObject;
 		followDistance = inputDistance;
@@ -49,7 +49,15 @@ public class CabooseObject : MonoBehaviour {
 
 	public void FollowBehavior()
 	{
-		transform.position = Vector3.Lerp(transform.position, followObject.transform.position + (followObject.rotation*Vector3.right*-followDistance), 0.3f);
+        //transform.position = Vector3.Lerp(transform.position, followObject.transform.position + (followObject.gameObject.transform.rotation*Vector3.right*-followDistance), 0.3f);
+        TimeStepData timeStep = followObject.timeStep;
+        int followStep = timeStep.timeStep;
+        while(timeStep.timeStep != followStep - followDistance)
+        {
+            timeStep = timeStep.previousStep;
+        }
+        Vector3 targetPos = new Vector3(timeStep.GetThread(followObject.component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(followObject.component.id).pos.y, 0);
+        transform.position = Vector3.Lerp(transform.position, targetPos, 0.3f);
 	}
 
 	public void Disconnect()

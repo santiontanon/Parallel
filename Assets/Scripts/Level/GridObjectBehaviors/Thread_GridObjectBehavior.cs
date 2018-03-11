@@ -85,9 +85,21 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 		}
 	}
 
-
 	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
+        Debug.Log(this);
+        Debug.Log(timeStep);
+        while(timeStep.timeStep != inputStep.timeStep)
+        {
+            if(timeStep.timeStep > inputStep.timeStep)
+            {
+                timeStep = timeStep.previousStep;
+            }
+            else
+            {
+                timeStep = timeStep.nextStep;
+            }
+        }
 		if(behaviorType==BehaviorTypes.component && component!=null)
 		{
             if (inputStep.eventType == "M")
@@ -279,11 +291,11 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
             if (true /* item is in exchange */ )
             {
                 /* figure out where the exchange point is, spawn it there */
-                g.AddComponent<CabooseObject>().BeginFollow(transform, (float)trailObjectList.Count, payloadId);
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId);
             }
             else
             {
-                g.AddComponent<CabooseObject>().BeginFollow(transform, (float)trailObjectList.Count, payloadId);
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId);
             }
 
         }
