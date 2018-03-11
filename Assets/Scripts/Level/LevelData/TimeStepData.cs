@@ -6,15 +6,20 @@ public class TimeStepData{
 
     public int timeStep;
 
+    [SerializeField]
+    public TimeStepData previousStep;
+    [SerializeField]
+    public TimeStepData nextStep;
+
     public List<ThreadData> threads;
-    public List<PackageData> packages;
+    public List<PickupData> pickups;
     public List<DeliveryData> deliveryPoints;
     public List<SemaphoreData> sempahores;
 
     public TimeStepData()
     {
         threads = new List<ThreadData>();
-        packages = new List<PackageData>();
+        pickups = new List<PickupData>();
         deliveryPoints = new List<DeliveryData>();
         sempahores = new List<SemaphoreData>();
     }
@@ -29,6 +34,13 @@ public class TimeStepData{
             thread.pos = new Vector2(_timeStep.threads[i].pos.x, _timeStep.threads[i].pos.y);
             thread.rotation = new Vector3(_timeStep.threads[i].rotation.x, _timeStep.threads[i].rotation.y, _timeStep.threads[i].rotation.z);
             timeStep.threads.Add(thread);
+        }
+        for (int i = 0; i < _timeStep.pickups.Count; i++)
+        {
+            PickupData pickup = new PickupData();
+            pickup.id = _timeStep.pickups[i].id;
+            pickup.available = _timeStep.pickups[i].available;
+            timeStep.pickups.Add(pickup);
         }
         for (int i = 0; i < _timeStep.deliveryPoints.Count; i++)
         {
@@ -54,6 +66,18 @@ public class TimeStepData{
             if(threads[i].id == id)
             {
                 return threads[i];
+            }
+        }
+        return null;
+    }
+
+    public PickupData GetPickup(int id)
+    {
+        for (int i = 0; i < pickups.Count; i++)
+        {
+            if (pickups[i].id == id)
+            {
+                return pickups[i];
             }
         }
         return null;
@@ -91,7 +115,24 @@ public class ThreadData
     public int id;
     public Vector2 pos;
     public Vector3 rotation;
-    public Dictionary<int, bool> packages;
+    public Dictionary<int, PackageData> packages;
+
+    public ThreadData()
+    {
+        packages = new Dictionary<int, PackageData>();
+    }
+
+    public bool ContainsPackage(int id)
+    {
+        for(int i = 0; i < packages.Count; i++)
+        {
+            if(packages[i].id == id)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 [System.Serializable]
@@ -100,6 +141,13 @@ public class PackageData
     public int id;
     public bool active;
     public int following;
+}
+
+[System.Serializable]
+public class PickupData
+{
+    public int id;
+    public int available;
 }
 
 [System.Serializable]

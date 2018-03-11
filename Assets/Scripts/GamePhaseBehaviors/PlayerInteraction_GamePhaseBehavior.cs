@@ -1035,8 +1035,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         case "East": thread.rotation = new Vector3(0, 0, 0); break;
                         case "West": thread.rotation = new Vector3(0, 0, 180); break;
                     }
-                    thread.packages = new Dictionary<int, bool>();
                     timeStep.threads.Add(thread);
+                    break;
+
+                case "pickup":
+                    PickupData pickup = new PickupData();
+                    pickup.id = lvl.components[i].id;
+                    pickup.available = lvl.components[i].configuration.value;
+                    timeStep.pickups.Add(pickup);
                     break;
 
                 case "delivery":
@@ -1061,6 +1067,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             if (i != 0)
             {
                 timeStep = timeStep.Copy(timeSteps[i - 1]);
+                timeStep.previousStep = timeSteps[i - 1];
+                timeSteps[i - 1].nextStep = timeStep;
             }
             for (int j = 0; j < stepDictionary[i].Count; j++)
             {
@@ -1085,6 +1093,35 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         {
                             timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
                         }
+                        else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
+                        {
+                            timeStep.GetPickup(stepDictionary[i][j].componentID).available = stepDictionary[i][j].componentStatus.available;
+                        }
+                        /*else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
+                        {
+                            if(stepDictionary[i][j].componentStatus.payload != null)
+                            {
+                                for(int k = 0; k < i; k++)
+                                {
+                                    if (timeSteps[k].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[0]))
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        timeSteps[k].GetThread(stepDictionary[i][j].componentID).packages.Add(timeSteps[k].GetThread(stepDictionary[i][j].componentID).packages.Count, true);
+                                    }
+                                }
+                                if ()
+                                {
+
+                                }
+                                else
+                                {
+                                    timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(timeStep.GetThread(stepDictionary[i][j].componentID).packages.Count, true);
+                                }
+                            }
+                        }*/
                         break;
                 }
             }

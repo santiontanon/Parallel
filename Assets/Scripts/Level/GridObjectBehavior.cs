@@ -399,6 +399,11 @@ public class GridObjectBehavior : MonoBehaviour
                     component.configuration.value = timeStep.GetSemaphore(component.id).open;
                     GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite(component);
                     break;
+                case "pickup":
+                    component.configuration.value = timeStep.GetPickup(component.id).available;
+                    if (component.configuration.value >= 0) { iTween.ColorTo(gameObject, Color.white, 0.05f); iTween.ScaleTo(gameObject, Vector3.one, 0.05f); }
+                    else if (component.configuration.value < 0) { iTween.ColorTo(gameObject, new Color(0.5f, 0.5f, 0.5f), 0.05f); iTween.ScaleTo(gameObject, Vector3.one * 0.8f, 0.05f); }
+                    break;
             }
         }
     }
