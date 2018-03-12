@@ -137,9 +137,14 @@ public class Diverter_GridObjectBehavior : GridObjectBehavior {
 	}
 
 
-	/*
+    /*
 	public override void DoStep(StepData inputStep)
 	{
 	}
 	*/
+
+    public override void ReturnToStep(TimeStepData timeStep)
+    {
+        
+    }
 }

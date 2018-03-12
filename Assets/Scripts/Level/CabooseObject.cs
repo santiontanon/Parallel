@@ -37,27 +37,23 @@ public class CabooseObject : MonoBehaviour {
 		followObject = inputObject;
 		followDistance = inputDistance;
 		packageOriginID = inputOriginID;
-
-		/*if( Vector3.Distance ( GameManager.Instance.GetGridManager().GetGridObjectByID( inputOriginID ).transform.position, transform.position) >= 1f ) 
-		{ 
-			followObjectPassed = true;
-		}*/
-
 		followObjectPassed = true;
 		Appear();
 	}
 
 	public void FollowBehavior()
 	{
-        //transform.position = Vector3.Lerp(transform.position, followObject.transform.position + (followObject.gameObject.transform.rotation*Vector3.right*-followDistance), 0.3f);
         TimeStepData timeStep = followObject.timeStep;
         int followStep = timeStep.timeStep;
         while(timeStep.timeStep != followStep - followDistance)
         {
-            timeStep = timeStep.previousStep;
+            if (timeStep.timeStep > followStep - followDistance)
+                timeStep = timeStep.previousStep;
+            else
+                timeStep = timeStep.nextStep;
         }
         Vector3 targetPos = new Vector3(timeStep.GetThread(followObject.component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(followObject.component.id).pos.y, 0);
-        transform.position = Vector3.Lerp(transform.position, targetPos, 0.3f);
+        transform.position = Vector3.Lerp(transform.position, targetPos, 5f);
 	}
 
 	public void Disconnect()

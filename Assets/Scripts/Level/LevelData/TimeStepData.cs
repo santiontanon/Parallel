@@ -15,6 +15,7 @@ public class TimeStepData{
     public List<PickupData> pickups;
     public List<DeliveryData> deliveryPoints;
     public List<SemaphoreData> sempahores;
+    public List<ConditionalData> conditionals;
 
     public TimeStepData()
     {
@@ -22,6 +23,7 @@ public class TimeStepData{
         pickups = new List<PickupData>();
         deliveryPoints = new List<DeliveryData>();
         sempahores = new List<SemaphoreData>();
+        conditionals = new List<ConditionalData>();
     }
 
     public TimeStepData Copy(TimeStepData _timeStep)
@@ -63,6 +65,18 @@ public class TimeStepData{
             semaphore.id = _timeStep.sempahores[i].id;
             semaphore.open = _timeStep.sempahores[i].open;
             timeStep.sempahores.Add(semaphore);
+        }
+        for (int i = 0; i < _timeStep.conditionals.Count; i++)
+        {
+            ConditionalData conditional = new ConditionalData();
+            conditional.id = _timeStep.conditionals[i].id;
+            conditional.current = _timeStep.conditionals[i].current;
+            conditional.directions = new string[_timeStep.conditionals[i].directions.Length];
+            for(int j = 0; j < _timeStep.conditionals[i].directions.Length; j++)
+            {
+                conditional.directions[j] = _timeStep.conditionals[i].directions[j];
+            }
+            timeStep.conditionals.Add(conditional);
         }
         return timeStep;
     }
@@ -115,6 +129,18 @@ public class TimeStepData{
         return null;
     }
 
+    public ConditionalData GetConditional(int id)
+    {
+        for (int i = 0; i < conditionals.Count; i++)
+        {
+            if (conditionals[i].id == id)
+            {
+                return conditionals[i];
+            }
+        }
+        return null;
+    }
+
 }
 
 [System.Serializable]
@@ -156,13 +182,9 @@ public class ThreadData
 
     public void DisablePackages()
     {
-        Debug.Log("Disable Packages");
-        Debug.Log("pakcage count: " + packages.Count);
         for(int i = 0; i < packages.Count; i++)
         {
-            Debug.Log(i);
             packages[i].active = false;
-            Debug.Log(packages[i].active);
         }
     }
 }
@@ -194,4 +216,12 @@ public class SemaphoreData
 {
     public int id;
     public int open;
+}
+
+[System.Serializable]
+public class ConditionalData
+{
+    public int id;
+    public int current;
+    public string[] directions;
 }

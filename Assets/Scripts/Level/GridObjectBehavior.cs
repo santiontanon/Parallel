@@ -409,6 +409,15 @@ public class GridObjectBehavior : MonoBehaviour
                     if (component.configuration.value >= 0) { iTween.ColorTo(gameObject, Color.white, 0.05f); iTween.ScaleTo(gameObject, Vector3.one, 0.05f); }
                     else if (component.configuration.value < 0) { iTween.ColorTo(gameObject, new Color(0.5f, 0.5f, 0.5f), 0.05f); iTween.ScaleTo(gameObject, Vector3.one * 0.8f, 0.05f); }
                     break;
+                case "conditional":
+                    component.configuration.current = timeStep.GetConditional(component.id).current;
+                    for(int i = 0; i < conditionalDirections.Count; i++)
+                    {
+                        SpriteRenderer instanceSpriteRenderer = conditionalDirections[i].GetComponent<SpriteRenderer>();
+                        if (i == component.configuration.current) { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 1f); }
+                        else { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); }
+                    }
+                    break;
             }
         }
     }

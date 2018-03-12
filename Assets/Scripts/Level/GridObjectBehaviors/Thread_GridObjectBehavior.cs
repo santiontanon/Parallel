@@ -54,6 +54,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
     {
         //thread
         iTween.Stop(gameObject);
+        this.timeStep = timeStep;
         gameObject.transform.position = new Vector3(timeStep.GetThread(component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(component.id).pos.y, 0);
         gameObject.transform.eulerAngles = timeStep.GetThread(component.id).rotation;
         lastSimulationPosition = gameObject.transform.position;
@@ -87,8 +88,6 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
-        Debug.Log(this);
-        Debug.Log(timeStep);
         while(timeStep.timeStep != inputStep.timeStep)
         {
             if(timeStep.timeStep > inputStep.timeStep)

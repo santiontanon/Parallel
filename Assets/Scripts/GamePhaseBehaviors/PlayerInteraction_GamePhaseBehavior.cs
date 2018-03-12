@@ -1058,15 +1058,19 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     timeStep.sempahores.Add(semaphore);
                     break;
 
+                case "conditional":
+                    ConditionalData conditional = new ConditionalData();
+                    conditional.id = lvl.components[i].id;
+                    conditional.current = lvl.components[i].configuration.current;
+                    conditional.directions = lvl.components[i].configuration.directions;
+                    timeStep.conditionals.Add(conditional);
+                    break;
+
             }
         }
 
         for (int i = 0; i < stepDictionary.Count; i++)
         {
-            for(int j = 0; j < timeStep.threads.Count; j++)
-            {
-                Debug.Log(timeStep.threads[j].packages.Count);
-            }
             if (i != 0)
             {
                 timeStep = timeStep.Copy(timeSteps[i - 1]);
@@ -1093,7 +1097,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
                         break;
                     case "E":
-                        if(timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
+                        if (timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
                         {
                             timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
                         }
@@ -1103,10 +1107,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         }
                         else if (timeStep.GetThread(stepDictionary[i][j].componentID) != null)
                         {
-                            Debug.Log(i + " E Thread: " + stepDictionary[i][j].componentID);
-                            if(stepDictionary[i][j].componentStatus.payload != null)
+                            if (stepDictionary[i][j].componentStatus.payload != null)
                             {
-                                Debug.Log("Payload Data Found");
                                 timeStep.GetThread(stepDictionary[i][j].componentID).DisablePackages();
                                 for (int k = 0; k < stepDictionary[i][j].componentStatus.payload.Length; k++)
                                 {
@@ -1126,7 +1128,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                                     }
                                     else
                                     {
-                                        Debug.Log("Creating new package");
                                         PackageData package = new PackageData();
                                         package.active = true;
                                         package.id = stepDictionary[i][j].componentStatus.payload[k];
@@ -1134,6 +1135,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                                     }
                                 }
                             }
+                        }
+                        else if(timeStep.GetConditional(stepDictionary[i][j].componentID) != null)
+                        {
+                            timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
                         }
                         break;
                 }

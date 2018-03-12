@@ -56,6 +56,7 @@ public class Status
 	public int available = -1;
 	//public int[] missed = new int[]{};
 	public int[] payload = new int[]{};
+    public int current = -1;
 	public int goals_completed = 0;
 	public int exchange_between_b = 0;
 	public int exchange_between_a = 0;
