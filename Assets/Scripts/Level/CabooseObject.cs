@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CabooseObject : MonoBehaviour {
 	public Thread_GridObjectBehavior followObject;
+    public bool instant;
 	public float followDistance;
 	public int packageOriginID;
 	Sprite cabooseSprite;
@@ -32,12 +33,13 @@ public class CabooseObject : MonoBehaviour {
 
 	}
 
-	public void BeginFollow(Thread_GridObjectBehavior inputObject, float inputDistance, int inputOriginID)
+	public void BeginFollow(Thread_GridObjectBehavior inputObject, float inputDistance, int inputOriginID, bool instant)
 	{
 		followObject = inputObject;
 		followDistance = inputDistance;
 		packageOriginID = inputOriginID;
 		followObjectPassed = true;
+        this.instant = instant;
 		Appear();
 	}
 
@@ -53,7 +55,10 @@ public class CabooseObject : MonoBehaviour {
                 timeStep = timeStep.nextStep;
         }
         Vector3 targetPos = new Vector3(timeStep.GetThread(followObject.component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(followObject.component.id).pos.y, 0);
-        transform.position = Vector3.Lerp(transform.position, targetPos, 5f);
+        if (instant == false)
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, 0.1f);
+        else
+            transform.position = targetPos;
 	}
 
 	public void Disconnect()

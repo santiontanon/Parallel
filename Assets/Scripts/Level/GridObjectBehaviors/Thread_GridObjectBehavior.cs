@@ -68,7 +68,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
                 packageIds.Add(timeStep.GetThread(component.id).packages[i].id);
             }
         }
-        UpdateCabooses(packageIds);
+        UpdateCabooses(packageIds, true);
     }
 
 	public void ClearCabooses()
@@ -142,7 +142,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
                         }
                         else
                         {
-                            UpdateCabooses(inputStep.componentStatus.payload);
+                            UpdateCabooses(inputStep.componentStatus.payload, false);
                         }
                     }
                 }
@@ -218,7 +218,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
         return 0;
 	}
 
-    void UpdateCabooses(IEnumerable<int> payloadIds)
+    void UpdateCabooses(IEnumerable<int> payloadIds, bool instant)
     {
         List<int> currentCabooses = new List<int>();
         currentCabooses.AddRange(payloadIds);
@@ -290,11 +290,11 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
             if (true /* item is in exchange */ )
             {
                 /* figure out where the exchange point is, spawn it there */
-                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId);
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId, instant);
             }
             else
             {
-                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId);
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId, instant);
             }
 
         }
