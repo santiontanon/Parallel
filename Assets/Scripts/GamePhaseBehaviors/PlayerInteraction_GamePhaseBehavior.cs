@@ -1192,7 +1192,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 SpriteRenderer s = g.GetComponent<SpriteRenderer>();
                 s.color = new Color(s.color.r, s.color.g, s.color.b, fadeNonInteractables ? 0.5f : 1f);
             } 
-            else { Debug.Log("Keeping Active: " + g.component.type); }
+            else
+            {
+                g.SetHighlight(fadeNonInteractables);
+                Debug.Log("Keeping Active: " + g.component.type);
+            }
         }
 
         gridObjects = GameManager.Instance.GetGridManager().RetrieveTracks();
