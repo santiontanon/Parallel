@@ -48,14 +48,14 @@ public class StepData {
 public class Status 
 {
 	public int final_condition = -1;
-    public string[] goal_descriptions = new string[] { };
+    public string[] goal_descriptions;
 	public int speed = -1;
 	public int value = 0;
 	public int passed = 0;
 	public int delivered = 0;
 	public int available = -1;
-	//public int[] missed = new int[]{};
-	public int[] payload = new int[]{};
+    //public int[] missed = new int[]{};
+    public int[] payload;
     public int current = -1;
 	public int goals_completed = 0;
 	public int exchange_between_b = 0;
@@ -64,8 +64,8 @@ public class Status
 	public int delivered_from = 0;
 	//public int missed_items = 0;
 	public int missed = 0;
-	public int[] missed_items = new int[]{};
-	public int[] delivered_items = new int[]{};
+    public int[] missed_items;
+    public int[] delivered_items;
 }
 
 
