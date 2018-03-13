@@ -1138,7 +1138,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         }
                         else if(timeStep.GetConditional(stepDictionary[i][j].componentID) != null)
                         {
-                            timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
+                            if(stepDictionary[i][j].componentStatus.current != -1)
+                            {
+                                timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
+                            }
                         }
                         break;
                 }
