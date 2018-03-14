@@ -104,11 +104,11 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
             if (inputStep.eventType == "M")
             {
                 Vector2 reverseYposition = new Vector2(inputStep.componentPos.x, GameManager.Instance.GetLevelHeight() - inputStep.componentPos.y);
-                if (inputStep.GetNextMove(dictionary) != null)
+                /*if (inputStep.GetNextMove(dictionary) != null)
                 {
                     StepData nextStep = inputStep.GetNextMove(dictionary);
                     reverseYposition = new Vector2(nextStep.componentPos.x, GameManager.Instance.GetLevelHeight() - nextStep.componentPos.y);
-                }
+                }*/
 
                 float xDiff = Mathf.Abs(Vector2.Distance(new Vector2(gameObject.transform.position.x, 0), new Vector2(reverseYposition.x, 0)));
                 float yDiff = Mathf.Abs(Vector2.Distance(new Vector2(0, gameObject.transform.position.y), new Vector2(0, reverseYposition.y)));
@@ -250,7 +250,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
         {
             GridObjectBehavior payloadObject = GameManager.Instance.GetGridManager().GetGridObjectByID(payloadId);
             GameObject g = new GameObject();
-            g.transform.position = payloadObject.transform.position;
+            g.transform.position = gameObject.transform.position;
             g.transform.localScale = Vector3.zero;
 
             trailObjectList.Add(g);
