@@ -9,6 +9,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
+    public Playback_PlayerInteractionPhaseBehavior playbackBehavior;
+
     public enum InGamePhases { none, optionClicked, movingObject, placingObject }
     public enum MenuOptions { pause, semaphore, button, trash, simulate }
 
@@ -24,11 +26,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public LevelScore score;
 
-    bool paused;
     public bool tutorialMode;
     bool dragging;
 
-    float simulationTime = 0f;
     float stationaryTime = 0f;
     Dictionary<int, List<StepData>> simulationDStepDictionary = new Dictionary<int, List<StepData>>();
 
@@ -82,9 +82,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     public override void BeginPhase()
     {
         Debug.Log("BeginPhase");
-        pauseSimulation += PauseSimulation;
-        unpauseSimulation += UnpauseSimulation;
-        delayedUnpause += DelayedUnpause;
+        pauseSimulation += playbackBehavior.PauseSimulation;
+        unpauseSimulation += playbackBehavior.UnpauseSimulation;
+        delayedUnpause += playbackBehavior.DelayedUnpause;
 
         playerInteraction_UI.SetText(GameManager.Instance.GetDataManager().currentLevelData);
         playerInteraction_UI.OpenUI();
@@ -233,12 +233,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 
         playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(() => { PauseSimulation(); });
+        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(() => { playbackBehavior.PauseSimulation(); });
         playerInteraction_UI.pauseSimulationButton.interactable = false;
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
 
         playerInteraction_UI.playbackSlider.onValueChanged.RemoveAllListeners();
-        playerInteraction_UI.playbackSlider.onValueChanged.AddListener((float value) => { OnTimeSliderValueChanged((int)value); });
+        playerInteraction_UI.playbackSlider.onValueChanged.AddListener((float value) => { playbackBehavior.OnTimeSliderValueChanged((int)value); });
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 
@@ -436,7 +436,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
-	void ResetStartValues()
+	public void ResetStartValues()
 	{
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
@@ -449,7 +449,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         if (connectVisibilityLock) { ToggleConnectionVisibility(); }
     }
 
-    void TriggerSimulation(LinkJava.SimulationTypes simulationType)
+    public void TriggerSimulation(LinkJava.SimulationTypes simulationType)
     {
         if (tutorialMode)
         {
@@ -466,12 +466,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     }
 
     [ContextMenu("Reset Placed Objects")]
-    void ResetPlacedObjects()
+    public void ResetPlacedObjects()
     {
         GameManager.Instance.GetGridManager().ClearGrid(false);
     }
 
-    void TriggerTutorialSimulation()
+    public void TriggerTutorialSimulation()
     {
 
     }
@@ -500,15 +500,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         ResetZoom();
 
 
-        simulationTime = 0f;
 		playerInteraction_UI.goalOverlay.userInput = PlayerInteraction_UI.Goal_UIOverlay.UserInputs.none;
-		StartCoroutine( ParseSteps() );
+        playbackBehavior.StartPhase();
 	}
 
-	void EndSimulation()
+    public void EndSimulation()
 	{
         Debug.Log("EndSimulation");
-		StopCoroutine( ParseSteps() );
+        playbackBehavior.EndPhase();
 
         tutorialMode = false;
 
@@ -526,8 +525,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 	}
-		
-	void PlayerInteractionListener()
+
+    public void PlayerInteractionListener()
 	{
         lastMousePos = currentMousePos;
         currentMousePos = Input.mousePosition;
@@ -774,632 +773,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				currentGridObject.ContinueInteraction();
 			}
 		break;
-		case InteractionPhases.simulation:
-			simulationTime+=Time.deltaTime;
 		break;
 		}
 
 	}
-
-    Dictionary<int, List<StepData>> stepDictionary;
-
-    [SerializeField]
-    List<TimeStepData> timeSteps;
-
-    IEnumerator ParseSteps()
-    {
-        Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        int maxStep = 0;
-        stepDictionary = new Dictionary<int, List<StepData>>();
-        Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
-        timeSteps = new List<TimeStepData>();
-        List<GridComponent> threads = new List<GridComponent>();
-
-        foreach (GridComponent g in lvl.components)
-        {
-            if(g.type == "thread")
-            {
-                threads.Add(g);
-            }
-        }
-
-        for (int i = 0; i < lvl.execution.Count; i++)
-        {
-            yield return new WaitForEndOfFrame();
-            StepData step = lvl.execution[i];
-
-            if (step.timeStep > maxStep)
-            {
-                maxStep = step.timeStep;
-            }
-
-            if (step.eventType == "M")
-            {
-                if (!componentStepsDictionary.ContainsKey(step.componentID)) { componentStepsDictionary.Add(step.componentID, new List<int>()); componentStepsDictionary[step.componentID].Add(i); }
-                else { componentStepsDictionary[step.componentID].Add(i); }
-            }
-
-            if (stepDictionary.ContainsKey(step.timeStep))
-            {
-                if (step.eventType == "D")
-                {
-                    stepDictionary[step.timeStep].Insert(0, step);
-                }
-                else
-                {
-                    stepDictionary[step.timeStep].Add(step);
-                }
-            }
-            else
-            {
-                stepDictionary[step.timeStep] = new List<StepData>();
-                stepDictionary[step.timeStep].Add(step);
-            }
-        }
-
-        //create in between steps for thread movements
-        for(int i = 0; i <= maxStep; i++)
-        {
-            if (stepDictionary.ContainsKey(i) == false)
-                stepDictionary.Add(i, new List<StepData>());
-            if (stepDictionary[i] == null)
-                stepDictionary[i] = new List<StepData>();
-            if(stepDictionary[i].Count == 0)
-            {
-                for(int j = 0; j < threads.Count; j++)
-                {
-                    Vector2 prevPos = new Vector2();
-                    for(int k = 0; k < stepDictionary[i-1].Count; k++)
-                    {
-                        if(stepDictionary[i-1][k].eventType == "M" && stepDictionary[i-1][k].componentID == threads[j].id)
-                        {
-                            prevPos = stepDictionary[i - 1][k].componentPos;
-                        }
-                    }
-
-                    Vector2 nextPos = prevPos;
-                    bool end = false;
-                    for (int k = i + 1; k < stepDictionary.Count; k++)
-                    {
-                        if (stepDictionary.ContainsKey(k))
-                            {
-                                for (int l = 0; l < stepDictionary[k].Count; l++)
-                                {
-                                    if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
-                                    {
-                                        if (stepDictionary[k][l].componentPos != prevPos)
-                                        {
-                                            if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
-                                            {
-                                                if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
-                                                {
-                                                    if (prevPos.x != stepDictionary[k][l].componentPos.x)
-                                                    {
-                                                        if (prevPos.x > stepDictionary[k][l].componentPos.x)
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x - 1, nextPos.y);
-                                                        }
-                                                        else
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x + 1, nextPos.y);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if (prevPos.y > stepDictionary[k][l].componentPos.y)
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x, nextPos.y - 1);
-                                                        }
-                                                        else
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x, nextPos.y + 1);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        end = true;
-                                        break;
-                                    }
-                                }
-                                if (end == true)
-                                {
-                                    break;
-                                }
-                            }
-                    }
-
-                    StepData newStep = new StepData();
-                    newStep.componentID = threads[j].id;
-                    newStep.componentPos = nextPos;
-                    newStep.eventType = "M";
-                    newStep.timeStep = i;
-
-                    stepDictionary[i].Add(newStep);
-                }
-                
-            }
-            else
-            {
-                List<bool> hasTimeStepData = new List<bool>();
-                for (int j = 0; j < threads.Count; j++)
-                {
-                    hasTimeStepData.Add(false);
-                }
-
-                for (int j = 0; j < stepDictionary[i].Count; j++)
-                {
-                    if(stepDictionary[i][j].eventType == "M")
-                    {
-                        for (int k = 0; k < threads.Count; k++)
-                        {
-                            if(threads[k].id == stepDictionary[i][j].componentID)
-                            {
-                                hasTimeStepData[k] = true;
-                            }
-                        }
-                    }
-                }
-
-                for(int j = 0; j < hasTimeStepData.Count; j++)
-                {
-                    if(hasTimeStepData[j] == false)
-                    {
-                        Vector2 prevPos = new Vector2();
-                        for (int k = 0; k < stepDictionary[i - 1].Count; k++)
-                        {
-                            if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
-                            {
-                                prevPos = stepDictionary[i - 1][k].componentPos;
-                            }
-                        }
-
-                        Vector2 nextPos = prevPos;
-                        bool end = false;
-                        for (int k = i + 1; k < stepDictionary.Count; k++)
-                        {
-                            if (stepDictionary.ContainsKey(k))
-                            {
-                                for (int l = 0; l < stepDictionary[k].Count; l++)
-                                {
-                                    if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
-                                    {
-                                        if (stepDictionary[k][l].componentPos != prevPos)
-                                        {
-                                            if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
-                                            {
-                                                if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
-                                                {
-                                                    if (prevPos.x != stepDictionary[k][l].componentPos.x)
-                                                    {
-                                                        if (prevPos.x > stepDictionary[k][l].componentPos.x)
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x - 1, nextPos.y);
-                                                        }
-                                                        else
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x + 1, nextPos.y);
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        if (prevPos.y > stepDictionary[k][l].componentPos.y)
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x, nextPos.y - 1);
-                                                        }
-                                                        else
-                                                        {
-                                                            nextPos = new Vector2(nextPos.x, nextPos.y + 1);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        end = true;
-                                        break;
-                                    }
-                                }
-                                if (end == true)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-
-                        StepData newStep = new StepData();
-                        newStep.componentID = threads[j].id;
-                        newStep.componentPos = nextPos;
-                        newStep.eventType = "M";
-                        newStep.timeStep = i;
-
-                        stepDictionary[i].Add(newStep);
-                    }
-                }
-            }
-        }
-
-        TimeStepData timeStep = new TimeStepData();
-        for(int i = 0; i < lvl.components.Count; i++)
-        {
-            switch (lvl.components[i].type)
-            {
-                case "thread":
-                    ThreadData thread = new ThreadData();
-                    thread.id = lvl.components[i].id;
-                    thread.pos = Vector2.zero;
-                    switch (lvl.components[i].configuration.initial_direction)
-                    {
-                        case "North": thread.rotation = new Vector3(0, 0, 90);  break;
-                        case "South": thread.rotation = new Vector3(0, 0, -90); break;
-                        case "East": thread.rotation = new Vector3(0, 0, 0); break;
-                        case "West": thread.rotation = new Vector3(0, 0, 180); break;
-                    }
-                    timeStep.threads.Add(thread);
-                    break;
-
-                case "pickup":
-                    PickupData pickup = new PickupData();
-                    pickup.id = lvl.components[i].id;
-                    pickup.available = lvl.components[i].configuration.value;
-                    timeStep.pickups.Add(pickup);
-                    break;
-
-                case "delivery":
-                    DeliveryData delivery = new DeliveryData();
-                    delivery.id = lvl.components[i].id;
-                    delivery.deliveries = 0;
-                    timeStep.deliveryPoints.Add(delivery);
-                     break;
-
-                case "semaphore":
-                    SemaphoreData semaphore = new SemaphoreData();
-                    semaphore.id = lvl.components[i].id;
-                    semaphore.open = lvl.components[i].configuration.value;
-                    timeStep.sempahores.Add(semaphore);
-                    break;
-
-                case "conditional":
-                    ConditionalData conditional = new ConditionalData();
-                    conditional.id = lvl.components[i].id;
-                    conditional.current = lvl.components[i].configuration.current;
-                    conditional.directions = lvl.components[i].configuration.directions;
-                    timeStep.conditionals.Add(conditional);
-                    break;
-
-            }
-        }
-
-        for (int i = 0; i < stepDictionary.Count; i++)
-        {
-            if (i != 0)
-            {
-                timeStep = timeStep.Copy(timeSteps[i - 1]);
-                timeStep.timeStep = i;
-                timeStep.previousStep = timeSteps[i - 1];
-                timeSteps[i - 1].nextStep = timeStep;
-            }
-            for (int j = 0; j < stepDictionary[i].Count; j++)
-            {
-                switch (stepDictionary[i][j].eventType)
-                {
-                    case "M":
-                        timeStep.GetThread(stepDictionary[i][j].componentID).pos = stepDictionary[i][j].componentPos;
-                        if(i != 0)
-                        {
-                            Vector2 difference = timeSteps[timeSteps.Count - 1].GetThread(stepDictionary[i][j].componentID).pos - timeStep.GetThread(stepDictionary[i][j].componentID).pos;
-                            if (difference.x > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 180); }
-                            else if (difference.x < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 0); }
-                            else if (difference.y > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 90); }
-                            else if (difference.y < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, -90); }
-                        }
-                        break;
-                    case "D":
-                        timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
-                        break;
-                    case "E":
-                        if (timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
-                        {
-                            timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
-                        }
-                        else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
-                        {
-                            timeStep.GetPickup(stepDictionary[i][j].componentID).available = stepDictionary[i][j].componentStatus.available;
-                        }
-                        else if (timeStep.GetThread(stepDictionary[i][j].componentID) != null)
-                        {
-                            if (stepDictionary[i][j].componentStatus.payload != null)
-                            {
-                                timeStep.GetThread(stepDictionary[i][j].componentID).DisablePackages();
-                                for (int k = 0; k < stepDictionary[i][j].componentStatus.payload.Length; k++)
-                                {
-                                    for (int l = 0; l < i; l++)
-                                    {
-                                        if (timeSteps[l].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]) == false)
-                                        {
-                                            PackageData package = new PackageData();
-                                            package.active = false;
-                                            package.id = stepDictionary[i][j].componentStatus.payload[k];
-                                            timeSteps[l].GetThread(stepDictionary[i][j].componentID).packages.Add(package);
-                                        }
-                                    }
-                                    if (timeStep.GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]))
-                                    {
-                                        timeStep.GetThread(stepDictionary[i][j].componentID).GetPackage(stepDictionary[i][j].componentStatus.payload[k]).active = true;
-                                    }
-                                    else
-                                    {
-                                        PackageData package = new PackageData();
-                                        package.active = true;
-                                        package.id = stepDictionary[i][j].componentStatus.payload[k];
-                                        timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(package);
-                                    }
-                                }
-                            }
-                        }
-                        else if(timeStep.GetConditional(stepDictionary[i][j].componentID) != null)
-                        {
-                            if(stepDictionary[i][j].componentStatus.current != -1)
-                            {
-                                timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
-                            }
-                        }
-                        break;
-                }
-            }
-            timeSteps.Add(timeStep);
-        }
-
-        playerInteraction_UI.playbackSlider.maxValue = maxStep;
-
-        yield return PlaySimulation(stepDictionary, maxStep);
-    }
-
-    int currentStep = 0;
-
-    IEnumerator PlaySimulation(Dictionary<int, List<StepData>> stepDictionary, int maxStep)
-    {
-        int maxGoalsCompleted = 0;
-        currentStep = 0;
-        bool nextLevelButtonVisibility = false;
-        while (interactionPhase == InteractionPhases.simulation && currentStep <= maxStep)
-        {
-            if(paused != true)
-            {
-                if (stepDictionary.ContainsKey(currentStep))
-                {
-                    float waitTime = 0f;
-                    int count = 0;
-                    foreach (StepData step in stepDictionary[currentStep])
-                    {
-                        count++;
-                        if (step.componentID == 0)
-                        {
-                            yield return new WaitForSeconds(0.5f);
-                            if (step.componentStatus == null) continue;
-                            if (step.componentStatus.goals_completed != null && step.componentStatus.final_condition != -1)
-                            {
-                                if (maxGoalsCompleted < step.componentStatus.goals_completed) { maxGoalsCompleted = step.componentStatus.goals_completed; }
-                            }
-                            if (step.componentStatus.final_condition != null && step.componentStatus.final_condition != -1)
-                            {
-                                score.stepCount = maxStep;
-                                string titleFormatString = "<size=18><b>{0}</b></size>\n";
-                                string titleString = "";
-                                string goalString = "";
-                                string levelFileName = "";
-                                if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
-
-                                /* allowed attempts */
-                                bool foundSolution = false;
-                                LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(score, out foundSolution);
-
-                                switch (step.componentStatus.final_condition)
-                                {
-                                    case 2:
-                                    case 8:
-                                    case 10:
-                                        //if "test" versus "submit" change this text
-                                        if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                        {
-                                            titleString = "SUCCESSFUL SOLUTION";
-                                            goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
-                                            score.completed = true;
-
-                                            if (foundSolution)
-                                            {
-                                                goalString += "\n• Attempts Allowed: " + solution.attemptCount;
-                                            }
-
-                                            //get current score
-                                            int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score);
-                                            //update saved score
-                                            GameManager.Instance.GetScoreManager().ScoreLevel(score);
-                                            int lvlScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(score.index);
-
-                                            GameManager.Instance.currentLevelReferenceObject.completionRank = lvlScore;
-                                            GameManager.Instance.GetDataManager().UpdateLevelRank(levelFileName, lvlScore);
-
-                                            //use 'current' not 'best' score for the feedback
-                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(currentScore);
-
-                                            nextLevelButtonVisibility = true;
-                                        }
-                                        else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                                        {
-                                            titleString = "TEST COMPLETE";
-                                            goalString += "\n• This solution was successful this time. Submit to check if it's always successful.";
-                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                        }
-                                        break;
-                                    default:
-                                        //if "test" versus "submit" change this text
-                                        if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                        {
-                                            titleString = "UNSUCCESSFUL SOLUTION";
-                                        }
-                                        else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                                        {
-                                            titleString = "TEST COMPLETE";
-                                            playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
-                                        }
-
-                                        goalString = "";
-                                        if ((step.componentStatus.final_condition & 1) != 0)
-                                        {
-                                            goalString += "• Make sure arrows aren't blocked.\n";
-                                        }
-                                        if ((step.componentStatus.final_condition & 4) != 0)
-                                        {
-                                            goalString += "• This solution was unsuccessful.\n";
-                                        }
-                                        if ((step.componentStatus.final_condition & 16) != 0)
-                                        {
-                                            goalString += "• Make sure arrows can't deliver at the same time.\n";
-                                        }
-                                        if ((step.componentStatus.final_condition & 32) != 0)
-                                        {
-                                            goalString += "• Make sure all arrows can move.\n";
-                                        }
-                                        if ((step.componentStatus.final_condition & 64) != 0)
-                                        {
-                                            goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
-                                        }
-                                        if ((step.componentStatus.final_condition & 512) != 0)
-                                        {
-                                            goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
-                                        }
-                                        List<string> errorFeedback = new List<string>();
-                                        foreach (string errorKey in step.componentStatus.goal_descriptions)
-                                        {
-                                            string key = errorKey.Substring(0, 3);
-                                            if (Constants.GoalFeedbackValues.GoalErrorFeedback.ContainsKey(key))
-                                            {
-                                                if (!errorFeedback.Contains(Constants.GoalFeedbackValues.GoalErrorFeedback[key]))
-                                                    errorFeedback.Add(Constants.GoalFeedbackValues.GoalErrorFeedback[key]);
-                                            }
-                                        }
-                                        foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
-
-                                        if (foundSolution)
-                                        {
-                                            goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
-                                        }
-
-                                        break;
-                                }
-
-                                goalString = string.Format(titleFormatString, titleString) + goalString;
-
-                                if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
-                                {
-                                    playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
-                                }
-                                else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
-                                {
-                                    playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
-                                }
-
-                                yield return StartCoroutine(playerInteraction_UI.TriggerGoalPopUp(goalString));
-                            }
-                        }
-                        else
-                        {
-                            GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(step.componentID);
-                            if (g != null)
-                            {
-                                if (g.timeStep == null)
-                                    g.SetTimestep(timeSteps[currentStep]);
-                                float time = g.DoStep(step, stepDictionary);
-                                if (time > waitTime)
-                                    waitTime = time;
-                            }
-                            else { Debug.Log("Could not find " + step.componentID); }
-                        }
-
-                        if (onSimulationStep != null)
-                        {
-                            onSimulationStep(step);
-                            //PauseSimulation();
-                            //UnpauseAfterDelay(5);
-                        }
-                    }
-                    while (paused) yield return new WaitForSeconds(0.1f);
-                    yield return new WaitForSeconds(waitTime);
-                }
-                currentStep++;
-                playerInteraction_UI.playbackSlider.value = currentStep;
-                //Debug.Log(currentStep);
-            }
-            else
-            {
-                yield return new WaitForEndOfFrame();
-            }
-        }
-
-        yield return StartCoroutine(FinishSimulation());
-    }
-
-    void ChangePlaybackStep()
-    {
-        Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        for (int i = 0; i < lvl.components.Count; i++)
-        {
-            GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(lvl.components[i].id);
-            g.ReturnToStep(timeSteps[currentStep]);
-        }
-    }
-
-    IEnumerator FinishSimulation()
-    {
-        yield return new WaitForEndOfFrame();
-
-        if (onCompletion != null) onCompletion();
-
-        //yield return new WaitForSeconds(1f);
-        //todo: switch statement of the selected goal option
-
-        ResetStartValues();
-
-        switch (playerInteraction_UI.goalOverlay.userInput)
-        {
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.exit:
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levels:
-                TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
-                EndSimulation();
-                break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.stop:
-                TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
-                EndSimulation();
-                break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
-
-                Debug.Log("REPLAY");
-                //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
-                interactionPhase = InteractionPhases.awaitingSimulation;
-                GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
-
-                break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
-                Debug.Log("Retry");
-                interactionPhase = InteractionPhases.ingame_default;
-                EndSimulation();
-                GameManager.Instance.TriggerLevelTutorial
-                (
-                    GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-                    interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-                );
-                break;
-            case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levelsNext:
-                TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
-                break;
-            default:
-                Debug.Log("No case defined for " + playerInteraction_UI.goalOverlay.userInput.ToString());
-                interactionPhase = InteractionPhases.ingame_default;
-                break;
-        }
-    }
 
 	public void ToggleFlowVisibility()
 	{
@@ -1429,7 +806,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
-    void LockFlowVisibility(int lockTarget)
+    public void LockFlowVisibility(int lockTarget)
     {
     	GameManager.Instance.tracker.CreateEventExt("LockFlowVisibility",lockTarget.ToString());
         if (lockTarget == -1) //force quit
@@ -1467,7 +844,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
-	void LockConnectionVisibility()
+    public void LockConnectionVisibility()
 	{
 		connectVisibilityLock = !connectVisibilityLock;
 		GameManager.Instance.tracker.CreateEventExt("LockConnectionVisibility",connectVisibilityLock.ToString());
@@ -1488,7 +865,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		}
 	}
 
-	void ToggleHintsVisibility()
+    public void ToggleHintsVisibility()
 	{
 		GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
 		if(playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf) { playerInteraction_UI.hintOverlay.ClosePanel(); }
@@ -1496,7 +873,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	}
 
-    void EndHoverEvent()
+    public void EndHoverEvent()
     {
         if ( connectVisibilityLock || hoverObject==null ) return;
         stationaryTime = 0f;
@@ -1521,7 +898,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
 	}
 
-    void UpdateZoom(float zoom)
+    public void UpdateZoom(float zoom)
     {
         if (zoom == 0)
             return;
@@ -1591,54 +968,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.GetGridManager().worldCamera.orthographicSize = originalOrthographicSize;
         GameManager.Instance.GetGridManager().worldCamera.transform.position = originalCameraPosition;
 		playerInteraction_UI.zoomMeter.SetMeterValue( 1f );
-    }
-
-    void PauseSimulation()
-    {
-        paused = true;
-		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
-        playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(UnpauseSimulation);
-    }
-
-    void UnpauseSimulation()
-    {
-        paused = false;
-		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
-        playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.pauseSimulationButton.onClick.AddListener(PauseSimulation);
-    }
-
-    void OnTimeSliderValueChanged(int i)
-    {
-        if(i != currentStep)
-        {
-            PauseSimulation();
-            currentStep = i;
-            ChangePlaybackStep();
-        }
-    }
-
-    void DelayedUnpause(float delay = 0, TutorialEvent t = null)
-    {
-        Debug.Log(delay);
-        if (delay == 0)
-        {
-            paused = false;
-			GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
-        }
-        else
-        {
-            StartCoroutine(DelayedUnpauseRoutine(delay, t));
-        }
-    }
-
-    IEnumerator DelayedUnpauseRoutine(float delay, TutorialEvent t)
-    {
-        yield return new WaitForSeconds(delay);
-        paused = false;
-        if(t != null) GameManager.Instance.ReportTutorialEventComplete(t);
-		GameManager.Instance.tracker.CreateEventExt("PauseSimulation",paused.ToString());
     }
 }
 
