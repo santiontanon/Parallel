@@ -60,7 +60,14 @@ public class Tracker : MonoBehaviour {
 
 	void Start () {
 		DebugInfoLabel = "NOT TRACKING";
-		allowQuitting = true;
+        if (GameManager.Instance.is_demo_build)
+        {
+            allowQuitting = true;
+        }
+        else
+        {
+            allowQuitting = false;
+        }
 		allowQuittingRequested = false;
 		connected = false;
 		ready = false;
@@ -82,133 +89,188 @@ public class Tracker : MonoBehaviour {
         
 	}
 
-	public void StartTracker(){
-		//if (ready) return;
-		//tracking_session_user = PlayerPrefs.GetString("PlayerId","NONE");
-		//if (register_remote_enabled){
-		//	StartCoroutine(FetchConfig());
-		//} else {
-		//	SetupTracking();
-		//}
+	public void StartTracker()
+    {
+        if (!GameManager.Instance.is_demo_build)
+        {
+            if (ready) return;
+            tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
+            if (register_remote_enabled)
+            {
+                StartCoroutine(FetchConfig());
+            }
+            else
+            {
+                SetupTracking();
+            }
+        }
 
-	}
+    }
 
 	IEnumerator FetchConfig(){
-		//Debug.Log("FetchConfig");
-		//DebugInfoLabel = "FetchConfig from " + url_id;
-		//string ourPostData = "{\"user\":\""+tracking_session_user+"\",\"version\":\""+tracking_session_version+"\"}";
-  //      Dictionary<string,string> headers = new Dictionary<string, string>();
-  //      headers.Add("Content-Type", "application/json");
-  //      byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
-  //      WWW www = new WWW(url_id, pData, headers);
-  //      yield return www;
-		//if (www.isDone && www.error==null && www.text!=null && www.text.Trim()!=""){
-		//	try{
-		//	Debug.Log(www.text);
-  //              JSONObject ob = new JSONObject(www.text.Trim());
-	 //       tracking_session_id = ob.GetField("id").ToString();
-	 //   	} catch {
-	    		
-	 //   	}
-	 //   	if(onSuccess!=null) onSuccess(www.text);
-		//} else {
-		//	if (onFail!=null) onFail();
-		//	Debug.Log(www.error);
-		//	tracking_session_id = "NA";
-		//}
-  //      //tracking_session_id = {"id": 11, "user": "hello"}
-		//SetupTracking();
-		yield return null; 
+        if (!GameManager.Instance.is_demo_build)
+        {
+            Debug.Log("FetchConfig");
+            DebugInfoLabel = "FetchConfig from " + url_id;
+            string ourPostData = "{\"user\":\"" + tracking_session_user + "\",\"version\":\"" + tracking_session_version + "\"}";
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Content-Type", "application/json");
+            byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
+            WWW www = new WWW(url_id, pData, headers);
+            yield return www;
+            if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
+            {
+                try
+                {
+                    Debug.Log(www.text);
+                    JSONObject ob = new JSONObject(www.text.Trim());
+                    tracking_session_id = ob.GetField("id").ToString();
+                }
+                catch
+                {
+
+                }
+                if (onSuccess != null) onSuccess(www.text);
+            }
+            else
+            {
+                if (onFail != null) onFail();
+                Debug.Log(www.error);
+                tracking_session_id = "NA";
+            }
+            //tracking_session_id = {"id": 11, "user": "hello"}
+            SetupTracking();
+        }
+        yield return null; 
 	}
 
-	public void UploadData(string data){
-		//StartCoroutine(UploadDataWWW(data));
-	}
+    public void UploadData(string data)
+    {
+        if (!GameManager.Instance.is_demo_build)
+        {
+            StartCoroutine(UploadDataWWW(data));
+        }
+    }
 
-	//IEnumerator UploadDataWWW(string data){
-	//	//Debug.Log("UploadDataWWW");
- // //      Dictionary<string,string> headers = new Dictionary<string, string>();
- // //      headers.Add("Content-Type", "text/plain");
- // //      byte[] pData = System.Text.Encoding.ASCII.GetBytes(data.ToCharArray());
-	//	//WWW www = new WWW(url_data, pData, headers);
- // //      yield return www;
-	//	//if (www.error==null){
-	//	//	CreateEvent("UploadDataWWW","OK");
-	//	//	Debug.Log("UploadDataWWW OK");
-	//	//} else {
-	//	//	Debug.Log("UploadDataWWW Error");
-	//	//	Debug.Log(www.error);
-	//	//	CreateEvent("UploadDataWWW","Error");
-	//	//}
-	//}
+    IEnumerator UploadDataWWW(string data)
+    {
+        if (!GameManager.Instance.is_demo_build)
+        {
+            Debug.Log("UploadDataWWW");
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Content-Type", "text/plain");
+            byte[] pData = System.Text.Encoding.ASCII.GetBytes(data.ToCharArray());
+            WWW www = new WWW(url_data, pData, headers);
+            yield return www;
+            if (www.error == null)
+            {
+                CreateEvent("UploadDataWWW", "OK");
+                Debug.Log("UploadDataWWW OK");
+            }
+            else
+            {
+                Debug.Log("UploadDataWWW Error");
+                Debug.Log(www.error);
+                CreateEvent("UploadDataWWW", "Error");
+            }
+        }
+    }
 
-	public void UploadLogs(){
-		//if (log2 != null && (Time.time-logs_uploaded_time)>3.0f) {
-		//	logs_uploaded_time = Time.time;
-		//	CreateEvent ("UploadRequest", "Sent");
-		//	StartCoroutine ("UploadLogsWWW");
-		//} else {
-		//	Debug.Log ("There are no logs to upload.");
-		//	if(allowQuittingRequested){
-		//		allowQuitting = true;
-		//		Application.Quit();
-  //          }
-		//}
-			
-	}
+    public void UploadLogs(){
+        if (!GameManager.Instance.is_demo_build)
+        {
+            if (log2 != null && (Time.time - logs_uploaded_time) > 3.0f)
+            {
+                logs_uploaded_time = Time.time;
+                CreateEvent("UploadRequest", "Sent");
+                StartCoroutine("UploadLogsWWW");
+            }
+            else
+            {
+                Debug.Log("There are no logs to upload.");
+                if (allowQuittingRequested)
+                {
+                    allowQuitting = true;
+                    Application.Quit();
+                }
+            }
+        }
 
-	IEnumerator UploadLogsWWW(){
-		Debug.Log("UploadLogsWWW");
-		string ourPostData = log2.ToString();
-        Dictionary<string,string> headers = new Dictionary<string, string>();
+    }
+
+    IEnumerator UploadLogsWWW() {
+        Debug.Log("UploadLogsWWW");
+        string ourPostData = log2.ToString();
+        Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-Type", "text/plain");
         byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
-		WWW www = new WWW(url_logs, pData, headers);
+        WWW www = new WWW(url_logs, pData, headers);
         yield return www;
-		//if (www.isDone && www.error==null && www.text!=null && www.text.Trim()!=""){
-		//	CreateEvent("UploadRequest","OK");
-		//	Debug.Log("UploadLogsWWW OK");
+
+        if (GameManager.Instance.is_demo_build)
+        {
             if (allowQuittingRequested)
             {
                 allowQuitting = true;
                 Application.Quit();
             }
-   //     } else {
-			//Debug.Log("UploadLogsWWW Error");
-			//Debug.Log(www.error);
-			//CreateEvent("UploadRequest","Error");
-			//Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
-			//string path = Application.persistentDataPath.TrimEnd(new[]{'\\', '/'}); // Mac doesn't like trailing slash
-  	//		System.Diagnostics.Process.Start(path);
-   //         if (allowQuittingRequested)
-   //         {
-   //             Exit_GamePhaseBehavior exitBehaviorCast = GameManager.Instance.exitGameBehavior as Exit_GamePhaseBehavior;
-   //             //string error = "Error uploading content to Server. Please zip content at location" + path + "and email it to pxl@gmail.com";
-   //             exitBehaviorCast.ReportQuitError( Constants.Messages.DisconnectedOnExit );
-   //         }
-            
-		//}
+        }
+        else
+        {
 
-    }
+            if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
+            {
+                CreateEvent("UploadRequest", "OK");
+                Debug.Log("UploadLogsWWW OK");
+                if (allowQuittingRequested)
+                {
+                    allowQuitting = true;
+                    Application.Quit();
+                }
+            }
+            else
+            {
+                Debug.Log("UploadLogsWWW Error");
+                Debug.Log(www.error);
+                CreateEvent("UploadRequest", "Error");
+                Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
+                string path = Application.persistentDataPath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
+                System.Diagnostics.Process.Start(path);
+                if (allowQuittingRequested)
+                {
+                    Exit_GamePhaseBehavior exitBehaviorCast = GameManager.Instance.exitGameBehavior as Exit_GamePhaseBehavior;
+                    //string error = "Error uploading content to Server. Please zip content at location" + path + "and email it to pxl@gmail.com";
+                    exitBehaviorCast.ReportQuitError(Constants.Messages.DisconnectedOnExit);
+                }
+
+            }
+        }
+
+        }
 
 	void SetupTracking(){
-		//#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-		//string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
-		//log = File.CreateText(fileName);
-		//if(log==null){
-		//	Debug.Log("Error opening local log " + fileName);
-		//}{
-		//	Debug.Log("Logging locally to " + fileName);
-		//}
-		//#endif
-		//log2 = new StringBuilder();
-		//CreateEvent("SessionID",tracking_session_id);
-		//CreateEvent("SessionUser",tracking_session_user);
-		//CreateEvent("SessionVersion",tracking_session_version);
-		//CreateEvent("Calibration",Screen.width.ToString()+"x"+Screen.height.ToString());
-		//ready = true;
-		//DebugInfoLabel = "TRACKING "+tracking_session_id;
-	}
+        if (!GameManager.Instance.is_demo_build)
+        {
+        #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+            string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
+            log = File.CreateText(fileName);
+            if (log == null)
+            {
+                Debug.Log("Error opening local log " + fileName);
+            }
+            {
+                Debug.Log("Logging locally to " + fileName);
+            }
+        #endif
+            log2 = new StringBuilder();
+            CreateEvent("SessionID", tracking_session_id);
+            CreateEvent("SessionUser", tracking_session_user);
+            CreateEvent("SessionVersion", tracking_session_version);
+            CreateEvent("Calibration", Screen.width.ToString() + "x" + Screen.height.ToString());
+            ready = true;
+            DebugInfoLabel = "TRACKING " + tracking_session_id;
+        }
+    }
 	
 	public struct TrackedEvent{
 		public string e;

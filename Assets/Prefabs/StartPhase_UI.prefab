@@ -115,7 +115,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000010955587890
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000012465167622
 GameObject:
   m_ObjectHideFlags: 0
@@ -202,7 +202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000012561075406
 GameObject:
   m_ObjectHideFlags: 1
@@ -502,6 +502,10 @@ MonoBehaviour:
   startGameUI: {fileID: 1000010332459216}
   gameStart: {fileID: 114000010148100586}
   gameEnd: {fileID: 114000012556932604}
+  preSurvey: {fileID: 114000014083037338}
+  postSurvey: {fileID: 114000010048461996}
+  playerIdField: {fileID: 114000012659604768}
+  versionNumber: {fileID: 114000012133218288}
   fetchConfigInProgressOverlay:
     panelContainer: {fileID: 224000010794956060}
     isOpen: 0
@@ -1393,7 +1397,7 @@ RectTransform:
   m_RootOrder: 8
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -355.8, y: -215.04999}
+  m_AnchoredPosition: {x: 356, y: -215.04999}
   m_SizeDelta: {x: 88.5, y: 19.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011847823812

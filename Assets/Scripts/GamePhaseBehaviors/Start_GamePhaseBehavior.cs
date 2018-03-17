@@ -8,9 +8,10 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public Button gameStart;
 	public Button gameEnd;
-    //public Button preSurvey;
-    //public Button postSurvey;
-	//public InputField playerIdField;
+    public Button preSurvey;
+    public Button postSurvey;
+    public InputField playerIdField;
+    public Text versionNumber;
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
     public StartErrorOverlay fetchConfigErrorOverlay;
@@ -20,28 +21,55 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void BeginPhase()
 	{
+        if (GameManager.Instance.is_demo_build)
+        {
+            preSurvey.gameObject.SetActive(false);
+            postSurvey.gameObject.SetActive(false);
+            playerIdField.gameObject.SetActive(false);
+
+            versionNumber.text = "Demo Build v" + Application.version;
+        }
+        else
+        {
+            versionNumber.text = "Release Build v" + Application.version;
+        }
+
         gameStart.onClick.RemoveAllListeners();
         gameEnd.onClick.RemoveAllListeners();
-        //postSurvey.onClick.RemoveAllListeners();
-        //preSurvey.onClick.RemoveAllListeners();
-        //playerIdField.onEndEdit.RemoveAllListeners();
+        if (!GameManager.Instance.is_demo_build)
+        {
+            postSurvey.onClick.RemoveAllListeners();
+            preSurvey.onClick.RemoveAllListeners();
+            playerIdField.onEndEdit.RemoveAllListeners();
+        }
 
-        gameStart.interactable = true;
-        //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+        if (!GameManager.Instance.is_demo_build)
+        {
+            gameStart.interactable = false;
+            postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+        }
+        else
+        {
+            gameStart.interactable = true;
+        }
 
 		startGameUI.SetActive(true);
 		gameStart.onClick.AddListener( ()=> StartPlaying() );
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
-        //preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
-        //postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
-        //playerIdField.onEndEdit.AddListener(delegate { PlayerFieldChangedEvent(); } );
-        // IMPORTANT, COMMENT THE FOLLOWING LINE IF TESTING USING THE EDITOR
-        //if (PlayerPrefs.HasKey("PlayerId"))
-        //{
-        //    playerIdField.text = PlayerPrefs.GetString("PlayerId");
-        //    PlayerFieldChangedEvent();
-        //}
-        //gameEnd.interactable = false;
+
+        if (!GameManager.Instance.is_demo_build)
+        {
+            preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
+            postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
+            playerIdField.onEndEdit.AddListener(delegate { PlayerFieldChangedEvent(); });
+            //IMPORTANT, COMMENT THE FOLLOWING LINE IF TESTING USING THE EDITOR
+            if (PlayerPrefs.HasKey("PlayerId"))
+            {
+                playerIdField.text = PlayerPrefs.GetString("PlayerId");
+                PlayerFieldChangedEvent();
+            }
+            gameEnd.interactable = false;
+        }
     }
 
     void RequirementsCheck()
@@ -54,35 +82,49 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
-        //if (playerIdField.text.Length > 0)
-        //{
-        //    gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
-        //    GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
-        //}
-        //else gameStart.interactable = false;
-        //GameManager.Instance.UpdatePlayerField(playerIdField.text);
+        if (!GameManager.Instance.is_demo_build)
+        {
+            if (playerIdField.text.Length > 0)
+            {
+                gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
+                GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
+            }
+            else gameStart.interactable = false;
+            GameManager.Instance.UpdatePlayerField(playerIdField.text);
+        }
     }
 
 	void StartPlaying(){
-		// Show some waiting message here
-		//if(PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId"))){
-  //          if (GameManager.Instance.tracker.ready)
-  //          {
-                GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
-    //        }
-    //        else
-    //        {
-    //            GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
-    //            fetchConfigInProgressOverlay.OpenPanel();
-    //        }
-    //    }
-    //    else {
-				//Debug.Log( "missing PlayerId" );
-				////playerIdField.transform.FindChild("Text").GetComponent<Text>().color = Color.red;
-				////playerIdField.Select();
- 			//    //playerIdField.ActivateInputField();
-			//}
-	}
+        if (GameManager.Instance.is_demo_build)
+        {
+            GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
+        }
+        else
+        {
+
+
+            //Show some waiting message here
+        if (PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId")))
+            {
+                if (GameManager.Instance.tracker.ready)
+                {
+                    GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
+                }
+                else
+                {
+                    GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
+                    fetchConfigInProgressOverlay.OpenPanel();
+                }
+            }
+            else
+            {
+                Debug.Log("missing PlayerId");
+                //playerIdField.transform.FindChild("Text").GetComponent<Text>().color = Color.red;
+                //playerIdField.Select();
+                //playerIdField.ActivateInputField();
+            }
+        }
+    }
 	public void StartPlayingWithLevelInformation(string json){
 		// Get the level selection from the json
 		Debug.Log("Get the level selection from the json: "+json);
