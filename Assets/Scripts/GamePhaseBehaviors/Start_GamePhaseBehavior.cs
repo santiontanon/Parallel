@@ -68,7 +68,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
                 playerIdField.text = PlayerPrefs.GetString("PlayerId");
                 PlayerFieldChangedEvent();
             }
-            gameEnd.interactable = false;
+            //gameEnd.interactable = false;
         }
     }
 
