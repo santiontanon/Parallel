@@ -781,7 +781,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Help Phase
         case InteractionPhases.ingame_help:
             // On Left Click
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                     // Get Object at Mouse Position
                     GridManager grid = GameManager.Instance.GetGridManager();
