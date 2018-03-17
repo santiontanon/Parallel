@@ -8,9 +8,9 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public Button gameStart;
 	public Button gameEnd;
-    public Button preSurvey;
-    public Button postSurvey;
-	public InputField playerIdField;
+    //public Button preSurvey;
+    //public Button postSurvey;
+	//public InputField playerIdField;
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
     public StartErrorOverlay fetchConfigErrorOverlay;
@@ -22,25 +22,25 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	{
         gameStart.onClick.RemoveAllListeners();
         gameEnd.onClick.RemoveAllListeners();
-        postSurvey.onClick.RemoveAllListeners();
-        preSurvey.onClick.RemoveAllListeners();
-        playerIdField.onEndEdit.RemoveAllListeners();
+        //postSurvey.onClick.RemoveAllListeners();
+        //preSurvey.onClick.RemoveAllListeners();
+        //playerIdField.onEndEdit.RemoveAllListeners();
 
-        gameStart.interactable = GameManager.Instance.preSurveyComplete;
-        postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+        gameStart.interactable = true;
+        //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
 
 		startGameUI.SetActive(true);
 		gameStart.onClick.AddListener( ()=> StartPlaying() );
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
-        preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
-        postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
-        playerIdField.onEndEdit.AddListener(delegate { PlayerFieldChangedEvent(); } );
+        //preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
+        //postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
+        //playerIdField.onEndEdit.AddListener(delegate { PlayerFieldChangedEvent(); } );
         // IMPORTANT, COMMENT THE FOLLOWING LINE IF TESTING USING THE EDITOR
-        if (PlayerPrefs.HasKey("PlayerId"))
-        {
-            playerIdField.text = PlayerPrefs.GetString("PlayerId");
-            PlayerFieldChangedEvent();
-        }
+        //if (PlayerPrefs.HasKey("PlayerId"))
+        //{
+        //    playerIdField.text = PlayerPrefs.GetString("PlayerId");
+        //    PlayerFieldChangedEvent();
+        //}
         //gameEnd.interactable = false;
     }
 
@@ -54,34 +54,34 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
-        if (playerIdField.text.Length > 0)
-        {
-            gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
-            GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
-        }
-        else gameStart.interactable = false;
-        GameManager.Instance.UpdatePlayerField(playerIdField.text);
+        //if (playerIdField.text.Length > 0)
+        //{
+        //    gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
+        //    GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
+        //}
+        //else gameStart.interactable = false;
+        //GameManager.Instance.UpdatePlayerField(playerIdField.text);
     }
 
 	void StartPlaying(){
 		// Show some waiting message here
-		if(PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId"))){
-            if (GameManager.Instance.tracker.ready)
-            {
+		//if(PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId"))){
+  //          if (GameManager.Instance.tracker.ready)
+  //          {
                 GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
-            }
-            else
-            {
-                GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
-                fetchConfigInProgressOverlay.OpenPanel();
-            }
-        }
-        else {
-				Debug.Log( "missing PlayerId" );
-				playerIdField.transform.FindChild("Text").GetComponent<Text>().color = Color.red;
-				playerIdField.Select();
- 				playerIdField.ActivateInputField();
-			}
+    //        }
+    //        else
+    //        {
+    //            GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
+    //            fetchConfigInProgressOverlay.OpenPanel();
+    //        }
+    //    }
+    //    else {
+				//Debug.Log( "missing PlayerId" );
+				////playerIdField.transform.FindChild("Text").GetComponent<Text>().color = Color.red;
+				////playerIdField.Select();
+ 			//    //playerIdField.ActivateInputField();
+			//}
 	}
 	public void StartPlayingWithLevelInformation(string json){
 		// Get the level selection from the json
@@ -95,7 +95,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     {
         GameManager.Instance.preSurveyComplete = true;
         gameStart.interactable = GameManager.Instance.preSurveyComplete;
-        postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+        //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         Application.OpenURL("http://unity3d.com/");
     }
     public void PostSurveyButtonClicked()
