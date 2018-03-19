@@ -82,9 +82,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     public override void BeginPhase()
     {
         Debug.Log("BeginPhase");
-        pauseSimulation += playbackBehavior.PauseSimulation;
-        unpauseSimulation += playbackBehavior.UnpauseSimulation;
-        delayedUnpause += playbackBehavior.DelayedUnpause;
+        pauseSimulation += PauseSimulation;
+        unpauseSimulation += UnpauseSimulation;
+        delayedUnpause += DelayedUnpauseSimulation;
 
         playerInteraction_UI.SetText(GameManager.Instance.GetDataManager().currentLevelData);
         playerInteraction_UI.OpenUI();
@@ -534,16 +534,10 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
-	}
-<<<<<<< HEAD
-
-    public void PlayerInteractionListener()
-=======
-		
+	}	
 
     // Behavior for Player Interaction
 	void PlayerInteractionListener()
->>>>>>> develop
 	{
         // Mouse movement tracking
         lastMousePos = currentMousePos;
@@ -798,8 +792,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				currentGridObject.ContinueInteraction();
 			}
 		break;
-<<<<<<< HEAD
-=======
 
         // Help Phase
         case InteractionPhases.ingame_help:
@@ -822,12 +814,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     }
                 }
             break;
-
-        // Simulation Phase
-		case InteractionPhases.simulation:
-			simulationTime+=Time.deltaTime;
->>>>>>> develop
-		break;
 		}
 
 	}
@@ -943,9 +929,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	}
 
-<<<<<<< HEAD
-    public void EndHoverEvent()
-=======
     void TriggerHintFader()
     {
         bool fadeNonInteractables = (interactionPhase == InteractionPhases.ingame_help);
@@ -978,7 +961,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     }
 
     void EndHoverEvent()
->>>>>>> develop
     {
         if ( connectVisibilityLock || hoverObject==null ) return;
         stationaryTime = 0f;
@@ -1073,6 +1055,21 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.GetGridManager().worldCamera.orthographicSize = originalOrthographicSize;
         GameManager.Instance.GetGridManager().worldCamera.transform.position = originalCameraPosition;
 		playerInteraction_UI.zoomMeter.SetMeterValue( 1f );
+    }
+
+    void PauseSimulation()
+    {
+        playbackBehavior.PauseSimulation();
+    }
+
+    void UnpauseSimulation()
+    {
+        playbackBehavior.UnpauseSimulation();
+    }
+
+    void DelayedUnpauseSimulation(float delay = 0, TutorialEvent t = null)
+    {
+        playbackBehavior.DelayedUnpause(delay, t);
     }
 }
 
