@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
-    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, simulation, awaitingSimulation }
+    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, ingame_help, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
     public Playback_PlayerInteractionPhaseBehavior playbackBehavior;
@@ -78,7 +78,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public delegate void OnMenuInteractionDelegate(MenuOptions inputMenuOption);
     public static OnMenuInteractionDelegate onMenuInteraction;
-
+    
     public override void BeginPhase()
     {
         Debug.Log("BeginPhase");
@@ -362,6 +362,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.hintOverlay.SetHint(title,description,texture);
 	}
 
+    public void TriggerHint(string objectName)
+    {
+        bool success = false;
+        HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(objectName, out success);
+        if (success)
+            TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+        else
+            Debug.LogWarning("Failed to find hint for component of type: " + objectName);
+    }
+
 	public void BeginDrag(MenuOptions selectedOption)
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
@@ -438,7 +448,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void ResetStartValues()
 	{
-		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore"});
+		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
 				resetObject.ResetPosition();
@@ -525,14 +535,25 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 	}
+<<<<<<< HEAD
 
     public void PlayerInteractionListener()
+=======
+		
+
+    // Behavior for Player Interaction
+	void PlayerInteractionListener()
+>>>>>>> develop
 	{
+        // Mouse movement tracking
         lastMousePos = currentMousePos;
         currentMousePos = Input.mousePosition;
         deltaMousePos = currentMousePos - lastMousePos;
+
+        // Interaction Phases
         switch (interactionPhase)
 		{
+            // Default Phase
 			case InteractionPhases.ingame_default:
 				if(playerInteraction_UI.IsSubPanelOpen()) return;
                 /*
@@ -682,6 +703,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                 }
 			break;
+
+        // Dragging Phase
 		case InteractionPhases.ingame_dragging:
                 Debug.Log("dragging");
 			if(Input.GetKey(KeyCode.Mouse0))
@@ -736,6 +759,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 			}
 		break;
+
+        // Connection Phase
 		case InteractionPhases.ingame_connecting:
 
 			if(Input.GetKeyDown(KeyCode.Mouse1))
@@ -773,6 +798,35 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				currentGridObject.ContinueInteraction();
 			}
 		break;
+<<<<<<< HEAD
+=======
+
+        // Help Phase
+        case InteractionPhases.ingame_help:
+            // On Left Click
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                    // Get Object at Mouse Position
+                    GridManager grid = GameManager.Instance.GetGridManager();
+                    GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
+
+                    // If there is an object here
+                    if (current_object)
+                    {
+                        // Display its hint UI
+                        string obj_name = current_object.component.type;
+                        TriggerHint(obj_name);
+                        // Testing to make sure the interaction worked, always displays Track Hint
+                        //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
+                        //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+                    }
+                }
+            break;
+
+        // Simulation Phase
+		case InteractionPhases.simulation:
+			simulationTime+=Time.deltaTime;
+>>>>>>> develop
 		break;
 		}
 
@@ -867,13 +921,64 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public void ToggleHintsVisibility()
 	{
-		GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
-		if(playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf) { playerInteraction_UI.hintOverlay.ClosePanel(); }
-		playerInteraction_UI.UIOverlay_Hint_Container.gameObject.SetActive( !playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf );
+        // If the game is in the help phase
+        if (interactionPhase == InteractionPhases.ingame_help)
+        {
+            // Turn it off
+            interactionPhase = InteractionPhases.ingame_default;
+            GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
+        }
+        else
+        {
+            // Else, turn it on
+            interactionPhase = InteractionPhases.ingame_help;
+            GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
+        }
+        TriggerHintFader();
+
+        // Old Hint System
+		//GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility",(!playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf).ToString());
+		//if(playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf) { playerInteraction_UI.hintOverlay.ClosePanel(); }
+		//playerInteraction_UI.UIOverlay_Hint_Container.gameObject.SetActive( !playerInteraction_UI.UIOverlay_Hint_Container.gameObject.activeSelf );
 
 	}
 
+<<<<<<< HEAD
     public void EndHoverEvent()
+=======
+    void TriggerHintFader()
+    {
+        bool fadeNonInteractables = (interactionPhase == InteractionPhases.ingame_help);
+        GridObjectBehavior[] gridObjects = GameManager.Instance.GetGridManager().RetrieveComponentsOfType();
+        foreach (GridObjectBehavior g in gridObjects)
+        {
+            bool success = false;
+            HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
+            if (success == false)
+            {
+                SpriteRenderer s = g.GetComponent<SpriteRenderer>();
+                s.color = new Color(s.color.r, s.color.g, s.color.b, fadeNonInteractables ? 0.5f : 1f);
+            } 
+            else
+            {
+                g.SetHighlight(fadeNonInteractables);
+                Debug.Log("Keeping Active: " + g.component.type);
+            }
+        }
+
+        gridObjects = GameManager.Instance.GetGridManager().RetrieveTracks();
+        foreach (GridObjectBehavior g in gridObjects)
+        {
+            SpriteRenderer s = g.GetComponent<SpriteRenderer>();
+            s.color = new Color(s.color.r, s.color.g, s.color.b, fadeNonInteractables ? 0.5f : 1f);
+        }
+
+        Image backgroundImage = playerInteraction_UI.UICameraContainer.GetComponentInChildren<Image>();
+        backgroundImage.color = new Color(backgroundImage.color.r, backgroundImage.color.g, backgroundImage.color.b, fadeNonInteractables ? 0.5f : 1f);
+    }
+
+    void EndHoverEvent()
+>>>>>>> develop
     {
         if ( connectVisibilityLock || hoverObject==null ) return;
         stationaryTime = 0f;

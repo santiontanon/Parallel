@@ -41,7 +41,8 @@ public class PlayerInteraction_UI
     public Slider playbackSlider;
 
     [Header("Goal Description Elements")]
-	public Text goalDescriptionText;
+    public GoalDescription_UIOverlay goalDescriptionOverlay;
+    public Text goalDescriptionText;
     public Text goalDescription_Number;
     public Text goalDescription_Title;
 
@@ -117,6 +118,7 @@ public class PlayerInteraction_UI
 		goalDescriptionText.text = inputLevel.metadata.goal_string;
         goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
         goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
+        goalDescriptionOverlay.SetFeedbackScore(GameManager.Instance.GetScoreManager().GetCalculatedScore(inputLevel.metadata.level_id));
     }
 
 	public IEnumerator TriggerGoalPopUp(string inputGoalText)
@@ -132,7 +134,20 @@ public class PlayerInteraction_UI
 	{
 		return (pauseOverlay.isOpen || goalOverlay.isOpen);
 	}
-    
+
+    [System.Serializable]
+    public class GoalDescription_UIOverlay : UIOverlay
+    {
+        public Image star_1, star_2, star_3;
+        public Sprite star_empty, star_fill;
+        public void SetFeedbackScore(int inScore)
+        {
+            star_1.sprite = inScore > 0 ? star_fill : star_empty;
+            star_2.sprite = inScore > 1 ? star_fill : star_empty;
+            star_3.sprite = inScore > 2 ? star_fill : star_empty;
+        }
+    }
+
 	[System.Serializable]
 	public class Goal_UIOverlay : UIOverlay
 	{

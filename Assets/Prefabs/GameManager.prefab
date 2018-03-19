@@ -261,6 +261,8 @@ MonoBehaviour:
   postSurveyComplete: 0
   trackGrid: {fileID: 0}
   tracker: {fileID: 114000013437963258}
+  hintGlossary: {fileID: 114000010538636246, guid: 7109e85c455024d4ab7c181c8e77c712,
+    type: 2}
 --- !u!114 &11491530
 MonoBehaviour:
   m_ObjectHideFlags: 1

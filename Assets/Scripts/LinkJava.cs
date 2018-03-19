@@ -27,7 +27,7 @@ public class LinkJava : MonoBehaviour
     	if(Application.isEditor){
         	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
         } else {
-        	externalPath = Application.dataPath + "/../../PCGMC4PP/dist/".Replace("/",pathSeparator);
+        	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;
@@ -186,7 +186,10 @@ public class LinkJava : MonoBehaviour
 		bool java_found = false;
 		if (checkEnvironment () != 0) 
 		{
-			UnityEngine.Debug.Log ("Cannot work here, give some feedback to the user...");
+            UINotifications.Notification error_message = new UINotifications.Notification("Environment Error", "An error with Java has been encountered.");
+            error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
+            UINotifications.Notify(error_message);
+			//UnityEngine.Debug.Log ("Cannot work here, give some feedback to the user...");
 		} 
 		else 
 		{
@@ -194,8 +197,11 @@ public class LinkJava : MonoBehaviour
 		}
 		if (!java_found) 
 		{
-			UnityEngine.Debug.LogError ("Java is not found, give some feedback to the user...");
-		}
+            UINotifications.Notification error_message = new UINotifications.Notification("Java Error", "An error with Java has been encountered.");
+            error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
+            UINotifications.Notify(error_message);
+            //UnityEngine.Debug.LogError ("Java is not found, give some feedback to the user...");
+        }
 		else {
 		UnityEngine.Debug.Log ("Calling Java...");
 		UnityEngine.Debug.Log(externalNonBlocking ());

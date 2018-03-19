@@ -27,9 +27,8 @@ public class GameManager : MonoBehaviour {
     SaveManager saveManager;
 	LinkJava linkJava;
 	public Tracker tracker;
-
+    public HintGlossary hintGlossary;
     
-
     void Awake()
 	{
 		if(Instance == null)
@@ -51,7 +50,7 @@ public class GameManager : MonoBehaviour {
         saveManager = GetComponent<SaveManager>();
 		linkJava = GetComponent<LinkJava>();
 		tracker = GetComponent<Tracker>();
-
+        
         saveManager.Init();
         scoreManager.Init();
 	}
