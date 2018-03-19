@@ -300,6 +300,7 @@ GameObject:
   - 224: {fileID: 224000011781466348}
   - 222: {fileID: 222000014073740748}
   - 114: {fileID: 114000011069610498}
+  - 114: {fileID: 114000012409007930}
   m_Layer: 5
   m_Name: PlayerInteractionPhase_UI
   m_TagString: Untagged
@@ -567,6 +568,22 @@ GameObject:
   - 114: {fileID: 114000014126405356}
   m_Layer: 5
   m_Name: goal_options_container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000010930812932
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000013928928686}
+  - 114: {fileID: 114000010707137590}
+  m_Layer: 5
+  m_Name: PlaybackSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -935,6 +952,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1000011439247020
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000013019289236}
+  - 222: {fileID: 222000010718454094}
+  - 114: {fileID: 114000010716662594}
+  - 114: {fileID: 114000010227598758}
+  m_Layer: 5
+  m_Name: StopSimulation_Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000011452006388
 GameObject:
   m_ObjectHideFlags: 1
@@ -1066,7 +1101,7 @@ GameObject:
   - 114: {fileID: 114000013480889360}
   - 114: {fileID: 114000013391707966}
   m_Layer: 5
-  m_Name: StopSimulation_Button
+  m_Name: PauseSimulation_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1146,6 +1181,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &1000011676673172
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000010285259466}
+  - 222: {fileID: 222000010851704616}
+  - 114: {fileID: 114000011000946180}
+  m_Layer: 5
+  m_Name: Handle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000011693838924
 GameObject:
   m_ObjectHideFlags: 1
@@ -1477,6 +1529,21 @@ GameObject:
   - 114: {fileID: 114000010191038116}
   m_Layer: 5
   m_Name: 'simulationError_panel '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000012213337750
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000012144867088}
+  m_Layer: 5
+  m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2103,6 +2170,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1000013282846366
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000012627223416}
+  m_Layer: 5
+  m_Name: Handle Slide Area
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1000013289437210
 GameObject:
   m_ObjectHideFlags: 1
@@ -2166,6 +2248,23 @@ GameObject:
   - 114: {fileID: 114000013522473028}
   m_Layer: 5
   m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000013484555036
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000012802954248}
+  - 222: {fileID: 222000011632188760}
+  - 114: {fileID: 114000010330878726}
+  m_Layer: 5
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2489,6 +2588,23 @@ GameObject:
   - 114: {fileID: 114000011849297584}
   m_Layer: 5
   m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000013962222958
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 224000012650521428}
+  - 222: {fileID: 222000011232924766}
+  - 114: {fileID: 114000014178423376}
+  m_Layer: 5
+  m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2825,6 +2941,47 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: TEST
+--- !u!114 &114000010227598758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011439247020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 21300040, guid: 4790085183ce6644d8f705894393ce9c, type: 3}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 114000010716662594}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114000010239263266
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3023,6 +3180,33 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 03
+--- !u!114 &114000010330878726
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013484555036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!114 &114000010399342416
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3335,6 +3519,81 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_Sprite: {fileID: 21300000, guid: 836e7f7e24c4c854eb21f9cf737e2c4e, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!114 &114000010707137590
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010930812932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -113659843, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 114000011000946180}
+  m_FillRect: {fileID: 224000012650521428}
+  m_HandleRect: {fileID: 224000010285259466}
+  m_Direction: 0
+  m_MinValue: 0
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114000010716662594
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011439247020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300014, guid: 038a6495077d0f74abbcd9cc6afa58e2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -3659,6 +3918,33 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &114000011000946180
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011676673172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!114 &114000011009013668
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3738,6 +4024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionPhase: 0
+  playbackBehavior: {fileID: 114000012409007930}
   trashHover: 0
   connectVisibilityLock: 0
   colorFlowVisibilityLock: 0
@@ -3821,7 +4108,8 @@ MonoBehaviour:
     trash: {fileID: 114000010808615036}
     preview: {fileID: 114000013697017244}
     simulationButton: {fileID: 114000013890134070}
-    stopSimulationButton: {fileID: 114000013391707966}
+    stopSimulationButton: {fileID: 114000010227598758}
+    pauseSimulationButton: {fileID: 114000013391707966}
     submitButton: {fileID: 114000010039382150}
     revealHintsButton: {fileID: 114000013835693144}
     exitButton: {fileID: 114000014289937774}
@@ -3834,6 +4122,7 @@ MonoBehaviour:
     hintButtons:
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Tracks
         hintDescription: Tracks determine the path an arrow will follow. Items within
           the toolbar can snap to the track.
@@ -3842,6 +4131,7 @@ MonoBehaviour:
           type: 3}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Arrows
         hintDescription: 'Arrows travel along tracks and interact with items that
           have been placed on the tracks.  You can hover over the arrows at the top
@@ -3850,6 +4140,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Signal
         hintDescription: Signals can be dragged from the toolbar and placed on the
           track. Signals are used to control semaphores and direction switches.   To
@@ -3860,6 +4151,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Semaphore
         hintDescription: Semaphores can be used to block or release an arrow (depending
           on whether it is open or closed). Drag a semaphore from the toolbar to the
@@ -3873,6 +4165,7 @@ MonoBehaviour:
           type: 3}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Link Viewer
         hintDescription: Hover over the link viewer to view all connections between
           items within the level.
@@ -3880,6 +4173,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Trash Can
         hintDescription: Previously placed semaphores and signals can be dragged to
           the trash can to remove them.
@@ -3887,6 +4181,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 08000000090000000a0000000c0000000d0000000e0000000f00000010000000110000001200000014000000160000001700000018000000190000001b0000001c0000001f00000020000000220000002400000026000000280000002a0000002b0000002c0000002d0000002f0000003000000031000000320000003300000034000000350000003600000038000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Direction Switches
         hintDescription: 'Arrows that pass through a direction switch will turn in
           the direction of the darker arrow on the switch.  If linked to a signal,
@@ -3896,6 +4191,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 04000000050000000700000008000000090000000a0000000b0000000c0000000d0000000f00000010000000110000002c000000
       hint:
+        hint_component_type: 
         hintTitle: Arrow Specific Tracks
         hintDescription: 'Some arrows can only travel on parts of a track. Hover over
           the arrows at the top of the screen to see which path the arrow can travel
@@ -3904,6 +4200,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 02000000030000000400000005000000090000000a0000000c0000000d0000000e0000000f0000001100000014000000160000001700000018000000190000001b0000001e0000001f00000020000000220000002400000026000000280000002a0000002b0000002c0000002d0000002f0000003000000031000000320000003300000034000000350000003600000038000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Unlimited Conditional Packages
         hintDescription: A type of package that will regenerate as soon as it has
           been delivered to a delivery point.
@@ -3911,6 +4208,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 06000000080000000900000012000000260000002c000000
       hint:
+        hint_component_type: 
         hintTitle: Limited Conditional Packages
         hintDescription: A type of package that will not regenerate after it is picked
           up by an arrow.
@@ -3919,6 +4217,7 @@ MonoBehaviour:
           type: 3}
     - levelIds: 0b0000000d0000000f000000100000001400000017000000190000001c0000001e0000001f00000020000000280000002a0000002c0000002d0000002f000000300000003100000034000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Unlimited Unconditional Packages
         hintDescription: 'A type of package that will regenerate as soon as it is
           picked up by an arrow. '
@@ -3926,6 +4225,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0600000007000000090000000d0000000f00000014000000160000001700000018000000190000001e0000001f00000020000000220000002400000026000000280000002a0000002b0000002c0000002d0000002f0000003000000031000000320000003300000034000000350000003600000038000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Diverters
         hintDescription: 'Diverters will change the direction of an arrow based on
           the package that the arrow is carrying. Arrows will follow the track that
@@ -3936,6 +4236,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0b0000000c0000000d0000000e0000000f000000100000001b0000002b0000002c0000002d0000003000000031000000320000003300000034000000350000003600000038000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Universal Exchange Points
         hintDescription: 'When an arrow passes through these points, it can swap the
           package it is carrying with another arrow that is also passing through an
@@ -3945,6 +4246,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: ffffffff
       hint:
+        hint_component_type: 
         hintTitle: Symbol Specific Exchange Points
         hintDescription: When an arrow passes through these points, it can swap packages
           of the type on the exchange point with another arrow that is also passing
@@ -3953,6 +4255,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0c0000000f00000010000000110000001200000026000000
       hint:
+        hint_component_type: 
         hintTitle: Package Specific Delivery Points
         hintDescription: 'Some packages can only be delivered to a specific delivery
           point. You must hover over the package to see its corresponding delivery
@@ -3961,6 +4264,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Universal Delivery Points
         hintDescription: These delivery points can accept packages with any symbol.
           Hover over delivery points to view what packages can be delivered to them.
@@ -3968,6 +4272,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Missed Delivery
         hintDescription: If two arrows attempt to deliver packages to a delivery point
           simultaneously, one package will get lost. When a missed delivery occurs
@@ -3977,6 +4282,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Succesful Delivery
         hintDescription: If a package is succesfully delivered, the delivery point
           and it's pin will turn green and the progress pin will increment.
@@ -3984,6 +4290,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 02000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f00000012000000
       hint:
+        hint_component_type: 
         hintTitle: Symbol Specific Delivery Points
         hintDescription: Packages can be delivered to delivery points with symbols
           that match the symbol on the package. Hover over delivery points to view
@@ -3992,6 +4299,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0200000003000000040000000500000007000000090000000a0000000c0000000d0000000e0000000f000000
       hint:
+        hint_component_type: 
         hintTitle: Unlimited Conditional Delivery Point
         hintDescription: Delivery points for unlimited conditional packages only.
           Hover over delivery points to view what packages can be delivered to them.
@@ -3999,6 +4307,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0b0000000d000000
       hint:
+        hint_component_type: 
         hintTitle: Unlimited Unconditional Delivery Point
         hintDescription: Delivery points for unlimited unconditional packages only.
           Hover over delivery points to view what packages can be delivered to them.
@@ -4006,6 +4315,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 06000000080000000900000012000000
       hint:
+        hint_component_type: 
         hintTitle: Limited Conditional Delivery Point
         hintDescription: Delivery points for limited conditional packages only. Hover
           over delivery points to view what packages can be delivered to them.
@@ -4013,6 +4323,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 0100000002000000030000001400000016000000170000001c0000001f0000002200000026000000280000002a0000002b0000002c0000002d0000002f0000003000000031000000320000003300000034000000350000003600000038000000390000003a000000
       hint:
+        hint_component_type: 
         hintTitle: Locked Component
         hintDescription: When a lock appears on a semaphore you cannot change its
           default state or move it, however, you can still connect signals you place
@@ -4022,6 +4333,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Zoom
         hintDescription: Use the scroll wheel to zoom in and out. The camera will
           pan to the location you zoom into.
@@ -4029,6 +4341,7 @@ MonoBehaviour:
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
+        hint_component_type: 
         hintTitle: Goal
         hintDescription: To view, or hide, the goal of the level press this button
           in the bottom left.
@@ -4093,6 +4406,7 @@ MonoBehaviour:
       tooltipContent:
         tooltipText: The path the red thread will follow. Click to toggle this view
           on and off.
+    playbackSlider: {fileID: 114000010707137590}
     goalDescriptionOverlay:
       panelContainer: {fileID: 224000012877272790}
       isOpen: 0
@@ -5774,6 +6088,21 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114000012409007930
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010584631698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3ee7b397e6b42947871ad77c03b2a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInteraction: {fileID: 114000011069610498}
+  timeSteps: []
+  currentStep: 0
+  paused: 0
 --- !u!114 &114000012533400082
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7104,7 +7433,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300014, guid: 038a6495077d0f74abbcd9cc6afa58e2, type: 3}
+  m_Sprite: {fileID: 21300016, guid: 038a6495077d0f74abbcd9cc6afa58e2, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -8358,6 +8687,33 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114000014178423376
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013962222958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!114 &114000014211583960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8677,6 +9033,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013188327900}
+--- !u!222 &222000010718454094
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011439247020}
 --- !u!222 &222000010719143292
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -8731,6 +9093,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010027090090}
+--- !u!222 &222000010851704616
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011676673172}
 --- !u!222 &222000010874260366
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -8833,6 +9201,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012682666512}
+--- !u!222 &222000011232924766
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013962222958}
 --- !u!222 &222000011253405954
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -8917,6 +9291,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011046126456}
+--- !u!222 &222000011632188760
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013484555036}
 --- !u!222 &222000011685175420
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -9387,17 +9767,17 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011584011826}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 224000013729171956}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_AnchorMin: {x: 0.7, y: 0}
   m_AnchorMax: {x: 0.78, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -36.305, y: -0.000009536743}
+  m_SizeDelta: {x: 72.61, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010083756402
 RectTransform:
@@ -9470,8 +9850,8 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 213.33334, y: -18.004173}
-  m_SizeDelta: {x: 85.333336, y: 36.008347}
+  m_AnchoredPosition: {x: 213.33334, y: -18.007994}
+  m_SizeDelta: {x: 85.333336, y: 36.015987}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010238419374
 RectTransform:
@@ -9509,8 +9889,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32.49997, y: -44.67284}
-  m_SizeDelta: {x: 64.99994, y: 23.115227}
+  m_AnchoredPosition: {x: 32.49997, y: -44.679993}
+  m_SizeDelta: {x: 64.99994, y: 23.119995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010261386172
 RectTransform:
@@ -9547,6 +9927,24 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000010285259466
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011676673172}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 224000012627223416}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010303474876
 RectTransform:
@@ -9701,8 +10099,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32.95, y: -11.428353}
-  m_SizeDelta: {x: 65.9, y: 22.856707}
+  m_AnchoredPosition: {x: 32.95, y: -11.430791}
+  m_SizeDelta: {x: 65.9, y: 22.861582}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010487782532
 RectTransform:
@@ -9796,8 +10194,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 128, y: -18.004173}
-  m_SizeDelta: {x: 85.333336, y: 36.008347}
+  m_AnchoredPosition: {x: 128, y: -18.007994}
+  m_SizeDelta: {x: 85.333336, y: 36.015987}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010768185328
 RectTransform:
@@ -10099,8 +10497,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 42.666668, y: -18.004173}
-  m_SizeDelta: {x: 85.333336, y: 36.008347}
+  m_AnchoredPosition: {x: 42.666668, y: -18.007994}
+  m_SizeDelta: {x: 85.333336, y: 36.015987}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011195844690
 RectTransform:
@@ -10670,8 +11068,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32.95, y: -44.285057}
-  m_SizeDelta: {x: 65.9, y: 22.856707}
+  m_AnchoredPosition: {x: 32.95, y: -44.29237}
+  m_SizeDelta: {x: 65.9, y: 22.861582}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011781466348
 RectTransform:
@@ -10809,7 +11207,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 224000013729171956}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_AnchorMin: {x: 0.07, y: 0}
   m_AnchorMax: {x: 0.14, y: 1}
   m_AnchoredPosition: {x: -64, y: 0}
@@ -10935,6 +11333,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000012144867088
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012213337750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 224000012650521428}
+  m_Father: {fileID: 224000013928928686}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMax: {x: 1, y: 0.75}
+  m_AnchoredPosition: {x: -5, y: 0}
+  m_SizeDelta: {x: -20, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000012198522130
 RectTransform:
   m_ObjectHideFlags: 1
@@ -11003,7 +11420,7 @@ RectTransform:
   m_Children:
   - {fileID: 224000013491524784}
   m_Father: {fileID: 224000013729171956}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_AnchorMin: {x: 0.8, y: 0.2}
   m_AnchorMax: {x: 0.9, y: 0.8}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -11122,6 +11539,43 @@ RectTransform:
   m_AnchoredPosition: {x: 152.80002, y: -16}
   m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000012627223416
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013282846366}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 224000010285259466}
+  m_Father: {fileID: 224000013928928686}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -20, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000012650521428
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013962222958}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 224000012144867088}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 10, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000012682890416
 RectTransform:
   m_ObjectHideFlags: 1
@@ -11157,6 +11611,24 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0.02, y: 0.08}
   m_AnchorMax: {x: 0.35, y: 0.92}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000012802954248
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013484555036}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 224000013928928686}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMax: {x: 1, y: 0.75}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -11309,6 +11781,24 @@ RectTransform:
   m_AnchorMax: {x: 0.87, y: 1}
   m_AnchoredPosition: {x: -5.3, y: 0.000030517578}
   m_SizeDelta: {x: 0.000030517578, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224000013019289236
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011439247020}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 224000013729171956}
+  m_RootOrder: 4
+  m_AnchorMin: {x: 0.7, y: 0}
+  m_AnchorMax: {x: 0.78, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013095500998
 RectTransform:
@@ -11714,7 +12204,9 @@ RectTransform:
   m_Children:
   - {fileID: 224000013763179310}
   - {fileID: 224000010768185328}
+  - {fileID: 224000013928928686}
   - {fileID: 224000010041679042}
+  - {fileID: 224000013019289236}
   - {fileID: 224000012304836192}
   - {fileID: 224000011924252714}
   m_Father: {fileID: 224000011781466348}
@@ -11930,6 +12422,27 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.49999997}
+--- !u!224 &224000013928928686
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010930812932}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 224000012802954248}
+  - {fileID: 224000012144867088}
+  - {fileID: 224000012627223416}
+  m_Father: {fileID: 224000013729171956}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -16.51, y: 0.41}
+  m_SizeDelta: {x: 300, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013993156216
 RectTransform:
   m_ObjectHideFlags: 1
@@ -12039,8 +12552,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32.49997, y: -11.557613}
-  m_SizeDelta: {x: 64.99994, y: 23.115227}
+  m_AnchoredPosition: {x: 32.49997, y: -11.559998}
+  m_SizeDelta: {x: 64.99994, y: 23.119995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000014150820348
 RectTransform:

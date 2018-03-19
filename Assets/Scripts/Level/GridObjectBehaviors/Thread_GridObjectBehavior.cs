@@ -50,6 +50,27 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 		ClearCabooses();
 	}
 
+    public override void ReturnToStep(TimeStepData timeStep)
+    {
+        //thread
+        iTween.Stop(gameObject);
+        this.timeStep = timeStep;
+        gameObject.transform.position = new Vector3(timeStep.GetThread(component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(component.id).pos.y, 0);
+        gameObject.transform.eulerAngles = timeStep.GetThread(component.id).rotation;
+        lastSimulationPosition = gameObject.transform.position;
+
+        //packages
+        List<int> packageIds = new List<int>();
+        for(int i = 0; i < timeStep.GetThread(component.id).packages.Count; i++)
+        {
+            if(timeStep.GetThread(component.id).packages[i].active == true)
+            {
+                packageIds.Add(timeStep.GetThread(component.id).packages[i].id);
+            }
+        }
+        UpdateCabooses(packageIds, true);
+    }
+
 	public void ClearCabooses()
 	{
 		if(trailObjectList.Count > 0)
@@ -65,19 +86,29 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 		}
 	}
 
-
-	public override float DoStep(StepData inputStep)
+	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
+        while(timeStep.timeStep != inputStep.timeStep)
+        {
+            if(timeStep.timeStep > inputStep.timeStep)
+            {
+                timeStep = timeStep.previousStep;
+            }
+            else
+            {
+                timeStep = timeStep.nextStep;
+            }
+        }
 		if(behaviorType==BehaviorTypes.component && component!=null)
 		{
             if (inputStep.eventType == "M")
             {
                 Vector2 reverseYposition = new Vector2(inputStep.componentPos.x, GameManager.Instance.GetLevelHeight() - inputStep.componentPos.y);
-                if (inputStep.GetNextStep() != -1)
+                /*if (inputStep.GetNextMove(dictionary) != null)
                 {
-                    StepData nextStep = GameManager.Instance.GetDataManager().currentLevelData.execution[inputStep.GetNextStep()];
+                    StepData nextStep = inputStep.GetNextMove(dictionary);
                     reverseYposition = new Vector2(nextStep.componentPos.x, GameManager.Instance.GetLevelHeight() - nextStep.componentPos.y);
-                }
+                }*/
 
                 float xDiff = Mathf.Abs(Vector2.Distance(new Vector2(gameObject.transform.position.x, 0), new Vector2(reverseYposition.x, 0)));
                 float yDiff = Mathf.Abs(Vector2.Distance(new Vector2(0, gameObject.transform.position.y), new Vector2(0, reverseYposition.y)));
@@ -111,84 +142,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
                         }
                         else
                         {
-                            List<int> currentCabooses = new List<int>();
-                            currentCabooses.AddRange(inputStep.componentStatus.payload);
-
-                            List<int> newCabooses = new List<int>();
-                            newCabooses.AddRange(inputStep.componentStatus.payload);
-
-                            List<GameObject> popCabooses = new List<GameObject>();
-
-                            /* figure out what cabooses to add to current */
-                            foreach (GameObject g in trailObjectList)
-                            {
-                                int currentId = g.GetComponent<CabooseObject>().packageOriginID;
-
-                                if (newCabooses.Contains(currentId)) { newCabooses.Remove(currentId); }
-                                if (!currentCabooses.Contains(currentId)) { popCabooses.Add(g); }
-                            }
-
-                            /* figure out what cabooses to remove from current */
-                            for (int p = popCabooses.Count - 1; p >= 0; p--)
-                            {
-                                CabooseObject caboose = popCabooses[p].GetComponent<CabooseObject>();
-                                caboose.Disconnect();
-                                trailObjectList.Remove(popCabooses[p]);
-                                Destroy(popCabooses[p]);
-                            }
-
-                            foreach (int payloadId in newCabooses)
-                            {
-                                GridObjectBehavior payloadObject = GameManager.Instance.GetGridManager().GetGridObjectByID(payloadId);
-                                GameObject g = new GameObject();
-                                g.transform.position = payloadObject.transform.position;
-                                g.transform.localScale = Vector3.zero;
-
-                                trailObjectList.Add(g);
-                                g.name = "payload_" + payloadId;
-                                g.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_tint_01");//payloadObject.GetComponent<SpriteRenderer>().sprite;
-                                g.GetComponent<SpriteRenderer>().color = GameManager.Instance.GetGridManager().GetColorByIndex(component.configuration.color);
-
-                                GameObject gChild = new GameObject();
-                                switch (payloadObject.component.configuration.type)
-                                {
-                                    case "Conditional":
-                                        {
-                                            gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_03");
-                                        }
-                                        break;
-                                    case "Unconditional":
-                                        {
-                                            gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_02");
-                                        }
-                                        break;
-                                    case "Limited":
-                                        {
-                                            gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_01");
-                                        }
-                                        break;
-                                    case "Empty":
-                                        {
-
-                                        }
-                                        break;
-                                }
-                                gChild.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.basicComponents + 1;
-                                gChild.transform.position = g.transform.position;
-                                gChild.transform.SetParent(g.transform);
-                                gChild.transform.localScale = Vector3.one;
-
-                                if (true /* item is in exchange */ )
-                                {
-                                    /* figure out where the exchange point is, spawn it there */
-                                    g.AddComponent<CabooseObject>().BeginFollow(transform, (float)trailObjectList.Count, payloadId);
-                                }
-                                else
-                                {
-                                    g.AddComponent<CabooseObject>().BeginFollow(transform, (float)trailObjectList.Count, payloadId);
-                                }
-
-                            }
+                            UpdateCabooses(inputStep.componentStatus.payload, false);
                         }
                     }
                 }
@@ -263,6 +217,88 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
         }
         return 0;
 	}
+
+    void UpdateCabooses(IEnumerable<int> payloadIds, bool instant)
+    {
+        List<int> currentCabooses = new List<int>();
+        currentCabooses.AddRange(payloadIds);
+
+        List<int> newCabooses = new List<int>();
+        newCabooses.AddRange(payloadIds);
+
+        List<GameObject> popCabooses = new List<GameObject>();
+
+        /* figure out what cabooses to add to current */
+        foreach (GameObject g in trailObjectList)
+        {
+            int currentId = g.GetComponent<CabooseObject>().packageOriginID;
+
+            if (newCabooses.Contains(currentId)) { newCabooses.Remove(currentId); }
+            if (!currentCabooses.Contains(currentId)) { popCabooses.Add(g); }
+        }
+
+        /* figure out what cabooses to remove from current */
+        for (int p = popCabooses.Count - 1; p >= 0; p--)
+        {
+            CabooseObject caboose = popCabooses[p].GetComponent<CabooseObject>();
+            caboose.Disconnect();
+            trailObjectList.Remove(popCabooses[p]);
+            Destroy(popCabooses[p]);
+        }
+
+        foreach (int payloadId in newCabooses)
+        {
+            GridObjectBehavior payloadObject = GameManager.Instance.GetGridManager().GetGridObjectByID(payloadId);
+            GameObject g = new GameObject();
+            g.transform.position = gameObject.transform.position;
+            g.transform.localScale = Vector3.zero;
+
+            trailObjectList.Add(g);
+            g.name = "payload_" + payloadId;
+            g.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_tint_01");//payloadObject.GetComponent<SpriteRenderer>().sprite;
+            g.GetComponent<SpriteRenderer>().color = GameManager.Instance.GetGridManager().GetColorByIndex(component.configuration.color);
+
+            GameObject gChild = new GameObject();
+            switch (payloadObject.component.configuration.type)
+            {
+                case "Conditional":
+                    {
+                        gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_03");
+                    }
+                    break;
+                case "Unconditional":
+                    {
+                        gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_02");
+                    }
+                    break;
+                case "Limited":
+                    {
+                        gChild.AddComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite("package_logo_01");
+                    }
+                    break;
+                case "Empty":
+                    {
+
+                    }
+                    break;
+            }
+            gChild.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.basicComponents + 1;
+            gChild.transform.position = g.transform.position;
+            gChild.transform.SetParent(g.transform);
+            gChild.transform.localScale = Vector3.one;
+
+            if (true /* item is in exchange */ )
+            {
+                /* figure out where the exchange point is, spawn it there */
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId, instant);
+            }
+            else
+            {
+                g.AddComponent<CabooseObject>().BeginFollow(this, (float)trailObjectList.Count, payloadId, instant);
+            }
+
+        }
+    }
 
 	void SwapTrails(int thread_b_id) {
 		Debug.Log("Swapping between " + this.component.id + " and " + thread_b_id);

@@ -31,12 +31,14 @@ public class PlayerInteraction_UI
 	//public EventTrigger exit;
 	public Button simulationButton;
 	public Button stopSimulationButton;
+    public Button pauseSimulationButton;
 	public Button submitButton;
 	public Button revealHintsButton;
 	public Button exitButton;
 	public EventTrigger[] rightPanelColors;
 	public HintButton[] hintButtons;
 	public TooltipEvent[] tooltipEvents;
+    public Slider playbackSlider;
 
     [Header("Goal Description Elements")]
     public GoalDescription_UIOverlay goalDescriptionOverlay;

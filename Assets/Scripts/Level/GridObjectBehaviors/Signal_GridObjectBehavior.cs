@@ -156,7 +156,7 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 	}
 
 
-	public override float DoStep(StepData inputStep)
+	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
 		if(behaviorType==BehaviorTypes.component && component!=null){
 			switch(component.type.ToLower())
