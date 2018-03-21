@@ -1,5 +1,7 @@
 "Parallel" is an educational game to teach parallel and concurrent programming. It is being developed at Drexel University (funded by the Cyberlearning NSF grant 1523116).
 
+![alt text](https://raw.githubusercontent.com/usantiontanon/Parllel/master/Assets/textures/gameStartScreen.jpg)
+
 Download the latest release <a href="https://github.com/santiontanon/Parallel/releases/tag/v1.0.0-alpha">here</a>.
 
 Notes:
