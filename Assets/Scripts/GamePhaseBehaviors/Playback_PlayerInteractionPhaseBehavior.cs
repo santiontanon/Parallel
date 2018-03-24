@@ -28,7 +28,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
     public void EndPhase()
     {
         //end all coroutines
-
+        StopAllCoroutines();
         //reset values
     }
 
