@@ -25,7 +25,14 @@ public class DataManager : MonoBehaviour {
 	{
 
         // Try
-        TextAsset lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+        if (GameManager.Instance.is_demo_build)
+        {
+
+        }
+        else
+        {
+            TextAsset lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+        }
 
         // Change Loading
         GetLevels(lr_text.text);
