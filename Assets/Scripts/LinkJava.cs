@@ -27,7 +27,7 @@ public class LinkJava : MonoBehaviour
     	if(Application.isEditor){
         	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
         } else {
-        	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
+        	externalPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;
