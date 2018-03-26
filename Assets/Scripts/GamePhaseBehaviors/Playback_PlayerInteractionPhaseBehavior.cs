@@ -403,7 +403,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         }
 
         playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
-
+        playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
         yield return PlaySimulation(maxStep);
     }
 
