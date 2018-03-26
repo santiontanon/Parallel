@@ -416,7 +416,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
 		playerInteraction_UI.ReleaseDraggableElement();
-		GameManager.Instance.tracker.CreateEventExt("startDrag",selectedOption.ToString());
+		GameManager.Instance.tracker.CreateEventExt("endDrag",selectedOption.ToString());
 		if( GameManager.Instance.GetGridManager().IsValidLocation(Input.mousePosition) && !GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition) ) 
 		{ 
 			GameManager.Instance.GetGridManager().PlaceGridElementAtLocation( Input.mousePosition, selectedOption );
