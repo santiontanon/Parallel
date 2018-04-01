@@ -495,10 +495,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
 
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
 		playerInteraction_UI.simulationButton.interactable = false;
 		playerInteraction_UI.simulationButton.gameObject.SetActive(false);
 		playerInteraction_UI.submitButton.interactable = false;
-		//playerInteraction_UI.submitButton.gameObject.SetActive(false);
+		playerInteraction_UI.submitButton.gameObject.SetActive(false);
+        playerInteraction_UI.playbackControls.gameObject.SetActive(true);
 		playerInteraction_UI.stopSimulationButton.interactable = true;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
         playerInteraction_UI.pauseSimulationButton.interactable = true;
@@ -525,6 +527,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 		ResetStartValues();
 
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(true);
+        playerInteraction_UI.playbackControls.gameObject.SetActive(false);
 		playerInteraction_UI.simulationButton.interactable = true;
 		playerInteraction_UI.simulationButton.gameObject.SetActive(true);
 		playerInteraction_UI.submitButton.interactable = true;

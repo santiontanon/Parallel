@@ -4193,10 +4193,11 @@ MonoBehaviour:
     pauseSimulationButton: {fileID: 114000013391707966}
     submitButton: {fileID: 114000010039382150}
     revealHintsToggle:
+      toggleRoot: {fileID: 1000014268903642}
       container: {fileID: 224000011066942694}
-      toggleObject: {fileID: 224000012666198952}
-      toggleA: {fileID: 114000012465505834}
-      toggleB: {fileID: 114000011038087116}
+      toggle: {fileID: 224000012666198952}
+      leftText: {fileID: 114000012465505834}
+      rightText: {fileID: 114000011038087116}
       toggleButton: {fileID: 114000013746923780}
     exitButton: {fileID: 114000014289937774}
     rightPanelColors:
@@ -4516,6 +4517,7 @@ MonoBehaviour:
       meterContainer: {fileID: 224000013177897662}
       meter_foreground: {fileID: 114000010091532260}
       meter_background: {fileID: 114000011637991294}
+    playbackControls: {fileID: 1000011584011826}
     hint_button_prefab: {fileID: 1000010487195062, guid: fc81bf7d08fb548d699a17e7c23de7ff,
       type: 2}
   score:
@@ -10306,8 +10308,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 79.14998, y: -27.549358}
-  m_SizeDelta: {x: 158.29996, y: 55.098717}
+  m_AnchoredPosition: {x: 79.14998, y: -27.513004}
+  m_SizeDelta: {x: 158.29996, y: 55.02601}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010487782532
 RectTransform:
@@ -11275,8 +11277,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 79.14998, y: -92.64807}
-  m_SizeDelta: {x: 158.29996, y: 55.098717}
+  m_AnchoredPosition: {x: 79.14998, y: -92.53902}
+  m_SizeDelta: {x: 158.29996, y: 55.02601}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011781466348
 RectTransform:

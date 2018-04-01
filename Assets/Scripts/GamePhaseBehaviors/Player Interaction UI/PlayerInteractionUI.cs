@@ -57,6 +57,9 @@ public class PlayerInteraction_UI
 	public Image topPanelConnectionLock;
 	public UIMeter zoomMeter;
 
+    [Header("UI Containers")]
+    public GameObject playbackControls;
+
 	[Header("Prefabs")]
 	public GameObject hint_button_prefab;
 
@@ -542,25 +545,26 @@ public class PlayerInteraction_UI
     [System.Serializable]
     public class ToggleUIElement
     {
+        public GameObject toggleRoot;
         public RectTransform container;
-        public RectTransform toggleObject;
-        public Text toggleA, toggleB;
+        public RectTransform toggle;
+        public Text leftText, rightText;
         public Button toggleButton;
         public void SetToggle(bool isA)
         {
             if (isA)
             {
-                toggleObject.pivot = new Vector2(1, 0.5f);
-                toggleObject.anchoredPosition = new Vector3(0, 0, 0);
-                toggleA.color = new Color(1f, 1f, 1f);
-                toggleB.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
+                toggle.pivot = new Vector2(1, 0.5f);
+                toggle.anchoredPosition = new Vector3(0, 0, 0);
+                leftText.color = new Color(1f, 1f, 1f);
+                rightText.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
             }
             else
             {
-                toggleObject.pivot = new Vector2(0, 0.5f);
-                toggleObject.anchoredPosition = new Vector3(0, 0, 0);
-                toggleB.color = new Color(1f, 1f, 1f);
-                toggleA.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
+                toggle.pivot = new Vector2(0, 0.5f);
+                toggle.anchoredPosition = new Vector3(0, 0, 0);
+                rightText.color = new Color(1f, 1f, 1f);
+                leftText.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
             }
         }
     }
