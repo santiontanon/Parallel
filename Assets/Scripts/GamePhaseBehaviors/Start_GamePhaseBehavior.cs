@@ -46,11 +46,13 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         if (!GameManager.Instance.is_demo_build)
         {
             gameStart.interactable = false;
+            gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 0.5f);
             postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         }
         else
         {
             gameStart.interactable = true;
+            gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 1f);
         }
 
 		startGameUI.SetActive(true);
@@ -87,9 +89,12 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             if (playerIdField.text.Length > 0)
             {
                 gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
+                float opacity = (true && GameManager.Instance.preSurveyComplete) ? 1f : 0.5f;
+                gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, opacity);
                 GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
             }
             else gameStart.interactable = false;
+            gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 0.5f);
             GameManager.Instance.UpdatePlayerField(playerIdField.text);
         }
     }
@@ -137,6 +142,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     {
         GameManager.Instance.preSurveyComplete = true;
         gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.5f;
+        gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, opacity);
         //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         Application.OpenURL("http://unity3d.com/");
     }
