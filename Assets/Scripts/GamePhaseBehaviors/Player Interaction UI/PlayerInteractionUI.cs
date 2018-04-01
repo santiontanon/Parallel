@@ -33,7 +33,7 @@ public class PlayerInteraction_UI
 	public Button stopSimulationButton;
     public Button pauseSimulationButton;
 	public Button submitButton;
-	public Button revealHintsButton;
+    [SerializeField] public ToggleUIElement revealHintsToggle;
 	public Button exitButton;
 	public EventTrigger[] rightPanelColors;
 	public HintButton[] hintButtons;
@@ -535,6 +535,32 @@ public class PlayerInteraction_UI
             else
             {
                 iTween.ScaleTo(lightboxElement.gameObject, iTween.Hash("scale", Vector3.zero, "time", 0.5f));
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class ToggleUIElement
+    {
+        public RectTransform container;
+        public RectTransform toggleObject;
+        public Text toggleA, toggleB;
+        public Button toggleButton;
+        public void SetToggle(bool isA)
+        {
+            if (isA)
+            {
+                toggleObject.pivot = new Vector2(1, 0.5f);
+                toggleObject.anchoredPosition = new Vector3(0, 0, 0);
+                toggleA.color = new Color(1f, 1f, 1f);
+                toggleB.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
+            }
+            else
+            {
+                toggleObject.pivot = new Vector2(0, 0.5f);
+                toggleObject.anchoredPosition = new Vector3(0, 0, 0);
+                toggleB.color = new Color(1f, 1f, 1f);
+                toggleA.color = new Color(88f / 255f, 89f / 255f, 97f / 255f);
             }
         }
     }

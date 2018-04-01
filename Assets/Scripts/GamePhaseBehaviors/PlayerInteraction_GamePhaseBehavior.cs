@@ -249,8 +249,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.submitButton.onClick.AddListener(() => score.attemptCount++ );
         playerInteraction_UI.submitButton.interactable = true;
 
-		playerInteraction_UI.revealHintsButton.onClick.RemoveAllListeners();
-		playerInteraction_UI.revealHintsButton.onClick.AddListener( ()=> ToggleHintsVisibility() );
+		playerInteraction_UI.revealHintsToggle.toggleButton.onClick.RemoveAllListeners();
+		playerInteraction_UI.revealHintsToggle.toggleButton.onClick.AddListener( ()=> ToggleHintsVisibility() );
 
 /* Track Color Hover Setup */
 		for(int triggerIndex = 0; triggerIndex < playerInteraction_UI.rightPanelColors.Length; triggerIndex++)
@@ -913,12 +913,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             // Turn it off
             interactionPhase = InteractionPhases.ingame_default;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
+            playerInteraction_UI.revealHintsToggle.SetToggle(true);
         }
         else
         {
             // Else, turn it on
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
+            playerInteraction_UI.revealHintsToggle.SetToggle(false);
         }
         TriggerHintFader();
 
