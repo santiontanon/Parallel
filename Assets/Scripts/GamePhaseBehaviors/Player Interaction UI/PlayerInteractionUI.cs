@@ -49,7 +49,6 @@ public class PlayerInteraction_UI
     [Header("Updatable Elements")]
     public Text levelNameText;
 	public Image draggableElement;
-	public Text text_goalContainer;
 	public Text text_hintPopUp;
 	public Image image_hintPopUp;
 	public Text levelText;
@@ -73,6 +72,10 @@ public class PlayerInteraction_UI
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
 		levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
+        if(levelText.text.Length == 1)
+        {
+            levelText.text = 0 + levelText.text;
+        }
 		zoomMeter.OpenMeter();
 	}
 
@@ -124,10 +127,10 @@ public class PlayerInteraction_UI
         goalDescriptionOverlay.SetFeedbackScore(GameManager.Instance.GetScoreManager().GetCalculatedScore(inputLevel.metadata.level_id));
     }
 
-	public IEnumerator TriggerGoalPopUp(string inputGoalText)
+	public IEnumerator TriggerGoalPopUp(string titleText, string feedbackText)
 	{
-		GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp",inputGoalText);
-		goalOverlay.SetFeedbackText( inputGoalText );
+		GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp",titleText + feedbackText);
+		goalOverlay.SetText( titleText, feedbackText );
 		goalOverlay.OpenPanel();
 		while( goalOverlay.waitForUserInput ) { yield return new WaitForEndOfFrame(); }
 		//goalOverlay.ClosePanel();
@@ -154,6 +157,7 @@ public class PlayerInteraction_UI
 	[System.Serializable]
 	public class Goal_UIOverlay : UIOverlay
 	{
+        public Text titleText;
 		public Text feedbackText;
 		public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext, goalVisualToggle;
 
@@ -206,9 +210,10 @@ public class PlayerInteraction_UI
             confirmLevelsOverlay.OpenPanel();
         }
 
-		public void SetFeedbackText(string inFeedback)
+		public void SetText(string titleText, string feedbackText)
 		{
-			feedbackText.text = inFeedback;
+            this.titleText.text = titleText;
+			this.feedbackText.text = feedbackText;
 		}
 
         public void SetFeedbackScore(int inScore)
