@@ -347,7 +347,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                         }
                         break;
                     case "D":
-                        timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
+                        if(stepDictionary[i][j].componentStatus.delivered_to != 0)
+                        {
+                            timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
+                        }
                         break;
                     case "E":
                         if (timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
@@ -403,7 +406,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         }
 
         playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
-
+        playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
         yield return PlaySimulation(maxStep);
     }
 

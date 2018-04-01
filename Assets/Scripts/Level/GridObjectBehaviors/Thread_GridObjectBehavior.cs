@@ -149,8 +149,6 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
             }
             else if (inputStep.eventType == "D")
             {
-                Debug.Log("Missed: " + inputStep.componentStatus.missed);
-                Debug.Log("MissedCount: " + inputStep.componentStatus.missed_items.Length);
                 if (inputStep.componentStatus.exchange_between_b != 0)
                 {
                     SwapTrails(inputStep.componentStatus.exchange_between_b);
