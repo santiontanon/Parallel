@@ -402,7 +402,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			break;
 		}
         Vector3 draggableItemScale = Vector3.one;
-        draggableItemScale *= 5f /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
+        draggableItemScale *= originalOrthographicSize /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
         playerInteraction_UI.draggableElement.transform.localScale = draggableItemScale;
         dragging = true;
     }
