@@ -12,13 +12,14 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		public GameObject loadPhaseUI;
 
-        public RectTransform requiredLevelContainer;
-        public RectTransform optionalLevelContainer;
-        public RectTransform previousContainer;
+        public RectTransform requiredLevelContainer, requiredTransform;
+        public RectTransform optionalLevelContainer, optionalTransform;
+        public RectTransform previousContainer, previousTransform;
 
         public GameObject levelButtonPrefab;
         public Button exitLevelSelectionButton;
         [SerializeField] public UIOverlay levelLoadingOverlay;
+        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton;
 	}
 	public Load_UI loadUI;
 
@@ -65,6 +66,38 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         loadUI.loadPhaseUI.SetActive(true);
 
         loadUI.exitLevelSelectionButton.onClick.AddListener(() => GameManager.Instance.SetGamePhase(GameManager.GamePhases.StartScreen));
+
+        loadUI.requiredLevelsButton.onClick.RemoveAllListeners();
+        loadUI.requiredLevelsButton.onClick.AddListener(() => 
+        {
+            TriggerPanelSwap(true, false, false);
+        });
+
+        loadUI.optionalLevelsButton.onClick.RemoveAllListeners();
+        loadUI.optionalLevelsButton.onClick.AddListener(() =>
+        {
+            TriggerPanelSwap(false, false, true);
+        });
+
+        loadUI.previousLevelsButton.onClick.RemoveAllListeners();
+        loadUI.previousLevelsButton.onClick.AddListener(() =>
+        {
+            TriggerPanelSwap(false, true, false);
+        });
+
+        TriggerPanelSwap(true, false, false);
+    }
+
+    void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel )
+    {
+        loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
+        loadUI.requiredTransform.gameObject.SetActive(requiredPanel);
+
+        loadUI.previousLevelsButton.gameObject.SetActive(!previousPanel);
+        loadUI.previousTransform.gameObject.SetActive(previousPanel);
+
+        loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        loadUI.optionalTransform.gameObject.SetActive(optionalPanel);
     }
 
     void SetupLevelButton(LevelReferenceObject lr, Transform container)
