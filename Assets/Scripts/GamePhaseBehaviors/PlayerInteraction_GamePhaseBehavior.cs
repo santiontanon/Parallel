@@ -529,6 +529,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		playerInteraction_UI.simulationButton.interactable = true;
 		playerInteraction_UI.simulationButton.gameObject.SetActive(true);
 		playerInteraction_UI.submitButton.interactable = true;
+        playerInteraction_UI.submitButton.gameObject.SetActive(true);
 		playerInteraction_UI.stopSimulationButton.interactable = false;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
         playerInteraction_UI.pauseSimulationButton.interactable = false;
