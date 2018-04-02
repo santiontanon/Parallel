@@ -21,7 +21,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void BeginPhase()
 	{
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             preSurvey.gameObject.SetActive(false);
             postSurvey.gameObject.SetActive(false);
@@ -36,14 +36,14 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
         gameStart.onClick.RemoveAllListeners();
         gameEnd.onClick.RemoveAllListeners();
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             postSurvey.onClick.RemoveAllListeners();
             preSurvey.onClick.RemoveAllListeners();
             playerIdField.onEndEdit.RemoveAllListeners();
         }
 
-        if (!GameManager.Instance.is_demo_build && GameManager.Instance.preSurveyComplete == false)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo && GameManager.Instance.preSurveyComplete == false)
         {
             gameStart.interactable = false;
             gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
@@ -59,7 +59,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 		gameStart.onClick.AddListener( ()=> StartPlaying() );
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
 
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
             postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
@@ -84,7 +84,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (playerIdField.text.Length > 0)
             {
@@ -111,7 +111,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     }
 
 	void StartPlaying(){
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
         }
@@ -124,10 +124,12 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             {
                 if (GameManager.Instance.tracker.ready)
                 {
+                    Debug.Log("TrackerRead");
                     GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
                 }
                 else
                 {
+                    Debug.Log("StartTrackerWithCallback");
                     GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
                     fetchConfigInProgressOverlay.OpenPanel();
                 }

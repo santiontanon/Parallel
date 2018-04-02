@@ -26,7 +26,7 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void BeginPhase()
 	{
-		
+        GameManager.Instance.GetDataManager().GetLevels();
         foreach (Transform child in loadUI.requiredLevelContainer)
         {
             GameObject.Destroy(child.gameObject);

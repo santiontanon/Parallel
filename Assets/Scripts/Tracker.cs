@@ -22,6 +22,7 @@ public class Tracker : MonoBehaviour {
 	public string url_id = "";
 	public string url_logs = "";
 	public string url_data = "";
+    public string level_data = "";
 	public float logs_uploaded_time = 0f;
 	private string tracking_session_id = "NA";
 	private string tracking_session_user = "NONE";
@@ -60,7 +61,7 @@ public class Tracker : MonoBehaviour {
 
 	void Start () {
 		DebugInfoLabel = "NOT TRACKING";
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             allowQuitting = true;
         }
@@ -91,7 +92,8 @@ public class Tracker : MonoBehaviour {
 
 	public void StartTracker()
     {
-        if (!GameManager.Instance.is_demo_build)
+        Debug.Log("StartTracker");
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (ready) return;
             tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
@@ -108,7 +110,7 @@ public class Tracker : MonoBehaviour {
     }
 
 	IEnumerator FetchConfig(){
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             Debug.Log("FetchConfig");
             DebugInfoLabel = "FetchConfig from " + url_id;
@@ -125,10 +127,11 @@ public class Tracker : MonoBehaviour {
                     Debug.Log(www.text);
                     JSONObject ob = new JSONObject(www.text.Trim());
                     tracking_session_id = ob.GetField("id").ToString();
+                    level_data = www.text;
                 }
-                catch
+                catch (System.Exception e)
                 {
-
+                    Debug.Log(e);
                 }
                 if (onSuccess != null) onSuccess(www.text);
             }
@@ -146,7 +149,7 @@ public class Tracker : MonoBehaviour {
 
     public void UploadData(string data)
     {
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             StartCoroutine(UploadDataWWW(data));
         }
@@ -154,7 +157,7 @@ public class Tracker : MonoBehaviour {
 
     IEnumerator UploadDataWWW(string data)
     {
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             Debug.Log("UploadDataWWW");
             Dictionary<string, string> headers = new Dictionary<string, string>();
@@ -177,7 +180,7 @@ public class Tracker : MonoBehaviour {
     }
 
     public void UploadLogs(){
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (log2 != null && (Time.time - logs_uploaded_time) > 3.0f)
             {
@@ -207,7 +210,7 @@ public class Tracker : MonoBehaviour {
         WWW www = new WWW(url_logs, pData, headers);
         yield return www;
 
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (allowQuittingRequested)
             {
@@ -249,7 +252,7 @@ public class Tracker : MonoBehaviour {
         }
 
 	void SetupTracking(){
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
         #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
             string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
