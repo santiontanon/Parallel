@@ -159,7 +159,8 @@ public class PlayerInteraction_UI
 	{
         public Text titleText;
 		public Text feedbackText;
-		public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext, goalVisualToggle;
+        public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext;
+        public ToggleUIElement goalToggle;
 
         public GameObject starContainer;
         public Image star_1, star_2, star_3;
@@ -257,8 +258,8 @@ public class PlayerInteraction_UI
             exitConfirm.onClick.AddListener(() => { GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame);/* /*ClosePanel();*/ });
             exitDeny.onClick.AddListener(() => OpenRootScreen());
 
-            goalVisualToggle.onClick.RemoveAllListeners();
-            goalVisualToggle.onClick.AddListener(() => ToggleGoalVisibility());
+            goalToggle.toggleButton.onClick.RemoveAllListeners();
+            goalToggle.toggleButton.onClick.AddListener(() => ToggleGoalVisibility());
         }
 
         void ToggleGoalVisibility()

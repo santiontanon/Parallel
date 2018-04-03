@@ -4125,7 +4125,13 @@ MonoBehaviour:
       exitConfirm: {fileID: 114000013474183172}
       exitDeny: {fileID: 114000012387754874}
       levelsNext: {fileID: 114000013665866242}
-      goalVisualToggle: {fileID: 114000013516890108}
+      goalToggle:
+        toggleRoot: {fileID: 1000010764761932}
+        container: {fileID: 224000011951482776}
+        toggle: {fileID: 224000011674881252}
+        leftText: {fileID: 114000011610856606}
+        rightText: {fileID: 114000012466706174}
+        toggleButton: {fileID: 114000013516890108}
       starContainer: {fileID: 1000010991934930}
       star_1: {fileID: 114000013813044952}
       star_2: {fileID: 114000010953846698}
@@ -5326,7 +5332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8352942, g: 0.9333334, b: 0.9568628, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7607,7 +7613,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010764761932}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -7618,7 +7624,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -7627,8 +7633,7 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300080, guid: 038a6495077d0f74abbcd9cc6afa58e2,
-      type: 3}
+    m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
@@ -10985,8 +10990,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -1, y: 2}
-  m_SizeDelta: {x: 78, y: 78}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 77, y: 77}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224000011527170030
 RectTransform:
@@ -12388,8 +12393,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 224000011507139612}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0.02}
-  m_AnchorMax: {x: 1, y: 0.98}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
