@@ -15,8 +15,8 @@ public class LevelButtonBehavior : MonoBehaviour {
     }
     [SerializeField] public GoalRegion goalRegion;
     public Text levelName;
-    public Image strokeImage;
-    public Image fillImage;
+    public Outline outline;
+    public Image fill;
 
     [System.Serializable]
     public class ButtonImageSpriteReference
@@ -34,14 +34,14 @@ public class LevelButtonBehavior : MonoBehaviour {
         */
         if ((isRequired && !isComplete) || (!isRequired && !isComplete))
         {
-            fillImage.color = new Color(51f / 255f, 59f / 255f, 65f / 255f, 1f);
-            strokeImage.color = new Color(204f / 255f, 88f / 255f, 39f / 255f);
+            fill.color = new Color(51f / 255f, 59f / 255f, 65f / 255f, 1f);
+            outline.effectColor = new Color(204f / 255f, 88f / 255f, 39f / 255f);
             levelName.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
         }
         if ((isRequired && isComplete) || (!isRequired && isComplete)) 
         {
-            fillImage.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
-            strokeImage.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            fill.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            outline.effectColor = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
             levelName.color = new Color(204f / 255f, 88f / 255f, 39f / 255f);
         }
 
