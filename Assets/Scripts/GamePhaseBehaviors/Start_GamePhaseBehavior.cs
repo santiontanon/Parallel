@@ -45,9 +45,9 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
         if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo && GameManager.Instance.preSurveyComplete == false)
         {
-            gameStart.interactable = false;
-            gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
-            postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+            //gameStart.interactable = false;
+            //gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+            //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         }
         else
         {
@@ -88,9 +88,9 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         {
             if (playerIdField.text.Length > 0)
             {
-                float opacity = (true && GameManager.Instance.preSurveyComplete) ? 1f : 0.25f;
-                gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
-                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, opacity);
+                //float opacity = (true && GameManager.Instance.preSurveyComplete) ? 1f : 0.25f;
+                gameStart.interactable = true;//(true && GameManager.Instance.preSurveyComplete);
+                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);//opacity);
                 preSurvey.interactable = true;
                 preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
                 postSurvey.interactable = true;
@@ -153,10 +153,10 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     public void PreSurveyButtonClicked()
     {
-        GameManager.Instance.preSurveyComplete = true;
-        gameStart.interactable = GameManager.Instance.preSurveyComplete;
-        float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.25f;
-        gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, opacity);
+        //GameManager.Instance.preSurveyComplete = true;
+        //gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        //float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.25f;
+        //gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, opacity);
         //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         Application.OpenURL("http://unity3d.com/");
     }
