@@ -95,7 +95,7 @@ public class Tracker : MonoBehaviour {
         Debug.Log("StartTracker");
         if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
-            if (ready) return;
+            if (ready && tracking_session_user == PlayerPrefs.GetString("PlayerId", "NONE")) return;
             tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
             if (register_remote_enabled)
             {

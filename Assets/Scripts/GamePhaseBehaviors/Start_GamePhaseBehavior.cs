@@ -84,18 +84,31 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
+        Debug.Log("Field Changed");
         if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (playerIdField.text.Length > 0)
             {
+                GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
+                GameManager.Instance.UpdatePlayerField(playerIdField.text);
+                GameManager.Instance.tracker.StartTracker();
                 //float opacity = (true && GameManager.Instance.preSurveyComplete) ? 1f : 0.25f;
                 gameStart.interactable = true;//(true && GameManager.Instance.preSurveyComplete);
                 gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);//opacity);
-                preSurvey.interactable = true;
-                preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
-                postSurvey.interactable = true;
-                postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
-                GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
+                if(GameManager.Instance.GetDataManager().levRef.preSurveyLink != "")
+                {
+                    preSurvey.interactable = true;
+                    preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+                    postSurvey.interactable = true;
+                    postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+                }
+                else
+                {
+                    preSurvey.interactable = false;
+                    preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                    postSurvey.interactable = false;
+                    postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                }
             }
             else
             {
@@ -106,7 +119,6 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
                 postSurvey.interactable = false;
                 postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
             }
-            GameManager.Instance.UpdatePlayerField(playerIdField.text);
         }
     }
 
@@ -153,17 +165,17 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     public void PreSurveyButtonClicked()
     {
-        //GameManager.Instance.preSurveyComplete = true;
         //gameStart.interactable = GameManager.Instance.preSurveyComplete;
         //float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.25f;
         //gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, opacity);
         //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
-        Application.OpenURL("http://unity3d.com/");
+        GameManager.Instance.preSurveyComplete = true;
+        Application.OpenURL(GameManager.Instance.GetDataManager().levRef.preSurveyLink);
     }
     public void PostSurveyButtonClicked()
     {
         GameManager.Instance.postSurveyComplete = true;
-
+        Application.OpenURL(GameManager.Instance.GetDataManager().levRef.postSurveyLink);
     }
 
     public void NoInternetError(){
