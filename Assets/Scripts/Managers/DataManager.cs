@@ -57,7 +57,6 @@ public class DataManager : MonoBehaviour {
 
     public void GetLevels(string inputJson)
     {
-        Debug.Log("GetLevels");
         allLevels.Clear();
 
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);

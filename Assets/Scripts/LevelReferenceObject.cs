@@ -10,8 +10,8 @@ public class LevelReference
     public string user = "default";
     public string version = "default";
     public string date = "";
-    public string preSurveyLink = "";
-    public string postSurveyLink = "";
+    public string presurvey = "";
+    public string postsurvey = "";
     [SerializeField] public LevelReferenceContainer levels;
 }
 
