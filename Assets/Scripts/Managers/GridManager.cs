@@ -43,6 +43,16 @@ public class GridManager : MonoBehaviour {
         {
             gridElementDictionary[g.name] = g;
         }
+        gridSprites = Resources.LoadAll<Sprite>("Sprites/Tracks_03.27.18-white") as Sprite[];
+        foreach (Sprite g in gridSprites)
+        {
+            gridElementDictionary[g.name] = g;
+        }
+        gridSprites = Resources.LoadAll<Sprite>("Sprites/Tracks_03.27.18-black") as Sprite[];
+        foreach (Sprite g in gridSprites)
+        {
+            gridElementDictionary[g.name] = g;
+        }
 
         //colorDictionary.Add(0, Color.white);
         colorDictionary.Add(0, Color.green);
@@ -125,56 +135,56 @@ public class GridManager : MonoBehaviour {
 			{
 				case 'J':
 					// Straight_00
-					instanceSpriteRenderer.sprite = gridElementDictionary["straight_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_straight"];
 					gridElementInstance.transform.Rotate(0,0,90);
 
 					break;
 				case 'E':
 					// Straight_01
-					instanceSpriteRenderer.sprite = gridElementDictionary["straight_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_straight"];
 					break;
 				case 'N':
 					// ThreeWay_00
-					instanceSpriteRenderer.sprite = gridElementDictionary["threeway_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_3_intersection"];
 					gridElementInstance.transform.Rotate(0, 0, 90);
 					break;
 				case 'M':
 					// ThreeWay_01
-					instanceSpriteRenderer.sprite = gridElementDictionary["threeway_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_3_intersection"];
 					gridElementInstance.transform.Rotate(0,0,180);	
 					break;
 				case 'K':
 					// ThreeWay_02
-					instanceSpriteRenderer.sprite = gridElementDictionary["threeway_road"];	
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_3_intersection"];	
 					gridElementInstance.transform.Rotate(0, 0, -90);
 					break;
 				case 'G':
 					// ThreeWay_03
-					instanceSpriteRenderer.sprite = gridElementDictionary["threeway_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_3_intersection"];
 					break;
 				case 'F':
 					// Turn_00
-					instanceSpriteRenderer.sprite = gridElementDictionary["corner_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_corner"];
 					gridElementInstance.transform.Rotate(0,0,90);
 					break;
 				case 'C':
 					// Turn_01
-					instanceSpriteRenderer.sprite = gridElementDictionary["corner_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_corner"];
 
 					break;
 				case 'I':
 					// Turn_02
-					instanceSpriteRenderer.sprite = gridElementDictionary["corner_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_corner"];
 					gridElementInstance.transform.Rotate(0,0,270);
 					break;
 				case 'L':
 					// Turn_03
-					instanceSpriteRenderer.sprite = gridElementDictionary["corner_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_corner"];
 					gridElementInstance.transform.Rotate(0,0,180);
 					break;
 				case 'O':
 					// FourWay
-					instanceSpriteRenderer.sprite = gridElementDictionary["fourway_road"];
+					instanceSpriteRenderer.sprite = gridElementDictionary["white_4_intersection"];
 					gridElementInstance.transform.Rotate(0,0,180);
 					break;
 				/*A - EAST DEAD
