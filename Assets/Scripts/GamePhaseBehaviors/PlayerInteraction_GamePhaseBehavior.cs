@@ -249,8 +249,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.submitButton.onClick.AddListener(() => score.attemptCount++ );
         playerInteraction_UI.submitButton.interactable = true;
 
-		playerInteraction_UI.revealHintsButton.onClick.RemoveAllListeners();
-		playerInteraction_UI.revealHintsButton.onClick.AddListener( ()=> ToggleHintsVisibility() );
+		playerInteraction_UI.revealHintsToggle.toggleButton.onClick.RemoveAllListeners();
+		playerInteraction_UI.revealHintsToggle.toggleButton.onClick.AddListener( ()=> ToggleHintsVisibility() );
 
 /* Track Color Hover Setup */
 		for(int triggerIndex = 0; triggerIndex < playerInteraction_UI.rightPanelColors.Length; triggerIndex++)
@@ -402,7 +402,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			break;
 		}
         Vector3 draggableItemScale = Vector3.one;
-        draggableItemScale *= 5f /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
+        draggableItemScale *= originalOrthographicSize /* default ortho size */ / (GameManager.Instance.GetGridManager().worldCamera.orthographicSize) /* current ortho size */;
         playerInteraction_UI.draggableElement.transform.localScale = draggableItemScale;
         dragging = true;
     }
@@ -463,6 +463,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     {
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
+        playerInteraction_UI.loadingText.text = "Simulating...";
         if (tutorialMode)
         {
             GameManager.Instance.PlayTutorialLevel();
@@ -492,10 +493,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
 
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
 		playerInteraction_UI.simulationButton.interactable = false;
 		playerInteraction_UI.simulationButton.gameObject.SetActive(false);
 		playerInteraction_UI.submitButton.interactable = false;
-		//playerInteraction_UI.submitButton.gameObject.SetActive(false);
+		playerInteraction_UI.submitButton.gameObject.SetActive(false);
+        playerInteraction_UI.playbackControls.gameObject.SetActive(true);
 		playerInteraction_UI.stopSimulationButton.interactable = true;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
         playerInteraction_UI.pauseSimulationButton.interactable = true;
@@ -522,9 +525,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 		ResetStartValues();
 
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(true);
+        playerInteraction_UI.playbackControls.gameObject.SetActive(false);
 		playerInteraction_UI.simulationButton.interactable = true;
 		playerInteraction_UI.simulationButton.gameObject.SetActive(true);
 		playerInteraction_UI.submitButton.interactable = true;
+        playerInteraction_UI.submitButton.gameObject.SetActive(true);
 		playerInteraction_UI.stopSimulationButton.interactable = false;
 		playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
         playerInteraction_UI.pauseSimulationButton.interactable = false;
@@ -910,12 +916,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             // Turn it off
             interactionPhase = InteractionPhases.ingame_default;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
+            playerInteraction_UI.revealHintsToggle.SetToggle(true);
         }
         else
         {
             // Else, turn it on
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
+            playerInteraction_UI.revealHintsToggle.SetToggle(false);
         }
         TriggerHintFader();
 

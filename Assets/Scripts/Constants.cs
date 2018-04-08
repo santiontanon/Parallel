@@ -83,6 +83,17 @@ public static class Constants {
         };
     }
 
+    public static class ArtBible
+    {
+        public static Color Fill_StyleA, Fill_StyleF, Fill_StyleG, Fill_StyleH, Fill_StyleJ = new Color( 51f / 255f, 59f / 255f, 65f / 255f, 1f);
+        public static Color Fill_StyleB, Stroke_StyleE, Stroke_StyleH, Stroke_StyleI = new Color(204f / 255f, 88f / 255f, 39F / 255f, 1f);
+        public static Color Fill_StyleC, Fill_StyleD, Fill_StyleE = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+        public static Color Stroke_StyleD, Stroke_StyleF, Stroke_StyleG = new Color(160f / 255f, 218F / 255f, 218F / 255f, 1f);
+
+        public static Color Base_Green = new Color( 51f / 255f, 59f / 255f, 65f / 255f, 1f);
+
+    }
+
     public static class SimulationValues
     {
         public static readonly Dictionary<string, float> AnimationFactors = new Dictionary<string, float>()

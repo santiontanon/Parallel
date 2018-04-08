@@ -21,7 +21,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void BeginPhase()
 	{
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             preSurvey.gameObject.SetActive(false);
             postSurvey.gameObject.SetActive(false);
@@ -36,28 +36,30 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
         gameStart.onClick.RemoveAllListeners();
         gameEnd.onClick.RemoveAllListeners();
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             postSurvey.onClick.RemoveAllListeners();
             preSurvey.onClick.RemoveAllListeners();
             playerIdField.onEndEdit.RemoveAllListeners();
         }
 
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo && GameManager.Instance.preSurveyComplete == false)
         {
-            gameStart.interactable = false;
-            postSurvey.interactable = GameManager.Instance.preSurveyComplete;
+            //gameStart.interactable = false;
+            //gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+            //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
         }
         else
         {
             gameStart.interactable = true;
+            gameStart.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 1f);
         }
 
 		startGameUI.SetActive(true);
 		gameStart.onClick.AddListener( ()=> StartPlaying() );
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
 
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             preSurvey.onClick.AddListener(() => PreSurveyButtonClicked());
             postSurvey.onClick.AddListener(() => PostSurveyButtonClicked());
@@ -82,20 +84,64 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
-        if (!GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (playerIdField.text.Length > 0)
             {
-                gameStart.interactable = (true && GameManager.Instance.preSurveyComplete);
                 GameManager.Instance.GetSaveManager().LoadSave(playerIdField.text);
+                GameManager.Instance.UpdatePlayerField(playerIdField.text);
+                GameManager.Instance.tracker.StartTrackerWithCallback(LoadRemoteData, null);
+                //float opacity = (true && GameManager.Instance.preSurveyComplete) ? 1f : 0.25f;
+                gameStart.interactable = true;//(true && GameManager.Instance.preSurveyComplete);
+                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);//opacity);
+                if(GameManager.Instance.GetDataManager().levRef.presurvey != "")
+                {
+                    preSurvey.interactable = true;
+                    preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+                    postSurvey.interactable = true;
+                    postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+                }
+                else
+                {
+                    preSurvey.interactable = false;
+                    preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                    postSurvey.interactable = false;
+                    postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                }
             }
-            else gameStart.interactable = false;
-            GameManager.Instance.UpdatePlayerField(playerIdField.text);
+            else
+            {
+                gameStart.interactable = false;
+                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                preSurvey.interactable = false;
+                preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+                postSurvey.interactable = false;
+                postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+            }
+        }
+    }
+
+    public void LoadRemoteData(string s)
+    {
+        GameManager.Instance.GetDataManager().GetLevels(s);
+        if (GameManager.Instance.GetDataManager().levRef.presurvey != "")
+        {
+            preSurvey.interactable = true;
+            preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+            postSurvey.interactable = true;
+            postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+        }
+        else
+        {
+            preSurvey.interactable = false;
+            preSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
+            postSurvey.interactable = false;
+            postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
         }
     }
 
 	void StartPlaying(){
-        if (GameManager.Instance.is_demo_build)
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
         }
@@ -108,10 +154,12 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             {
                 if (GameManager.Instance.tracker.ready)
                 {
+                    Debug.Log("TrackerRead");
                     GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
                 }
                 else
                 {
+                    Debug.Log("StartTrackerWithCallback");
                     GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
                     fetchConfigInProgressOverlay.OpenPanel();
                 }
@@ -135,15 +183,17 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     public void PreSurveyButtonClicked()
     {
-        GameManager.Instance.preSurveyComplete = true;
-        gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        //gameStart.interactable = GameManager.Instance.preSurveyComplete;
+        //float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.25f;
+        //gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, opacity);
         //postSurvey.interactable = GameManager.Instance.preSurveyComplete;
-        Application.OpenURL("http://unity3d.com/");
+        GameManager.Instance.preSurveyComplete = true;
+        Application.OpenURL(GameManager.Instance.GetDataManager().levRef.presurvey);
     }
     public void PostSurveyButtonClicked()
     {
         GameManager.Instance.postSurveyComplete = true;
-
+        Application.OpenURL(GameManager.Instance.GetDataManager().levRef.postsurvey);
     }
 
     public void NoInternetError(){

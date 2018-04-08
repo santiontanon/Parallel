@@ -39,6 +39,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     IEnumerator ParseSteps()
     {
+        playerInteraction.playerInteraction_UI.loadingText.text = "Parsing...";
         currentStep = 0;
         paused = false;
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
@@ -542,8 +543,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         break;
                                 }
 
-                                goalString = string.Format(titleFormatString, titleString) + goalString;
-
                                 if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                 {
                                     playerInteraction.playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(true);
@@ -553,7 +552,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                     playerInteraction.playerInteraction_UI.goalOverlay.levels.gameObject.SetActive(false);
                                 }
 
-                                yield return StartCoroutine(playerInteraction.playerInteraction_UI.TriggerGoalPopUp(goalString));
+                                yield return StartCoroutine(playerInteraction.playerInteraction_UI.TriggerGoalPopUp(titleString, goalString));
                             }
                         }
                         else
