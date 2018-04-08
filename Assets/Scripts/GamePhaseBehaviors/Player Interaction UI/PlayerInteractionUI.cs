@@ -265,6 +265,7 @@ public class PlayerInteraction_UI
         void ToggleGoalVisibility()
         {
             visibilityToggle = !visibilityToggle;
+            goalToggle.SetToggle(visibilityToggle);
             if (visibilityToggle == false)
             {
                 visibilitySettings[0] = rootOverlay.isOpen;
@@ -274,7 +275,8 @@ public class PlayerInteraction_UI
             rootOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[0]);
             confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[1]);
             confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[2]);
-            
+            Image overlayImg = panelContainer.GetComponent<Image>();
+            overlayImg.color = new Color(overlayImg.color.r, overlayImg.color.g, overlayImg.color.b, (visibilityToggle?0.75f:0.5f));
         }
 	}
 
