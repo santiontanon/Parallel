@@ -2015,7 +2015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000012844451792
 GameObject:
   m_ObjectHideFlags: 1
@@ -4495,6 +4495,7 @@ MonoBehaviour:
     goalDescription_Number: {fileID: 114000013072756036}
     goalDescription_Title: {fileID: 114000014010387008}
     levelNameText: {fileID: 114000011623395838}
+    loadingText: {fileID: 114000013023587120}
     draggableElement: {fileID: 114000013905212088}
     text_hintPopUp: {fileID: 114000013025524892}
     image_hintPopUp: {fileID: 114000014013334428}

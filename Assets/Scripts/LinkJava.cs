@@ -119,6 +119,7 @@ public class LinkJava : MonoBehaviour
 			return "External Async";
 		}
 	}
+
 	IEnumerator externalNonBlockingWait()
 	{
         // ExitCode = 0: OK

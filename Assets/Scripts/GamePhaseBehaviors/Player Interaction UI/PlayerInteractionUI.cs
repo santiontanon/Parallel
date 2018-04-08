@@ -48,6 +48,7 @@ public class PlayerInteraction_UI
 
     [Header("Updatable Elements")]
     public Text levelNameText;
+    public Text loadingText;
 	public Image draggableElement;
 	public Text text_hintPopUp;
 	public Image image_hintPopUp;

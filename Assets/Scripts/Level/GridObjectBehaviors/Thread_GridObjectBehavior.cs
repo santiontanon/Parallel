@@ -229,9 +229,18 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
         /* figure out what cabooses to add to current */
         foreach (GameObject g in trailObjectList)
         {
-            int currentId = g.GetComponent<CabooseObject>().packageOriginID;
+            CabooseObject c = g.GetComponent<CabooseObject>();
+            int currentId = c.packageOriginID;
 
-            if (newCabooses.Contains(currentId)) { newCabooses.Remove(currentId); }
+            if (newCabooses.Contains(currentId))
+            {
+                if(c.instant != instant)
+                {
+                    c.UpdateFollow(instant);
+                }
+                newCabooses.Remove(currentId);
+
+            }
             if (!currentCabooses.Contains(currentId)) { popCabooses.Add(g); }
         }
 

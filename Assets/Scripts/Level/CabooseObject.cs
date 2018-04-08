@@ -43,6 +43,11 @@ public class CabooseObject : MonoBehaviour {
 		Appear();
 	}
 
+    public void UpdateFollow(bool instant)
+    {
+        this.instant = instant;
+    }
+
 	public void FollowBehavior()
 	{
         TimeStepData timeStep = followObject.timeStep;

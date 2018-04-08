@@ -463,6 +463,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     {
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
+        playerInteraction_UI.loadingText.text = "Simulating...";
         if (tutorialMode)
         {
             GameManager.Instance.PlayTutorialLevel();

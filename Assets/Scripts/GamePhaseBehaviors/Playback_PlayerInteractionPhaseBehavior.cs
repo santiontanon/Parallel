@@ -39,6 +39,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     IEnumerator ParseSteps()
     {
+        playerInteraction.playerInteraction_UI.loadingText.text = "Parsing...";
         currentStep = 0;
         paused = false;
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
