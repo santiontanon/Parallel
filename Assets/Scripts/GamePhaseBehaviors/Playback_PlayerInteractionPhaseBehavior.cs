@@ -30,6 +30,9 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         //end all coroutines
         StopAllCoroutines();
         //reset values
+        currentStep = 0;
+        playerInteraction.playerInteraction_UI.playbackSlider.value = 0;
+        paused = false;
     }
 
     public void PhaseUpdate()
@@ -415,6 +418,8 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
     {
         int maxGoalsCompleted = 0;
         currentStep = 0;
+        paused = false;
+        playerInteraction.playerInteraction_UI.playbackSlider.value = 0;
         bool nextLevelButtonVisibility = false;
         while (currentStep <= maxStep)
         {
@@ -594,6 +599,8 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     IEnumerator FinishSimulation()
     {
+        Debug.Log("FinishSimulation");
+
         yield return new WaitForEndOfFrame();
 
         if (PlayerInteraction_GamePhaseBehavior.onCompletion != null) PlayerInteraction_GamePhaseBehavior.onCompletion();

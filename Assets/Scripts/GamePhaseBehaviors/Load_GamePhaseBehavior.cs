@@ -52,6 +52,7 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.previous)
             {
+                Debug.Log("level found!");
                 SetupLevelButton(lr, loadUI.previousContainer);
             }
         }

@@ -451,7 +451,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
-				resetObject.ResetPosition();
+            Debug.Log(resetObject.component.id);
+		    resetObject.ResetPosition();
 		}
 
 		flowVisibility = false;
