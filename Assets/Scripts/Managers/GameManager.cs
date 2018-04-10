@@ -8,10 +8,14 @@ public class GameManager : MonoBehaviour {
 	public enum GamePhases {StartScreen, LoadScreen, GenerateTrack, PlayerInteraction, GradeSubmission, GradeReport, EndScreen, CloseGame}
 	public GamePhases gamePhase = GamePhases.StartScreen;
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
+    public enum GameMode { Test, Demo, Class }
+    public GameMode currentGameMode;
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
-    
+
+    public bool preSurveyComplete, postSurveyComplete = false;
+
     //FOR DEBUG, REMOVE THIS LATER
     string lastPhase = "";
 
@@ -25,9 +29,8 @@ public class GameManager : MonoBehaviour {
     SaveManager saveManager;
 	LinkJava linkJava;
 	public Tracker tracker;
-
+    public HintGlossary hintGlossary;
     
-
     void Awake()
 	{
 		if(Instance == null)
@@ -49,10 +52,53 @@ public class GameManager : MonoBehaviour {
         saveManager = GetComponent<SaveManager>();
 		linkJava = GetComponent<LinkJava>();
 		tracker = GetComponent<Tracker>();
-
+        
         saveManager.Init();
         scoreManager.Init();
 	}
+
+    void FindGamePhaseObjects()
+    {
+        if (FindObjectOfType<Start_GamePhaseBehavior>() != null)
+            startScreenBehavior = FindObjectOfType<Start_GamePhaseBehavior>();
+        if (startScreenBehavior == null)
+            Debug.LogError("StartBehavior not found or set.");
+
+        if (FindObjectOfType<Load_GamePhaseBehavior>() != null)
+            loadScreenBehavior = FindObjectOfType<Load_GamePhaseBehavior>();
+        if (loadScreenBehavior == null)
+            Debug.LogError("LoadBehavior not found or set.");
+
+        if (FindObjectOfType<Generate_GamePhaseBehavior>() != null)
+            generateTrackBehavior = FindObjectOfType<Generate_GamePhaseBehavior>();
+        if (generateTrackBehavior == null)
+            Debug.LogError("GenerateTrackBehavior not found or set.");
+
+        if (FindObjectOfType<PlayerInteraction_GamePhaseBehavior>() != null)
+            playerInteractionBehavior = FindObjectOfType<PlayerInteraction_GamePhaseBehavior>();
+        if (playerInteractionBehavior == null)
+            Debug.LogError("PlayerInteractionBehavior not found or set.");
+
+        if (FindObjectOfType<GradeSubmission_GamePhaseBehavior>() != null)
+            gradeSubmissionBehavior = FindObjectOfType<GradeSubmission_GamePhaseBehavior>();
+        if (gradeSubmissionBehavior == null)
+            Debug.LogError("GradeSubmissionBehavior not found or set.");
+
+        if (FindObjectOfType<GradeReport_GamePhaseBehavior>() != null)
+            gradeReportBehavior = FindObjectOfType<GradeReport_GamePhaseBehavior>();
+        if (gradeReportBehavior == null)
+            Debug.LogError("GradeReportBehavior not found or set.");
+
+        if (FindObjectOfType<EndScreen_GamePhaseBehavior>() != null)
+            endScreenBehavior = FindObjectOfType<EndScreen_GamePhaseBehavior>();
+        if (endScreenBehavior == null)
+            Debug.LogError("EndScreenBehavior not found or set.");
+
+        if (FindObjectOfType<Exit_GamePhaseBehavior>() != null)
+            exitGameBehavior = FindObjectOfType<Exit_GamePhaseBehavior>();
+        if (exitGameBehavior == null)
+            Debug.LogError("ExitBehavior not found or set.");
+    }
 
 	void Start()
 	{
@@ -198,10 +244,10 @@ public class GameManager : MonoBehaviour {
 		tutorialManager.PerformTutorialSeries( inputLevelId, inputPlayPhase);
 	}
 
-    public void CreateTutorialPopup(TutorialEvent t, Vector3 position)
+    public void CreateTutorialPopup(TutorialEvent t, GridObjectBehavior gridObject)
     {
         //two versions, depending on if we want to set the position at the same time as setting the pop up to open
-        tutorialManager.tutorialOverlay.PrepareTutorialPopup(t.popupDescription, position);
+        tutorialManager.tutorialOverlay.SetTooltip(t.popupDescription, gridObject.gameObject);
         tutorialManager.tutorialOverlay.tutorialCloseButton.onClick.AddListener(() => tutorialManager.tutorialOverlay.ClosePanel() );
         tutorialManager.tutorialOverlay.OpenPanel();
     }

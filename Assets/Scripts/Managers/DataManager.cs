@@ -23,8 +23,36 @@ public class DataManager : MonoBehaviour {
 
 	public void GetLevels()
 	{
-        TextAsset lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
-        GetLevels(lr_text.text);
+        string text = "";
+        // Try
+        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
+        {
+            TextAsset lr_text = null;
+            lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+            text = lr_text.text;
+        }
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+        {
+            if(GameManager.Instance.tracker.level_data != "")
+            {
+                text = GameManager.Instance.tracker.level_data;
+            }
+            else
+            {
+                TextAsset lr_text = null;
+                lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+                text = lr_text.text;
+            }
+        }
+        else
+        {
+            TextAsset lr_text = null;
+            lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
+            text = lr_text.text;
+        }
+
+        // Change Loading
+        GetLevels(text);
 	}
 
     public void GetLevels(string inputJson)

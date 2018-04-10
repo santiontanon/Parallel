@@ -12,22 +12,29 @@ namespace ParallelProg.UI
         public virtual void OpenPanel()
         {
             iTween.Stop(panelContainer.gameObject);
-            Debug.Log("Opening Panel: " + panelContainer.gameObject.name);
-            if (isOpen) Debug.Log("Already Open");
-            isOpen = true;
-            panelContainer.gameObject.transform.localScale = Vector3.zero;
             panelContainer.gameObject.SetActive(true);
-            iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.5f));
+            if (isOpen || iTween.Count(panelContainer.gameObject) > 0)
+            {
+                panelContainer.gameObject.transform.localScale = Vector3.one;
+                isOpen = true;
+            }
+            else
+            {
+                isOpen = true;
+                panelContainer.gameObject.transform.localScale = Vector3.zero;
+                iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.5f));
+            }
         }
 
         public virtual void ClosePanel(bool forceClose = false)
         {
+            Debug.Log("Close panel");
             iTween.Stop(panelContainer.gameObject);
-            Debug.Log("ClosePanel: " + panelContainer.gameObject.name);
             isOpen = false;
             if (forceClose)
             {
                 panelContainer.gameObject.SetActive(false);
+                panelContainer.transform.localScale = Vector3.zero;
             }
             else
             {

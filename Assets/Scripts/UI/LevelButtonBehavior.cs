@@ -15,7 +15,8 @@ public class LevelButtonBehavior : MonoBehaviour {
     }
     [SerializeField] public GoalRegion goalRegion;
     public Text levelName;
-    public Image buttonImage;
+    public Outline outline;
+    public Image fill;
 
     [System.Serializable]
     public class ButtonImageSpriteReference
@@ -25,10 +26,25 @@ public class LevelButtonBehavior : MonoBehaviour {
 
     public void SetLevelSprite(bool isRequired, bool isComplete)
     {
+        /*
         if (isRequired && isComplete) buttonImage.sprite = buttonImageSpriteReference.requiredComplete;
         if (isRequired && !isComplete) buttonImage.sprite = buttonImageSpriteReference.requiredIncomplete;
         if (!isRequired && isComplete) buttonImage.sprite = buttonImageSpriteReference.optionalComplete;
         if (!isRequired && !isComplete) buttonImage.sprite = buttonImageSpriteReference.optionalIncomplete;
+        */
+        if ((isRequired && !isComplete) || (!isRequired && !isComplete))
+        {
+            fill.color = new Color(51f / 255f, 59f / 255f, 65f / 255f, 1f);
+            outline.effectColor = new Color(204f / 255f, 88f / 255f, 39f / 255f);
+            levelName.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+        }
+        if ((isRequired && isComplete) || (!isRequired && isComplete)) 
+        {
+            fill.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            outline.effectColor = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            levelName.color = new Color(204f / 255f, 88f / 255f, 39f / 255f);
+        }
+
     }
 
     public void SetLevelRank(int rank)

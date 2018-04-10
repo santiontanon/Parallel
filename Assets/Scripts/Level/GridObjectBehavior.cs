@@ -18,6 +18,7 @@ public class GridObjectBehavior : MonoBehaviour
 	public GameObject teleportTrail;
 	public GameObject lockObject;
 	public Vector2 lastSimulationPosition;
+    public TimeStepData timeStep;
 	#endregion
 	[Header("Track")]
 	#region tracks
@@ -284,8 +285,12 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 	}
 
+    public void SetTimestep(TimeStepData timeStep)
+    {
+        this.timeStep = timeStep;
+    }
 
-	public virtual float DoStep(StepData inputStep)
+	public virtual float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
 		if(behaviorType==BehaviorTypes.component && component!=null){
 			switch(component.type.ToLower())
@@ -388,6 +393,34 @@ public class GridObjectBehavior : MonoBehaviour
 			}
 		}
 	}
+
+    public virtual void ReturnToStep(TimeStepData timeStep)
+    {
+        if (gameObject != null)
+        {
+            switch (component.type)
+            {
+                case "semaphore":
+                    component.configuration.value = timeStep.GetSemaphore(component.id).open;
+                    GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite(component);
+                    break;
+                case "pickup":
+                    component.configuration.value = timeStep.GetPickup(component.id).available;
+                    if (component.configuration.value >= 0) { iTween.ColorTo(gameObject, Color.white, 0.05f); iTween.ScaleTo(gameObject, Vector3.one, 0.05f); }
+                    else if (component.configuration.value < 0) { iTween.ColorTo(gameObject, new Color(0.5f, 0.5f, 0.5f), 0.05f); iTween.ScaleTo(gameObject, Vector3.one * 0.8f, 0.05f); }
+                    break;
+                case "conditional":
+                    component.configuration.current = timeStep.GetConditional(component.id).current;
+                    for(int i = 0; i < conditionalDirections.Count; i++)
+                    {
+                        SpriteRenderer instanceSpriteRenderer = conditionalDirections[i].GetComponent<SpriteRenderer>();
+                        if (i == component.configuration.current) { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 1f); }
+                        else { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); }
+                    }
+                    break;
+            }
+        }
+    }
 
 	public virtual void OnHoverBehavior()
 	{
