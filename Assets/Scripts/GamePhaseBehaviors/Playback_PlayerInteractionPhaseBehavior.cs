@@ -23,6 +23,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         //reset values
         //start parse steps
         StartCoroutine(ParseSteps());
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void EndPhase()
@@ -33,6 +34,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         currentStep = 0;
         playerInteraction.playerInteraction_UI.playbackSlider.value = 0;
         paused = false;
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void PhaseUpdate()
@@ -667,6 +669,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         GameManager.Instance.tracker.CreateEventExt("PauseSimulation", paused.ToString());
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.AddListener(UnpauseSimulation);
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[1];
     }
 
     public void UnpauseSimulation()
@@ -675,6 +678,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         GameManager.Instance.tracker.CreateEventExt("PauseSimulation", paused.ToString());
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.AddListener(PauseSimulation);
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void OnTimeSliderValueChanged(int i)

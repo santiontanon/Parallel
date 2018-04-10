@@ -56,6 +56,8 @@ public class PlayerInteraction_UI
     public Image rightPanelColorLock;
 	public Image topPanelConnectionLock;
 	public UIMeter zoomMeter;
+    public Image playbackButton;
+    public Sprite[] playbackButtonSprites;
 
     [Header("UI Containers")]
     public GameObject playbackControls;

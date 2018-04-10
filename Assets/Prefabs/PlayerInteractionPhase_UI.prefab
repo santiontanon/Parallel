@@ -4506,6 +4506,10 @@ MonoBehaviour:
       meterContainer: {fileID: 224000013177897662}
       meter_foreground: {fileID: 114000010091532260}
       meter_background: {fileID: 114000011637991294}
+    playbackButton: {fileID: 114000013480889360}
+    playbackButtonSprites:
+    - {fileID: 21300000, guid: 91379eef00eb72842bd67489f3f6ccc4, type: 3}
+    - {fileID: 21300004, guid: 91379eef00eb72842bd67489f3f6ccc4, type: 3}
     playbackControls: {fileID: 1000011584011826}
     hint_button_prefab: {fileID: 1000010487195062, guid: fc81bf7d08fb548d699a17e7c23de7ff,
       type: 2}
