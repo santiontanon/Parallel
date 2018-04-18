@@ -18,7 +18,7 @@ public class TutorialManager : MonoBehaviour {
         public Button tutorialCloseButton;
         public Canvas canvas;
         public CanvasScaler scaler;
-        public Image tutorialArrow;
+        public RectTransform tutorialArrow;
 
         public override void OpenPanel()
         {
@@ -151,8 +151,8 @@ public class TutorialManager : MonoBehaviour {
                 
                 panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
                 Vector3 forward = button.transform.position - panelContainer.position;
-                tutorialArrow.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
-                
+                tutorialArrow.LookAt(button.transform.position);
+                tutorialArrow.gameObject.SetActive(true);
             }
             tutorialDescription.text = inDescription;
         }
@@ -269,13 +269,19 @@ public class TutorialManager : MonoBehaviour {
                 }
             }
             */
+
             Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
-            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
-            Vector3 edge = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
-            Vector3 ray = edge - center;
-            panelContainer.position = center;
+            Vector3 start= new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
+            panelContainer.position = start;
+
+            Vector3 end = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
+            Vector3 ray = end - start;
             //we could also do panelContainer.position = edge;
-            // now, i should scale a node based on the ray magnitude.  Then, rotate it to face the ray's direction. That'll look like a speech bubble
+
+            // DOESN'T WORK YET:
+            //tutorialArrow.rotation = Quaternion.LookRotation(ray);
+
+            tutorialArrow.gameObject.SetActive(false);
 
             tutorialDescription.text = inDescription;
         }
