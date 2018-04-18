@@ -264,7 +264,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 EventTrigger.Entry beginHoverColor = new EventTrigger.Entry();
 				beginHoverColor.eventID = EventTriggerType.PointerEnter;
 				beginHoverColor.callback.AddListener( (eventData) => {
-					if ( !/*connectVisibilityLock*/colorFlowVisibilityLock )  GameManager.Instance.GetGridManager().RevealGridColorMask(loadColors);
+					if ( !colorFlowVisibilityLock )  GameManager.Instance.GetGridManager().RevealGridColorMask(loadColors);
                     ToggleFlowVisibility(true);
                 } );
 				playerInteraction_UI.rightPanelColors[triggerIndex].triggers.Add(beginHoverColor);
@@ -279,7 +279,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 EventTrigger.Entry endHoverColor = new EventTrigger.Entry();
 				endHoverColor.eventID = EventTriggerType.PointerExit;
 				endHoverColor.callback.AddListener( (eventData) => {
-					if ( !/*connectVisibilityLock*/colorFlowVisibilityLock ) GameManager.Instance.GetGridManager().HideGridColorMask();
+					if ( !colorFlowVisibilityLock ) GameManager.Instance.GetGridManager().HideGridColorMask();
                     ToggleFlowVisibility(false);
                 } );
 				playerInteraction_UI.rightPanelColors[triggerIndex].triggers.Add(endHoverColor);
@@ -451,7 +451,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
-				resetObject.ResetPosition();
+            Debug.Log(resetObject.component.id);
+		    resetObject.ResetPosition();
 		}
 
 		flowVisibility = false;
@@ -854,7 +855,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     	GameManager.Instance.tracker.CreateEventExt("LockFlowVisibility",lockTarget.ToString());
         if (lockTarget == -1) //force quit
         {
-            playerInteraction_UI.rightPanelColorLock.enabled = false;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(false);
 			colorFlowVisibilityLock = false;
             return;
         }
@@ -862,11 +863,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		if (/*connectVisibilityLock*/colorFlowVisibilityLock)
         {
             playerInteraction_UI.rightPanelColorLock.rectTransform.position = playerInteraction_UI.rightPanelColors[lockTarget].transform.position;
-            playerInteraction_UI.rightPanelColorLock.enabled = true;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(true);
         }
         else
         {
-            playerInteraction_UI.rightPanelColorLock.enabled = false;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(false);
             GameManager.Instance.GetGridManager().RevealGridColorMask(lockTarget);
         }
     }

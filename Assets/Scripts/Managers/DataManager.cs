@@ -59,7 +59,11 @@ public class DataManager : MonoBehaviour {
     {
         allLevels.Clear();
 
+        Debug.Log(inputJson);
+
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
+
+        Debug.Log(levRef.levels.previous.Length);
 
         //Load pre-existing scores
         GameManager.Instance.GetScoreManager().LoadScores();
@@ -75,6 +79,7 @@ public class DataManager : MonoBehaviour {
         }
         foreach (LevelReferenceObject lrObj in levRef.levels.previous)
         {
+            Debug.Log("Previous level");
             if (lrObj.levelId == -1)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
