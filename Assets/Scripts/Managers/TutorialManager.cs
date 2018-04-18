@@ -18,6 +18,7 @@ public class TutorialManager : MonoBehaviour {
         public Button tutorialCloseButton;
         public Canvas canvas;
         public CanvasScaler scaler;
+        public Image tutorialArrow;
 
         public override void OpenPanel()
         {
@@ -56,7 +57,10 @@ public class TutorialManager : MonoBehaviour {
                 float eYMax = elementRect.position.y + elementRect.rect.yMax;
                 float eWidth = elementRect.rect.width * multiplier;
                 float eHeight = elementRect.rect.width * multiplier;
-              
+
+                float topBannerHeight = GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
+                float rightBannerWidth = GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
+
                 if (ttXMin < 0)
                 {
                     posX += Mathf.Abs(posX - (ttWidth / 2));
@@ -71,9 +75,9 @@ public class TutorialManager : MonoBehaviour {
                 }
                 else if (ttYMax > Screen.height)
                 {
-                    posY -= (ttHeight / 2) + posY - Screen.height;
+                    posY -= (ttHeight / 2) + posY - Screen.height /* NEW: + topBannerHeight */;
                 }
-
+                
                 ttXMin = posX - (ttWidth / 2);
                 ttXMax = posX + (ttWidth / 2);
                 ttYMin = posY - (ttHeight / 2);
@@ -144,7 +148,11 @@ public class TutorialManager : MonoBehaviour {
                         }
                     }
                 }
+                
                 panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
+                Vector3 forward = button.transform.position - panelContainer.position;
+                tutorialArrow.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+                
             }
             tutorialDescription.text = inDescription;
         }
@@ -155,7 +163,7 @@ public class TutorialManager : MonoBehaviour {
             panelContainer.position = element.transform.position;
             float posX = element.transform.position.x;
             float posY = element.transform.position.y;
-
+            
             float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
             RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
 
@@ -172,7 +180,7 @@ public class TutorialManager : MonoBehaviour {
             float eYMax = sprite.bounds.max.y;
             float eWidth = sprite.bounds.size.x;
             float eHeight = sprite.bounds.size.y;
-
+            /*
             if (ttXMin < 0)
             {
                 posX += Mathf.Abs(posX - (ttWidth / 2));
@@ -260,8 +268,15 @@ public class TutorialManager : MonoBehaviour {
                     }
                 }
             }
+            */
+            Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
+            Vector3 center = new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
+            Vector3 edge = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
+            Vector3 ray = edge - center;
+            panelContainer.position = center;
+            //we could also do panelContainer.position = edge;
+            // now, i should scale a node based on the ray magnitude.  Then, rotate it to face the ray's direction. That'll look like a speech bubble
 
-            panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
             tutorialDescription.text = inDescription;
         }
     }
@@ -384,15 +399,6 @@ public class TutorialManager : MonoBehaviour {
                 case TutorialEvent.TutorialCompletionTriggers.placeSignal:
                 case TutorialEvent.TutorialCompletionTriggers.placeSemaphore:
                     GameManager.Instance.tracker.CreateEventExt("PerformTutorial",t.popupDescription);
-                    Vector3 defaultPosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-                    if (t.targetButton != null)
-                    {
-                        defaultPosition = t.targetButton.transform.position;
-                        if (defaultPosition.x > (Screen.width / 2)) { defaultPosition.x -= t.targetButton.GetComponent<RectTransform>().rect.width/2; }
-                        else { defaultPosition.x += t.targetButton.GetComponent<RectTransform>().rect.width/2; }
-                        if (defaultPosition.y > (Screen.height / 2)) { defaultPosition.x -= t.targetButton.GetComponent<RectTransform>().rect.height/2; }
-                        else { defaultPosition.x += t.targetButton.GetComponent<RectTransform>().rect.height/2; }
-                    }
                     tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
