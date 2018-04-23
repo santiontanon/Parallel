@@ -34,7 +34,7 @@ public class TutorialManager : MonoBehaviour {
 
         public void SetTooltip(string inDescription, Button button)
         {
-            if(button != null)
+            if (button != null)
             {
                 RectTransform elementRect = button.gameObject.GetComponent<RectTransform>();
                 panelContainer.position = button.gameObject.transform.position;
@@ -77,7 +77,7 @@ public class TutorialManager : MonoBehaviour {
                 {
                     posY -= (ttHeight / 2) + posY - Screen.height /* NEW: + topBannerHeight */;
                 }
-                
+
                 ttXMin = posX - (ttWidth / 2);
                 ttXMax = posX + (ttWidth / 2);
                 ttYMin = posY - (ttHeight / 2);
@@ -148,14 +148,60 @@ public class TutorialManager : MonoBehaviour {
                         }
                     }
                 }
-                
-                panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
-                Vector3 forward = button.transform.position - panelContainer.position;
-                tutorialArrow.LookAt(button.transform.position);
-                tutorialArrow.gameObject.SetActive(true);
+
+                Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
+                PositionTutorialPanel(nextPanelPosition, button.transform.position);
             }
             tutorialDescription.text = inDescription;
         }
+
+        void PositionTutorialPanel(Vector3 position, Vector3 tutorialFocusTargetPosition )
+        {
+            Vector3 start = position;
+            panelContainer.position = start;
+            Vector3 end = tutorialFocusTargetPosition;
+            end.z = start.z;
+            TutorialBubbleNubRotateToward(start, end);
+        }
+
+        void TutorialBubbleNubRotateToward(Vector3 start, Vector3 end)
+        {
+
+            Vector3 ray = end - start;
+            float rad = Mathf.Atan2(ray.y, ray.x); // In radians
+            float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
+            tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
+            Debug.Log("DEG: " + deg);
+
+            //DOWN is default rotation. (0,0,0)
+            //Vector3 ray = end - start;
+            /*
+            Vector3 avgPos = (start + end) / 2f;
+            Vector3 targetRot = Vector3.zero;
+            if (ray.y == 0) // not up or down
+            {
+                if (ray.x == 0) { }
+                else if (ray.x < 0) { targetRot = Vector3.forward * -90f; }
+                else if (ray.x > 0) { targetRot = Vector3.forward * 90f; }
+            }
+            else if (ray.y < 0) // down
+            {
+                targetRot = Vector3.forward * 0f;
+                if (ray.x == 0) { }
+                else if (ray.x < 0) { targetRot += Vector3.forward * -45f; }
+                else if (ray.x > 0) { targetRot += Vector3.forward * 45f; }
+            }
+            else if (ray.y > 0) // up
+            {
+                targetRot = Vector3.forward * 180f;
+                if (ray.x == 0) { }
+                else if (ray.x < 0) { targetRot += Vector3.forward * 45f; }
+                else if (ray.x > 0) { targetRot += Vector3.forward * -45f; }
+            }
+            */
+            //tutorialArrow.rotation = Quaternion.Euler(targetRot);
+        }
+
 
         public void SetTooltip(string inDescription, GameObject element)
         {
@@ -271,18 +317,15 @@ public class TutorialManager : MonoBehaviour {
             */
 
             Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
+
             Vector3 start= new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
-            panelContainer.position = start;
+            //start = new Vector3(posX, posY, panelContainer.position.z);
 
             Vector3 end = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
-            Vector3 ray = end - start;
-            //we could also do panelContainer.position = edge;
 
-            // DOESN'T WORK YET:
-            //tutorialArrow.rotation = Quaternion.LookRotation(ray);
-
-            tutorialArrow.gameObject.SetActive(false);
-
+            PositionTutorialPanel(start, end);
+            panelContainer.position = start;
+            
             tutorialDescription.text = inDescription;
         }
     }
