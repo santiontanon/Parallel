@@ -157,21 +157,45 @@ public class TutorialManager : MonoBehaviour {
 
         void PositionTutorialPanel(Vector3 position, Vector3 tutorialFocusTargetPosition )
         {
+
+            float topBannerHeight = GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
+            float rightBannerWidth = GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
+            float bottomBannerHeight = GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
+            float panelClearHeight = panelContainer.rect.height / 2f;
+
             Vector3 start = position;
-            panelContainer.position = start;
+            if (start.y >= (Screen.height - topBannerHeight - panelClearHeight))
+            {
+                start = new Vector3(start.x, Screen.height - topBannerHeight - panelClearHeight - (Screen.height * 0.05f), position.z);
+            }
+            else if (start.y <= bottomBannerHeight + panelClearHeight)
+            {
+                Debug.Log("SHOULD MOVE UP");
+                start = new Vector3(start.x, bottomBannerHeight + panelClearHeight + (Screen.height * 0.05f), position.z);
+            }
+            Debug.Log("START: " + start.y);
             Vector3 end = tutorialFocusTargetPosition;
             end.z = start.z;
-            TutorialBubbleNubRotateToward(start, end);
+            
+            panelContainer.position = start;
+            TutorialPanelTail(start, end);
         }
 
-        void TutorialBubbleNubRotateToward(Vector3 start, Vector3 end)
+        void TutorialPanelTail(Vector3 start, Vector3 end)
         {
 
             Vector3 ray = end - start;
             float rad = Mathf.Atan2(ray.y, ray.x); // In radians
             float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
+
+            Vector3 centerPos = (start + end) / 2f;
+            
+            //Vector3 tailPos = start + ray.normalized * (panelContainer.rect.height * 0.5f);
+            //tutorialArrow.position = tailPos;
+            //tutorialArrow.localScale = new Vector3(1f, ray.magnitude, 1f);
+            //tutorialArrow.rect.Set(tutorialArrow.rect.x, tutorialArrow.rect.y, tutorialArrow.rect.width, 120f);
             tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
-            Debug.Log("DEG: " + deg);
+            tutorialArrow.localScale = new Vector3(1f, ray.magnitude / tutorialArrow.rect.height, 1f);
 
             //DOWN is default rotation. (0,0,0)
             //Vector3 ray = end - start;
