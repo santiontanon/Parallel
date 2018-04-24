@@ -91,13 +91,22 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
     void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel )
     {
-        loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
+        //loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
+        loadUI.requiredLevelsButton.interactable = !requiredPanel;
+        loadUI.requiredLevelsButton.GetComponentInChildren<Text>().color = requiredPanel ? new Color(0.7f,0.7f,0.7f) : Color.white;
+        loadUI.requiredLevelsButton.GetComponentInChildren<Image>().color = requiredPanel ? new Color(1f,1f,1f,0.7f) : Color.white;
         loadUI.requiredTransform.gameObject.SetActive(requiredPanel);
 
-        loadUI.previousLevelsButton.gameObject.SetActive(!previousPanel);
+        //loadUI.previousLevelsButton.gameObject.SetActive(!previousPanel);
+        loadUI.previousLevelsButton.interactable = !previousPanel;
+        loadUI.previousLevelsButton.GetComponentInChildren<Text>().color = previousPanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.previousLevelsButton.GetComponentInChildren<Image>().color = previousPanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
         loadUI.previousTransform.gameObject.SetActive(previousPanel);
 
-        loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        //loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        loadUI.optionalLevelsButton.interactable = !optionalPanel;
+        loadUI.optionalLevelsButton.GetComponentInChildren<Text>().color = optionalPanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.optionalLevelsButton.GetComponentInChildren<Image>().color = optionalPanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
         loadUI.optionalTransform.gameObject.SetActive(optionalPanel);
     }
 
