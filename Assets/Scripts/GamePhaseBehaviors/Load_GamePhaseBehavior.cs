@@ -19,7 +19,7 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         public GameObject levelButtonPrefab;
         public Button exitLevelSelectionButton;
         [SerializeField] public UIOverlay levelLoadingOverlay;
-        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton;
+        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton, generateLevelButton;
 	}
 	public Load_UI loadUI;
 
@@ -85,6 +85,9 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             TriggerPanelSwap(false, true, false);
         });
+
+        loadUI.generateLevelButton.onClick.RemoveAllListeners();
+        loadUI.generateLevelButton.onClick.AddListener(() => LoadPCGBehavior() );
 
         TriggerPanelSwap(true, false, false);
     }
