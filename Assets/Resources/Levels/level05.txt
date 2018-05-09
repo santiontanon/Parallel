@@ -47,12 +47,12 @@ A<<<<<
 CRITICALSECTIONS
   ------
   -    - 
---CCCC -
-- C  C C
-- C  C C
-- CCCCCC
--    C  
----CCC 
+--a--- -
+- -  - A
+- -  - -
+- ------
+-    -  
+---A-- 
 
 COMPONENTS
 1001	thread	5	0	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
