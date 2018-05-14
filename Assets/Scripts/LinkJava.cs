@@ -40,7 +40,8 @@ public class LinkJava : MonoBehaviour
 		{
 		case RuntimePlatform.WindowsPlayer:
 		case RuntimePlatform.WindowsEditor:
-			pathCPSeparator = ";";
+        case RuntimePlatform.LinuxPlayer:
+            pathCPSeparator = ";";
 			pathSeparator = "\\";
 			break;
 		case RuntimePlatform.OSXEditor:
@@ -48,8 +49,8 @@ public class LinkJava : MonoBehaviour
 			pathCPSeparator = ":";
 			pathSeparator = "/";
 			break;
-		default:
-			UnityEngine.Debug.Log ("Wrong environment");
+        default:
+			UnityEngine.Debug.Log ("Environment Error");
 			return 1;
 		}
 		return 0;
