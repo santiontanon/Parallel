@@ -21,6 +21,7 @@ public class LevelReferenceContainer
     [SerializeField] public LevelReferenceObject[] required;
     [SerializeField] public LevelReferenceObject[] optional;
     [SerializeField] public LevelReferenceObject[] previous;
+    [SerializeField] public List<LevelReferenceObject> pcg;
 }
 
 [System.Serializable]
