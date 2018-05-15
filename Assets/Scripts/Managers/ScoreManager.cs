@@ -10,6 +10,9 @@ public class ScoreManager : MonoBehaviour {
     [SerializeField]
     LevelScore[] scores;
 
+    [SerializeField]
+    LevelScore[] pcgScores;
+
     /// <summary>
     /// Array of level solutions
     /// 0 = allowed submit attempts
@@ -44,7 +47,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
 	public void SaveScores()
     {
-        GameManager.Instance.GetSaveManager().UpdateSave(scores, GameManager.Instance.GetSaveManager().currentSave.name);
+        GameManager.Instance.GetSaveManager().UpdateSave(GameManager.Instance.GetSaveManager().currentSave.name, scores, pcgScores, GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
     }
 
     /// <summary>
@@ -58,6 +61,14 @@ public class ScoreManager : MonoBehaviour {
             if(scores[i] == null)
             {
                 scores[i] = new LevelScore();
+            }
+        }
+        pcgScores = GameManager.Instance.GetSaveManager().currentSave.pcgScores;
+        for (int i = 0; i < pcgScores.Length; i++)
+        {
+            if (pcgScores[i] == null)
+            {
+                pcgScores[i] = new LevelScore();
             }
         }
     }

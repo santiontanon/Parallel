@@ -107,6 +107,21 @@ public class DataManager : MonoBehaviour {
         Debug.Log(allLevels.Count + " is all files in resources folder");
     }
 
+    public void GetPCGLevels(List<string> levels, List<LevelReferenceObject> refs)
+    {
+        levRef.levels.pcg.Clear();
+        for (int i = 0; i < levels.Count; i++)
+        {
+            if (levels[i] != "")
+            {
+                if (refs[i] != null)
+                {
+                    levRef.levels.pcg.Add(refs[i]);
+                }
+            }
+        }
+    }
+
     int GetLevelId(string levelFileName)
     {
         TextAsset bindata = Resources.Load(foldername + levelFileName) as TextAsset;
