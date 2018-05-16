@@ -50,7 +50,7 @@ public class LinkJava : MonoBehaviour
 			pathSeparator = "/";
 			break;
         case RuntimePlatform.LinuxPlayer:
-            pathCPSeparator = ";";
+            pathCPSeparator = ":";
             pathSeparator = "/";
             break;
         default:
