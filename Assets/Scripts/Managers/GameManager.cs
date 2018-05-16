@@ -244,6 +244,11 @@ public class GameManager : MonoBehaviour {
 		tutorialManager.PerformTutorialSeries( inputLevelId, inputPlayPhase);
 	}
 
+    public void TriggerLevelTutorialSkip(bool allSubsequentForLevel)
+    {
+        tutorialManager.ReportTutorialEventSkip(allSubsequentForLevel);
+    }
+
     public void CreateTutorialPopup(TutorialEvent t, GridObjectBehavior gridObject)
     {
         //two versions, depending on if we want to set the position at the same time as setting the pop up to open

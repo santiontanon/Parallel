@@ -19,6 +19,7 @@ public class TutorialManager : MonoBehaviour {
         public Canvas canvas;
         public CanvasScaler scaler;
         public RectTransform tutorialArrow;
+        public Button skipTutorialsButton;
 
         public override void OpenPanel()
         {
@@ -29,6 +30,12 @@ public class TutorialManager : MonoBehaviour {
             if (panelContainer.position.y < Screen.height * 0.2f) { pivotOffset.y = 0.0f; }
             if (panelContainer.position.y > Screen.height * 0.8f) { pivotOffset.y = 1.0f; }
             //panelContainer.pivot = pivotOffset;
+
+            if (skipTutorialsButton)
+            {
+                skipTutorialsButton.onClick.RemoveAllListeners();
+                skipTutorialsButton.onClick.AddListener( ()=> GameManager.Instance.TriggerLevelTutorialSkip(true) );
+            }
             base.OpenPanel();
         }
 
@@ -189,41 +196,8 @@ public class TutorialManager : MonoBehaviour {
             float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
 
             Vector3 centerPos = (start + end) / 2f;
-            
-            //Vector3 tailPos = start + ray.normalized * (panelContainer.rect.height * 0.5f);
-            //tutorialArrow.position = tailPos;
-            //tutorialArrow.localScale = new Vector3(1f, ray.magnitude, 1f);
-            //tutorialArrow.rect.Set(tutorialArrow.rect.x, tutorialArrow.rect.y, tutorialArrow.rect.width, 120f);
             tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
             tutorialArrow.localScale = new Vector3(1f, ray.magnitude / tutorialArrow.rect.height, 1f);
-
-            //DOWN is default rotation. (0,0,0)
-            //Vector3 ray = end - start;
-            /*
-            Vector3 avgPos = (start + end) / 2f;
-            Vector3 targetRot = Vector3.zero;
-            if (ray.y == 0) // not up or down
-            {
-                if (ray.x == 0) { }
-                else if (ray.x < 0) { targetRot = Vector3.forward * -90f; }
-                else if (ray.x > 0) { targetRot = Vector3.forward * 90f; }
-            }
-            else if (ray.y < 0) // down
-            {
-                targetRot = Vector3.forward * 0f;
-                if (ray.x == 0) { }
-                else if (ray.x < 0) { targetRot += Vector3.forward * -45f; }
-                else if (ray.x > 0) { targetRot += Vector3.forward * 45f; }
-            }
-            else if (ray.y > 0) // up
-            {
-                targetRot = Vector3.forward * 180f;
-                if (ray.x == 0) { }
-                else if (ray.x < 0) { targetRot += Vector3.forward * 45f; }
-                else if (ray.x > 0) { targetRot += Vector3.forward * -45f; }
-            }
-            */
-            //tutorialArrow.rotation = Quaternion.Euler(targetRot);
         }
 
 
@@ -250,95 +224,6 @@ public class TutorialManager : MonoBehaviour {
             float eYMax = sprite.bounds.max.y;
             float eWidth = sprite.bounds.size.x;
             float eHeight = sprite.bounds.size.y;
-            /*
-            if (ttXMin < 0)
-            {
-                posX += Mathf.Abs(posX - (ttWidth / 2));
-            }
-            else if (ttXMax > Screen.width)
-            {
-                posX -= (ttWidth / 2) + posX - Screen.width;
-            }
-            if (ttYMin < 0)
-            {
-                posY += Mathf.Abs(posY - (ttHeight / 2));
-            }
-            else if (ttYMax > Screen.height)
-            {
-                posY -= (ttHeight / 2) + posY - Screen.height;
-            }
-
-            ttXMin = posX - (ttWidth / 2);
-            ttXMax = posX + (ttWidth / 2);
-            ttYMin = posY - (ttHeight / 2);
-            ttYMax = posY + (ttHeight / 2);
-
-            float normalizedX = posX / canvas.pixelRect.width;
-            float normalizedY = posY / canvas.pixelRect.height;
-
-            if (ttXMin <= eXMax)
-            {
-                if (ttXMin >= eXMin || ttXMax >= eXMin)
-                {
-                    if (ttYMin <= eYMax)
-                    {
-                        if (ttYMin >= eYMin || ttYMax >= eYMin)
-                        {
-                            if (normalizedX >= 0.5f)
-                            {
-                                if (normalizedY >= 0.5f)
-                                {
-                                    if (normalizedX > normalizedY)
-                                    {
-                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedX - 0.5f >= 0.5f - normalizedY)
-                                    {
-                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (normalizedY < 0.5f)
-                                {
-                                    if (normalizedX < normalizedY)
-                                    {
-                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedY - 0.5f >= 0.5f - normalizedX)
-                                    {
-                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
-                                    }
-                                    else
-                                    {
-                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            */
 
             Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
 
@@ -537,6 +422,29 @@ public class TutorialManager : MonoBehaviour {
 			Debug.Log("No more tutorials."); 
 			GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventComplete","NoMore");
 		}
+    }
+
+    public void ReportTutorialEventSkip (bool allSubsequentForLevel)
+    {
+
+        GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventSkip", "AllSubsequent="+allSubsequentForLevel.ToString());
+        if (tutorialIndex < currentTutorialEventQueue.Length) CloseTutorial(currentTutorialEventQueue[tutorialIndex]);
+        foreach (TutorialEvent t in currentTutorialEventQueue)
+        {
+            t.hasCompleted = true;
+        }
+        tutorialIndex = currentTutorialEventQueue.Length;
+
+        int levelIndex = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
+        ForceTutorialSeriesCompletion(levelIndex);
+    }
+
+    void ForceTutorialSeriesCompletion(int levelIndex)
+    {
+        foreach (TutorialEvent t in tutorialEvents)
+        {
+            if(t.levelNumber == levelIndex) t.hasCompleted = true;
+        }
     }
 
     public void ClearActiveTutorials()
