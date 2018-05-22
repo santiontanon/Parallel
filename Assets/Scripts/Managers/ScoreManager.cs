@@ -47,7 +47,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
 	public void SaveScores()
     {
-        GameManager.Instance.GetSaveManager().UpdateSave(GameManager.Instance.GetSaveManager().currentSave.name, scores, pcgScores, GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
+        GameManager.Instance.GetSaveManager().UpdateSave(GameManager.Instance.GetSaveManager().currentSave.name, scores, new System.Collections.Generic.List<LevelScore>(pcgScores), GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
     }
 
     /// <summary>
@@ -63,13 +63,23 @@ public class ScoreManager : MonoBehaviour {
                 scores[i] = new LevelScore();
             }
         }
-        pcgScores = GameManager.Instance.GetSaveManager().currentSave.pcgScores;
-        for (int i = 0; i < pcgScores.Length; i++)
+        if(GameManager.Instance.GetSaveManager().currentSave.pcgScores != null)
         {
-            if (pcgScores[i] == null)
+            pcgScores = GameManager.Instance.GetSaveManager().currentSave.pcgScores.ToArray();
+        }
+        if (pcgScores != null)
+        {
+            for (int i = 0; i < pcgScores.Length; i++)
             {
-                pcgScores[i] = new LevelScore();
+                if (pcgScores[i] == null)
+                {
+                    pcgScores[i] = new LevelScore();
+                }
             }
+        }
+        else
+        {
+            pcgScores = new LevelScore[0];
         }
     }
 

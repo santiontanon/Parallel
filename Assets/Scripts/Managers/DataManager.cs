@@ -58,12 +58,7 @@ public class DataManager : MonoBehaviour {
     public void GetLevels(string inputJson)
     {
         allLevels.Clear();
-
-        Debug.Log(inputJson);
-
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
-
-        Debug.Log(levRef.levels.previous.Length);
 
         //Load pre-existing scores
         GameManager.Instance.GetScoreManager().LoadScores();
@@ -71,7 +66,7 @@ public class DataManager : MonoBehaviour {
         //link level int ids to each level reference object
         foreach (LevelReferenceObject lrObj in levRef.levels.required)
         {
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
@@ -79,8 +74,7 @@ public class DataManager : MonoBehaviour {
         }
         foreach (LevelReferenceObject lrObj in levRef.levels.previous)
         {
-            Debug.Log("Previous level");
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
@@ -88,13 +82,12 @@ public class DataManager : MonoBehaviour {
         }
         foreach (LevelReferenceObject lrObj in levRef.levels.optional)
         {
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
             lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
         }
-
 
         Object[] loadedObjects = Resources.LoadAll("Levels");
         foreach (Object o in loadedObjects)
@@ -104,22 +97,27 @@ public class DataManager : MonoBehaviour {
             allLevelNames.Add(o.name);
  
         }
-        Debug.Log(allLevels.Count + " is all files in resources folder");
+        GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
     }
 
-    public void GetPCGLevels(List<string> levels, List<LevelReferenceObject> refs)
+    public void GetPCGLevels(List<string> levels)
     {
         levRef.levels.pcg.Clear();
+        List<LevelReferenceObject> refs = new List<LevelReferenceObject>();
         for (int i = 0; i < levels.Count; i++)
         {
             if (levels[i] != "")
             {
-                if (refs[i] != null)
-                {
-                    levRef.levels.pcg.Add(refs[i]);
-                }
+                LevelReferenceObject lro = new LevelReferenceObject();
+                lro.file = "levelP"+i;
+                lro.title = "P" + i;
+                lro.levelId = i;
+                lro.completionRank = 0;
+                refs.Add(lro);
+                Debug.Log(lro.file);
             }
         }
+        levRef.levels.pcg = refs;
     }
 
     int GetLevelId(string levelFileName)
