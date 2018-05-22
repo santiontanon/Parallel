@@ -31,7 +31,7 @@ public class LevelReferenceObject
     public string title = "";
     //in-game behaviors that aren't given by josep's file
     public int completionRank = 0;
-    public int levelId = -1;
+    public int levelId = -99999;
     public void SetLevelCompletionRank(int inputRank)
     { completionRank = inputRank; }
     public int GetLevelCompletionRank() { return completionRank; }
