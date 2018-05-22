@@ -16,6 +16,7 @@ public class SaveManager : MonoBehaviour{
         {
             currentSave = saves[0];
         }
+        LoadSave("default");
     }
 
     public ParallelSave GetSave(string s)
@@ -32,26 +33,36 @@ public class SaveManager : MonoBehaviour{
 
     public void LoadSave(string s)
     {
+        Debug.Log("LoadSave");
         ParallelSave save = GetSave(s);
         if (save != null)
         {
             currentSave = save;
             GameManager.Instance.GetScoreManager().LoadScores();
             GameManager.Instance.GetDataManager().GetLevels();
-            //GameManager.Instance.GetScoreManager().LoadScoresPCGScores();???
-            //GameManager.Instance.GetDataManager().GetPCGLevels();???
+            if (currentSave.pcgLevels == null)
+            {
+                currentSave.pcgLevels = new List<string>();
+            }
+            GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
         }
         else
         {
             Debug.Log("Unable to load save: " + s + ". File does not exist.");
             LevelScore[] scores = new LevelScore[0];
-            LevelScore[] pcgScores = new LevelScore[0];
+            List<LevelScore> pcgScores = new List<LevelScore>();
             List<string> levels = new List<string>();
             NewSave(s, scores, pcgScores, levels);
         }
     }
 
-    public void UpdateSave(string s, LevelScore[] scores, LevelScore[] pcgScores, List<string> pcgLevels)
+    public void UpdateSave()
+    {
+        Debug.Log("UpdateSave");
+        UpdateSave(currentSave.name, currentSave.scores, currentSave.pcgScores, currentSave.pcgLevels);
+    }
+
+    public void UpdateSave(string s, LevelScore[] scores, List<LevelScore> pcgScores, List<string> pcgLevels)
     {
         if(s != "")
         {
@@ -85,7 +96,7 @@ public class SaveManager : MonoBehaviour{
         }
     }
 
-    public void UpdatePCGLevels(string s, List<string> pcgLevels, LevelScore[] pcgScores)
+    public void UpdatePCGLevels(string s, List<string> pcgLevels, List<LevelScore> pcgScores)
     {
         if (s != "")
         {
@@ -103,8 +114,9 @@ public class SaveManager : MonoBehaviour{
         }
     }
 
-    public void NewSave(string s, LevelScore[] scores, LevelScore[] pcgScores, List<string> levels)
+    public void NewSave(string s, LevelScore[] scores, List<LevelScore> pcgScores, List<string> levels)
     {
+        Debug.Log("NewSave");
         if(s != "")
         {
             ParallelSave save = new ParallelSave();

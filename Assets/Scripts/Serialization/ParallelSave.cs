@@ -8,7 +8,7 @@ public class ParallelSave {
     public static ParallelSave current;
 
     public LevelScore[] scores;
-    public LevelScore[] pcgScores;
+    public List<LevelScore> pcgScores;
     public List<string> pcgLevels;
     public string name;
 
@@ -19,10 +19,12 @@ public class ParallelSave {
 
     public int AddNewPCGLevel(string level)
     {
+        if (pcgLevels == null)
+            pcgLevels = new List<string>();
+        if (pcgScores == null)
+            pcgScores = new List<LevelScore>();
         pcgLevels.Add(level);
-        LevelReferenceObject lrObj = new LevelReferenceObject();
-        lrObj.file = "P" + pcgLevels.Count;
-        lrObj.title = lrObj.file;
+        pcgScores.Add(new LevelScore());
         return pcgLevels.IndexOf(level);
     }
 
@@ -35,19 +37,6 @@ public class ParallelSave {
             for (int i = 0; i < oldScores.Length; i++)
             {
                 scores[i] = oldScores[i];
-            }
-        }
-    }
-
-    public void UpdatePCGScore(LevelScore score, int index)
-    {
-        if (pcgScores.Length <= index)
-        {
-            LevelScore[] oldScores = pcgScores;
-            pcgScores = new LevelScore[index + 1];
-            for (int i = 0; i < oldScores.Length; i++)
-            {
-                pcgScores[i] = oldScores[i];
             }
         }
     }
