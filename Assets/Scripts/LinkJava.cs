@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Diagnostics;
+using System.IO;
 
 public class LinkJava : MonoBehaviour 
 {
@@ -54,6 +55,7 @@ public class LinkJava : MonoBehaviour
 		}
 		return 0;
 	}
+
 	private int checkJava()
 	{
 		// ExitCode = 0: OK
@@ -146,12 +148,15 @@ public class LinkJava : MonoBehaviour
 			string mpout = "";
 			string line = null;
 			string filename = "";
+            UnityEngine.Debug.Log(externalProcess.StandardOutput.ReadLine());
 			while ((line = externalProcess.StandardOutput.ReadLine()) != null) 
 			{
 				filename = line;
 				mpout += line + "\n";
 			}
 			mpout += "Exit code: "+ExitCode.ToString ();
+            UnityEngine.Debug.Log(line);
+            UnityEngine.Debug.Log(mpout);
 			UnityEngine.Debug.Log ("Java finished here...");
 			if (ExitCode == 0) 
 			{
@@ -159,8 +164,10 @@ public class LinkJava : MonoBehaviour
 				// send this to the server first
 				string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") +"\n\n" + System.IO.File.ReadAllText(filename);
 				GameManager.Instance.tracker.UploadData(upload_data);
-
 				UnityEngine.Debug.Log ("It's now time to load "+filename);
+                StreamReader reader = new StreamReader(filename);
+                GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+                GameManager.Instance.GetSaveManager().UpdateSave();
 				GameManager.Instance.TriggerLoadLevel(DataManager.LoadType.FILEPATH, filename);
 				//in case it takes time to load larger levels
 				while(GameManager.Instance.gamePhase != GameManager.GamePhases.PlayerInteraction) yield return new WaitForEndOfFrame();
@@ -205,7 +212,7 @@ public class LinkJava : MonoBehaviour
         }
 		else {
 		UnityEngine.Debug.Log ("Calling Java...");
-		UnityEngine.Debug.Log(externalNonBlocking ());
+		UnityEngine.Debug.Log(externalNonBlocking ()); //this is what calls the ME simulation
 		UnityEngine.Debug.Log ("Finished calling Java...");
 		}
 	}
