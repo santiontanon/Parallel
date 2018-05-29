@@ -29,6 +29,7 @@ public class LevelReferenceObject
 {
     public string file = "level01";
     public string title = "";
+    public string data = "";
     //in-game behaviors that aren't given by josep's file
     public int completionRank = 0;
     public int levelId = -99999;

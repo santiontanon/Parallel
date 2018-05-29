@@ -111,6 +111,7 @@ public class DataManager : MonoBehaviour {
                 LevelReferenceObject lro = new LevelReferenceObject();
                 lro.file = "levelP"+i;
                 lro.title = "P" + i;
+                lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
                 lro.levelId = i;
                 lro.completionRank = 0;
                 refs.Add(lro);
@@ -204,26 +205,32 @@ public class DataManager : MonoBehaviour {
     {
         RESOURCES,
         FILENAME,
-        FILEPATH
+        FILEPATH,
+        FILE
     }
    
-	public void InitializeLoadLevel(string inputLevelName, LoadType loadType)
+	public void InitializeLoadLevel(string inputString, LoadType loadType)
 	{
-		levelname = inputLevelName;
+		levelname = inputString;
         string[] bindata_split = new string[0];
+
+        Debug.Log(bindata_split);
 
         switch (loadType)
         {
             case LoadType.RESOURCES:
                 TextAsset bindata = Resources.Load(foldername + levelname) as TextAsset;
+                Debug.Log(bindata);
                 bindata_split = bindata.ToString().Split('\n');
                 break;
             case LoadType.FILENAME:
-                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputString);
                 break;
-
             case LoadType.FILEPATH:
-                bindata_split = System.IO.File.ReadAllLines(inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(inputString);
+                break;
+            case LoadType.FILE:
+                bindata_split = inputString.Split('\n');
                 break;
         }
         currentLevelData = LoadLevel(bindata_split);
