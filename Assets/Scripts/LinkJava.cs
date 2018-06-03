@@ -24,6 +24,7 @@ public class LinkJava : MonoBehaviour
 
     void Awake()
     {
+        UnityEngine.Debug.Log(Application.dataPath);
     	checkEnvironment();
     	if(Application.isEditor){
         	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
@@ -41,7 +42,7 @@ public class LinkJava : MonoBehaviour
 		{
 		case RuntimePlatform.WindowsPlayer:
 		case RuntimePlatform.WindowsEditor:
-			pathCPSeparator = ";";
+            pathCPSeparator = ";";
 			pathSeparator = "\\";
 			break;
 		case RuntimePlatform.OSXEditor:
@@ -49,8 +50,12 @@ public class LinkJava : MonoBehaviour
 			pathCPSeparator = ":";
 			pathSeparator = "/";
 			break;
-		default:
-			UnityEngine.Debug.Log ("Wrong environment");
+        case RuntimePlatform.LinuxPlayer:
+            pathCPSeparator = ":";
+            pathSeparator = "/";
+            break;
+        default:
+			UnityEngine.Debug.Log ("Environment Error");
 			return 1;
 		}
 		return 0;
@@ -116,7 +121,9 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"JGGS.jar";
 			externalProcess.StartInfo.Arguments +="\" support." + simulationMode.ToString() + " \""+filename+"\" "+budget;
 			externalProcess.EnableRaisingEvents = true;
-			externalProcess.Start ();
+            UnityEngine.Debug.Log(externalPath + "PCGMC4PP.jar");
+            UnityEngine.Debug.Log(pathCPSeparator + externalPath + "lib" + pathSeparator + "gson-2.6.2.jar");
+            externalProcess.Start ();
 			StartCoroutine (externalNonBlockingWait ());
 			return "External Async";
 		}
