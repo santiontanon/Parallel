@@ -36,6 +36,9 @@ public class TutorialEvent
     [Header("a button is pressed (clickButton)...")]
     public Button targetButton;
 
+    [Header("a component is interacted with (componentType)...")]
+    public string targetComponentType = "";
+
     [Header("a simulation event occurs (simulationInteraction) ...")]
     [SerializeField] public StepData targetSimulationStep;
 

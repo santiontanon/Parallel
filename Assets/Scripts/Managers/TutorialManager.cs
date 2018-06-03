@@ -44,162 +44,26 @@ public class TutorialManager : MonoBehaviour {
             if (button != null)
             {
                 RectTransform elementRect = button.gameObject.GetComponent<RectTransform>();
-                panelContainer.position = button.gameObject.transform.position;
+                //panelContainer.position = button.gameObject.transform.position;
                 float posX = button.gameObject.transform.position.x;
                 float posY = button.gameObject.transform.position.y;
 
+                //account for canvas size and resolution
                 float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
                 RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
 
-                float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
-                float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
-                float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
-                float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
-                float ttWidth = tooltip.rect.width * multiplier;
-                float ttHeight = tooltip.rect.height * multiplier;
-
-                float eXMin = elementRect.position.x + elementRect.rect.xMin;
-                float eXMax = elementRect.position.x + elementRect.rect.xMax;
-                float eYMin = elementRect.position.y + elementRect.rect.yMin;
-                float eYMax = elementRect.position.y + elementRect.rect.yMax;
-                float eWidth = elementRect.rect.width * multiplier;
-                float eHeight = elementRect.rect.width * multiplier;
-
-                float topBannerHeight = GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
-                float rightBannerWidth = GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
-
-                if (ttXMin < 0)
-                {
-                    posX += Mathf.Abs(posX - (ttWidth / 2));
-                }
-                else if (ttXMax > Screen.width)
-                {
-                    posX -= (ttWidth / 2) + posX - Screen.width;
-                }
-                if (ttYMin < 0)
-                {
-                    posY += Mathf.Abs(posY - (ttHeight / 2));
-                }
-                else if (ttYMax > Screen.height)
-                {
-                    posY -= (ttHeight / 2) + posY - Screen.height /* NEW: + topBannerHeight */;
-                }
-
-                ttXMin = posX - (ttWidth / 2);
-                ttXMax = posX + (ttWidth / 2);
-                ttYMin = posY - (ttHeight / 2);
-                ttYMax = posY + (ttHeight / 2);
-
-                float normalizedX = posX / canvas.pixelRect.width;
-                float normalizedY = posY / canvas.pixelRect.height;
-
-                if (ttXMin <= eXMax)
-                {
-                    if (ttXMin >= eXMin || ttXMax >= eXMin)
-                    {
-                        if (ttYMin <= eYMax)
-                        {
-                            if (ttYMin >= eYMin || ttYMax >= eYMin)
-                            {
-                                if (normalizedX >= 0.5f)
-                                {
-                                    if (normalizedY >= 0.5f)
-                                    {
-                                        if (normalizedX > normalizedY)
-                                        {
-                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (normalizedX - 0.5f >= 0.5f - normalizedY)
-                                        {
-                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedY < 0.5f)
-                                    {
-                                        if (normalizedX < normalizedY)
-                                        {
-                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (normalizedY - 0.5f >= 0.5f - normalizedX)
-                                        {
-                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
-                                        }
-                                        else
-                                        {
-                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
                 Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
-                PositionTutorialPanel(nextPanelPosition, button.transform.position);
+                PositionTutorialPanel(nextPanelPosition, button.transform.position, inDescription.Length);
+            }
+            else
+            {
+                float posX = Screen.width / 2f;
+                float posY = Screen.height / 2f;
+                Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
+                PositionTutorialPanel(nextPanelPosition, nextPanelPosition, inDescription.Length);
             }
             tutorialDescription.text = inDescription;
         }
-
-        void PositionTutorialPanel(Vector3 position, Vector3 tutorialFocusTargetPosition )
-        {
-
-            float topBannerHeight = GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
-            float rightBannerWidth = GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
-            float bottomBannerHeight = GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
-            float panelClearHeight = panelContainer.rect.height / 2f;
-
-            Vector3 start = position;
-            if (start.y >= (Screen.height - topBannerHeight - panelClearHeight))
-            {
-                start = new Vector3(start.x, Screen.height - topBannerHeight - panelClearHeight - (Screen.height * 0.05f), position.z);
-            }
-            else if (start.y <= bottomBannerHeight + panelClearHeight)
-            {
-                Debug.Log("SHOULD MOVE UP");
-                start = new Vector3(start.x, bottomBannerHeight + panelClearHeight + (Screen.height * 0.05f), position.z);
-            }
-            Debug.Log("START: " + start.y);
-            Vector3 end = tutorialFocusTargetPosition;
-            end.z = start.z;
-            
-            panelContainer.position = start;
-            TutorialPanelTail(start, end);
-        }
-
-        void TutorialPanelTail(Vector3 start, Vector3 end)
-        {
-
-            Vector3 ray = end - start;
-            float rad = Mathf.Atan2(ray.y, ray.x); // In radians
-            float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
-
-            Vector3 centerPos = (start + end) / 2f;
-            tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
-            tutorialArrow.localScale = new Vector3(1f, ray.magnitude / tutorialArrow.rect.height, 1f);
-        }
-
 
         public void SetTooltip(string inDescription, GameObject element)
         {
@@ -207,36 +71,94 @@ public class TutorialManager : MonoBehaviour {
             panelContainer.position = element.transform.position;
             float posX = element.transform.position.x;
             float posY = element.transform.position.y;
-            
+
             float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
             RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
-
-            float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
-            float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
-            float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
-            float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
-            float ttWidth = tooltip.rect.width * multiplier;
-            float ttHeight = tooltip.rect.height * multiplier;
-
-            float eXMin = sprite.bounds.min.x;
-            float eXMax = sprite.bounds.max.x;
-            float eYMin = sprite.bounds.min.y;
-            float eYMax = sprite.bounds.max.y;
-            float eWidth = sprite.bounds.size.x;
-            float eHeight = sprite.bounds.size.y;
-
+            
             Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
 
-            Vector3 start= new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
-            //start = new Vector3(posX, posY, panelContainer.position.z);
+            Vector3 start_tooltipCenter = new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
+            start_tooltipCenter = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
-            Vector3 end = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
+            Vector3 end_tooltipFocusPoint = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
-            PositionTutorialPanel(start, end);
-            panelContainer.position = start;
+            PositionTutorialPanel(start_tooltipCenter, end_tooltipFocusPoint, inDescription.Length);
             
             tutorialDescription.text = inDescription;
         }
+
+        void PositionTutorialPanel(Vector3 position, Vector3 tutorialFocusTargetPosition, int descriptionSize = 0 )
+        {
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+
+            //BOYD: MAYBE WE CAN FIND A BETTER WAY TO SIZE OUR TUTORIAL BOXES
+            Vector2 targetPanelSize = new Vector2(200f, 100f);
+            if (descriptionSize <= 20) { }
+            else if (descriptionSize <= 50) { targetPanelSize.y = 200f; }
+            else if (descriptionSize <= 100) { targetPanelSize.x = 250f;  targetPanelSize.y = 250f; }
+            else { targetPanelSize.x = 280f; targetPanelSize.y = 260f; }
+
+            panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetPanelSize.x);
+            panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetPanelSize.y);
+
+            float topBannerHeight = multiplier * GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
+            float rightBannerWidth = multiplier * GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
+            float bottomBannerHeight = multiplier * GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
+            float panelClearHeight = multiplier * panelContainer.rect.height / 2f;
+            float panelClearWidth = multiplier * panelContainer.rect.width / 2f;
+            float tooltipNubSize = 50f * multiplier;
+
+
+            Vector3 start = position;
+
+            //height bounds exceeded?
+            if (start.y >= (Screen.height - topBannerHeight - panelClearHeight))
+            {
+                start = new Vector3(start.x, Screen.height - topBannerHeight - panelClearHeight - tooltipNubSize, position.z);
+            }
+            else if (start.y <= bottomBannerHeight + panelClearHeight)
+            {
+                start = new Vector3(start.x, bottomBannerHeight + panelClearHeight + tooltipNubSize, position.z);
+            }
+
+            //width bounds exceeded?
+            if (start.x >= (Screen.width - rightBannerWidth - panelClearWidth))
+            {
+                start = new Vector3(Screen.width - panelClearWidth - rightBannerWidth - tooltipNubSize, start.y, position.z);
+            }
+            else if (start.x <= 0f + panelClearWidth)
+            {
+                start = new Vector3(0f + panelClearWidth + tooltipNubSize, start.y, position.z);
+            }
+
+            Vector3 end = tutorialFocusTargetPosition;
+            end.z = start.z;
+
+            if (Vector3.Distance(start, end) <= panelClearHeight)
+            {
+                Vector3 centerPoint = new Vector3(Screen.width / 2f, Screen.height / 2f, start.z);
+                Vector3 rayToCenter = (centerPoint - start).normalized;
+                start += rayToCenter * panelClearHeight * 2f;
+            }
+
+            panelContainer.position = start;
+            TutorialPanelTail(start, end);
+        }
+
+        void TutorialPanelTail(Vector3 start, Vector3 end)
+        {
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+            Vector3 ray = end - start;
+            float rad = Mathf.Atan2(ray.y, ray.x); // In radians
+            float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
+            tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
+            float targetNubSize = ray.magnitude;
+            tutorialArrow.localScale = Vector3.one;
+            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize + 10f);
+        }
+
+
+        
     }
 
     [SerializeField]
@@ -353,11 +275,28 @@ public class TutorialManager : MonoBehaviour {
             switch (t.complete_trigger)
             {
                 case TutorialEvent.TutorialCompletionTriggers.clickButton:
-                case TutorialEvent.TutorialCompletionTriggers.clickPopup:
                 case TutorialEvent.TutorialCompletionTriggers.placeSignal:
                 case TutorialEvent.TutorialCompletionTriggers.placeSemaphore:
                     GameManager.Instance.tracker.CreateEventExt("PerformTutorial",t.popupDescription);
                     tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    tutorialOverlay.OpenPanel();
+                    t.ActivateTutorialEventListener();
+                    break;
+
+                case TutorialEvent.TutorialCompletionTriggers.clickPopup:
+                    GameManager.Instance.tracker.CreateEventExt("PerformTutorial", t.popupDescription);
+                    if (t.targetComponentType.Length > 0)
+                    {
+                        List<GridObjectBehavior> objectsOfType = GameManager.Instance.GetGridManager().GetGridComponentsOfType("signal");
+                        if(objectsOfType.Count>0) tutorialOverlay.SetTooltip(t.popupDescription, objectsOfType[0].gameObject);
+                        else tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    }
+                    else
+                    {
+                        tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    }
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
                     break;
