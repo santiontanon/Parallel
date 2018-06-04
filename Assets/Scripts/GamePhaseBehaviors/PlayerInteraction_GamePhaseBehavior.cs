@@ -92,11 +92,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         score.index = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
 
-        GameManager.Instance.TriggerLevelTutorial
-        (
-            GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-            interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-        );
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != 0)
+        {
+            GameManager.Instance.TriggerLevelTutorial
+            (
+                GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
+                interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
+                );
+        }
 
         GameManager.Instance.SetUpLevelInventory();
 

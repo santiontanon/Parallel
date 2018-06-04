@@ -646,11 +646,14 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 Debug.Log("Retry");
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 playerInteraction.EndSimulation();
-                GameManager.Instance.TriggerLevelTutorial
-                (
-                    GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-                    playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation || playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-                );
+                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != 0)
+                {
+                    GameManager.Instance.TriggerLevelTutorial
+                    (
+                        GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
+                        playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation || playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
+                    );
+                }
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levelsNext:
                 playerInteraction.TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
