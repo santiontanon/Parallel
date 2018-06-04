@@ -115,7 +115,6 @@ public class DataManager : MonoBehaviour {
                 lro.levelId = i;
                 lro.completionRank = 0;
                 refs.Add(lro);
-                Debug.Log(lro.file);
             }
         }
         levRef.levels.pcg = refs;
@@ -206,7 +205,7 @@ public class DataManager : MonoBehaviour {
         RESOURCES,
         FILENAME,
         FILEPATH,
-        FILE
+        STRING
     }
    
 	public void InitializeLoadLevel(string inputString, LoadType loadType)
@@ -220,7 +219,6 @@ public class DataManager : MonoBehaviour {
         {
             case LoadType.RESOURCES:
                 TextAsset bindata = Resources.Load(foldername + levelname) as TextAsset;
-                Debug.Log(bindata);
                 bindata_split = bindata.ToString().Split('\n');
                 break;
             case LoadType.FILENAME:
@@ -229,7 +227,7 @@ public class DataManager : MonoBehaviour {
             case LoadType.FILEPATH:
                 bindata_split = System.IO.File.ReadAllLines(inputString);
                 break;
-            case LoadType.FILE:
+            case LoadType.STRING:
                 bindata_split = inputString.Split('\n');
                 break;
         }
@@ -333,6 +331,10 @@ public class DataManager : MonoBehaviour {
 				break;
 			case "level_title":
 				returnMetadata.level_title = sLine[1];
+                if(returnMetadata.level_title == "PCG Level")
+                {
+                    returnMetadata.level_id = -1;
+                }
 				break;
 			case "goal_string":
 				returnMetadata.goal_string = sLine[1];
