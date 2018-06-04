@@ -58,12 +58,7 @@ public class DataManager : MonoBehaviour {
     public void GetLevels(string inputJson)
     {
         allLevels.Clear();
-
-        Debug.Log(inputJson);
-
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
-
-        Debug.Log(levRef.levels.previous.Length);
 
         //Load pre-existing scores
         GameManager.Instance.GetScoreManager().LoadScores();
@@ -71,7 +66,7 @@ public class DataManager : MonoBehaviour {
         //link level int ids to each level reference object
         foreach (LevelReferenceObject lrObj in levRef.levels.required)
         {
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
@@ -79,8 +74,7 @@ public class DataManager : MonoBehaviour {
         }
         foreach (LevelReferenceObject lrObj in levRef.levels.previous)
         {
-            Debug.Log("Previous level");
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
@@ -88,13 +82,12 @@ public class DataManager : MonoBehaviour {
         }
         foreach (LevelReferenceObject lrObj in levRef.levels.optional)
         {
-            if (lrObj.levelId == -1)
+            if (lrObj.levelId == -99999)
             {
                 lrObj.levelId = GetLevelId(lrObj.file);
             }
             lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
         }
-
 
         Object[] loadedObjects = Resources.LoadAll("Levels");
         foreach (Object o in loadedObjects)
@@ -104,7 +97,27 @@ public class DataManager : MonoBehaviour {
             allLevelNames.Add(o.name);
  
         }
-        Debug.Log(allLevels.Count + " is all files in resources folder");
+        GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
+    }
+
+    public void GetPCGLevels(List<string> levels)
+    {
+        levRef.levels.pcg.Clear();
+        List<LevelReferenceObject> refs = new List<LevelReferenceObject>();
+        for (int i = 0; i < levels.Count; i++)
+        {
+            if (levels[i] != "")
+            {
+                LevelReferenceObject lro = new LevelReferenceObject();
+                lro.file = "levelP"+i;
+                lro.title = "P" + i;
+                lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
+                lro.levelId = i;
+                lro.completionRank = 0;
+                refs.Add(lro);
+            }
+        }
+        levRef.levels.pcg = refs;
     }
 
     int GetLevelId(string levelFileName)
@@ -191,13 +204,16 @@ public class DataManager : MonoBehaviour {
     {
         RESOURCES,
         FILENAME,
-        FILEPATH
+        FILEPATH,
+        STRING
     }
    
-	public void InitializeLoadLevel(string inputLevelName, LoadType loadType)
+	public void InitializeLoadLevel(string inputString, LoadType loadType)
 	{
-		levelname = inputLevelName;
+		levelname = inputString;
         string[] bindata_split = new string[0];
+
+        Debug.Log(bindata_split);
 
         switch (loadType)
         {
@@ -206,11 +222,13 @@ public class DataManager : MonoBehaviour {
                 bindata_split = bindata.ToString().Split('\n');
                 break;
             case LoadType.FILENAME:
-                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputString);
                 break;
-
             case LoadType.FILEPATH:
-                bindata_split = System.IO.File.ReadAllLines(inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(inputString);
+                break;
+            case LoadType.STRING:
+                bindata_split = inputString.Split('\n');
                 break;
         }
         currentLevelData = LoadLevel(bindata_split);
@@ -313,6 +331,10 @@ public class DataManager : MonoBehaviour {
 				break;
 			case "level_title":
 				returnMetadata.level_title = sLine[1];
+                if(returnMetadata.level_title == "PCG Level")
+                {
+                    returnMetadata.level_id = -1;
+                }
 				break;
 			case "goal_string":
 				returnMetadata.goal_string = sLine[1];

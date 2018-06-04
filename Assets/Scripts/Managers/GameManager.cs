@@ -215,7 +215,7 @@ public class GameManager : MonoBehaviour {
         dataManager.InitializeLoadLevel(path, DataManager.LoadType.RESOURCES);
     }
 
-    public void TriggerPCG(string inputLevelName = "")
+    public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
 		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";

@@ -10,12 +10,10 @@ public static class Serializer
     public static List<ParallelSave> LoadSaves()
     {
         if(Directory.Exists(Application.persistentDataPath + "/Saves")){
-            Debug.Log("Parallel save directory found");
             return LoadDirectory();
         }
         else
         {
-            Debug.Log("Parallel save directory not found");
             Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
             return LoadDirectory();
         }
