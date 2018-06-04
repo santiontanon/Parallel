@@ -24,7 +24,6 @@ public class LinkJava : MonoBehaviour
 
     void Awake()
     {
-        UnityEngine.Debug.Log(Application.dataPath);
     	checkEnvironment();
     	if(Application.isEditor){
         	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
