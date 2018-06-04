@@ -33,7 +33,6 @@ public class SaveManager : MonoBehaviour{
 
     public void LoadSave(string s)
     {
-        Debug.Log("LoadSave");
         ParallelSave save = GetSave(s);
         if (save != null)
         {
