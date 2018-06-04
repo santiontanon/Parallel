@@ -146,14 +146,21 @@ public class ScoreManager : MonoBehaviour {
     /// <returns></returns>
     public int GetCalculatedScore(int index)
     {
-        if (scores.Length > index)
+        if (scores.Length > index && index >= 0)
         {
             return GetCalculatedScore(scores[index]);
         }
         else
         {
-            AddNewScores(index);
-            return GetCalculatedScore(scores[index]);
+            if(index >= 0)
+            {
+                AddNewScores(index);
+                return GetCalculatedScore(scores[index]);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 
