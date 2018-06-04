@@ -46,6 +46,7 @@ public class InventoryManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="t">The tool,</param>
 	public void ActivateTool(Tool t) {
+        UnityEngine.Debug.Log("ActivateTool");
 		for (int i = 0; i < ToolArray.Length; i++) {
 			if (ToolArray [i].tool == t) {
 				ToolArray [i].toolInstance.SetActive (true);
@@ -69,9 +70,11 @@ public class InventoryManager : MonoBehaviour {
 	/// Activates all tools in the current inventory.
 	/// </summary>
 	public void ActivateCurrentInventory() {
+        Debug.Log("ActivateCurrentInventory");
 		if (availableTools == null)
 			return;
 
+        Debug.Log(availableTools.Count);
 		foreach (Tool t in availableTools) {
 			ActivateTool (t);
 		}
@@ -109,15 +112,23 @@ public class InventoryManager : MonoBehaviour {
 	/// <returns>The inventory by level ID.</returns>
 	/// <param name="id">Level identifier.</param>
 	public Inventory GetInventoryByLevelID(int id) {
-		Inventory inv = new Inventory ();
+        Inventory inv = new Inventory();
+        if (id == -1)
+        {
 
-		for (int i = 0; i < LevelInventories.Length; i++) {
-			Debug.Log ("TESTING !!! ----- " + id + " " + LevelInventories[i].levelNumber);
-			if (LevelInventories [i].levelNumber == id) {
-				inv = LevelInventories [i];
-				break;
-			}
-		}
+        }
+        else
+        {
+            for (int i = 0; i < LevelInventories.Length; i++)
+            {
+                Debug.Log("TESTING !!! ----- " + id + " " + LevelInventories[i].levelNumber);
+                if (LevelInventories[i].levelNumber == id)
+                {
+                    inv = LevelInventories[i];
+                    break;
+                }
+            }
+        }
 
 		Debug.Log ("Inventory gotten: " + inv.toString(inv.availableTools));
 
