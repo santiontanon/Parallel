@@ -10,6 +10,9 @@ public class ScoreManager : MonoBehaviour {
     [SerializeField]
     LevelScore[] scores;
 
+    [SerializeField]
+    LevelScore[] pcgScores;
+
     /// <summary>
     /// Array of level solutions
     /// 0 = allowed submit attempts
@@ -44,7 +47,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
 	public void SaveScores()
     {
-        GameManager.Instance.GetSaveManager().UpdateSave(scores, GameManager.Instance.GetSaveManager().currentSave.name);
+        GameManager.Instance.GetSaveManager().UpdateSave(GameManager.Instance.GetSaveManager().currentSave.name, scores, new System.Collections.Generic.List<LevelScore>(pcgScores), GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
     }
 
     /// <summary>
@@ -59,6 +62,24 @@ public class ScoreManager : MonoBehaviour {
             {
                 scores[i] = new LevelScore();
             }
+        }
+        if(GameManager.Instance.GetSaveManager().currentSave.pcgScores != null)
+        {
+            pcgScores = GameManager.Instance.GetSaveManager().currentSave.pcgScores.ToArray();
+        }
+        if (pcgScores != null)
+        {
+            for (int i = 0; i < pcgScores.Length; i++)
+            {
+                if (pcgScores[i] == null)
+                {
+                    pcgScores[i] = new LevelScore();
+                }
+            }
+        }
+        else
+        {
+            pcgScores = new LevelScore[0];
         }
     }
 
@@ -125,14 +146,21 @@ public class ScoreManager : MonoBehaviour {
     /// <returns></returns>
     public int GetCalculatedScore(int index)
     {
-        if (scores.Length > index)
+        if (scores.Length > index && index >= 0)
         {
             return GetCalculatedScore(scores[index]);
         }
         else
         {
-            AddNewScores(index);
-            return GetCalculatedScore(scores[index]);
+            if(index >= 0)
+            {
+                AddNewScores(index);
+                return GetCalculatedScore(scores[index]);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 

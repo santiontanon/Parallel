@@ -15,11 +15,12 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         public RectTransform requiredLevelContainer, requiredTransform;
         public RectTransform optionalLevelContainer, optionalTransform;
         public RectTransform previousContainer, previousTransform;
+        public RectTransform generateContainer, generateTransform;
 
         public GameObject levelButtonPrefab;
         public Button exitLevelSelectionButton;
         [SerializeField] public UIOverlay levelLoadingOverlay;
-        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton, generateLevelButton;
+        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton, generateLevelButton, pcgButton;
 	}
 	public Load_UI loadUI;
 
@@ -39,21 +40,36 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             GameObject.Destroy(child.gameObject);
         }
+        foreach (Transform child in loadUI.generateContainer)
+        {
+            if(loadUI.generateContainer.GetChild(0) != child)
+            {
+                Destroy(child.gameObject);
+            }
+        }
 
         foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.required)
         {
-            SetupLevelButton(lr, loadUI.requiredLevelContainer);
+            SetupLevelButton(lr, loadUI.requiredLevelContainer, false);
         }
         foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.optional)
         {
-            SetupLevelButton(lr, loadUI.optionalLevelContainer);
+            SetupLevelButton(lr, loadUI.optionalLevelContainer, false);
         }
         if (GameManager.Instance.GetDataManager().levRef.levels.previous != null)
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.previous)
             {
-                Debug.Log("level found!");
-                SetupLevelButton(lr, loadUI.previousContainer);
+                SetupLevelButton(lr, loadUI.previousContainer, false);
+            }
+        }
+        if(GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
+        {
+            Debug.Log(GameManager.Instance.GetSaveManager().currentSave.pcgLevels.Count);
+            Debug.Log(GameManager.Instance.GetDataManager().levRef.levels.pcg.Count);
+            foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.pcg)
+            {
+                SetupLevelButton(lr, loadUI.generateContainer, true);
             }
         }
 
@@ -71,28 +87,34 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         loadUI.requiredLevelsButton.onClick.RemoveAllListeners();
         loadUI.requiredLevelsButton.onClick.AddListener(() => 
         {
-            TriggerPanelSwap(true, false, false);
+            TriggerPanelSwap(true, false, false, false);
         });
 
         loadUI.optionalLevelsButton.onClick.RemoveAllListeners();
         loadUI.optionalLevelsButton.onClick.AddListener(() =>
         {
-            TriggerPanelSwap(false, false, true);
+            TriggerPanelSwap(false, false, true, false);
         });
 
         loadUI.previousLevelsButton.onClick.RemoveAllListeners();
         loadUI.previousLevelsButton.onClick.AddListener(() =>
         {
-            TriggerPanelSwap(false, true, false);
+            TriggerPanelSwap(false, true, false, false);
         });
 
         loadUI.generateLevelButton.onClick.RemoveAllListeners();
-        loadUI.generateLevelButton.onClick.AddListener(() => LoadPCGBehavior() );
+        loadUI.generateLevelButton.onClick.AddListener(() => 
+        {
+            TriggerPanelSwap(false, false, false, true);
+        });
 
-        TriggerPanelSwap(true, false, false);
+        loadUI.pcgButton.onClick.RemoveAllListeners();
+        loadUI.pcgButton.onClick.AddListener(() => LoadPCGBehavior());
+
+        TriggerPanelSwap(true, false, false, false);
     }
 
-    void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel )
+    void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel, bool generatePanel )
     {
         //loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
         loadUI.requiredLevelsButton.interactable = !requiredPanel;
@@ -111,9 +133,15 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         loadUI.optionalLevelsButton.GetComponentInChildren<Text>().color = optionalPanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
         loadUI.optionalLevelsButton.GetComponentInChildren<Image>().color = optionalPanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
         loadUI.optionalTransform.gameObject.SetActive(optionalPanel);
+
+        //loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        loadUI.generateLevelButton.interactable = !generatePanel;
+        loadUI.generateLevelButton.GetComponentInChildren<Text>().color = generatePanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.generateLevelButton.GetComponentInChildren<Image>().color = generatePanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
+        loadUI.generateTransform.gameObject.SetActive(generatePanel);
     }
 
-    void SetupLevelButton(LevelReferenceObject lr, Transform container)
+    void SetupLevelButton(LevelReferenceObject lr, Transform container, bool pcg)
     {
         char[] trimArray = new char[5] { 'L', 'l', 'e', 'v', ' ' };
         string levelName = lr.file;
@@ -130,7 +158,10 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         g.transform.localScale = Vector3.one;
         Text gText = g.GetComponentInChildren<Text>();
         gText.text = levelName.TrimStart(trimArray);
-        gButton.onClick.AddListener(() => LoadButtonBehavior(levelName));
+        if (!pcg)
+            gButton.onClick.AddListener(() => LoadButtonBehavior(levelName));
+        else
+            gButton.onClick.AddListener(() => LoadPCGButtonBehavior(lr.data));
     }
 
     public void AddPCGButton(){
@@ -158,6 +189,12 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         loadUI.levelLoadingOverlay.OpenPanel();
         GameManager.Instance.TriggerLoadLevel( DataManager.LoadType.RESOURCES, levelName );
 	}
+
+    public void LoadPCGButtonBehavior(string level)
+    {
+        loadUI.levelLoadingOverlay.OpenPanel();
+        GameManager.Instance.TriggerLoadLevel(DataManager.LoadType.STRING, level);
+    }
 
     public void LoadButtonBehavior(LevelReferenceObject levelReference)
     {
