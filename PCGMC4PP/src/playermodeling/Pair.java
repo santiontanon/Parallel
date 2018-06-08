@@ -24,6 +24,13 @@ public class Pair<T1,T2> {
         p2 = null;
     }
 
+    public Pair<T1,T2> clone() {
+        Pair<T1,T2> tmp = new Pair<T1,T2>();
+        tmp.p1 = p1;
+        tmp.p2 = p2;
+        return tmp;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if ( obj instanceof Pair ) {
