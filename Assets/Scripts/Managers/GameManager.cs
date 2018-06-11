@@ -332,6 +332,7 @@ public class GameManager : MonoBehaviour {
 
 		else if(feedback == LinkJava.SimulationFeedback.failure) 
 		{
+            castBehavior.playerInteraction_UI.loadingOverlay.ClosePanel();
 			castBehavior.playerInteraction_UI.simulationErrorOverlay.OpenPanel();
 		}
 	}

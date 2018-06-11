@@ -111,14 +111,17 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     for (int j = 0; j < threads.Count; j++)
                     {
                         Vector2 prevPos = new Vector2();
-                        for (int k = 0; k < stepDictionary[i - 1].Count; k++)
+                        if (i > 0)
                         {
-                            if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                            for (int k = 0; k < stepDictionary[i - 1].Count; k++)
                             {
-                                prevPos = stepDictionary[i - 1][k].componentPos;
+                                if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                                {
+                                    prevPos = stepDictionary[i - 1][k].componentPos;
+                                }
                             }
                         }
-
+                        
                         Vector2 nextPos = prevPos;
                         bool end = false;
                         for (int k = i + 1; k < stepDictionary.Count; k++)
