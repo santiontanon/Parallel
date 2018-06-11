@@ -86,7 +86,8 @@ public class SaveManager : MonoBehaviour{
             if (save != null)
             {
                 save.scores = scores;
-                Serializer.SerializeData(save);
+                try { Serializer.SerializeData(save); }
+                catch (System.Exception e) { Debug.LogError("UNABLE TO SAVE SCORES: " + e.Message); }
             }
             else
             {
@@ -104,7 +105,8 @@ public class SaveManager : MonoBehaviour{
             {
                 save.pcgScores = pcgScores;
                 save.pcgLevels = pcgLevels;
-                Serializer.SerializeData(save);
+                try { Serializer.SerializeData(save); }
+                catch (System.Exception e) { Debug.LogError("UNABLE TO UPDATE PCG LEVEL SAVE: " + e.Message); }
             }
             else
             {
