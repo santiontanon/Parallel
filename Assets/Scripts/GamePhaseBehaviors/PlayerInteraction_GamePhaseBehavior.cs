@@ -92,13 +92,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         score.index = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
 
-        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != 0)
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
         {
             GameManager.Instance.TriggerLevelTutorial
             (
                 GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
                 interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-                );
+            );
         }
 
         GameManager.Instance.SetUpLevelInventory();
@@ -150,6 +150,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		playerInteraction_UI.CloseUI();
         LockFlowVisibility(-1);
+
+        //cleanup tutorials
+        onCompletion = null;
+        onMenuInteraction = null;
+        onSimulationStep = null;
     }
 
     public void DefineButtonBehaviors()

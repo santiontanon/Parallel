@@ -649,7 +649,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 Debug.Log("Retry");
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 playerInteraction.EndSimulation();
-                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != 0)
+                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
                 {
                     GameManager.Instance.TriggerLevelTutorial
                     (
