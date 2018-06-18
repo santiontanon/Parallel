@@ -37,9 +37,9 @@ public class ExperimentsMain {
 
         int[] rule_update_flags = {0};
 
-        int[] timings = {5, 10, 20, 30};
+        int[] timings = {10, 20, 30};
 
-        String directory_name = "simulation_results_06072018_2/";
+        String directory_name = "simulation_results_06132018_8_data/";
         new File(directory_name).mkdir();
 
         String[] machine_learning_algorithms = {
@@ -77,7 +77,8 @@ public class ExperimentsMain {
 
                         System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(fname)), true));
 
-                        Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, classifier);
+                        //Simulation_v1 sim = new Simulation_v1(saved_data_location, slices_location, time, utf, 0, classifier,false);
+                        Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, classifier,false);
                         sim.simulate();
 
                         System.setOut(old);
@@ -88,7 +89,8 @@ public class ExperimentsMain {
 
                     System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(fname)), true));
 
-                    Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, new BayesNet());
+                    //Simulation_v1 sim = new Simulation_v1(saved_data_location, slices_location, time, utf, 0, new BayesNet(),false);
+                    Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, new BayesNet(),false);
                     sim.simulate();
 
                     System.setOut(old);
