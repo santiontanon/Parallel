@@ -91,6 +91,7 @@ public class PlayerInteraction_UI
 		goalOverlay.ClosePanel(true);
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
+        simulationErrorOverlay.ClosePanel(true);
 		UIOverlay_Hint_Container.gameObject.SetActive(false);
 		zoomMeter.CloseMeter();
 	}

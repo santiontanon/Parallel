@@ -68,8 +68,10 @@ public class SaveManager : MonoBehaviour{
             ParallelSave save = GetSave(s);
             if (save != null)
             {
-                UpdateScores(s, scores);
-                UpdatePCGLevels(s, pcgLevels, pcgScores);
+                save.scores = scores;
+                save.pcgScores = pcgScores;
+                try { Serializer.SerializeData(save); }
+                catch (System.Exception e) { Debug.LogError("UNABLE TO SAVE SCORES: " + e.Message); }
             }
             else
             {
@@ -86,7 +88,8 @@ public class SaveManager : MonoBehaviour{
             if (save != null)
             {
                 save.scores = scores;
-                Serializer.SerializeData(save);
+                try { Serializer.SerializeData(save); }
+                catch (System.Exception e) { Debug.LogError("UNABLE TO SAVE SCORES: " + e.Message); }
             }
             else
             {
@@ -104,7 +107,8 @@ public class SaveManager : MonoBehaviour{
             {
                 save.pcgScores = pcgScores;
                 save.pcgLevels = pcgLevels;
-                Serializer.SerializeData(save);
+                try { Serializer.SerializeData(save); }
+                catch (System.Exception e) { Debug.LogError("UNABLE TO UPDATE PCG LEVEL SAVE: " + e.Message); }
             }
             else
             {

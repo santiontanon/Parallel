@@ -154,7 +154,6 @@ public class LinkJava : MonoBehaviour
 			string mpout = "";
 			string line = null;
 			string filename = "";
-            UnityEngine.Debug.Log(externalProcess.StandardOutput.ReadLine());
 			while ((line = externalProcess.StandardOutput.ReadLine()) != null) 
 			{
 				filename = line;

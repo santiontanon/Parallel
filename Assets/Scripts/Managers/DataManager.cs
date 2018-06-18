@@ -102,22 +102,25 @@ public class DataManager : MonoBehaviour {
 
     public void GetPCGLevels(List<string> levels)
     {
-        levRef.levels.pcg.Clear();
-        List<LevelReferenceObject> refs = new List<LevelReferenceObject>();
-        for (int i = 0; i < levels.Count; i++)
+        if(levels != null)
         {
-            if (levels[i] != "")
+            levRef.levels.pcg.Clear();
+            List<LevelReferenceObject> refs = new List<LevelReferenceObject>();
+            for (int i = 0; i < levels.Count; i++)
             {
-                LevelReferenceObject lro = new LevelReferenceObject();
-                lro.file = "levelP"+i;
-                lro.title = "P" + i;
-                lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
-                lro.levelId = i;
-                lro.completionRank = 0;
-                refs.Add(lro);
+                if (levels[i] != "")
+                {
+                    LevelReferenceObject lro = new LevelReferenceObject();
+                    lro.file = "levelP" + i;
+                    lro.title = "P" + i;
+                    lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
+                    lro.levelId = i;
+                    lro.completionRank = 0;
+                    refs.Add(lro);
+                }
             }
+            levRef.levels.pcg = refs;
         }
-        levRef.levels.pcg = refs;
     }
 
     int GetLevelId(string levelFileName)

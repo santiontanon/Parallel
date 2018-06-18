@@ -65,9 +65,11 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 }
             }
 
+            yield return new WaitForSeconds(1f);
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             for (int i = 0; i < lvl.execution.Count; i++)
             {
-                yield return new WaitForEndOfFrame();
                 StepData step = lvl.execution[i];
 
                 if (step.timeStep > maxStep)
@@ -97,7 +99,15 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stepDictionary[step.timeStep] = new List<StepData>();
                     stepDictionary[step.timeStep].Add(step);
                 }
+                if(stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
             }
+            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             //create in between steps for thread movements
             for (int i = 0; i <= maxStep; i++)
@@ -111,14 +121,17 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     for (int j = 0; j < threads.Count; j++)
                     {
                         Vector2 prevPos = new Vector2();
-                        for (int k = 0; k < stepDictionary[i - 1].Count; k++)
+                        if (i > 0)
                         {
-                            if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                            for (int k = 0; k < stepDictionary[i - 1].Count; k++)
                             {
-                                prevPos = stepDictionary[i - 1][k].componentPos;
+                                if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                                {
+                                    prevPos = stepDictionary[i - 1][k].componentPos;
+                                }
                             }
                         }
-
+                        
                         Vector2 nextPos = prevPos;
                         bool end = false;
                         for (int k = i + 1; k < stepDictionary.Count; k++)
@@ -278,8 +291,17 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                         }
                     }
                 }
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
             }
+            Debug.Log(stopwatch.ElapsedMilliseconds);
 
+            yield return new WaitForSeconds(1f);
             TimeStepData timeStep = new TimeStepData();
             for (int i = 0; i < lvl.components.Count; i++)
             {
@@ -329,8 +351,17 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                         break;
 
                 }
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
             }
+            Debug.Log(stopwatch.ElapsedMilliseconds);
 
+            yield return new WaitForSeconds(1f);
             for (int i = 0; i < stepDictionary.Count; i++)
             {
                 if (i != 0)
@@ -412,7 +443,15 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     }
                 }
                 timeSteps.Add(timeStep);
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
             }
+            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
@@ -420,7 +459,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Its fucking broke yo");
             yield return null;
         }
     }
@@ -646,7 +684,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 Debug.Log("Retry");
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 playerInteraction.EndSimulation();
-                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != 0)
+                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
                 {
                     GameManager.Instance.TriggerLevelTutorial
                     (
