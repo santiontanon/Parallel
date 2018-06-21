@@ -15,6 +15,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
     public StartErrorOverlay fetchConfigErrorOverlay;
+    public Start_DebugUI debugOverlay;
 
 	public delegate void StartPlayingWithLevelInformationDelegate(string json);
 	public delegate void NoInternetErrorDelegate();
@@ -209,6 +210,10 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void UpdatePhase()
 	{
+        if (Input.GetKeyDown(KeyCode.BackQuote) && Input.GetKey(KeyCode.LeftShift))
+        {
+            debugOverlay.ToggleDebugUI();
+        }
 	}
 
 

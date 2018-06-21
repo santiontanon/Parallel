@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
+    public int JVMMemorySelection = 2;
 
     public bool preSurveyComplete, postSurveyComplete = false;
 

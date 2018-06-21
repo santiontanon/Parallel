@@ -21,7 +21,7 @@ public class LinkJava : MonoBehaviour
 	public delegate void ME_Simulation(SimulationFeedback feedback);
 	public static event ME_Simulation OnSimulationCompleted;
 	public enum SimulationFeedback {none, success, failure}
-
+    
     void Awake()
     {
     	checkEnvironment();
@@ -109,9 +109,9 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.UseShellExecute = false;
 			externalProcess.StartInfo.RedirectStandardOutput = true;
 			externalProcess.StartInfo.FileName = "java";
-			externalProcess.StartInfo.Arguments = "";		
-	        externalProcess.StartInfo.Arguments += "-Xmx4g ";		
-			externalProcess.StartInfo.Arguments += "-cp \"";
+			externalProcess.StartInfo.Arguments = "";
+            externalProcess.StartInfo.Arguments += Constants.JVMSettings.MemoryAllocation[GameManager.Instance.JVMMemorySelection] + " ";
+            externalProcess.StartInfo.Arguments += "-cp \"";
 			externalProcess.StartInfo.Arguments +=externalPath+"PCGMC4PP.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"gson-2.6.2.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"jdom.jar";
