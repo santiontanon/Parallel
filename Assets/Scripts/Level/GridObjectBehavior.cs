@@ -636,15 +636,21 @@ public class GridObjectBehavior : MonoBehaviour
 	{
 		if(isEnabled)
 		{
-			highlightObject.transform.localScale = Vector3.zero;
+            /*
+            highlightObject.transform.localScale = Vector3.zero;
 			iTween.ScaleTo( highlightObject, iTween.Hash("scale", Vector3.one * 1.5f, "time", 0.5f) );
 			highlightObject.SetActive(true);
+            */
+            UpdateOutline(true);
 		}
 		else
 		{
+            /*
 			highlightObject.transform.localScale = Vector3.one * 1.5f;
 			iTween.ScaleTo( highlightObject, iTween.Hash("scale", Vector3.one * 0f, "time", 1f, "onComplete", "TurnOffHighlight") );
-		}
+		    */
+            UpdateOutline(false);
+        }
 	}
 
 	void TurnOffHighlight()
@@ -652,4 +658,16 @@ public class GridObjectBehavior : MonoBehaviour
 		highlightObject.SetActive(false);
 	}
 
+    
+    void UpdateOutline(bool outline) {
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color color = new Color(1f, 1f, 0f);
+        float outlineSize = 40f;
+        spriteRenderer.GetPropertyBlock(mpb);
+        mpb.SetFloat("_Outline", outline ? 1f : 0);
+        mpb.SetColor("_OutlineColor", color);
+        mpb.SetFloat("_OutlineSize", outlineSize);
+        spriteRenderer.SetPropertyBlock(mpb);
+    }
 }
