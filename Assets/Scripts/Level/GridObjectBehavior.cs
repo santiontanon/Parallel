@@ -14,7 +14,7 @@ public class GridObjectBehavior : MonoBehaviour
 	public GridComponent component;
 	public GridTrack track;
 	public Camera levelCamera;
-	public GameObject highlightObject;
+	//public GameObject highlightObject;
 	public GameObject teleportTrail;
 	public GameObject lockObject;
 	public Vector2 lastSimulationPosition;
@@ -655,15 +655,16 @@ public class GridObjectBehavior : MonoBehaviour
 
 	void TurnOffHighlight()
 	{
-		highlightObject.SetActive(false);
+        UpdateOutline(false);
+		//highlightObject.SetActive(false);
 	}
 
     
     void UpdateOutline(bool outline) {
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Color color = new Color(1f, 1f, 0f);
-        float outlineSize = 40f;
+        Color color = new Color(204f/255f, 88f/255f, 39f/255f);
+        float outlineSize = 16f;
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat("_Outline", outline ? 1f : 0);
         mpb.SetColor("_OutlineColor", color);

@@ -250,7 +250,7 @@ public class GridManager : MonoBehaviour {
 			if(type == "signal")
 			{
 				Signal_GridObjectBehavior signal_Behavior = gridElementInstance.AddComponent<Signal_GridObjectBehavior>();
-				signal_Behavior.highlightObject = behavior.highlightObject;
+				//signal_Behavior.highlightObject = behavior.highlightObject;
 				signal_Behavior.lineRenderer = gridElementInstance.GetComponentInChildren<LineRenderer>();
 				signal_Behavior.teleportTrail = behavior.teleportTrail;
 				signal_Behavior.lockObject = behavior.lockObject;
@@ -260,7 +260,7 @@ public class GridManager : MonoBehaviour {
 			else if(type == "thread")
 			{
 				Thread_GridObjectBehavior thread_Behavior = gridElementInstance.AddComponent<Thread_GridObjectBehavior>();
-				thread_Behavior.highlightObject = behavior.highlightObject;
+				//thread_Behavior.highlightObject = behavior.highlightObject;
 				thread_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
 				behavior = thread_Behavior;
@@ -268,7 +268,7 @@ public class GridManager : MonoBehaviour {
 			else if(type == "diverter")
 			{
 				Diverter_GridObjectBehavior diverter_Behavior = gridElementInstance.AddComponent<Diverter_GridObjectBehavior>();
-				diverter_Behavior.highlightObject = behavior.highlightObject;
+				//diverter_Behavior.highlightObject = behavior.highlightObject;
 				diverter_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
 				behavior = diverter_Behavior;
@@ -277,7 +277,7 @@ public class GridManager : MonoBehaviour {
 			else if(type == "delivery")
 			{
 				Delivery_GridObjectBehavior delivery_Behavior = gridElementInstance.AddComponent<Delivery_GridObjectBehavior>();
-				delivery_Behavior.highlightObject = behavior.highlightObject;
+				//delivery_Behavior.highlightObject = behavior.highlightObject;
 				delivery_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
 				behavior = delivery_Behavior;
@@ -466,7 +466,7 @@ public class GridManager : MonoBehaviour {
 		if(type == "signal")
 		{
 			Signal_GridObjectBehavior signal_Behavior = gridElementInstance.AddComponent<Signal_GridObjectBehavior>();
-			signal_Behavior.highlightObject = behavior.highlightObject;
+			//signal_Behavior.highlightObject = behavior.highlightObject;
 			signal_Behavior.lineRenderer = gridElementInstance.GetComponentInChildren<LineRenderer>();
 			signal_Behavior.teleportTrail = behavior.teleportTrail;
 			Destroy( behavior );
