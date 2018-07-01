@@ -14,6 +14,7 @@
 		[PerRendererData] _Outline("Outline", Float) = 0
 		[PerRendererData] _OutlineColor("Outline Color", Color) = (1,1,1,1)
 		[PerRendererData] _OutlineSize("Outline Size", int) = 1
+		[PerRendererData] _OutlineFill("Outline Fill", int) = 0
 	}
 
 	SubShader
@@ -46,6 +47,7 @@
 			float _Outline;
 			fixed4 _OutlineColor;
 			int _OutlineSize;
+			int _OutlineFill;
 			float4 _MainTex_TexelSize;
 
 			fixed4 frag(v2f IN) : SV_Target
@@ -53,9 +55,11 @@
 				fixed4 c = SampleSpriteTexture(IN.texcoord) * IN.color;
 
 				// If outline is enabled and there is a pixel, try to draw an outline.
+				//INNER outline
 				if (_Outline > 0 && c.a != 0) {
 					float totalAlpha = 1.0;
 
+					
 					[unroll(16)]
 					for (int i = 1; i < _OutlineSize + 1; i++) {
 						fixed4 pixelUp = tex2D(_MainTex, IN.texcoord + fixed2(0, i * _MainTex_TexelSize.y));
@@ -65,12 +69,34 @@
 
 						totalAlpha = totalAlpha * pixelUp.a * pixelDown.a * pixelRight.a * pixelLeft.a;
 					}
+					
+					if(_OutlineFill == 1) totalAlpha = 0.0;
+
+					if (totalAlpha == 0) {
+						c.rgba = (fixed4(1, 1, 1, 1) * _OutlineColor)*(2.0/3.0) + c.rgba*(1.0/3.0);
+					}
+				}
+				//OUTER outline
+				if (_Outline > 0 && c.a == 0) {
+					float totalAlpha = 1.0;
+
+					[unroll(16)]
+					for (int i = 1; i < 3; i++) {
+						fixed4 pixelUp = tex2D(_MainTex, IN.texcoord + fixed2(0, i * _MainTex_TexelSize.y));
+						fixed4 pixelDown = tex2D(_MainTex, IN.texcoord - fixed2(0,i *  _MainTex_TexelSize.y));
+						fixed4 pixelRight = tex2D(_MainTex, IN.texcoord + fixed2(i * _MainTex_TexelSize.x, 0));
+						fixed4 pixelLeft = tex2D(_MainTex, IN.texcoord - fixed2(i * _MainTex_TexelSize.x, 0));
+
+						if (pixelUp.a > 0 || pixelDown.a > 0 || pixelRight.a > 0|| pixelLeft.a > 0) 
+							totalAlpha = 0.0;
+						else 
+							totalAlpha = 1.0;
+					}
 
 					if (totalAlpha == 0) {
 						c.rgba = fixed4(1, 1, 1, 1) * _OutlineColor;
 					}
 				}
-
 				c.rgb *= c.a;
 
 				return c;

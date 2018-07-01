@@ -664,11 +664,17 @@ public class GridObjectBehavior : MonoBehaviour
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         Color color = new Color(204f/255f, 88f/255f, 39f/255f);
-        float outlineSize = 16f;
+        //Color color = new Color(1f, 1f, 0f);
+        float outlineSize = 10f;
+        float outlineMultiplier = GameManager.Instance.GetGridManager().worldCamera.orthographicSize / 5.7f; //5.7 is the ortho size for the level 1 grid.
+        //outlineSize *=outlineMultiplier;
+        
+        Debug.Log("outlineMultiplier = " + outlineMultiplier);
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat("_Outline", outline ? 1f : 0);
         mpb.SetColor("_OutlineColor", color);
         mpb.SetFloat("_OutlineSize", outlineSize);
+        mpb.SetFloat("_OutlineFill", outlineMultiplier>2f?1f:0f);
         spriteRenderer.SetPropertyBlock(mpb);
     }
 }
