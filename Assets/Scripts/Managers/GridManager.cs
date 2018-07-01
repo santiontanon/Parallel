@@ -295,9 +295,18 @@ public class GridManager : MonoBehaviour {
 			gridObjectLevelIDDictionary.Add(gridComponent.id,behavior);
 			gridObjectLevelPositionDictionary.Add(behavior.transform.position,behavior);
 
-			behavior.InitializeGridComponentBehavior();
-		}
-	}
+
+            /* NOTE 001 moving initialization to after full spawn, so objects can have a full view of the level for avoiding neighbors
+               behavior.InitializeGridComponentBehavior();
+            */
+        }
+
+        //ADDITION 001: moving initialization to after full spawn
+        foreach (GridObjectBehavior behavior in currentLevelObjects)
+        {
+           if(behavior.behaviorType != GridObjectBehavior.BehaviorTypes.track) behavior.InitializeGridComponentBehavior();
+        }
+    }
 
 	public void RevealGridColorMask(int mask)
 	{
@@ -732,6 +741,15 @@ public class GridManager : MonoBehaviour {
 	{
 		return gridObjectLevelPositionDictionary[position];
 	}
+
+    public bool GridComponentAtPosition(Vector3 position) {
+        bool returnBool = false;
+        if (gridObjectLevelPositionDictionary.ContainsKey(position))
+        {
+            returnBool = true;
+        }
+        return returnBool;
+    }
 
 	public bool ExchangeAtPosition(Vector3 position)
 	{

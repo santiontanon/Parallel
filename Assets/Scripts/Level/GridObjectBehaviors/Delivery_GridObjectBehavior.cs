@@ -18,15 +18,49 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 			denominator = inputDenominator;
 			numerator = inputNumerator;
 
-			if(denominator != -1)
-			{
-				container = new GameObject();
-				container.transform.SetParent(parent.parent);
-				container.name = "DeliveryPopUp_"+parent.name;
-				SpriteRenderer containerSprite = container.AddComponent<SpriteRenderer>();
-				containerSprite.sprite = GameManager.Instance.GetGridManager().GetSprite("delivery_bubble");
-				containerSprite.sortingOrder = Constants.ComponentSortingOrder.basicComponents;
+            if (denominator != -1)
+            {
+                container = new GameObject();
+                container.transform.SetParent(parent.parent);
+                container.name = "DeliveryPopUp_" + parent.name;
+                SpriteRenderer containerSprite = container.AddComponent<SpriteRenderer>();
+                containerSprite.sprite = GameManager.Instance.GetGridManager().GetSprite("delivery_bubble");
+                containerSprite.sortingOrder = Constants.ComponentSortingOrder.basicComponents;
+                GridManager gridManagerInstance = GameManager.Instance.GetGridManager();
 
+                Vector3 position = parent.position;
+                float targetScale = gridManagerInstance.worldCamera.orthographicSize / 5.7f;
+                targetScale = Mathf.Round(targetScale);
+
+                //above stuff isn't working right. Just being 1 for now.
+                targetScale = 1f;
+
+                if (!gridManagerInstance.GridComponentAtPosition(position + Vector3.up * targetScale) && gridManagerInstance.worldCamera.WorldToViewportPoint(position + Vector3.up * targetScale).y < 0.85f)
+                {
+                    container.transform.position = parent.position + new Vector3(0f, 1f * targetScale, 0f);
+                }
+                else if (!gridManagerInstance.GridComponentAtPosition(position + Vector3.down * targetScale) && gridManagerInstance.worldCamera.WorldToViewportPoint(position + Vector3.down * targetScale).y > 0.15f)
+                {
+                    container.transform.position = parent.position + new Vector3(0f, -1f * targetScale, 0f);
+                    containerSprite.flipY = true;
+                }
+                else if (!gridManagerInstance.GridComponentAtPosition(position + Vector3.left * targetScale) && gridManagerInstance.worldCamera.WorldToViewportPoint(position + Vector3.left * targetScale).x > 0.15f)
+                {
+                    container.transform.position = parent.position + new Vector3(1f * targetScale, 0f, 0f);
+                    container.transform.Rotate(0f, 0f, -90f); //point toward right
+                }
+                else if (!gridManagerInstance.GridComponentAtPosition(position + Vector3.right * targetScale) && gridManagerInstance.worldCamera.WorldToViewportPoint(position + Vector3.left * targetScale).x < 0.85f)
+                {
+                    container.transform.position = parent.position + new Vector3(-1f * targetScale, 0f, 0f);
+                    container.transform.Rotate(0f, 0f, 90f);
+                }
+                else
+                {
+                    container.transform.position = parent.position + new Vector3(0f, 1f * targetScale, 0f);
+                }
+
+                container.transform.localScale = Vector3.one * targetScale;
+                /*
 				if(parent.transform.position.y > (GameManager.Instance.GetLevelHeight()/2)) 
 				{
 					container.transform.position = parent.position + new Vector3(0f, -1f, 0f);
@@ -36,11 +70,12 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 				{
 					container.transform.position = parent.position + new Vector3(0f, 1f, 0f);
 				}
-
+                */
 				GameObject fractionObject = new GameObject();
 
 				fractionObject.transform.position = container.transform.position - Vector3.forward;
 				fractionObject.transform.SetParent( container.transform );
+                fractionObject.transform.localScale = Vector3.one;
 				fractionText = fractionObject.AddComponent<TextMesh>();
 				fractionText.GetComponent<MeshRenderer>().sortingOrder = Constants.ComponentSortingOrder.basicComponents + 1;
 				fractionText.characterSize = 0.2f;
