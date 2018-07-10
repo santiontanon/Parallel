@@ -195,7 +195,6 @@ public class TutorialManager : MonoBehaviour {
 
 	public void PerformTutorialSeries(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase = TutorialEvent.TutorialInitializeTriggers.beforePlay)
 	{
-        Debug.Log("perform tutorial series");
         List<TutorialEvent> returnEvents = RetrieveTutorialEvents(inputLevelId, inputInitPhase);
         currentTutorialEventQueue = returnEvents.ToArray();
         tutorialEventIndex = 0;
@@ -229,7 +228,7 @@ public class TutorialManager : MonoBehaviour {
 
     List<TutorialEvent> RetrieveTutorialEvents(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase)
     {
-        Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
+        //Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
         List<TutorialEvent> returnEvents = new List<TutorialEvent>();
         PlayerInteraction_GamePhaseBehavior p = (PlayerInteraction_GamePhaseBehavior)GameManager.Instance.playerInteractionBehavior;
 
@@ -241,7 +240,7 @@ public class TutorialManager : MonoBehaviour {
             }
             else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
         }
-        foreach (TutorialEvent t in returnEvents) Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
+        foreach (TutorialEvent t in returnEvents) { } //Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
         return returnEvents;
     }
 
@@ -249,11 +248,11 @@ public class TutorialManager : MonoBehaviour {
     {
         if (tutorialEventIndex >= currentTutorialEventQueue.Length )
         {
-            Debug.Log("All tutorials complete for this level.");
+            //Debug.Log("All tutorials complete for this level.");
         }
         else
         {
-            Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
+            //Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
             TutorialEvent currentTutorial = currentTutorialEventQueue[tutorialEventIndex];
             PerformTutorial(currentTutorial);
             if(currentTutorialEventQueue.Length > tutorialEventIndex + 2) //is there a next tutorial?
@@ -261,7 +260,7 @@ public class TutorialManager : MonoBehaviour {
                 TutorialEvent nextTutorial = currentTutorialEventQueue[tutorialEventIndex + 1];
                 if (nextTutorial.type == TutorialEvent.TutorialTypes.simulation)
                 {
-                    Debug.Log("PREFORMING SIM");
+                    //Debug.Log("PREFORMING SIM");
                     PerformTutorial(nextTutorial);
                 }
             }

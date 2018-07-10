@@ -41,7 +41,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override void ResetPosition()
 	{
-		Debug.Log("Reseting " + this.component.id.ToString());
+		//Debug.Log("Reseting " + this.component.id.ToString());
 		SpriteRenderer instanceSpriteRenderer = GetComponent<SpriteRenderer>();
 		instanceSpriteRenderer.sortingOrder = Constants.ComponentSortingOrder.thread;
 		base.ResetPosition();
@@ -88,6 +88,8 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
+        Debug.Log(timeStep == null);
+        Debug.Log(inputStep == null);
         while(timeStep.timeStep != inputStep.timeStep)
         {
             if(timeStep.timeStep > inputStep.timeStep)

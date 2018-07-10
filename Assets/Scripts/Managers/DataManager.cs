@@ -216,8 +216,6 @@ public class DataManager : MonoBehaviour {
 		levelname = inputString;
         string[] bindata_split = new string[0];
 
-        Debug.Log(bindata_split);
-
         switch (loadType)
         {
             case LoadType.RESOURCES:

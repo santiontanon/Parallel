@@ -81,7 +81,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     
     public override void BeginPhase()
     {
-        Debug.Log("BeginPhase");
         pauseSimulation += PauseSimulation;
         unpauseSimulation += UnpauseSimulation;
         delayedUnpause += DelayedUnpauseSimulation;
@@ -459,7 +458,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
-            Debug.Log(resetObject.component.id);
+            //Debug.Log(resetObject.component.id);
 		    resetObject.ResetPosition();
 		}
 
@@ -498,7 +497,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.awaitingSimulation) return;
         interactionPhase = InteractionPhases.simulation;
-        Debug.Log("Setting to Simulation.");
+        //Debug.Log("Setting to Simulation.");
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
 
@@ -712,7 +711,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
-                Debug.Log("dragging");
 			if(Input.GetKey(KeyCode.Mouse0))
 			{
 				if( currentGridObject != null )
@@ -740,10 +738,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GameManager.Instance.tracker.CreateEventExt("Destroying",currentGridObject.component.type);	
 					Destroy( currentGridObject.gameObject );
 					currentGridObject = null;
-
-                        Debug.Log("END TRASH HOVER");
-                        interactionPhase = InteractionPhases.ingame_default;
-					
+                    interactionPhase = InteractionPhases.ingame_default;
 				}
 				else 
 				{
@@ -796,7 +791,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				}
 
                 
-                Debug.Log("END CONNECTING");
+                //Debug.Log("END CONNECTING");
 				interactionPhase = InteractionPhases.ingame_default;
 			}
 			else 

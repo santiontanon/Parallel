@@ -108,6 +108,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SetGamePhase(GamePhases inputPhase)
 	{
+        Debug.Log("SetGamePhase" + inputPhase.ToString());
 		if(currentPhase!=null) { EndGamePhaseBehavior(); }
 
 		gamePhase = inputPhase;
@@ -192,7 +193,6 @@ public class GameManager : MonoBehaviour {
 
 	public void TriggerLoadLevel(DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
-        Debug.Log(loadType);
 		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
 		dataManager.InitializeLoadLevel( inputLevelName, loadType );
@@ -200,7 +200,9 @@ public class GameManager : MonoBehaviour {
         if (levRef != null)
             currentLevelReferenceObject = levRef;
         //TODO: Since this gets called when a simulation completes and re-opens everything, it can cause bugs with the tutorials loading
-        SetGamePhase(GameManager.GamePhases.GenerateTrack);
+        InitiateTrackGeneration();
+        if (loadType == DataManager.LoadType.RESOURCES)
+            SetGamePhase(GamePhases.PlayerInteraction);
 	}
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
@@ -325,7 +327,7 @@ public class GameManager : MonoBehaviour {
         //none indicates hitting the replay button
         if (feedback != LinkJava.SimulationFeedback.none)
         {
-            Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
+            //Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
             castBehavior.StartSimulation();
         }
 

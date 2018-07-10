@@ -107,7 +107,7 @@ public class PlayerInteraction_UI
 
 	public void SetDraggableElement ( Sprite inputTexture )
 	{
-		Debug.Log("Setting texture to " + inputTexture.name);
+		//Debug.Log("Setting texture to " + inputTexture.name);
 		draggableElement.sprite = inputTexture;
 		draggableElement.gameObject.SetActive(true);
 	}

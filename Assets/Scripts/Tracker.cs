@@ -318,7 +318,7 @@ public class Tracker : MonoBehaviour {
 		if(log2!=null){
 			log2.Append(line+"\n");
 		} else {
-			Debug.Log("Cannot log line: "+line);
+			//Debug.Log("Cannot log line: "+line);
 		}
 		return e;
 	}
