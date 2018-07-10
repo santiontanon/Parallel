@@ -89,6 +89,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.OpenUI();
         DefineButtonBehaviors();
 
+        playerInteraction_UI.startTime = Time.fixedTime;
+
         score.index = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
 
         if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
@@ -143,6 +145,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		{
 			PlayerInteractionListener();
 		}
+        playerInteraction_UI.Timer();
 	}
 
 	public override void EndPhase()
