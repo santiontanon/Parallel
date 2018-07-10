@@ -103,11 +103,10 @@ public class PCG {
     }
     
     public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, boolean debug) throws Exception {
-        int size = 5;
+        int size = -1;
         if (IsNumber.isNumber(sizeStr)) {
             size = (int)Double.parseDouble(sizeStr);
         }
-        if (size<0) size = 0;
         return generateGameState(randomSeed,randomSeed, size, keep_solution, debug);
     }
 
@@ -160,6 +159,9 @@ public class PCG {
         return generateGraph(randomSeed, size, keep_solution, debug, null);
     }
     public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug, Map<String,Integer> rule_applications) throws Exception {
+        Random r = new Random(randomSeed);
+        if (size == -1) size = r.nextInt(5)+1;
+
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
         Map<String,Integer> size_application_limits = new HashMap();
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
@@ -181,9 +183,6 @@ public class PCG {
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
         */
-
-        Random r = new Random(randomSeed);
-        r.nextInt();
         
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
