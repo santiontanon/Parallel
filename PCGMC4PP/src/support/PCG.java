@@ -51,6 +51,7 @@ import optimization.OrthographicEmbeddingOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
+import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
 /**
@@ -63,17 +64,18 @@ public class PCG {
     public static boolean correct = true;
     public static void main(String args[]) throws FileNotFoundException, IOException, Exception {
         if (args.length < 2) {
-            System.out.println("Usage: support.PCG parameter_file|debug random_seed [keep_solution]");
+            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [keep_solution]");
             System.exit(4);
         }
         boolean keep_solution = false;
-        if (args.length >= 3) keep_solution = true;
+        if (args.length >= 4) keep_solution = true;
 
         String filename = args[0];
         // TODO Get parameters from filename and sample GG with parameters from filename
         long randomSeed = Long.parseLong(args[1]);
+        String sizeStr = args[2];
         if("debug".equals(filename)) randomSeed = 0;
-        GameState gs = generateGameState(randomSeed, keep_solution, ("debug".equals(filename)));
+        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, ("debug".equals(filename)));
         if(!("debug".equals(filename))){
             // Export
             export(gs, getNewFileFromFilename(filename, false));
@@ -100,8 +102,13 @@ public class PCG {
         return embeddGraph(graph, randomSeedEmbedding, debug);
     }
     
-    public static GameState generateGameState(long randomSeed, boolean keep_solution, boolean debug) throws Exception {
-        return generateGameState(randomSeed,randomSeed, 5, keep_solution, debug);
+    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, boolean debug) throws Exception {
+        int size = 5;
+        if (IsNumber.isNumber(sizeStr)) {
+            size = (int)Double.parseDouble(sizeStr);
+        }
+        if (size<0) size = 0;
+        return generateGameState(randomSeed,randomSeed, size, keep_solution, debug);
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
