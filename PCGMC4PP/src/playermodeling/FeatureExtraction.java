@@ -240,18 +240,24 @@ public class FeatureExtraction {
                         } else {
                         }
                     } else {
-                        double nreplays = feature_vector.get("me_replays");
-                        feature_vector.replace("me_replays", nreplays + 1);
+                        if ( feature_vector.containsKey("me_replays") ) {
+                            double nreplays = feature_vector.get("me_replays");
+                            feature_vector.replace("me_replays", nreplays + 1);
+                        }
                     }
                     break;
                 case "endTutorial":
-                    feature_vector.replace("tutorial_time", (s_ - feature_vector.get("start_time")) / 60.0);
+                    if ( feature_vector.containsKey("tutorial_time") ) {
+                        feature_vector.replace("tutorial_time", (s_ - feature_vector.get("start_time")) / 60.0);
+                    }
                     break;
                 case "SubmitCurrentLevelPlay":
-                    /* This might be testing */
+                    /* This is testing */
                     //persistent_data.replace("test_before_submit",true);
-                    double val = feature_vector.get("me_tests");
-                    feature_vector.replace("me_tests", val + 1);
+                    if ( feature_vector.containsKey("me_tests") ) {
+                        double val = feature_vector.get("me_tests");
+                        feature_vector.replace("me_tests", val + 1);
+                    }
                     if ( feature_vector.containsKey("_timestamp_last_dragged_component") ) {
                         double t = s_ - feature_vector.get("_timestamp_last_dragged_component");
 
@@ -267,14 +273,16 @@ public class FeatureExtraction {
                     }
                     break;
                 case "SubmitCurrentLevelME":
+                    /* This is submit */
 //                    if ( (Boolean)persistent_data.get("test_before_submit") ) {
 //                        analyzer.updateRules("Testing before submitting");
-//                        //updateRules("Testing before submitting",rules);
+//                        persistent_data.replace("test_before_submit",false);
 //                    }
-                    //persistent_data.replace("test_before_submit",false);
 
-                    val = feature_vector.get("me_submissions");
-                    feature_vector.replace("me_submissions", val + 1);
+                    if ( feature_vector.containsKey("me_submissions") ) {
+                        double val = feature_vector.get("me_submissions");
+                        feature_vector.replace("me_submissions", val + 1);
+                    }
                     if (feature_vector.containsKey("_timestamp_last_dragged_component")) {
                         double t = s_ - feature_vector.get("_timestamp_last_dragged_component");
                         if (list_map.get("_t_d_component_dragged_me_lst_submissions") == null) {
@@ -289,11 +297,15 @@ public class FeatureExtraction {
                     }
                     break;
                 case "tooltip":
-                    double n = feature_vector.get("tooltips");
-                    feature_vector.replace("tooltips", n + 1);
+                    if ( feature_vector.containsKey("tooltips") ) {
+                        double n = feature_vector.get("tooltips");
+                        feature_vector.replace("tooltips", n + 1);
+                    }
 
-                    n = feature_vector.get("tooltip_" + data_);
-                    feature_vector.replace("tooltip_" + data_, n + 1);
+                    if ( feature_vector.containsKey("tooltip_" + data_) ) {
+                        double n = feature_vector.get("tooltip_" + data_);
+                        feature_vector.replace("tooltip_" + data_, n + 1);
+                    }
                     break;
                 case "startDrag":
                     if ( (Boolean)persistent_data.get("dragging") ) {
@@ -322,16 +334,22 @@ public class FeatureExtraction {
 
                         persistent_data.replace("num_dragged",(Integer)persistent_data.get("num_dragged") + 1);
 
-                        n = feature_vector.get("total_dragged_components_dist");
-                        feature_vector.replace("total_dragged_components_dist", n + dist);
+                        if ( feature_vector.containsKey("total_dragged_components_dist") ) {
+                            double n = feature_vector.get("total_dragged_components_dist");
+                            feature_vector.replace("total_dragged_components_dist", n + dist);
+                        }
+
                         persistent_data.replace("dragging",false);
 
                     } else {
-                        n = feature_vector.get("dragged");
-                        feature_vector.replace("dragged", n + 1);
-
-                        n = feature_vector.get("dragged_" + data_);
-                        feature_vector.replace("dragged_" + data_, n + 1);
+                        if ( feature_vector.containsKey("dragged") ) {
+                            double n = feature_vector.get("dragged");
+                            feature_vector.replace("dragged", n + 1);
+                        }
+                        if ( feature_vector.containsKey("dragged_" + data_) ) {
+                            double n = feature_vector.get("dragged_" + data_);
+                            feature_vector.replace("dragged_" + data_, n + 1);
+                        }
 
                         if (!feature_vector.containsKey("_timestamp_last_dragged_component")) {
                             feature_vector.put("_timestamp_last_dragged_component", (double) s_);
@@ -392,21 +410,29 @@ public class FeatureExtraction {
 
                     break;
                 case "Destroying":
-                    n = feature_vector.get("trashed");
-                    feature_vector.replace("trashed",n+1);
+                    if ( feature_vector.containsKey("trashed") ) {
+                        double n = feature_vector.get("trashed");
+                        feature_vector.replace("trashed",n+1);
+                    }
 
-                    n = feature_vector.get("trashed_" + data_);
-                    feature_vector.replace("trashed_" + data_,n+1);
+                    if ( feature_vector.containsKey("trashed_" + data_) ) {
+                        double n = feature_vector.get("trashed_" + data_);
+                        feature_vector.replace("trashed_" + data_, n + 1);
+                    }
                     analyzer.updateRules("Remove unnecessary elements");
                     //updateRules("Remove unnecessary elements",rules);
                     break;
                 case "OnHoverBehavior":
                     // This implies that we are on a track...but we hover on an object though..?
-                    n = feature_vector.get("hover");
-                    feature_vector.replace("hover",n+1);
+                    if ( feature_vector.containsKey("hover") ) {
+                        double n = feature_vector.get("hover");
+                        feature_vector.replace("hover",n+1);
+                    }
 
-                    n = feature_vector.get("hover_" + data_);
-                    feature_vector.replace("hover_" + data_,n+1);
+                    if ( feature_vector.containsKey("hover_" + data_) ) {
+                        double n = feature_vector.get("hover_" + data_);
+                        feature_vector.replace("hover_" + data_, n + 1);
+                    }
 
                     analyzer.updateRules("Hover over objects to see what they do");
                     //updateRules("Hover over objects to see what they do",rules);
@@ -432,8 +458,10 @@ public class FeatureExtraction {
                         break;
                     }
 
-                    n = feature_vector.get("num_tracks_used");
-                    feature_vector.replace("num_tracks_used",n+1);
+                    if ( feature_vector.containsKey("num_tracks_used") ) {
+                        double n = feature_vector.get("num_tracks_used");
+                        feature_vector.replace("num_tracks_used", n + 1);
+                    }
 
                     fr_coord.p1 = x_;
                     fr_coord.p2 = y_;
@@ -458,8 +486,10 @@ public class FeatureExtraction {
                         break;
                     }
 
-                    n = feature_vector.get("num_tracks_used");
-                    feature_vector.replace("num_tracks_used",n+1);
+                    if ( feature_vector.containsKey("num_tracks_used") ) {
+                        double n = feature_vector.get("num_tracks_used");
+                        feature_vector.replace("num_tracks_used", n + 1);
+                    }
 
                     il_coord.p1 = x_;
                     il_coord.p2 = y_;
@@ -483,8 +513,10 @@ public class FeatureExtraction {
                     fl_coord.reset();
                     break;
                 case "OnMouseComponent":
-                    double num_mouse_comp = feature_vector.get("num_mouse_on_comp");
-                    feature_vector.replace("num_mouse_on_comp",num_mouse_comp+1);
+                    if ( feature_vector.containsKey("num_mouse_on_comp") ) {
+                        double num_mouse_comp = feature_vector.get("num_mouse_on_comp");
+                        feature_vector.replace("num_mouse_on_comp", num_mouse_comp + 1);
+                    }
 
                     persistent_data.replace("cur_mouse_comp",data_);
                     persistent_data.replace("cur_mouse_time",time_);
@@ -513,12 +545,16 @@ public class FeatureExtraction {
                         if ( cur_track == -1) {
                             persistent_data.replace("cur_track", Integer.parseInt(comp_color_map.get(comp_id)));
                         } else if ( cur_track != Integer.parseInt(comp_color_map.get(comp_id))) {
-                            n = feature_vector.get("num_track_changes");
-                            feature_vector.replace("num_track_changes", n + 1);
+                            if ( feature_vector.containsKey("num_track_changes") ) {
+                                double n = feature_vector.get("num_track_changes");
+                                feature_vector.replace("num_track_changes", n + 1);
+                            }
                             persistent_data.replace("cur_track", comp_color_map.get(comp_id));
                         } else {
-                            n = feature_vector.get("num_track_no_changes");
-                            feature_vector.replace("num_track_no_changes", n + 1);
+                            if ( feature_vector.containsKey("num_track_no_changes") ) {
+                                double n = feature_vector.get("num_track_no_changes");
+                                feature_vector.replace("num_track_no_changes", n + 1);
+                            }
                         }
                     }
 
@@ -540,8 +576,10 @@ public class FeatureExtraction {
 
                         if ( comp_color_map.size() != 0 ) {
                             if ( comp_color_map.containsKey(comp_id) ) {
-                                n = feature_vector.get("num_tracks_used");
-                                feature_vector.replace("num_tracks_used", n + 1);
+                                if ( feature_vector.containsKey("num_tracks_used") ) {
+                                    double n = feature_vector.get("num_tracks_used");
+                                    feature_vector.replace("num_tracks_used", n + 1);
+                                }
                             }
                         }
                     }
@@ -549,26 +587,32 @@ public class FeatureExtraction {
                     break;
                 case "OutMouseComponent":
                     //System.out.println(telemetry);
-                    double total_time_on_component = feature_vector.get("total_time_on_component");
                     if ( time_ - (Double)persistent_data.get("cur_mouse_time") < 0 ) {
                         /* This actually happens when the cur_mouse_time is taken from a previous time interval, and time_ starts before cur_mouse_time ) */
                         break; /* Don't use this time_ */
                     }
-                    feature_vector.replace("total_time_on_component",total_time_on_component + (time_ - (Double)persistent_data.get("cur_mouse_time")));
+                    if ( feature_vector.containsKey("total_time_on_component") ) {
+                        double total_time_on_component = feature_vector.get("total_time_on_component");
+                        feature_vector.replace("total_time_on_component", total_time_on_component + (time_ - (Double) persistent_data.get("cur_mouse_time")));
+                    }
                     break;
                 case "ToggleConnectionVisibility":
                     if ( !data_.equals("True") ) {
                         break;
                     }
-                    n = feature_vector.get("connection_visibility");
-                    feature_vector.replace("connection_visibility", n + 1);
+                    if ( feature_vector.containsKey("connection_visibility") ) {
+                        double n = feature_vector.get("connection_visibility");
+                        feature_vector.replace("connection_visibility", n + 1);
+                    }
                     break;
                 case "ToggleFlowVisibility":
                     if ( !data_.equals("True") ) {
                         break;
                     }
-                    n = feature_vector.get("flow_visibility");
-                    feature_vector.replace("flow_visibility", n + 1);
+                    if ( feature_vector.containsKey("flow_visibility") ) {
+                        double n = feature_vector.get("flow_visibility");
+                        feature_vector.replace("flow_visibility", n + 1);
+                    }
 
                     analyzer.updateRules("Hover over side arrows to see different colored tracks");
                     //updateRules("Hover over side arrows to see different colored tracks",rules);
@@ -578,8 +622,10 @@ public class FeatureExtraction {
                     if ( !data_.equals("True") ) {
                         break;
                     }
-                    n = feature_vector.get("flow_tooltip");
-                    feature_vector.replace("flow_tooltip", n + 1);
+                    if ( feature_vector.containsKey("flow_tooltip") ) {
+                        double n = feature_vector.get("flow_tooltip");
+                        feature_vector.replace("flow_tooltip", n + 1);
+                    }
                     break;
                 case "hint":
                     analyzer.updateRules("Use help bar");
@@ -587,36 +633,47 @@ public class FeatureExtraction {
                     break;
                 case "TriggerGoalPopUp":
                     if ( data_.contains("Successfully") ) {
-                        n = feature_vector.get("popup_success");
-                        feature_vector.replace("popup_success", n + 1);
+                        if ( feature_vector.containsKey("popup_success") ) {
+                            double n = feature_vector.get("popup_success");
+                            feature_vector.replace("popup_success", n + 1);
+                        }
                     } else if ( data_.contains("starvation") ) {
-                        n = feature_vector.get("popup_error_starvation");
-                        feature_vector.replace("popup_error_starvation", n + 1);
-
-                        n = feature_vector.get("popup_error");
-                        feature_vector.replace("popup_error", n + 1);
+                        if ( feature_vector.containsKey("popup_error_starvation") ) {
+                            double n = feature_vector.get("popup_error_starvation");
+                            feature_vector.replace("popup_error_starvation", n + 1);
+                        }
+                        if ( feature_vector.containsKey("popup_error") ) {
+                            double n = feature_vector.get("popup_error");
+                            feature_vector.replace("popup_error", n + 1);
+                        }
 
                     } else if ( data_.contains("dead") ) {
-
-                        n = feature_vector.get("popup_error_deadend");
-                        feature_vector.replace("popup_error_deadend", n + 1);
-
-                        n = feature_vector.get("popup_error");
-                        feature_vector.replace("popup_error", n + 1);
-
+                        if ( feature_vector.containsKey("popup_error_deadend") ) {
+                            double n = feature_vector.get("popup_error_deadend");
+                            feature_vector.replace("popup_error_deadend", n + 1);
+                        }
+                        if ( feature_vector.containsKey("popup_error") ) {
+                            double n = feature_vector.get("popup_error");
+                            feature_vector.replace("popup_error", n + 1);
+                        }
                     } else if ( data_.contains("deliveries") ) {
-                        n = feature_vector.get("popup_error_delivery");
-                        feature_vector.replace("popup_error_delivery", n + 1);
-
-                        n = feature_vector.get("popup_error");
-                        feature_vector.replace("popup_error", n + 1);
-
+                        if ( feature_vector.containsKey("popup_error_delivery") ) {
+                            double n = feature_vector.get("popup_error_delivery");
+                            feature_vector.replace("popup_error_delivery", n + 1);
+                        }
+                        if ( feature_vector.containsKey("popup_error") ) {
+                            double n = feature_vector.get("popup_error");
+                            feature_vector.replace("popup_error", n + 1);
+                        }
                     } else {
-                        n = feature_vector.get("popup_error_badgoals");
-                        feature_vector.replace("popup_error_badgoals", n + 1);
-
-                        n = feature_vector.get("popup_error");
-                        feature_vector.replace("popup_error", n + 1);
+                        if ( feature_vector.containsKey("popup_error_badgoals") ) {
+                            double n = feature_vector.get("popup_error_badgoals");
+                            feature_vector.replace("popup_error_badgoals", n + 1);
+                        }
+                        if ( feature_vector.containsKey("popup_error") ) {
+                            double n = feature_vector.get("popup_error");
+                            feature_vector.replace("popup_error", n + 1);
+                        }
                     }
                     break;
             }
@@ -837,7 +894,7 @@ public class FeatureExtraction {
                     feature_vector.replace("tutorial_time", (s_ - feature_vector.get("start_time")) / 60.0);
                     break;
                 case "SubmitCurrentLevelPlay":
-                    /* This might be testing */
+                    /* This is testing */
                     //persistent_data.replace("test_before_submit",true);
                     double val = feature_vector.get("me_tests");
                     feature_vector.replace("me_tests", val + 1);
@@ -858,9 +915,8 @@ public class FeatureExtraction {
                 case "SubmitCurrentLevelME":
 //                    if ( (Boolean)persistent_data.get("test_before_submit") ) {
 //                        analyzer.updateRules("Testing before submitting");
-//                        //updateRules("Testing before submitting",rules);
+//                        persistent_data.replace("test_before_submit",false);
 //                    }
-                    //persistent_data.replace("test_before_submit",false);
 
                     val = feature_vector.get("me_submissions");
                     feature_vector.replace("me_submissions", val + 1);

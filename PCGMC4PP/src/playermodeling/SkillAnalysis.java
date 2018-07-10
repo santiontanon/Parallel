@@ -16,11 +16,12 @@ public class SkillAnalysis {
     //private final String dataset = data_file_dir + "8_dash_skills_ordered.csv";
     private final String dataset = data_file_dir + "35_dash_skills_clean.csv";
 
+    /* Both of these data structures should contain each skill (correctly named) in order. */
     public LinkedHashMap< String,Pair<Integer,Double> > skill_vector;
     public LinkedHashMap< String, LinkedHashMap< String, Double > > ground_truth;
 
     /* Level-specific skills */
-    public ArrayList<String> skills;
+    public ArrayList<String> skills_specific_to_level;
 
     private ArrayList<String> official_skill_names;
 
@@ -33,34 +34,36 @@ public class SkillAnalysis {
         ground_truth = new  LinkedHashMap< String, LinkedHashMap< String, Double > >();
         update_flag = u_flag;
 
-        skills = new ArrayList<String>();
+        skills_specific_to_level = new ArrayList<String>();
 
         /* Read in players and their skill level */
         official_skill_names = new ArrayList<>();
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(data_file_dir + "Official-Skills-List.txt"));
+            /* This list will contain both the correct ordering of skills and the naming of skills */
             String line;
             while ((line = br.readLine()) != null) {
                 official_skill_names.add(line.trim());
             }
+            br.close();
 
             br = new BufferedReader(new FileReader(dataset));
-            //BufferedReader br = new BufferedReader(new FileReader(data_file_dir + "35_dash_skills_clean.csv"));
             line = br.readLine();
             String [] skills = line.split(",");
+            /* Assumption: For the ground truth, the first two columns are related to users and levels/weeks */
             for ( int i = 2; i < skills.length; i++ ) {
                 if ( !official_skill_names.contains(skills[i].trim()) ) {
                     System.out.println(String.format("Skill %s not correctly worded or doesn't exist in file %s",skills[i].trim(),dataset));
                     System.exit(1);
                 }
-                skill_vector.put(skills[i].trim(), new Pair< Integer, Double>(0,-1.0) );
+                skill_vector.put(skills[i].trim(), new Pair< Integer, Double >(0,-1.0) );
             }
             while ((line = br.readLine()) != null) {
                 String [] line_split = line.split(",");
                 LinkedHashMap< String, Double > tmp = new LinkedHashMap<String, Double>();
                 for ( int i = 2; i < skills.length; i++ ) {
-                    double val = 0.0;
+                    double val;
                     if ( line_split[i].equals("X") || line_split[i].equals("Y") ) {
                         val = -1;
                     } else {
@@ -82,15 +85,16 @@ public class SkillAnalysis {
     }
 
     public boolean readSkillList(String path, String level_name) {
+        /* Reads in skills specific to a level */
         try {
-            BufferedReader br = new BufferedReader(new FileReader(path + "/" +level_name));
-            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(path + "/" + level_name));
+            String line;
             while ((line = br.readLine()) != null) {
                 if ( !official_skill_names.contains(line.trim()) ) {
                     System.out.println(String.format("Skill %s not correctly worded or doesn't exist in file %s",line.trim(),path + "/" + level_name));
                     System.exit(1);
                 }
-                skills.add(line.trim());
+                skills_specific_to_level.add(line.trim());
             }
             return true;
         } catch (IOException e) {
@@ -102,7 +106,7 @@ public class SkillAnalysis {
         if ( DEBUG > 0 ) {
             System.out.println("Resetting list of skills for each level");
         }
-        skills.clear();
+        skills_specific_to_level.clear();
     }
 
     public void resetSkillVector() {
@@ -155,7 +159,7 @@ public class SkillAnalysis {
             val = 0.0;
         }
 
-        for ( String s : skills ) {
+        for ( String s : skills_specific_to_level ) {
             if ( !skill_vector.containsKey(s) ) {
                 if ( DEBUG > 0 ) {
                     System.out.println("Skill not found (or doesn't have ground truth). Skipping..." + s);
@@ -177,7 +181,14 @@ public class SkillAnalysis {
 
 
     public void updateSkillsBasedOnRules( int updates_flag ) {
-        for ( String s : skill_vector.keySet() ) {
+        for ( String s : skills_specific_to_level ) {
+            if ( !skill_vector.containsKey(s) ) {
+                if ( DEBUG > 0 ) {
+                    System.out.println("Skill not found (or doesn't have ground truth). Skipping..." + s);
+                }
+                continue;
+            }
+            /* NOTE: Rules and skill vector will always have the same keys */
             if ( rules.get(s) > 0.0 ) {
                 Pair<Integer, Double> tmp = skill_vector.get(s);
                 switch ( updates_flag ) {
@@ -186,9 +197,12 @@ public class SkillAnalysis {
                         tmp.p1 += rules.get(s).intValue();
                         break;
                     case 1:
-                        tmp.p2 = rules.get(s);
-                        tmp.p1++;
-                        break;
+                        /* NOTE: This is no longer done, but is still kept here */
+                        //tmp.p2 = rules.get(s);
+                        //tmp.p1++;
+                        /* Exit on error if we get here */
+                        System.exit(-1);
+                        //break;
                 }
                 skill_vector.replace(s,tmp);
             }
@@ -202,34 +216,43 @@ public class SkillAnalysis {
         /* Compute Squared Error (SE) for each skill in the ground truth */
         /* TODO for future work: Compute KL-Divergence, Total variation distance, and Hellinger distance - ? */
 
+        /* Should be in order of the skill vector */
         LinkedHashMap< String, Double> squared_error = new LinkedHashMap< String, Double> ();
+        for ( String s : skill_vector.keySet() ) {
+            squared_error.put(s,-1.0);
+        }
+
+        /* TODO: For the 3 and 5 dash, fix the ground truth file so that it's level01 instead of level1 */
 
         int lvl_number = Integer.parseInt(level.substring(level.lastIndexOf("l")+1,level.length()));
 
         //String key = user + " " + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
-        String key = user + "," + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
+        //'String key = user + "," + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
+        String key = user + "," + level;
 
-        if ( user.equals("5-2") || (skills.size() == 0) ) {
-            /* This user doesn't exist, and if a level that wasn't supposed to be played was played. */
+        if ( user.equals("5-2") || (skills_specific_to_level.size() == 0) ) {
+            /* This user doesn't exist or if a level that wasn't supposed to be played was played. */
             return squared_error;
         }
 
         for ( String s : skill_vector.keySet() ) {
             //System.out.println("Key,skill: " + s + "," + actual_skill_map.get(key).get(s));
             if ( !ground_truth.get(key).containsKey(s) ) {
-                if ( DEBUG > 0 ) {
-                    System.out.println(String.format("Skill %s not in ground truth. Ignoring...", s));
-                }
-                continue;
+                /* This would actually be an error... */
+//                if ( DEBUG > 0 ) {
+                System.out.println(String.format("Skill %s not in ground truth. Ignoring...", s));
+//                }
+                System.out.println("There is a discrepancy between the ground truth and the skill vector...exiting...");
+                System.exit(-1);
             }
             if ( ground_truth.get(key).get(s) < 0 ) {
                 /* Ignore */
-                squared_error.put(s,-1.0);
+                squared_error.replace(s,-1.0);
             } else {
                 if ( skill_vector.get(s).p2 < 0 )  {
-                    squared_error.put(s, Math.pow(ground_truth.get(key).get(s) - 0.5, 2.0));
+                    squared_error.replace(s, Math.pow(ground_truth.get(key).get(s) - 0.5, 2.0));
                 } else {
-                    squared_error.put(s, Math.pow(ground_truth.get(key).get(s) - skill_vector.get(s).p2, 2.0));
+                    squared_error.replace(s, Math.pow(ground_truth.get(key).get(s) - skill_vector.get(s).p2, 2.0));
                 }
             }
         }
@@ -242,30 +265,38 @@ public class SkillAnalysis {
         /* Compute Squared Error (SE) for each skill in the ground truth */
         /* TODO for future work: Compute KL-Divergence, Total variation distance, and Hellinger distance - ? */
 
+        /* Should be in order of the skill vector */
         LinkedHashMap< String, Double> squared_error = new LinkedHashMap< String, Double> ();
+        for ( String s : skill_vector.keySet() ) {
+            squared_error.put(s,-1.0);
+        }
 
         String key = user + "," + week;
 
-        if ( skills.size() == 0 ) {
-            /* This user doesn't exist, and if a level that wasn't supposed to be played was played. */
+        if ( skills_specific_to_level.size() == 0 ) {
+            /* If a level that wasn't supposed to be played was played. */
             return squared_error;
         }
 
         for ( String s : skill_vector.keySet() ) {
             if ( !ground_truth.get(key).containsKey(s) ) {
-                if ( DEBUG > 0 ) {
-                    System.out.println(String.format("Skill %s not in ground truth. Ignoring...",s));
-                }
-                continue;
+//                if ( DEBUG > 0 ) {
+//                    System.out.println(String.format("Skill %s not in ground truth. Ignoring...",s));
+//                }
+//                continue;
+                System.out.println(String.format("Skill %s not in ground truth. Ignoring...", s));
+                System.out.println("There is a discrepancy between the ground truth and the skill vector...exiting...");
+                System.exit(-1);
             }
+
             if ( ground_truth.get(key).get(s) < 0 ) {
                 /* Ignore */
-                squared_error.put(s,-1.0);
+                squared_error.replace(s,-1.0);
             } else {
                 if ( skill_vector.get(s).p2 < 0 )  {
-                    squared_error.put(s, Math.pow(ground_truth.get(key).get(s) - 0.5, 2.0));
+                    squared_error.replace(s, Math.pow(ground_truth.get(key).get(s) - 0.5, 2.0));
                 } else {
-                    squared_error.put(s, Math.pow(ground_truth.get(key).get(s) - skill_vector.get(s).p2, 2.0));
+                    squared_error.replace(s, Math.pow(ground_truth.get(key).get(s) - skill_vector.get(s).p2, 2.0));
                 }
             }
         }
@@ -300,31 +331,50 @@ public class SkillAnalysis {
     /* ------------------------------------------ Print Functions ------------------------------------------ */
 
     public String getSEAsCSVPerWeek(String week, String username) {
-        LinkedHashMap<String,Double> mses = evaluateSkillsPerWeek(week,username);
+        LinkedHashMap<String,Double> squared_error = evaluateSkillsPerWeek(week,username);
 
         ArrayList<String> mses_list = new ArrayList<String>();
-        for ( String s : mses.keySet() ) {
-            if ( mses.get(s) < 0 ) {
+        for ( String s : squared_error.keySet() ) {
+            if ( squared_error.get(s) < 0 ) {
                 mses_list.add("");
             } else {
-                mses_list.add(mses.get(s).toString());
+                mses_list.add(squared_error.get(s).toString());
             }
         }
         return String.join(",",mses_list);
     }
 
     public String getSEAsCSV(String level, String username) {
-        LinkedHashMap<String,Double> mses = evaluateSkills(level,username);
+        LinkedHashMap<String,Double> squared_error = evaluateSkills(level,username);
         ArrayList<String> mses_list = new ArrayList<String>();
-        for ( String s : mses.keySet() ) {
-            if ( mses.get(s) < 0 ) {
+        for ( String s : squared_error.keySet() ) {
+            if ( squared_error.get(s) < 0 ) {
                 mses_list.add("");
             } else {
-                mses_list.add(mses.get(s).toString());
+                mses_list.add(squared_error.get(s).toString());
             }
         }
         return String.join(",",mses_list);
     }
+
+//    public String getSEAsCSV(String level_or_week, String username, boolean is_week_based) {
+//        LinkedHashMap<String,Double> squared_error;
+//        if ( is_week_based ) {
+//            squared_error = evaluateSkillsPerWeek(level_or_week,username);
+//        } else {
+//            squared_error = evaluateSkills(level_or_week,username);
+//        }
+//
+//        ArrayList<String> mses_list = new ArrayList<String>();
+//        for ( String s : squared_error.keySet() ) {
+//            if ( squared_error.get(s) < 0 ) {
+//                mses_list.add("");
+//            } else {
+//                mses_list.add(squared_error.get(s).toString());
+//            }
+//        }
+//        return String.join(",",mses_list);
+//    }
 
     public String getGroundTruthAsCSVWeek(String week, String user) {
         ArrayList<String> ground_truth_print = new ArrayList<String>();
@@ -332,7 +382,6 @@ public class SkillAnalysis {
         String key = user + "," + week;
 
         for ( String s : ground_truth.get(key).keySet() ) {
-            //System.out.println("s: " + s);
             if ( ground_truth.get(key).get(s) < 0 ) {
                 /* Skip this */
                 ground_truth_print.add("");
@@ -348,7 +397,8 @@ public class SkillAnalysis {
 
         int lvl_number = Integer.parseInt(level.substring(level.lastIndexOf("l")+1,level.length()));
         //String key = user + " " + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
-        String key = user + "," + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
+        //String key = user + "," + level.substring(0,level.lastIndexOf("l")+1) + Integer.toString(lvl_number);
+        String key = user + "," + level;
 
         for ( String s : ground_truth.get(key).keySet() ) {
             //System.out.println("s: " + s);
@@ -365,7 +415,7 @@ public class SkillAnalysis {
     public String getPredictionsAsCSV() {
         ArrayList<String> tmp = new ArrayList<String>();
         for ( String s : skill_vector.keySet() ) {
-            String frmt = "";
+            String frmt;
             if ( skill_vector.get(s).p2 < 0 ) {
                 frmt = String.format("%f",0.5);
             } else {
