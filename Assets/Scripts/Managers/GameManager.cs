@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour {
     public void PlayTutorialLevel()
     {
         string levelToString = SerializeCurrentLevel();
-        Debug.Log(levelToString);
+        //Debug.Log(levelToString);
         string filename =
             Application.persistentDataPath
             + linkJava.pathSeparator
@@ -295,13 +295,12 @@ public class GameManager : MonoBehaviour {
 	public void SubmitCurrentLevel(LinkJava.SimulationTypes inputSimulationType)
 	{        
 		string levelToString = SerializeCurrentLevel();
-		Debug.Log( levelToString );
 		string filename = 
             Application.persistentDataPath 
             + linkJava.pathSeparator 
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
-        Debug.Log(filename);
+        //Debug.Log(filename);
         System.IO.File.WriteAllText(filename, levelToString);
 		linkJava.filename = filename;
 		linkJava.simulationMode = inputSimulationType;
@@ -314,7 +313,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerAdvanceToNextLevel()
     {
         LevelReferenceObject nextLevel = dataManager.GetNextLevel(currentLevelReferenceObject);
-        Debug.Log("Next level is: " + nextLevel.levelId);
+        //Debug.Log("Next level is: " + nextLevel.levelId);
         TriggerLoadLevel(DataManager.LoadType.RESOURCES, nextLevel.file);
     }
 

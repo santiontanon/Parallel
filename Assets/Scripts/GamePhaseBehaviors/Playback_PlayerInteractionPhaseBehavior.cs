@@ -48,7 +48,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         currentStep = 0;
         paused = false;
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        //Debug.Log(lvl.execution.Count);
         if(lvl.execution.Count > 0)
         {
             int maxStep = 0;
@@ -107,7 +106,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            //Debug.Log(stopwatch.ElapsedMilliseconds);
 
             //create in between steps for thread movements
             for (int i = 0; i <= maxStep; i++)
@@ -299,7 +297,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            //Debug.Log(stopwatch.ElapsedMilliseconds);
 
             yield return new WaitForSeconds(1f);
             TimeStepData timeStep = new TimeStepData();
@@ -359,7 +356,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            //Debug.Log(stopwatch.ElapsedMilliseconds);
 
             yield return new WaitForSeconds(1f);
             for (int i = 0; i < stepDictionary.Count; i++)
@@ -451,7 +447,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            //Debug.Log(stopwatch.ElapsedMilliseconds);
 
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
@@ -465,10 +460,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     IEnumerator PlaySimulation(int maxStep)
     {
-        Debug.Log(PlayerInteraction_GamePhaseBehavior.onCompletion != null);
-
-        Debug.Log(maxStep);
-
         int maxGoalsCompleted = 0;
         currentStep = 0;
         paused = false;
