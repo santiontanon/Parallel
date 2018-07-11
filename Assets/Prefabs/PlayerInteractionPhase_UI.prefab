@@ -4320,33 +4320,27 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Arrows
-        hintDescription: 'Arrows travel along tracks and interact with items that
-          have been placed on the tracks.  You can hover over the arrows at the top
-          of the screen to see which direction the arrow will travel on the track. '
+        hintDescription: 'Arrows travel along tracks and interact with items on the
+          track. Hover over arrows in the sidebar to see which direction and path
+          the arrow will take. '
         hintImage: {fileID: 21300000, guid: 50859f0aa4e6cec4697e6891701d1c98, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
         hint_component_type: 
         hintTitle: Signal
-        hintDescription: Signals can be dragged from the toolbar and placed on the
-          track. Signals are used to control semaphores and direction switches.   To
-          connect a signal to an item on the track, right-click the signal, then right-click
-          the item that you want to connect it to. Hover over the signal to make sure
-          that the connection has been made.
+        hintDescription: Signals are used to control semaphores and direction switches.
+          To create a link, rick click on signal and drag to semaphore or direction
+          switch. Right click to link. Hover over signal to confirm the link.
         hintImage: {fileID: 21300000, guid: 30a4810fcb34d5a46be4d842bdb1693e, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
         hint_component_type: 
         hintTitle: Semaphore
-        hintDescription: Semaphores can be used to block or release an arrow (depending
-          on whether it is open or closed). Drag a semaphore from the toolbar to the
-          track and click to snap the semaphore to the track. Multiple signals can
-          connect to one semaphore. When closed (the top image) arrows cannot pass
-          through the semaphore. When open (the bottom image) arrows can pass through
-          the semaphore. You can right click on an unlocked semaphore to switch its
-          default state.
+        hintDescription: Semaphores can be used to block or release an arrow. When
+          closed (top image), arrows are blocked. When open (bottom image), arrows
+          can pass. Multiple signals can link to one semaphore.
         hintImage: {fileID: 21300000, guid: 3babf36dea491e74c88bc2494b0ab992, type: 3}
         hintButtonImage: {fileID: 21300000, guid: fe7265002b887e843882fb18a0c895b8,
           type: 3}
@@ -4370,10 +4364,8 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Direction Switches
-        hintDescription: 'Arrows that pass through a direction switch will turn in
-          the direction of the darker arrow on the switch.  If linked to a signal,
-          the direction switch will change direction when an arrow passes through
-          that connected signal. '
+        hintDescription: At intersections arrows will turn in the direction of the
+          darker direction. Signals can be linked to change direction.
         hintImage: {fileID: 21300000, guid: a33a390811c13704ab293c29a87b6faa, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 04000000050000000700000008000000090000000a0000000b0000000c0000000d0000000f00000010000000110000002c000000
@@ -4389,16 +4381,16 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Unlimited Conditional Packages
-        hintDescription: A type of package that will regenerate as soon as it has
-          been delivered to a delivery point.
+        hintDescription: A type of package that will regenerate only after it has
+          been delivered by an arrow
         hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 06000000080000000900000012000000260000002c000000
       hint:
         hint_component_type: 
         hintTitle: Limited Conditional Packages
-        hintDescription: A type of package that will not regenerate after it is picked
-          up by an arrow.
+        hintDescription: Only one package is generated. Arrows can pick up this package
+          and deliver it.
         hintImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
         hintButtonImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37,
           type: 3}

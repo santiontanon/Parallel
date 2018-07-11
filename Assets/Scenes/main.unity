@@ -616,41 +616,6 @@ Prefab:
       propertyPath: playerInteraction_UI.onHoverLightbox.lightboxElement
       value: 
       objectReference: {fileID: 686196261}
-    - target: {fileID: 224000011253512604, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.0999756
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000013773330744, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 2.0999756
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012209610702, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000010321270236, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012064912602, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012064912602, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: -38.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000012304836192, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -189.7998
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 2}
   m_IsPrefabParent: 0
@@ -1074,6 +1039,12 @@ Prefab:
     - target: {fileID: 172054, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: m_Name
       value: _Managers
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: tutorialEvents.Array.data[5].popupDescription
+      value: 'Toggle on help mode, then click on a highlighted element to learn more
+        about it. '
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
