@@ -10,7 +10,6 @@ public class TutorialManager : MonoBehaviour {
     TutorialEvent[] currentTutorialEventQueue;
     int tutorialEventIndex = 0;
 
-
     [System.Serializable]
     public class Tutorial_UIOverlay : ParallelProg.UI.UIOverlay
     {
@@ -399,6 +398,63 @@ public class TutorialManager : MonoBehaviour {
     {
         //Debug.Log("ClearActiveTutorials");
         tutorialOverlay.ClosePanel();
+    }
+
+    [SerializeField]
+    int tutorialEditIndex = 0; //this variable is for editing the tutorial events array without having to manually move data in conjunction with tutorial edit mode and the EditTutorial function
+    [SerializeField]
+    int tutorialEditMode = 1; // 0 -> Adds new tutorial at the above index; 1 -> Removes tutorial at the above index
+
+    [ContextMenu("Edit Tutorial")]
+    public void EditTutorial()
+    {
+        switch (tutorialEditMode)
+        {
+            case 0:
+                AddNewTutorial(tutorialEditIndex);
+                break;
+            case 1:
+                RemoveTutorial(tutorialEditIndex);
+                break;
+        }
+    }
+
+    void AddNewTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length + 1];
+        for(int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if(i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else if(i == index)
+            {
+                newTutorialEvents[i] = new TutorialEvent();
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i-1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
+    }
+
+    void RemoveTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length - 1];
+        for (int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if (i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i + 1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
     }
 
     #region Legacy Tutorial Code

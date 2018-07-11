@@ -63,7 +63,6 @@ public class TutorialEvent
                 else if (complete_trigger == TutorialCompletionTriggers.clickPopup)
                 {
                     GameManager.Instance.SetTutorialPopupClickToClose(this, true);
-                    PlayerInteraction_GamePhaseBehavior.onCompletion = CompletionListener;
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSemaphore)
                 {
@@ -79,11 +78,14 @@ public class TutorialEvent
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.simulationInteraction)
                 {
-                    // create listener to judge against targetSimulationStep
+                    /*if (PlayerInteraction_GamePhaseBehavior.onSimulationStep != null)
+                        PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;*/
                     PlayerInteraction_GamePhaseBehavior.onSimulationStep += StepListener;
                 }
                 break;
             case TutorialTypes.simulation:
+                /*if (PlayerInteraction_GamePhaseBehavior.onCompletion != null)
+                    PlayerInteraction_GamePhaseBehavior.onCompletion -= CompletionListener;*/
                 PlayerInteraction_GamePhaseBehavior.onCompletion = CompletionListener;
                 break;
         }
