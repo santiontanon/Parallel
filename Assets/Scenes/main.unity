@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -861,36 +861,26 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[0].toolInstance
+    - target: {fileID: 11432306, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: worldCamera
       value: 
-      objectReference: {fileID: 180840120}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[1].toolInstance
+      objectReference: {fileID: 2036867998}
+    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: startScreenBehavior
       value: 
-      objectReference: {fileID: 169655104}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[2].toolInstance
+      objectReference: {fileID: 1056067822}
+    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: loadScreenBehavior
       value: 
-      objectReference: {fileID: 978633965}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[3].toolInstance
+      objectReference: {fileID: 136015134}
+    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: playerInteractionBehavior
       value: 
-      objectReference: {fileID: 980904874}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[4].toolInstance
+      objectReference: {fileID: 644581664}
+    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
+      propertyPath: exitGameBehavior
       value: 
-      objectReference: {fileID: 325216060}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: ToolArray.Array.data[5].toolInstance
-      value: 
-      objectReference: {fileID: 1115598522}
+      objectReference: {fileID: 446793111}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
       propertyPath: tutorialEvents.Array.data[0].targetButton
@@ -928,12 +918,22 @@ Prefab:
       objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
+      propertyPath: tutorialEvents.Array.data[13].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
       propertyPath: tutorialEvents.Array.data[16].targetButton
       value: 
       objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
       propertyPath: tutorialEvents.Array.data[19].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: tutorialEvents.Array.data[20].targetButton
       value: 
       objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
@@ -946,11 +946,6 @@ Prefab:
       propertyPath: tutorialEvents.Array.data[23].targetButton
       value: 
       objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: tutorialEvents.Array.data[25].targetButton
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
       propertyPath: tutorialEvents.Array.data[27].targetButton
@@ -981,6 +976,16 @@ Prefab:
       propertyPath: tutorialOverlay.scaler
       value: 
       objectReference: {fileID: 74610945}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: tutorialOverlay.tutorialArrow
+      value: 
+      objectReference: {fileID: 1949301678}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: tutorialOverlay.skipTutorialsButton
+      value: 
+      objectReference: {fileID: 720912341}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
       propertyPath: tutorialImageTriggerObject
@@ -1016,54 +1021,40 @@ Prefab:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: startScreenBehavior
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[0].toolInstance
       value: 
-      objectReference: {fileID: 1056067822}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: loadScreenBehavior
+      objectReference: {fileID: 180840120}
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[1].toolInstance
       value: 
-      objectReference: {fileID: 136015134}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: playerInteractionBehavior
+      objectReference: {fileID: 169655104}
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[2].toolInstance
       value: 
-      objectReference: {fileID: 644581664}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: exitGameBehavior
+      objectReference: {fileID: 978633965}
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[3].toolInstance
       value: 
-      objectReference: {fileID: 446793111}
-    - target: {fileID: 11432306, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: worldCamera
+      objectReference: {fileID: 980904874}
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[4].toolInstance
       value: 
-      objectReference: {fileID: 2036867998}
+      objectReference: {fileID: 325216060}
+    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 2}
+      propertyPath: ToolArray.Array.data[5].toolInstance
+      value: 
+      objectReference: {fileID: 1115598522}
     - target: {fileID: 172054, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: m_Name
       value: _Managers
       objectReference: {fileID: 0}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: is_demo_build
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
-      propertyPath: currentGameMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: tutorialEvents.Array.data[5].popupDescription
-      value: Click the help toggle and then select an element for more information
-        about it.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: tutorialOverlay.tutorialArrow
-      value: 
-      objectReference: {fileID: 1949301678}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 2}
-      propertyPath: tutorialOverlay.skipTutorialsButton
-      value: 
-      objectReference: {fileID: 720912341}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
   m_IsPrefabParent: 0

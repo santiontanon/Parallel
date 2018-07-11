@@ -924,6 +924,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_default;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(true);
+            playerInteraction_UI.simulationButton.interactable = true;
+            playerInteraction_UI.submitButton.interactable = true;
         }
         else
         {
@@ -931,6 +933,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(false);
+            playerInteraction_UI.simulationButton.interactable = false;
+            playerInteraction_UI.submitButton.interactable = false;
         }
         TriggerHintFader();
 
