@@ -935,6 +935,42 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    popupDescription: Click the help toggle again to return to edit mode when you
+      are done.
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: exampleType
+      timeStep: -1
+      componentID: -1
+      componentPos: {x: -1, y: -1}
+      componentStatus:
+        final_condition: -1
+        goal_descriptions: []
+        speed: -1
+        value: 0
+        passed: 0
+        delivered: 0
+        available: -1
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 2
+    type: 0
+    init_trigger: 0
+    complete_trigger: 2
     popupDescription: Press "Test".
     pause: 0
     pauseDuration: 0
@@ -2061,6 +2097,8 @@ MonoBehaviour:
   playSprite: {fileID: 21300008, guid: 46057b8acb3623342963824719184862, type: 3}
   tutorialDisplays: []
   tutorialIndex: 0
+  tutorialEditIndex: 6
+  tutorialEditMode: 0
 --- !u!114 &114000013437963258
 MonoBehaviour:
   m_ObjectHideFlags: 1
