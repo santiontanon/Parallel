@@ -935,7 +935,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    popupDescription: Click the help toggle again to return to edit mode when you
+    popupDescription: Click the help toggle again to return to play mode when you
       are done.
     pause: 0
     pauseDuration: 0
