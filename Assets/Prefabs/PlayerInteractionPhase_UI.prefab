@@ -4539,8 +4539,8 @@ MonoBehaviour:
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: Drag to tracks, release to place. Right click, drag, right click
-          on a semaphore or direction switch to link.
+        tooltipText: 'Drag and drop to place on tracks. Rick click and drag to semaphore
+          or direction switch. Right click to link. '
     - tooltipUiElement: {fileID: 114000012188733926}
       permanent: 1
       refString: 
@@ -4556,7 +4556,7 @@ MonoBehaviour:
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: Use scroll wheel to zoom in and out.
+        tooltipText: Use mouse scroll to zoom in and out.
     - tooltipUiElement: {fileID: 114000013697017244}
       permanent: 1
       refString: LinkHover
