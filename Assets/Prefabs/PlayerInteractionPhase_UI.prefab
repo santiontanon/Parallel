@@ -3827,7 +3827,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9fdc8be77cc888748a972ec77a82a40d, type: 3}
-    m_FontSize: 18
+    m_FontSize: 23
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -4625,6 +4625,7 @@ MonoBehaviour:
     playbackControls: {fileID: 1000011584011826}
     hint_button_prefab: {fileID: 1000010487195062, guid: fc81bf7d08fb548d699a17e7c23de7ff,
       type: 2}
+    startTime: 0
   score:
     index: 0
     completed: 0
@@ -8498,7 +8499,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9fdc8be77cc888748a972ec77a82a40d, type: 3}
-    m_FontSize: 28
+    m_FontSize: 23
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
