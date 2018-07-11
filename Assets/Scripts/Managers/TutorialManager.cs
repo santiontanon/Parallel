@@ -232,13 +232,22 @@ public class TutorialManager : MonoBehaviour {
         List<TutorialEvent> returnEvents = new List<TutorialEvent>();
         PlayerInteraction_GamePhaseBehavior p = (PlayerInteraction_GamePhaseBehavior)GameManager.Instance.playerInteractionBehavior;
 
+        bool foundSimEvents = false; //triggered once events made to play during the simulation are found, prevents queuing of beforePlay events that follow it
+
         foreach (TutorialEvent t in tutorialEvents)
         {
-            if (t.init_trigger == inputInitPhase)
+            if (t.levelNumber == inputLevelId && !t.hasCompleted)
+            {
+                if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.duringSimulation) foundSimEvents = true;
+                else if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.beforePlay && foundSimEvents == true) break;
+                returnEvents.Add(t);
+            }
+            else if (t.levelNumber > inputLevelId) break;
+            /*if (t.init_trigger == inputInitPhase)
             {
                 if (t.levelNumber == inputLevelId && !t.hasCompleted) returnEvents.Add(t);
-            }
-            else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
+            }*/
+            //else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
         }
         foreach (TutorialEvent t in returnEvents) { } //Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
         return returnEvents;
@@ -269,6 +278,7 @@ public class TutorialManager : MonoBehaviour {
 
     void PerformTutorial(TutorialEvent t)
     {
+        //Debug.Log("Performing Tutorial Event");
         if (t.type == TutorialEvent.TutorialTypes.popup)
         {
             switch (t.complete_trigger)
@@ -357,7 +367,7 @@ public class TutorialManager : MonoBehaviour {
         tutorialEventIndex++;
         if (tutorialIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
         else { 
-			Debug.Log("No more tutorials."); 
+			//Debug.Log("No more tutorials."); 
 			GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventComplete","NoMore");
 		}
     }
@@ -387,7 +397,7 @@ public class TutorialManager : MonoBehaviour {
 
     public void ClearActiveTutorials()
     {
-        Debug.Log("ClearActiveTutorials");
+        //Debug.Log("ClearActiveTutorials");
         tutorialOverlay.ClosePanel();
     }
 
