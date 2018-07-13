@@ -251,7 +251,7 @@ MonoBehaviour:
   gradeReportBehavior: {fileID: 11467800}
   endScreenBehavior: {fileID: 11409168}
   exitGameBehavior: {fileID: 0}
-  currentGameMode: 1
+  currentGameMode: 2
   hideTestsForBuild: 0
   currentLevelReferenceObject:
     file: level01
@@ -899,8 +899,8 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    popupDescription: Click the help toggle and then select an element for more information
-      about it.
+    popupDescription: 'Toggle on help mode, then click on a highlighted element to
+      learn more about it. '
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
