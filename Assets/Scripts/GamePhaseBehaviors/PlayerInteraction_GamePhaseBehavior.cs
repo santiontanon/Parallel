@@ -817,6 +817,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         // Display its hint UI
                         string obj_name = current_object.component.type;
+                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                         // Testing to make sure the interaction worked, always displays Track Hint
                         //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
@@ -953,6 +954,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         {
             bool success = false;
             HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
+            Debug.Log(g.component.type + ": " + success);
             if (success == false)
             {
                 SpriteRenderer s = g.GetComponent<SpriteRenderer>();

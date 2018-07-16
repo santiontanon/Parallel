@@ -18,6 +18,9 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
     [SerializeField]
     bool paused;
 
+    //temp variables to resolve goal screen issues
+    public bool success; //was the solution successful
+
     public void StartPhase()
     {
         //reset values
@@ -502,6 +505,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                     case 2:
                                     case 8:
                                     case 10:
+                                        success = true;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {
@@ -536,6 +540,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         break;
                                     default:
+                                        success = false;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {

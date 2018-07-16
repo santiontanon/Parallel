@@ -262,7 +262,10 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.RemoveAllListeners();
             levelsNext.onClick.RemoveAllListeners();
 
-            bool showNextLevelButton = (GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
+            PlayerInteraction_GamePhaseBehavior playerInteraction = GameManager.Instance.playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+            bool showNextLevelButton = (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME && 
+                                        playerInteraction.playbackBehavior.success == true && 
+                                        GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
             levelsNext.gameObject.SetActive(showNextLevelButton);
 
             exit.onClick.RemoveAllListeners();
