@@ -241,10 +241,11 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 
 	public override void ResetPosition()
 	{
+        Debug.Log("Delivery Reset");
 		iTween.Stop(gameObject);
 		deliveryPopup.Reset();
 		transform.localScale = Vector3.one;
-		GetComponent<SpriteRenderer>().color = Color.white;
+		GetComponent<SpriteRenderer>().material.color = Color.white;
 	}
 
     public override void ReturnToStep(TimeStepData timeStep)
@@ -269,18 +270,12 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 
 	public override void SuccessBehavior(Color successColor)
 	{
-        Debug.Log("Success Behavior");
-		//deliveries++;
-		if(GetComponent<iTween>()) return;
+        if (GetComponent<iTween>()) { return; }
 		iTween.ScaleFrom( gameObject, Vector3.one*1.4f, 1.5f );
         iTween.ColorFrom(gameObject, Color.green, 1.5f);
-
-        //deliveryPopup.IncrementNumerator();
     }
     public override void ErrorBehavior(Color errorColor)
 	{
-
-        Debug.Log("Error Behavior");
         iTween.Stop(this.gameObject);
         iTween.ScaleFrom( gameObject, Vector3.zero, 1.5f );
         iTween.ColorFrom(gameObject, Color.red, 1.5f);
