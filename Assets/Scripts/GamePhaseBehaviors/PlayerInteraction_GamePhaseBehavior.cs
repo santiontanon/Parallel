@@ -472,6 +472,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public void TriggerSimulation(LinkJava.SimulationTypes simulationType)
     {
+
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
+        playerInteraction_UI.simulationButton.interactable = false;
+        playerInteraction_UI.simulationButton.gameObject.SetActive(false);
+        playerInteraction_UI.submitButton.interactable = false;
+        playerInteraction_UI.submitButton.gameObject.SetActive(false);
+
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
         playerInteraction_UI.loadingText.text = "Simulating...";
@@ -503,19 +510,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         //Debug.Log("Setting to Simulation.");
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
-
-        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
-		playerInteraction_UI.simulationButton.interactable = false;
-		playerInteraction_UI.simulationButton.gameObject.SetActive(false);
-		playerInteraction_UI.submitButton.interactable = false;
-		playerInteraction_UI.submitButton.gameObject.SetActive(false);
-        playerInteraction_UI.playbackControls.gameObject.SetActive(true);
-		playerInteraction_UI.stopSimulationButton.interactable = true;
-		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
-        playerInteraction_UI.pauseSimulationButton.interactable = true;
-        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
-        playerInteraction_UI.playbackSlider.interactable = true;
-        playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
 
         //reset zoom stuff
         ResetZoom();

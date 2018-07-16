@@ -451,8 +451,16 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 }
             }
 
+            Debug.Log("Opening ui");
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+            playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.stopSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.stopSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.playbackSlider.interactable = true;
+            playerInteraction.playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
             yield return PlaySimulation(maxStep);
         }
         else
