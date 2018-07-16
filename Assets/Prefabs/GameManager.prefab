@@ -2097,7 +2097,7 @@ MonoBehaviour:
   playSprite: {fileID: 21300008, guid: 46057b8acb3623342963824719184862, type: 3}
   tutorialDisplays: []
   tutorialIndex: 0
-  tutorialEditIndex: 6
+  tutorialEditIndex: 5
   tutorialEditMode: 0
 --- !u!114 &114000013437963258
 MonoBehaviour:
