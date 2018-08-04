@@ -6,7 +6,7 @@
         "file":"level01",
         "title":"1"
       },
-	  {  
+      {  
         "file":"level02",
         "title":"Level 2"
       },
@@ -53,21 +53,17 @@
       {  
         "file":"level13",
         "title":"Level 13"
-      }
-    ],
-    "optional":[
-	  {  
+      },	  
+      {  
         "file":"level15",
         "title":"Level 15"
       },
       {  
         "file":"level16",
         "title":"16"
-      },
-      {
-        "file":"level19",
-        "title":"19"
       }
+    ],
+    "optional":[
     ],
     "previous":[  
     ]

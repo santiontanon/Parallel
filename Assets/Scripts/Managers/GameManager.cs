@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 	public enum GamePhases {StartScreen, LoadScreen, GenerateTrack, PlayerInteraction, GradeSubmission, GradeReport, EndScreen, CloseGame}
 	public GamePhases gamePhase = GamePhases.StartScreen;
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
-    public enum GameMode { Test, Demo, Class }
+    public enum GameMode { Test, Demo, Class, Study }
     public GameMode currentGameMode;
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;

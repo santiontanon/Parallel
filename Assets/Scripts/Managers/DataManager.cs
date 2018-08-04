@@ -28,7 +28,7 @@ public class DataManager : MonoBehaviour {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
             TextAsset lr_text = null;
-            lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+            lr_text = Resources.Load("DemoSelection") as TextAsset;
             text = lr_text.text;
         }
         else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
@@ -40,9 +40,15 @@ public class DataManager : MonoBehaviour {
             else
             {
                 TextAsset lr_text = null;
-                lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+                lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
                 text = lr_text.text;
             }
+        }
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
+        {
+            TextAsset lr_text = null;
+            lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
+            text = lr_text.text;
         }
         else
         {
@@ -104,7 +110,21 @@ public class DataManager : MonoBehaviour {
         catch (System.Exception e)
         {
             Debug.Log(e);
-            TextAsset lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+            TextAsset lr_text = null;
+            switch (GameManager.Instance.currentGameMode)
+            {
+                case GameManager.GameMode.Class:
+                    lr_text = Resources.Load("DefaultLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Demo:
+                case GameManager.GameMode.Test:
+                    lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
+                    break;
+
+                case GameManager.GameMode.Study:
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
+                    break;
+            }
             GetLevels(lr_text.text);
         }
     }
