@@ -4,7 +4,7 @@
     "required":[  
       {  
         "file":"level01",
-        "title":"1"
+        "title":"Level 1"
       },
       {  
         "file":"level02",
@@ -39,28 +39,12 @@
         "title":"Level 9"
       },
       {  
-        "file":"level10",
-        "title":"Level 10"
-      },
-      {  
-        "file":"level11",
-        "title":"Level 11"
-      },
-      {  
-        "file":"level12",
-        "title":"Level 12"
-      },
-      {  
         "file":"level13",
         "title":"Level 13"
       },	  
       {  
-        "file":"level15",
-        "title":"Level 15"
-      },
-      {  
         "file":"level16",
-        "title":"16"
+        "title":"Level 16"
       }
     ],
     "optional":[
