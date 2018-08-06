@@ -26,6 +26,7 @@ package tests;
 import java.io.File;
 import game.GameState;
 import game.pcg.MapGenerator;
+import gui.BoardGameStateJFrame;
 import support.GameStateExporter;
 import support.PCG;
 
@@ -59,14 +60,17 @@ public class TestPCGExport {
         System.out.println(GameStateExporter.export(gs));*/
         
         String batchId;
-        batchId = "week2"; // Doesn't have SYNCRO nor DEADLOCK
+        //batchId = "week2"; // Doesn't have SYNCRO nor DEADLOCK
         //batchId = "week45"; // Doesn't have SYNCRO
         //batchId = "week79"; 
-        batchId = "extra4";
-        for(int j=4;j<=8;j++){        
-            for(int i=0;i<20;i++){
-                String filename = "level-PCG-"+batchId+"-"+j+"-"+i+".txt";
-                PCG.export(PCG.generateGameState(i,i, j, false, true), new File(filename));
+        //batchId = "extra4";
+        batchId = "santiTest";
+        for(int size=1;size<=3;size++){        
+            for(int randomSeed=0;randomSeed<1;randomSeed++){
+                String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
+                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
+                BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 640, 480, gs);
+                PCG.export(gs, new File(filename));
             }
         }
    
