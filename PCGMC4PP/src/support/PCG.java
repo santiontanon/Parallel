@@ -144,9 +144,11 @@ public class PCG {
                 lastGraph = graph;
             }
         } while (graph != null);
-        if (debug) {
+//        if (debug) {
             generator.printRuleApplicationCounts();
-        }
+            System.out.println("Current graph (after):");
+            System.out.println("  " + lastGraph);
+//        }
         if(rule_applications!=null){
             for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
                 rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
@@ -191,6 +193,7 @@ public class PCG {
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
         // Instanciate situations
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
+//        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
         // Refine components
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
         // Remove solution

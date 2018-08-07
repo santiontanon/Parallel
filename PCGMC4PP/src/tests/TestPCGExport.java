@@ -25,10 +25,17 @@ package tests;
 
 import java.io.File;
 import game.GameState;
-import game.pcg.MapGenerator;
 import gui.BoardGameStateJFrame;
-import support.GameStateExporter;
 import support.PCG;
+
+/*
+
+to do:
+    OK - in the JESS1 pattern, have a way to divert the arrow with the package to the proper path
+    - re-add the other rules, and see how they interact
+    - try to beat a few levels
+    - push to the repo
+*/
 
 
 /**
@@ -65,11 +72,11 @@ public class TestPCGExport {
         //batchId = "week79"; 
         //batchId = "extra4";
         batchId = "santiTest";
-        for(int size=1;size<=3;size++){        
-            for(int randomSeed=0;randomSeed<1;randomSeed++){
+        for(int size=1;size<=1;size++){        
+            for(int randomSeed=0;randomSeed<10;randomSeed++){
                 String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
-                BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 640, 480, gs);
+                BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 1280, 640, gs);
                 PCG.export(gs, new File(filename));
             }
         }
