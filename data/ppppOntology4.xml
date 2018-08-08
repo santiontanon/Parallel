@@ -13,6 +13,7 @@
     <sort name="situation_deadlock_two_thread_semaphore" super="situation_deadlock"/>
     <sort name="situation_deadlock_two_pickup_delivery" super="situation_critical_thread_lost,situation_deadlock"/>
     <sort name="situation_syncro" super="situation_inst"/>
+    <sort name="situation_three_path_exchange_deadlock" super="situation_deadlock"/>
 
     <sort name="kind_of_iteration" super="any"/>
     <sort name="loop" super="kind_of_iteration"/>
@@ -35,6 +36,7 @@
     <sort name="trash" super="pcg_hint"/>
     <sort name="first" super="pcg_hint"/>
     <sort name="two_thread_semaphore" super="pcg_hint"/>
+    <sort name="three_path_exchange_deadlock" super="pcg_hint"/>
 
     <sort name="control_loop" super="track,kind_of_iteration"/>
 
