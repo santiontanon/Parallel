@@ -28,7 +28,7 @@ public class DataManager : MonoBehaviour {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
             TextAsset lr_text = null;
-            lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+            lr_text = Resources.Load("DemoSelection") as TextAsset;
             text = lr_text.text;
         }
         else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
@@ -40,9 +40,15 @@ public class DataManager : MonoBehaviour {
             else
             {
                 TextAsset lr_text = null;
-                lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+                lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
                 text = lr_text.text;
             }
+        }
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
+        {
+            TextAsset lr_text = null;
+            lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
+            text = lr_text.text;
         }
         else
         {
@@ -58,46 +64,69 @@ public class DataManager : MonoBehaviour {
     public void GetLevels(string inputJson)
     {
         allLevels.Clear();
+        Debug.Log(inputJson);
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
 
         //Load pre-existing scores
         GameManager.Instance.GetScoreManager().LoadScores();
 
-        //link level int ids to each level reference object
-        foreach (LevelReferenceObject lrObj in levRef.levels.required)
-        {
-            if (lrObj.levelId == -99999)
+        try{
+            //link level int ids to each level reference object
+            foreach (LevelReferenceObject lrObj in levRef.levels.required)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
-        foreach (LevelReferenceObject lrObj in levRef.levels.previous)
-        {
-            if (lrObj.levelId == -99999)
+            foreach (LevelReferenceObject lrObj in levRef.levels.previous)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
-        foreach (LevelReferenceObject lrObj in levRef.levels.optional)
-        {
-            if (lrObj.levelId == -99999)
+            foreach (LevelReferenceObject lrObj in levRef.levels.optional)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
 
-        Object[] loadedObjects = Resources.LoadAll("Levels");
-        foreach (Object o in loadedObjects)
-        {
-            //TextAsset t = o as TextAsset;
-            allLevels.Add(o);
-            allLevelNames.Add(o.name);
- 
+            Object[] loadedObjects = Resources.LoadAll("Levels");
+            foreach (Object o in loadedObjects)
+            {
+                //TextAsset t = o as TextAsset;
+                allLevels.Add(o);
+                allLevelNames.Add(o.name);
+
+            }
+            GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
         }
-        GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            TextAsset lr_text = null;
+            switch (GameManager.Instance.currentGameMode)
+            {
+                case GameManager.GameMode.Class:
+                    lr_text = Resources.Load("DefaultLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Demo:
+                case GameManager.GameMode.Test:
+                    lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
+                    break;
+
+                case GameManager.GameMode.Study:
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
+                    break;
+            }
+            GetLevels(lr_text.text);
+        }
     }
 
     public void GetPCGLevels(List<string> levels)
@@ -215,8 +244,6 @@ public class DataManager : MonoBehaviour {
 	{
 		levelname = inputString;
         string[] bindata_split = new string[0];
-
-        Debug.Log(bindata_split);
 
         switch (loadType)
         {

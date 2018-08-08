@@ -49,6 +49,7 @@ public class PlayerInteraction_UI
     [Header("Updatable Elements")]
     public Text levelNameText;
     public Text loadingText;
+    public Text levelTimer;
 	public Image draggableElement;
 	public Text text_hintPopUp;
 	public Image image_hintPopUp;
@@ -96,6 +97,24 @@ public class PlayerInteraction_UI
 		zoomMeter.CloseMeter();
 	}
 
+    public float startTime;
+    public void Timer()
+    {
+        float rawTime = Time.fixedTime - startTime;
+        float milliseconds = (Time.fixedTime % 1);
+        rawTime -= milliseconds;
+        int hours = (int)rawTime / 3600;
+        int minutes = ((int)rawTime % 3600) / 60;
+        int seconds = (int)rawTime % 60;
+        string sMinutes = minutes.ToString();
+        while (sMinutes.Length < 2) sMinutes = "0" + sMinutes;
+        string sSeconds = seconds.ToString();
+        while (sSeconds.Length < 2) sSeconds = "0" + sSeconds;
+        string sMilliseconds = ((int)(milliseconds * 1000)).ToString();
+        while (sMilliseconds.Length < 3) sMilliseconds = "0" + sMilliseconds;
+        levelTimer.text = hours.ToString() + ":" + sMinutes + ":" + sSeconds;// + ":" + sMilliseconds;
+    }
+
 	public void ClearButtonBehaviors()
 	{
 		place_semaphore.triggers.Clear();
@@ -107,7 +126,7 @@ public class PlayerInteraction_UI
 
 	public void SetDraggableElement ( Sprite inputTexture )
 	{
-		Debug.Log("Setting texture to " + inputTexture.name);
+		//Debug.Log("Setting texture to " + inputTexture.name);
 		draggableElement.sprite = inputTexture;
 		draggableElement.gameObject.SetActive(true);
 	}
@@ -243,7 +262,10 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.RemoveAllListeners();
             levelsNext.onClick.RemoveAllListeners();
 
-            bool showNextLevelButton = (GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
+            PlayerInteraction_GamePhaseBehavior playerInteraction = GameManager.Instance.playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+            bool showNextLevelButton = (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME && 
+                                        playerInteraction.playbackBehavior.success == true && 
+                                        GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
             levelsNext.gameObject.SetActive(showNextLevelButton);
 
             exit.onClick.RemoveAllListeners();

@@ -81,7 +81,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     
     public override void BeginPhase()
     {
-        Debug.Log("BeginPhase");
         pauseSimulation += PauseSimulation;
         unpauseSimulation += UnpauseSimulation;
         delayedUnpause += DelayedUnpauseSimulation;
@@ -89,6 +88,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.SetText(GameManager.Instance.GetDataManager().currentLevelData);
         playerInteraction_UI.OpenUI();
         DefineButtonBehaviors();
+
+        playerInteraction_UI.startTime = Time.fixedTime;
 
         score.index = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
 
@@ -144,6 +145,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		{
 			PlayerInteractionListener();
 		}
+        playerInteraction_UI.Timer();
 	}
 
 	public override void EndPhase()
@@ -459,7 +461,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
-            Debug.Log(resetObject.component.id);
+            //Debug.Log(resetObject.component.id);
 		    resetObject.ResetPosition();
 		}
 
@@ -470,6 +472,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public void TriggerSimulation(LinkJava.SimulationTypes simulationType)
     {
+
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
+        playerInteraction_UI.simulationButton.interactable = false;
+        playerInteraction_UI.simulationButton.gameObject.SetActive(false);
+        playerInteraction_UI.submitButton.interactable = false;
+        playerInteraction_UI.submitButton.gameObject.SetActive(false);
+
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
         playerInteraction_UI.loadingText.text = "Simulating...";
@@ -498,22 +507,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.awaitingSimulation) return;
         interactionPhase = InteractionPhases.simulation;
-        Debug.Log("Setting to Simulation.");
+        //Debug.Log("Setting to Simulation.");
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
-
-        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
-		playerInteraction_UI.simulationButton.interactable = false;
-		playerInteraction_UI.simulationButton.gameObject.SetActive(false);
-		playerInteraction_UI.submitButton.interactable = false;
-		playerInteraction_UI.submitButton.gameObject.SetActive(false);
-        playerInteraction_UI.playbackControls.gameObject.SetActive(true);
-		playerInteraction_UI.stopSimulationButton.interactable = true;
-		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
-        playerInteraction_UI.pauseSimulationButton.interactable = true;
-        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
-        playerInteraction_UI.playbackSlider.interactable = true;
-        playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
 
         //reset zoom stuff
         ResetZoom();
@@ -712,7 +708,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
-                Debug.Log("dragging");
 			if(Input.GetKey(KeyCode.Mouse0))
 			{
 				if( currentGridObject != null )
@@ -740,10 +735,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GameManager.Instance.tracker.CreateEventExt("Destroying",currentGridObject.component.type);	
 					Destroy( currentGridObject.gameObject );
 					currentGridObject = null;
-
-                        Debug.Log("END TRASH HOVER");
-                        interactionPhase = InteractionPhases.ingame_default;
-					
+                    interactionPhase = InteractionPhases.ingame_default;
 				}
 				else 
 				{
@@ -796,7 +788,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				}
 
                 
-                Debug.Log("END CONNECTING");
+                //Debug.Log("END CONNECTING");
 				interactionPhase = InteractionPhases.ingame_default;
 			}
 			else 
@@ -819,6 +811,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         // Display its hint UI
                         string obj_name = current_object.component.type;
+                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                         // Testing to make sure the interaction worked, always displays Track Hint
                         //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
@@ -926,6 +919,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_default;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(true);
+            playerInteraction_UI.simulationButton.interactable = true;
+            playerInteraction_UI.submitButton.interactable = true;
         }
         else
         {
@@ -933,6 +928,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(false);
+            playerInteraction_UI.simulationButton.interactable = false;
+            playerInteraction_UI.submitButton.interactable = false;
         }
         TriggerHintFader();
 
@@ -951,6 +948,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         {
             bool success = false;
             HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
+            Debug.Log(g.component.type + ": " + success);
             if (success == false)
             {
                 SpriteRenderer s = g.GetComponent<SpriteRenderer>();

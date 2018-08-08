@@ -5,10 +5,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 485960}
-  - 114: {fileID: 11405034}
+  - component: {fileID: 485960}
+  - component: {fileID: 11405034}
   m_Layer: 0
   m_Name: GradeSubmissionPhase
   m_TagString: Untagged
@@ -21,10 +21,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 426442}
-  - 114: {fileID: 11467800}
+  - component: {fileID: 426442}
+  - component: {fileID: 11467800}
   m_Layer: 0
   m_Name: GradeReportPhase
   m_TagString: Untagged
@@ -37,18 +37,18 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 497172}
-  - 114: {fileID: 11482970}
-  - 114: {fileID: 11432306}
-  - 114: {fileID: 11491530}
-  - 114: {fileID: 11421052}
-  - 114: {fileID: 114000013169398064}
-  - 114: {fileID: 114000013437963258}
-  - 114: {fileID: 114000010981810682}
-  - 114: {fileID: 114000012460913404}
-  - 114: {fileID: 114000010146262350}
+  - component: {fileID: 497172}
+  - component: {fileID: 11482970}
+  - component: {fileID: 11432306}
+  - component: {fileID: 11491530}
+  - component: {fileID: 11421052}
+  - component: {fileID: 114000013169398064}
+  - component: {fileID: 114000013437963258}
+  - component: {fileID: 114000010981810682}
+  - component: {fileID: 114000012460913404}
+  - component: {fileID: 114000010146262350}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -61,10 +61,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 438876}
-  - 114: {fileID: 11446218}
+  - component: {fileID: 438876}
+  - component: {fileID: 11446218}
   m_Layer: 0
   m_Name: GeneratePhase
   m_TagString: Untagged
@@ -77,10 +77,10 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 4: {fileID: 479600}
-  - 114: {fileID: 11409168}
+  - component: {fileID: 479600}
+  - component: {fileID: 11409168}
   m_Layer: 0
   m_Name: EndScreenPhase
   m_TagString: Untagged
@@ -97,10 +97,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 497172}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &438876
 Transform:
   m_ObjectHideFlags: 1
@@ -110,10 +110,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 497172}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &479600
 Transform:
   m_ObjectHideFlags: 1
@@ -123,10 +123,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 497172}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &485960
 Transform:
   m_ObjectHideFlags: 1
@@ -136,10 +136,10 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 497172}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &497172
 Transform:
   m_ObjectHideFlags: 1
@@ -149,7 +149,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.519, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 438876}
   - {fileID: 485960}
@@ -157,6 +156,7 @@ Transform:
   - {fileID: 479600}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11405034
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -251,13 +251,15 @@ MonoBehaviour:
   gradeReportBehavior: {fileID: 11467800}
   endScreenBehavior: {fileID: 11409168}
   exitGameBehavior: {fileID: 0}
-  currentGameMode: 1
+  currentGameMode: 2
   hideTestsForBuild: 0
   currentLevelReferenceObject:
     file: level01
     title: 
+    data: 
     completionRank: 0
     levelId: -1
+  JVMMemorySelection: 2
   preSurveyComplete: 0
   postSurveyComplete: 0
   trackGrid: {fileID: 0}
@@ -281,6 +283,7 @@ MonoBehaviour:
   currentLevelData:
     metadata:
       level_id: 0
+      level_type: 0
       level_title: level title
       goal_string: goal string
       goal_struct:
@@ -329,6 +332,7 @@ MonoBehaviour:
       required: []
       optional: []
       previous: []
+      pcg: []
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -354,6 +358,8 @@ MonoBehaviour:
   saves: []
   currentSave:
     scores: []
+    pcgScores: []
+    pcgLevels: []
     name: 
 --- !u!114 &114000010981810682
 MonoBehaviour:
@@ -399,6 +405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scores: []
+  pcgScores: []
   solutions:
   - index: 0
     completed: 1
@@ -820,9 +827,9 @@ MonoBehaviour:
   - levelNumber: 1
     type: 0
     init_trigger: 0
-    complete_trigger: 4
+    complete_trigger: 2
     popupDescription: Right click a signal and drag to a semaphore to link the two.
-      Then press "Test" again (click to close)
+      Then press "Test" again.
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -892,8 +899,8 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    popupDescription: Click the help toggle and then select an element for more information
-      about it.
+    popupDescription: 'Toggle on help mode, then click on a highlighted element to
+      learn more about it. '
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -914,6 +921,42 @@ MonoBehaviour:
         passed: 1
         delivered: 0
         available: 0
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 2
+    type: 0
+    init_trigger: 0
+    complete_trigger: 2
+    popupDescription: Click the help toggle again to return to play mode when you
+      are done.
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: exampleType
+      timeStep: -1
+      componentID: -1
+      componentPos: {x: -1, y: -1}
+      componentStatus:
+        final_condition: -1
+        goal_descriptions: []
+        speed: -1
+        value: 0
+        passed: 0
+        delivered: 0
+        available: -1
         payload: 
         current: -1
         goals_completed: 0
@@ -2054,6 +2097,8 @@ MonoBehaviour:
   playSprite: {fileID: 21300008, guid: 46057b8acb3623342963824719184862, type: 3}
   tutorialDisplays: []
   tutorialIndex: 0
+  tutorialEditIndex: 5
+  tutorialEditMode: 0
 --- !u!114 &114000013437963258
 MonoBehaviour:
   m_ObjectHideFlags: 1

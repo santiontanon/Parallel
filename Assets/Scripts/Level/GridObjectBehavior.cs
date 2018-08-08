@@ -141,7 +141,7 @@ public class GridObjectBehavior : MonoBehaviour
 	#region "Left Click Drags"
 	public void BeginDrag()
 	{
-		Debug.Log("Start drag!");
+
 	}
 	public void ContinueDrag()
 	{
@@ -669,7 +669,7 @@ public class GridObjectBehavior : MonoBehaviour
         float outlineMultiplier = GameManager.Instance.GetGridManager().worldCamera.orthographicSize / 5.7f; //5.7 is the ortho size for the level 1 grid.
         //outlineSize *=outlineMultiplier;
         
-        Debug.Log("outlineMultiplier = " + outlineMultiplier);
+        //Debug.Log("outlineMultiplier = " + outlineMultiplier);
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat("_Outline", outline ? 1f : 0);
         mpb.SetColor("_OutlineColor", color);

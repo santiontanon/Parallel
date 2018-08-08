@@ -65,8 +65,6 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         }
         if(GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
         {
-            Debug.Log(GameManager.Instance.GetSaveManager().currentSave.pcgLevels.Count);
-            Debug.Log(GameManager.Instance.GetDataManager().levRef.levels.pcg.Count);
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.pcg)
             {
                 SetupLevelButton(lr, loadUI.generateContainer, true);

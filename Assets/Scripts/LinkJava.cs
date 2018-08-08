@@ -152,7 +152,7 @@ public class LinkJava : MonoBehaviour
 
 		if (externalProcess == null) 
 		{
-			UnityEngine.Debug.Log ("Process is null");
+			//UnityEngine.Debug.Log ("Process is null");
 		} 
 		else 
 		{
@@ -170,9 +170,9 @@ public class LinkJava : MonoBehaviour
 				mpout += line + "\n";
 			}
 			mpout += "Exit code: "+ExitCode.ToString ();
-            UnityEngine.Debug.Log(line);
-            UnityEngine.Debug.Log(mpout);
-			UnityEngine.Debug.Log ("Java finished here...");
+            //UnityEngine.Debug.Log(line);
+            //UnityEngine.Debug.Log(mpout);
+			//UnityEngine.Debug.Log ("Java finished here...");
 			if (ExitCode == 0) 
 			{
 				UnityEngine.Debug.Log (externalProcess.StartInfo.Arguments);	
@@ -199,7 +199,7 @@ public class LinkJava : MonoBehaviour
 
 			externalProcess = null;	
 		}
-		UnityEngine.Debug.Log ("Finished waiting.");
+		//UnityEngine.Debug.Log ("Finished waiting.");
 
 		if(OnSimulationCompleted!=null) { OnSimulationCompleted(simulationFeedback); }
 	}
@@ -226,9 +226,9 @@ public class LinkJava : MonoBehaviour
             //UnityEngine.Debug.LogError ("Java is not found, give some feedback to the user...");
         }
 		else {
-		UnityEngine.Debug.Log ("Calling Java...");
+		//UnityEngine.Debug.Log ("Calling Java...");
 		UnityEngine.Debug.Log(externalNonBlocking ()); //this is what calls the ME simulation
-		UnityEngine.Debug.Log ("Finished calling Java...");
+		//UnityEngine.Debug.Log ("Finished calling Java...");
 		}
 	}
 }
