@@ -28,7 +28,6 @@ namespace ParallelProg.UI
 
         public virtual void ClosePanel(bool forceClose = false)
         {
-            Debug.Log("Close panel");
             iTween.Stop(panelContainer.gameObject);
             isOpen = false;
             if (forceClose)

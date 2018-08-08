@@ -74,7 +74,7 @@ public class Tracker : MonoBehaviour {
 		ready = false;
 		url = "https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod"; // this is out of date, not to be used
 		url = "http://129.25.12.216:8787"; // this is the CCI cloud "centos" server
-		url = "http://144.118.172.191:8787"; // this is the "magic" server in Santi's office
+		url = "http://129.25.141.236:8787"; // this is the "magic" server in Santi's office
 		// to start the service in the server, start a `screen` session, then go into LogVisualizer and type `python httpserver.py -i 10000 -s 144.118.172.191 -p 8787`
 		// then you can close the `screen` by hitting `control+a`, `d`, and then you can `exit`.
 		// the logs are saved in a directory called `saved_data` relative to the location of the server script
@@ -318,7 +318,7 @@ public class Tracker : MonoBehaviour {
 		if(log2!=null){
 			log2.Append(line+"\n");
 		} else {
-			Debug.Log("Cannot log line: "+line);
+			//Debug.Log("Cannot log line: "+line);
 		}
 		return e;
 	}

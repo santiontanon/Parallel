@@ -1400,7 +1400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000011948047816
 GameObject:
   m_ObjectHideFlags: 1
@@ -2805,6 +2805,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1333769096131580
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 224961489778609658}
+  - component: {fileID: 222700401182304632}
+  - component: {fileID: 114655546834358898}
+  m_Layer: 5
+  m_Name: Timer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!114 &114000010033894540
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3810,7 +3827,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9fdc8be77cc888748a972ec77a82a40d, type: 3}
-    m_FontSize: 18
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -4303,33 +4320,27 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Arrows
-        hintDescription: 'Arrows travel along tracks and interact with items that
-          have been placed on the tracks.  You can hover over the arrows at the top
-          of the screen to see which direction the arrow will travel on the track. '
+        hintDescription: 'Arrows travel along tracks and interact with items on the
+          track. Hover over arrows in the sidebar to see which direction and path
+          the arrow will take. '
         hintImage: {fileID: 21300000, guid: 50859f0aa4e6cec4697e6891701d1c98, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
         hint_component_type: 
         hintTitle: Signal
-        hintDescription: Signals can be dragged from the toolbar and placed on the
-          track. Signals are used to control semaphores and direction switches.   To
-          connect a signal to an item on the track, right-click the signal, then right-click
-          the item that you want to connect it to. Hover over the signal to make sure
-          that the connection has been made.
+        hintDescription: Signals are used to control semaphores and direction switches.
+          To create a link, rick click on signal and drag to semaphore or direction
+          switch. Right click to link. Hover over signal to confirm the link.
         hintImage: {fileID: 21300000, guid: 30a4810fcb34d5a46be4d842bdb1693e, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 
       hint:
         hint_component_type: 
         hintTitle: Semaphore
-        hintDescription: Semaphores can be used to block or release an arrow (depending
-          on whether it is open or closed). Drag a semaphore from the toolbar to the
-          track and click to snap the semaphore to the track. Multiple signals can
-          connect to one semaphore. When closed (the top image) arrows cannot pass
-          through the semaphore. When open (the bottom image) arrows can pass through
-          the semaphore. You can right click on an unlocked semaphore to switch its
-          default state.
+        hintDescription: Semaphores can be used to block or release an arrow. When
+          closed (top image), arrows are blocked. When open (bottom image), arrows
+          can pass. Multiple signals can link to one semaphore.
         hintImage: {fileID: 21300000, guid: 3babf36dea491e74c88bc2494b0ab992, type: 3}
         hintButtonImage: {fileID: 21300000, guid: fe7265002b887e843882fb18a0c895b8,
           type: 3}
@@ -4353,10 +4364,8 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Direction Switches
-        hintDescription: 'Arrows that pass through a direction switch will turn in
-          the direction of the darker arrow on the switch.  If linked to a signal,
-          the direction switch will change direction when an arrow passes through
-          that connected signal. '
+        hintDescription: At intersections arrows will turn in the direction of the
+          darker direction. Signals can be linked to change direction.
         hintImage: {fileID: 21300000, guid: a33a390811c13704ab293c29a87b6faa, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 04000000050000000700000008000000090000000a0000000b0000000c0000000d0000000f00000010000000110000002c000000
@@ -4372,16 +4381,16 @@ MonoBehaviour:
       hint:
         hint_component_type: 
         hintTitle: Unlimited Conditional Packages
-        hintDescription: A type of package that will regenerate as soon as it has
-          been delivered to a delivery point.
+        hintDescription: A type of package that will regenerate only after it has
+          been delivered by an arrow
         hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
         hintButtonImage: {fileID: 0}
     - levelIds: 06000000080000000900000012000000260000002c000000
       hint:
         hint_component_type: 
         hintTitle: Limited Conditional Packages
-        hintDescription: A type of package that will not regenerate after it is picked
-          up by an arrow.
+        hintDescription: Only one package is generated. Arrows can pick up this package
+          and deliver it.
         hintImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
         hintButtonImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37,
           type: 3}
@@ -4522,8 +4531,8 @@ MonoBehaviour:
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: Drag to tracks, release to place. Right click, drag, right click
-          on a semaphore or direction switch to link.
+        tooltipText: 'Drag and drop to place on tracks. Rick click and drag to semaphore
+          or direction switch. Right click to link. '
     - tooltipUiElement: {fileID: 114000012188733926}
       permanent: 1
       refString: 
@@ -4539,7 +4548,7 @@ MonoBehaviour:
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: Use scroll wheel to zoom in and out.
+        tooltipText: Use mouse scroll to zoom in and out.
     - tooltipUiElement: {fileID: 114000013697017244}
       permanent: 1
       refString: LinkHover
@@ -4590,6 +4599,7 @@ MonoBehaviour:
     goalDescription_Title: {fileID: 114000014010387008}
     levelNameText: {fileID: 114000011623395838}
     loadingText: {fileID: 114000013023587120}
+    levelTimer: {fileID: 114655546834358898}
     draggableElement: {fileID: 114000013905212088}
     text_hintPopUp: {fileID: 114000013025524892}
     image_hintPopUp: {fileID: 114000014013334428}
@@ -4607,6 +4617,7 @@ MonoBehaviour:
     playbackControls: {fileID: 1000011584011826}
     hint_button_prefab: {fileID: 1000010487195062, guid: fc81bf7d08fb548d699a17e7c23de7ff,
       type: 2}
+    startTime: 0
   score:
     index: 0
     completed: 0
@@ -7176,7 +7187,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9fdc8be77cc888748a972ec77a82a40d, type: 3}
-    m_FontSize: 26
+    m_FontSize: 22
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -8480,7 +8491,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 9fdc8be77cc888748a972ec77a82a40d, type: 3}
-    m_FontSize: 28
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -9293,6 +9304,39 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114655546834358898
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1333769096131580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 57
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 59
+    m_Alignment: 2
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 0:00:00
 --- !u!222 &222000010024627394
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -10145,6 +10189,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012190487366}
+--- !u!222 &222700401182304632
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1333769096131580}
 --- !u!224 &224000010027734150
 RectTransform:
   m_ObjectHideFlags: 1
@@ -10410,7 +10460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00012207031}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000010343981880
@@ -10524,7 +10574,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 827.0598, y: -38.5}
+  m_AnchoredPosition: {x: 827.06006, y: -38.5}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224000010672512970
@@ -10808,7 +10858,7 @@ RectTransform:
   - {fileID: 224000011682743772}
   - {fileID: 224000012882371618}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0.93}
@@ -10907,7 +10957,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 732.0598, y: -38.5}
+  m_AnchoredPosition: {x: 732.06006, y: -38.5}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224000011253472354
@@ -10944,7 +10994,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.55125004, y: 0.060450353}
   m_AnchorMax: {x: 0.5975001, y: 0.14432448}
-  m_AnchoredPosition: {x: 2.100006, y: 0}
+  m_AnchoredPosition: {x: 2.0999756, y: 0}
   m_SizeDelta: {x: 363, y: 412}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011284683332
@@ -11001,7 +11051,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1017.0598, y: -38.5}
+  m_AnchoredPosition: {x: 1017.06006, y: -38.5}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224000011330798114
@@ -11019,7 +11069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 922.0598, y: -38.5}
+  m_AnchoredPosition: {x: 922.06006, y: -38.5}
   m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224000011365817120
@@ -11517,9 +11567,10 @@ RectTransform:
   - {fileID: 224000011683073842}
   - {fileID: 224000011600691284}
   - {fileID: 224000012134658544}
+  - {fileID: 224000012389786772}
+  - {fileID: 224961489778609658}
   - {fileID: 224000013890215990}
   - {fileID: 224000014293434984}
-  - {fileID: 224000012389786772}
   - {fileID: 224000011168393594}
   - {fileID: 224000011923579736}
   - {fileID: 224000012877272790}
@@ -11578,7 +11629,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -11718,7 +11769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: -38.499996}
+  m_AnchoredPosition: {x: 0, y: -38.5}
   m_SizeDelta: {x: 77, y: -77.00001}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &224000012128283596
@@ -11815,7 +11866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00012207031}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000012267053210
@@ -11872,7 +11923,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -189.8, y: 37.5}
+  m_AnchoredPosition: {x: -189.7998, y: 37.5}
   m_SizeDelta: {x: 230, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000012314668576
@@ -11927,7 +11978,7 @@ RectTransform:
   - {fileID: 224000011432521402}
   - {fileID: 224000011951482776}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 12
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -12221,7 +12272,7 @@ RectTransform:
   m_Children:
   - {fileID: 224000010770379510}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -12415,7 +12466,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1100.8098, y: -38.5}
+  m_AnchoredPosition: {x: 1100.81, y: -38.5}
   m_SizeDelta: {x: 117.5, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013180405906
@@ -12840,7 +12891,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.3925, y: 0.060450353}
   m_AnchorMax: {x: 0.43875003, y: 0.14432448}
-  m_AnchoredPosition: {x: 2.100006, y: 0}
+  m_AnchoredPosition: {x: 2.0999756, y: 0}
   m_SizeDelta: {x: 363, y: 412}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013780357406
@@ -12972,7 +13023,7 @@ RectTransform:
   - {fileID: 224000010440061514}
   - {fileID: 224000011187673574}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13215,10 +13266,28 @@ RectTransform:
   m_Children:
   - {fileID: 224000011284683332}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 11
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 250, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!224 &224961489778609658
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1333769096131580}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 224000011781466348}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -92.60498, y: 416}
+  m_SizeDelta: {x: 214.9, y: 65.8}
+  m_Pivot: {x: 1, y: 0.5}

@@ -10,7 +10,6 @@ public class TutorialManager : MonoBehaviour {
     TutorialEvent[] currentTutorialEventQueue;
     int tutorialEventIndex = 0;
 
-
     [System.Serializable]
     public class Tutorial_UIOverlay : ParallelProg.UI.UIOverlay
     {
@@ -195,7 +194,6 @@ public class TutorialManager : MonoBehaviour {
 
 	public void PerformTutorialSeries(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase = TutorialEvent.TutorialInitializeTriggers.beforePlay)
 	{
-        Debug.Log("perform tutorial series");
         List<TutorialEvent> returnEvents = RetrieveTutorialEvents(inputLevelId, inputInitPhase);
         currentTutorialEventQueue = returnEvents.ToArray();
         tutorialEventIndex = 0;
@@ -229,19 +227,28 @@ public class TutorialManager : MonoBehaviour {
 
     List<TutorialEvent> RetrieveTutorialEvents(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase)
     {
-        Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
+        //Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
         List<TutorialEvent> returnEvents = new List<TutorialEvent>();
         PlayerInteraction_GamePhaseBehavior p = (PlayerInteraction_GamePhaseBehavior)GameManager.Instance.playerInteractionBehavior;
 
+        bool foundSimEvents = false; //triggered once events made to play during the simulation are found, prevents queuing of beforePlay events that follow it
+
         foreach (TutorialEvent t in tutorialEvents)
         {
-            if (t.init_trigger == inputInitPhase)
+            if (t.levelNumber == inputLevelId && !t.hasCompleted)
+            {
+                if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.duringSimulation) foundSimEvents = true;
+                else if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.beforePlay && foundSimEvents == true) break;
+                returnEvents.Add(t);
+            }
+            else if (t.levelNumber > inputLevelId) break;
+            /*if (t.init_trigger == inputInitPhase)
             {
                 if (t.levelNumber == inputLevelId && !t.hasCompleted) returnEvents.Add(t);
-            }
-            else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
+            }*/
+            //else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
         }
-        foreach (TutorialEvent t in returnEvents) Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
+        foreach (TutorialEvent t in returnEvents) { } //Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
         return returnEvents;
     }
 
@@ -249,11 +256,11 @@ public class TutorialManager : MonoBehaviour {
     {
         if (tutorialEventIndex >= currentTutorialEventQueue.Length )
         {
-            Debug.Log("All tutorials complete for this level.");
+            //Debug.Log("All tutorials complete for this level.");
         }
         else
         {
-            Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
+            //Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
             TutorialEvent currentTutorial = currentTutorialEventQueue[tutorialEventIndex];
             PerformTutorial(currentTutorial);
             if(currentTutorialEventQueue.Length > tutorialEventIndex + 2) //is there a next tutorial?
@@ -261,7 +268,7 @@ public class TutorialManager : MonoBehaviour {
                 TutorialEvent nextTutorial = currentTutorialEventQueue[tutorialEventIndex + 1];
                 if (nextTutorial.type == TutorialEvent.TutorialTypes.simulation)
                 {
-                    Debug.Log("PREFORMING SIM");
+                    //Debug.Log("PREFORMING SIM");
                     PerformTutorial(nextTutorial);
                 }
             }
@@ -270,6 +277,7 @@ public class TutorialManager : MonoBehaviour {
 
     void PerformTutorial(TutorialEvent t)
     {
+        //Debug.Log("Performing Tutorial Event");
         if (t.type == TutorialEvent.TutorialTypes.popup)
         {
             switch (t.complete_trigger)
@@ -358,7 +366,7 @@ public class TutorialManager : MonoBehaviour {
         tutorialEventIndex++;
         if (tutorialIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
         else { 
-			Debug.Log("No more tutorials."); 
+			//Debug.Log("No more tutorials."); 
 			GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventComplete","NoMore");
 		}
     }
@@ -388,8 +396,65 @@ public class TutorialManager : MonoBehaviour {
 
     public void ClearActiveTutorials()
     {
-        Debug.Log("ClearActiveTutorials");
+        //Debug.Log("ClearActiveTutorials");
         tutorialOverlay.ClosePanel();
+    }
+
+    [SerializeField]
+    int tutorialEditIndex = 0; //this variable is for editing the tutorial events array without having to manually move data in conjunction with tutorial edit mode and the EditTutorial function
+    [SerializeField]
+    int tutorialEditMode = 1; // 0 -> Adds new tutorial at the above index; 1 -> Removes tutorial at the above index
+
+    [ContextMenu("Edit Tutorial")]
+    public void EditTutorial()
+    {
+        switch (tutorialEditMode)
+        {
+            case 0:
+                AddNewTutorial(tutorialEditIndex);
+                break;
+            case 1:
+                RemoveTutorial(tutorialEditIndex);
+                break;
+        }
+    }
+
+    void AddNewTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length + 1];
+        for(int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if(i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else if(i == index)
+            {
+                newTutorialEvents[i] = new TutorialEvent();
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i-1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
+    }
+
+    void RemoveTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length - 1];
+        for (int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if (i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i + 1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
     }
 
     #region Legacy Tutorial Code

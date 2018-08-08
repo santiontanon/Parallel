@@ -33,25 +33,34 @@ public class SaveManager : MonoBehaviour{
 
     public void LoadSave(string s)
     {
-        ParallelSave save = GetSave(s);
-        if (save != null)
+        Debug.Log("LoadSave");
+        if (s != "")
         {
-            currentSave = save;
-            GameManager.Instance.GetScoreManager().LoadScores();
-            GameManager.Instance.GetDataManager().GetLevels();
-            if (currentSave.pcgLevels == null)
+            ParallelSave save = GetSave(s);
+            if (save != null)
             {
-                currentSave.pcgLevels = new List<string>();
+                currentSave = save;
+                GameManager.Instance.GetScoreManager().LoadScores();
+                GameManager.Instance.GetDataManager().GetLevels();
+                if (currentSave.pcgLevels == null)
+                {
+                    currentSave.pcgLevels = new List<string>();
+                }
+                GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
             }
-            GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
-        }
-        else
-        {
-            Debug.Log("Unable to load save: " + s + ". File does not exist.");
-            LevelScore[] scores = new LevelScore[0];
-            List<LevelScore> pcgScores = new List<LevelScore>();
-            List<string> levels = new List<string>();
-            NewSave(s, scores, pcgScores, levels);
+            else
+            {
+                Debug.Log("Unable to load save: " + s + ". File does not exist.");
+                LevelScore[] scores = new LevelScore[0];
+                List<LevelScore> pcgScores = new List<LevelScore>();
+                List<string> pcgLevels = new List<string>();
+                Debug.Log("Time for a new save");
+                currentSave = NewSave(s, scores, pcgScores, pcgLevels);
+                Debug.Log("Save created");
+                GameManager.Instance.GetScoreManager().LoadScores();
+                GameManager.Instance.GetDataManager().GetLevels();
+                GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
+            }
         }
     }
 
@@ -75,6 +84,7 @@ public class SaveManager : MonoBehaviour{
             }
             else
             {
+                Debug.Log("Save does not exist, creating new save");
                 NewSave(s, scores, pcgScores, pcgLevels);
             }
         }
@@ -117,7 +127,7 @@ public class SaveManager : MonoBehaviour{
         }
     }
 
-    public void NewSave(string s, LevelScore[] scores, List<LevelScore> pcgScores, List<string> levels)
+    public ParallelSave NewSave(string s, LevelScore[] scores, List<LevelScore> pcgScores, List<string> levels)
     {
         Debug.Log("NewSave");
         if(s != "")
@@ -128,6 +138,11 @@ public class SaveManager : MonoBehaviour{
             save.pcgScores = pcgScores;
             save.pcgLevels = levels;
             Serializer.SerializeData(save);
+            return save;
+        }
+        else
+        {
+            return null;
         }
     }
 

@@ -18,6 +18,9 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
     [SerializeField]
     bool paused;
 
+    //temp variables to resolve goal screen issues
+    public bool success; //was the solution successful
+
     public void StartPhase()
     {
         //reset values
@@ -48,7 +51,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         currentStep = 0;
         paused = false;
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        Debug.Log(lvl.execution.Count);
         if(lvl.execution.Count > 0)
         {
             int maxStep = 0;
@@ -107,7 +109,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             //create in between steps for thread movements
             for (int i = 0; i <= maxStep; i++)
@@ -299,7 +300,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             yield return new WaitForSeconds(1f);
             TimeStepData timeStep = new TimeStepData();
@@ -359,7 +359,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            Debug.Log(stopwatch.ElapsedMilliseconds);
 
             yield return new WaitForSeconds(1f);
             for (int i = 0; i < stepDictionary.Count; i++)
@@ -451,10 +450,17 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
-            Debug.Log(stopwatch.ElapsedMilliseconds);
 
+            Debug.Log("Opening ui");
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+            playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.stopSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.stopSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.playbackSlider.interactable = true;
+            playerInteraction.playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
             yield return PlaySimulation(maxStep);
         }
         else
@@ -507,6 +513,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                     case 2:
                                     case 8:
                                     case 10:
+                                        success = true;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {
@@ -541,6 +548,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         break;
                                     default:
+                                        success = false;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {
@@ -664,24 +672,24 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.exit:
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levels:
                 playerInteraction.TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
+                //Debug.Log("User input for exit or levels hit.");
                 playerInteraction.EndSimulation();
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.stop:
                 playerInteraction.TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
+                //Debug.Log("User input for exit or levels hit.");
                 playerInteraction.EndSimulation();
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
 
-                Debug.Log("REPLAY");
+                //Debug.Log("REPLAY");
                 //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation;
                 GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
 
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
-                Debug.Log("Retry");
+                //Debug.Log("Retry");
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 playerInteraction.EndSimulation();
                 if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
@@ -697,7 +705,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 playerInteraction.TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
                 break;
             default:
-                Debug.Log("No case defined for " + playerInteraction.playerInteraction_UI.goalOverlay.userInput.ToString());
+                //Debug.Log("No case defined for " + playerInteraction.playerInteraction_UI.goalOverlay.userInput.ToString());
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 break;
         }
@@ -743,7 +751,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     public void DelayedUnpause(float delay = 0, TutorialEvent t = null)
     {
-        Debug.Log(delay);
+        //Debug.Log(delay);
         if (delay == 0)
         {
             paused = false;

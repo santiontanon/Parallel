@@ -33,9 +33,21 @@ public static class Serializer
 
     static ParallelSave DeserializeData(string s)
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(s , FileMode.Open);
-        ParallelSave save = (ParallelSave)bf.Deserialize(file);
+        ParallelSave save = null;
+        try
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(s, FileMode.Open);
+            save = (ParallelSave)bf.Deserialize(file);
+        }
+        catch
+        {
+            Debug.Log("Error Reading Save");
+        }
+        if(save == null)
+        {
+            save = new ParallelSave();
+        }
         return save;
     }
 

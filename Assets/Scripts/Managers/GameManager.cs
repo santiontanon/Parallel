@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 	public enum GamePhases {StartScreen, LoadScreen, GenerateTrack, PlayerInteraction, GradeSubmission, GradeReport, EndScreen, CloseGame}
 	public GamePhases gamePhase = GamePhases.StartScreen;
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
-    public enum GameMode { Test, Demo, Class }
+    public enum GameMode { Test, Demo, Class, Study }
     public GameMode currentGameMode;
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
@@ -108,6 +108,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SetGamePhase(GamePhases inputPhase)
 	{
+        Debug.Log("SetGamePhase" + inputPhase.ToString());
 		if(currentPhase!=null) { EndGamePhaseBehavior(); }
 
 		gamePhase = inputPhase;
@@ -192,7 +193,6 @@ public class GameManager : MonoBehaviour {
 
 	public void TriggerLoadLevel(DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
-        Debug.Log(loadType);
 		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
 		dataManager.InitializeLoadLevel( inputLevelName, loadType );
@@ -200,7 +200,9 @@ public class GameManager : MonoBehaviour {
         if (levRef != null)
             currentLevelReferenceObject = levRef;
         //TODO: Since this gets called when a simulation completes and re-opens everything, it can cause bugs with the tutorials loading
-        SetGamePhase(GameManager.GamePhases.GenerateTrack);
+        InitiateTrackGeneration();
+        if (loadType == DataManager.LoadType.RESOURCES)
+            SetGamePhase(GamePhases.PlayerInteraction);
 	}
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
@@ -273,7 +275,7 @@ public class GameManager : MonoBehaviour {
     public void PlayTutorialLevel()
     {
         string levelToString = SerializeCurrentLevel();
-        Debug.Log(levelToString);
+        //Debug.Log(levelToString);
         string filename =
             Application.persistentDataPath
             + linkJava.pathSeparator
@@ -293,13 +295,12 @@ public class GameManager : MonoBehaviour {
 	public void SubmitCurrentLevel(LinkJava.SimulationTypes inputSimulationType)
 	{        
 		string levelToString = SerializeCurrentLevel();
-		Debug.Log( levelToString );
 		string filename = 
             Application.persistentDataPath 
             + linkJava.pathSeparator 
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
-        Debug.Log(filename);
+        //Debug.Log(filename);
         System.IO.File.WriteAllText(filename, levelToString);
 		linkJava.filename = filename;
 		linkJava.simulationMode = inputSimulationType;
@@ -312,7 +313,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerAdvanceToNextLevel()
     {
         LevelReferenceObject nextLevel = dataManager.GetNextLevel(currentLevelReferenceObject);
-        Debug.Log("Next level is: " + nextLevel.levelId);
+        //Debug.Log("Next level is: " + nextLevel.levelId);
         TriggerLoadLevel(DataManager.LoadType.RESOURCES, nextLevel.file);
     }
 
@@ -325,7 +326,7 @@ public class GameManager : MonoBehaviour {
         //none indicates hitting the replay button
         if (feedback != LinkJava.SimulationFeedback.none)
         {
-            Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
+            //Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
             castBehavior.StartSimulation();
         }
 

@@ -103,6 +103,8 @@ public class GridManager : MonoBehaviour {
 
     public void GenerateGrid(List<GridTrack>gridTracks, List<GridComponent> gridComponents)
 	{
+        ClearGrid(true);
+
 		/*
 		currentGridWidth = layoutList[0].Length;
 		currentGridHeight = layoutList.Count;
@@ -388,7 +390,7 @@ public class GridManager : MonoBehaviour {
 		{
 			if(g.transform.position == testPosition && g.behaviorType == GridObjectBehavior.BehaviorTypes.track && !g.track.type.Equals('-') && g.track.type != null)
 			{
-				Debug.Log("Object " + g.transform.name + " is at position! ");
+				//Debug.Log("Object " + g.transform.name + " is at position! ");
 				returnValid = true;
 			}
             
@@ -421,7 +423,7 @@ public class GridManager : MonoBehaviour {
 			{
 				if(g.component.type == "thread" && g.component.configuration.color == colorQuery) 
 				{
-					Debug.Log("I found color " + colorQuery + " at " + g.name + ", " + g.component.id);
+					//Debug.Log("I found color " + colorQuery + " at " + g.name + ", " + g.component.id);
 					isCurrentThreadColor = true; 
 				}
 			}
@@ -504,7 +506,6 @@ public class GridManager : MonoBehaviour {
 		if( gridObjectLevelPositionDictionary.ContainsKey( reversedYposition ) ) { s+="Grid Object Level Position Dictionary, "; gridObjectLevelPositionDictionary.Remove( reversedYposition ); }
 		if( gridObjectLevelIDDictionary.ContainsKey( objectToRemove.component.id ) ) { s+="Grid Object Level ID Dictionary, "; gridObjectLevelIDDictionary.Remove( objectToRemove.component.id ); }
 		if( currentLevelObjects.Contains( objectToRemove ) ) { s+="and Current Level Objects"; currentLevelObjects.Remove( objectToRemove ); }
-		Debug.Log(s);
 
 	}
 
