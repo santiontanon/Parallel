@@ -25,9 +25,17 @@ package tests;
 
 import java.io.File;
 import game.GameState;
-import game.pcg.MapGenerator;
-import support.GameStateExporter;
+import gui.BoardGameStateJFrame;
 import support.PCG;
+
+/*
+
+to do:
+    OK - in the JESS1 pattern, have a way to divert the arrow with the package to the proper path
+    - re-add the other rules, and see how they interact
+    - try to beat a few levels
+    - push to the repo
+*/
 
 
 /**
@@ -59,14 +67,17 @@ public class TestPCGExport {
         System.out.println(GameStateExporter.export(gs));*/
         
         String batchId;
-        batchId = "week2"; // Doesn't have SYNCRO nor DEADLOCK
+        //batchId = "week2"; // Doesn't have SYNCRO nor DEADLOCK
         //batchId = "week45"; // Doesn't have SYNCRO
         //batchId = "week79"; 
-        batchId = "extra4";
-        for(int j=4;j<=8;j++){        
-            for(int i=0;i<20;i++){
-                String filename = "level-PCG-"+batchId+"-"+j+"-"+i+".txt";
-                PCG.export(PCG.generateGameState(i,i, j, false, true), new File(filename));
+        //batchId = "extra4";
+        batchId = "santiTest";
+        for(int size=1;size<=1;size++){        
+            for(int randomSeed=0;randomSeed<10;randomSeed++){
+                String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
+                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
+                BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 1280, 640, gs);
+                PCG.export(gs, new File(filename));
             }
         }
    

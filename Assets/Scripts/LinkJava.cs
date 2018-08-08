@@ -14,7 +14,6 @@ public class LinkJava : MonoBehaviour
 	public SimulationTypes simulationMode = SimulationTypes.ME;
 
 	public string filename;
-	public int budget = 600000;
 
 	GameManager gameManager;
 
@@ -32,7 +31,6 @@ public class LinkJava : MonoBehaviour
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;
-		budget = 600000;
     }
 
 	private int checkEnvironment()
@@ -98,11 +96,6 @@ public class LinkJava : MonoBehaviour
 		} 
 		else 
 		{
-			if(simulationMode == SimulationTypes.ME){
-				budget = 600000;
-			} else {
-				budget = -1;
-			}
 			externalProcess = new Process ();
 			externalProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			externalProcess.StartInfo.CreateNoWindow = true;
@@ -118,8 +111,27 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"prefuse.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"OGE.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"JGGS.jar";
-			externalProcess.StartInfo.Arguments +="\" support." + simulationMode.ToString() + " \""+filename+"\" "+budget;
-			externalProcess.EnableRaisingEvents = true;
+            externalProcess.StartInfo.Arguments += "\" support." + simulationMode.ToString();
+            if (simulationMode == SimulationTypes.ME)
+            {
+                int budget = 600000;
+                externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + budget;
+            }
+            else if (simulationMode == SimulationTypes.Play)
+            {
+                int rSeed = UnityEngine.Random.Range(-100000, 100000);
+                externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed;
+            }
+            else
+            {
+                int rSeed = UnityEngine.Random.Range(-100000, 100000);
+                string size = " " + "\"" + "any" + "\"";
+                externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + size;
+            }
+            UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+            externalProcess.EnableRaisingEvents = true;
+            UnityEngine.Debug.Log(externalPath + "PCGMC4PP.jar");
+            UnityEngine.Debug.Log(pathCPSeparator + externalPath + "lib" + pathSeparator + "gson-2.6.2.jar");
             externalProcess.Start ();
 			StartCoroutine (externalNonBlockingWait ());
 			return "External Async";

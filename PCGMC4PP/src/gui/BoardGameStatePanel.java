@@ -185,8 +185,9 @@ public class BoardGameStatePanel extends JPanel {
             g2d.drawLine(ex, ey, sx, sy);
         }
     }
+
     public static void drawArrowsConditional(ComponentConditional ci, Graphics2D g2d, int grid) {
-            int reduction = 4;
+        int reduction = 4;
         int center_x = ci.x;
         int center_y = ci.y;
         int required_lines = 0;
@@ -237,6 +238,7 @@ public class BoardGameStatePanel extends JPanel {
         }
         g2d.setStroke(new BasicStroke(1));
     }
+
     public static void drawArrowsIntersection(Component tile, Graphics2D g2d, int grid, Color color) {
         int reduction = 4;
         int center_x = tile.x;
@@ -286,7 +288,7 @@ public class BoardGameStatePanel extends JPanel {
 
         if (colorScheme == DISPLAY_TILES) {
             g2d.setColor(Color.WHITE);
-        } 
+        }
         if (colorScheme == DISPLAY_COMPONENTS) {
             g2d.setColor(Color.BLACK);
             //DrawLinks(g2d, panel,dx, dy,gs,board,colorScheme);
@@ -297,7 +299,7 @@ public class BoardGameStatePanel extends JPanel {
             unitCount++;
         }
 
-        String info = "T: " + gs.getTime() +", S: " + gs.getSteps() + ", P₀: " + unitCount;
+        String info = "T: " + gs.getTime() + ", S: " + gs.getSteps() + ", P₀: " + unitCount;
         g2d.drawString(info, 10, dy - 15);
 
         if (panel != null) {
@@ -315,9 +317,8 @@ public class BoardGameStatePanel extends JPanel {
         Color po0color = new Color(0, 0, 0.25f);
         Color po1color = new Color(0.25f, 0, 0);
         Color pobothcolor = new Color(0.25f, 0, 0.25f);
-        
+
         // Draw tiles
-        
         for (int j = 0; j < board.getWidth(); j++) {
             for (int i = 0; i < board.getHeight(); i++) {
                 if (board.getTile(j, i).type == Tile.TILE_TRACK) {
@@ -391,17 +392,17 @@ public class BoardGameStatePanel extends JPanel {
             g2d.setColor(Color.WHITE);
             if (c instanceof ComponentPickup) {
                 ComponentPickup c2 = (ComponentPickup) c;
-                repr = " P:" + c2.available;
+                repr = "P:" + c2.available;
             } else if (c instanceof ComponentDelivery) {
                 ComponentDelivery c2 = (ComponentDelivery) c;
-                repr = " D:" + c2.delivered + "/" + c2.missed;
-            } else if (c instanceof ComponentSemaphore){
+                repr = "D:" + c2.delivered + "/" + c2.missed;
+            } else if (c instanceof ComponentSemaphore) {
                 ComponentSemaphore c2 = (ComponentSemaphore) c;
-                repr = "X:"+c2.id;   
-                g2d.setColor(c2.value==ComponentSemaphore.RED?Color.RED:Color.GREEN);
+                repr = "S:" + c2.id;
+                g2d.setColor(c2.value == ComponentSemaphore.RED ? Color.RED : Color.GREEN);
             } else if (c instanceof ComponentSignal) {
                 ComponentSignal c2 = (ComponentSignal) c;
-                repr = " L:" + c2.link;
+                repr = "B:" + c2.link;
             } else if (c instanceof ComponentConditional) {
                 ComponentConditional c2 = (ComponentConditional) c;
                 drawArrowsConditional(c2, g2d, grid);
@@ -413,20 +414,20 @@ public class BoardGameStatePanel extends JPanel {
                 ComponentDiverter c2 = (ComponentDiverter) c;
                 drawArrowsIntersection(c2, g2d, grid, colors_bold[c2.color]);
             } else if (c instanceof ComponentUnit) {
-                repr = "S"+c.id;
-                
-            } else if (c instanceof ComponentExchange){
+                repr = "A" + c.id;
+
+            } else if (c instanceof ComponentExchange) {
                 ComponentExchange c2 = (ComponentExchange) c;
-                repr = " E:"+c2.exchanged;
+                repr = "E:" + c2.exchanged;
             }
-            if (repr.length()>0 && repr.charAt(0)==' '){
-            g2d.fillOval(c.x * grid + reduction, c.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
-            
+            if (repr.length() > 0 && repr.charAt(0) == ' ') {
+                g2d.fillOval(c.x * grid + reduction, c.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
+
             }
             g2d.drawOval(c.x * grid + reduction, c.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
             g2d.setColor(colors_bold[c.color]);
             if (colorScheme == DISPLAY_TILES) {
-                g2d.drawString(repr, c.x * grid + reduction * 2, c.y * grid + grid/2);
+                g2d.drawString(repr, c.x * grid + reduction * 2, c.y * grid + grid / 2);
             }
         }
 
@@ -445,14 +446,13 @@ public class BoardGameStatePanel extends JPanel {
             g2d.drawOval(u.x * grid + reduction, u.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
             g2d.setColor(Color.BLACK);
             g2d.drawLine(u.x * grid + grid / 2, u.y * grid + grid / 2, u.x * grid + grid / 2 + offsx, u.y * grid + grid / 2 + offsy);
-            String repr = " P:"+u.payload.length+" D:" + u.delivered + "/" + u.missed;
+            String repr = " P:" + u.payload.length + " D:" + u.delivered + "/" + u.missed;
             if (colorScheme == DISPLAY_TILES) {
                 g2d.setColor(Color.WHITE);
-                g2d.drawString(repr, u.x * grid + reduction * 2, u.y * grid + grid/2);
+                g2d.drawString(repr, u.x * grid + reduction * 2, u.y * grid + grid / 2);
             }
 
-
-                // print the player resources in the base:
+            // print the player resources in the base:
 //                String txt = "" + pgs.getPlayer(u.getPlayer()).getResources();
             //              g2d.setColor(Color.black);
             //            FontMetrics fm = g2d.getFontMetrics( g2d.getFont() );
@@ -470,98 +470,96 @@ public class BoardGameStatePanel extends JPanel {
             //        g2d.fillRect(u.getX()*grid+reduction, u.getY()*grid+reduction, (int)(grid*(((float)u.getHitPoints())/u.getMaxHitPoints())), 2);
         }
         if (colorScheme == DISPLAY_LINKS) {
-            DrawLinks(g2d, panel,dx, dy,gs,board,colorScheme);
+            DrawLinks(g2d, panel, dx, dy, gs, board, colorScheme);
         }
 
     }
-    
+
     private static void DrawLinks(Graphics2D g2d, BoardGameStatePanel panel,
             int dx, int dy,
             GameState gs,
             BoardState board,
-            int colorScheme){
+            int colorScheme) {
         // draw the components:
         // this list copy is to prevent a concurrent modification exception
         List<Component> lc = new LinkedList<Component>();
         lc.addAll(gs.getComponentState().getComponents());
         int gridx = (dx - 64) / board.getWidth();
         int gridy = (dy - 64) / board.getHeight();
-        float grid = (float)Math.min(gridx, gridy);
+        float grid = (float) Math.min(gridx, gridy);
 
         for (Component c : lc) {
             if (c instanceof ComponentSignal) {
                 ComponentSignal c2 = (ComponentSignal) c;
-                if(c2.link>0){
+                if (c2.link > 0) {
                     Component c3 = null;
                     for (Component c_ : lc) {
-                        if(c_.id==c2.link) {
+                        if (c_.id == c2.link) {
                             c3 = c_;
                             break;
                         }
                     }
-                    if(c3!=null) UpdateBezier(g2d,new Pair((float)c2.x*grid+grid*0.5f,(float)c2.y*grid+grid*0.5f),new Pair((float)c3.x*grid+grid*0.5f,(float)c3.y*grid+grid*0.5f), grid);
-                    
+                    if (c3 != null) {
+                        UpdateBezier(g2d, new Pair((float) c2.x * grid + grid * 0.5f, (float) c2.y * grid + grid * 0.5f), new Pair((float) c3.x * grid + grid * 0.5f, (float) c3.y * grid + grid * 0.5f), grid);
+                    }
+
                 }
             }
             //g2d.fillOval(c.x * grid, c.y * grid, grid, grid);
-            
-        }
-        
-        
-    }
-    
-	private static void UpdateBezier(Graphics2D g2d, Pair<Float,Float> p0, Pair<Float,Float> p3, float grid){
-            int lineRendererSegments = 10;
-		//float lineZ = 0.0f;
-                Random r = new Random();
-		//float extra_y = 1.0f * grid;
-		//float extra_x = 0.0f * grid;
-		float extra_y = (r.nextFloat()*4.0f-2.0f) * grid;
-		float extra_x = (r.nextFloat()*4.0f-2.0f) * grid;
-		float extra_y_ = (r.nextFloat()*4.0f-2.0f) * grid;
-		float extra_x_ = (r.nextFloat()*4.0f-2.0f) * grid;
 
-		//if (Mathf.Abs (p0.x - p3.x) + Mathf.Abs (p0.y - p3.y) < 2.0f) {
-		/*if((p3-p0).magnitude > 0.1){
+        }
+
+    }
+
+    private static void UpdateBezier(Graphics2D g2d, Pair<Float, Float> p0, Pair<Float, Float> p3, float grid) {
+        int lineRendererSegments = 10;
+        //float lineZ = 0.0f;
+        Random r = new Random();
+        //float extra_y = 1.0f * grid;
+        //float extra_x = 0.0f * grid;
+        float extra_y = (r.nextFloat() * 4.0f - 2.0f) * grid;
+        float extra_x = (r.nextFloat() * 4.0f - 2.0f) * grid;
+        float extra_y_ = (r.nextFloat() * 4.0f - 2.0f) * grid;
+        float extra_x_ = (r.nextFloat() * 4.0f - 2.0f) * grid;
+
+        //if (Mathf.Abs (p0.x - p3.x) + Mathf.Abs (p0.y - p3.y) < 2.0f) {
+        /*if((p3-p0).magnitude > 0.1){
 			if (Mathf.Abs (p0.x - p3.x) > Mathf.Abs (p0.y - p3.y)) {
 				extra_y = 2.0f;
 			} else {
 				extra_x = 2.0f;
 			}
 		}*/
+        //Pair<Float,Float> p1 = new Pair(p0.m_a+extra_x, (p0.m_b+p3.m_b)/2.0f+extra_y);
+        //Pair<Float,Float> p2 = new Pair((p0.m_a+p3.m_a)/2.0f+extra_x_, p3.m_b+extra_y_);
+        Pair<Float, Float> p1 = new Pair(p0.m_a + extra_x, p0.m_b + extra_y);
+        Pair<Float, Float> p2 = new Pair(p3.m_a + extra_x_, p3.m_b + extra_y_);
 
-		//Pair<Float,Float> p1 = new Pair(p0.m_a+extra_x, (p0.m_b+p3.m_b)/2.0f+extra_y);
-		//Pair<Float,Float> p2 = new Pair((p0.m_a+p3.m_a)/2.0f+extra_x_, p3.m_b+extra_y_);
-		Pair<Float,Float> p1 = new Pair(p0.m_a+extra_x, p0.m_b+extra_y);
-		Pair<Float,Float> p2 = new Pair(p3.m_a+extra_x_,p3.m_b+extra_y_);
+        Pair<Integer, Integer> pa = null;
+        for (int j = 0; j <= lineRendererSegments; j++) {
+            Pair<Integer, Integer> pb = GetBezierPoint(((float) j / lineRendererSegments), p0, p1, p2, p3);
+            if (pa != null) {
+                g2d.setColor(Color.BLACK);
+                g2d.drawLine(pa.m_a, pa.m_b, pb.m_a, pb.m_b);
+            }
+            pa = pb;
+        }
+    }
 
-		Pair<Integer,Integer> pa = null;
-                for (int j = 0; j <= lineRendererSegments; j++)
-                {
-			Pair<Integer,Integer> pb = GetBezierPoint(((float)j / lineRendererSegments), p0, p1, p2, p3);
-                        if(pa!=null){
-                            g2d.setColor(Color.BLACK);
-                            g2d.drawLine(pa.m_a,pa.m_b,pb.m_a,pb.m_b);
-                        }
-                        pa=pb;
-		}
-	}
-        
-    private static Pair<Integer,Integer> GetBezierPoint(float t, Pair<Float,Float> p0, Pair<Float,Float> p1, Pair<Float,Float> p2, Pair<Float,Float> p3)
-    {
-        float cx = 3.0f * (float)(p1.m_a - p0.m_a);
-        float cy = 3.0f * (float)(p1.m_b - p0.m_b);
-        float bx = 3.0f * (float)(p2.m_a - p1.m_a) - cx;
-        float by = 3.0f * (float)(p2.m_b - p1.m_b) - cy;
+    private static Pair<Integer, Integer> GetBezierPoint(float t, Pair<Float, Float> p0, Pair<Float, Float> p1, Pair<Float, Float> p2, Pair<Float, Float> p3) {
+        float cx = 3.0f * (float) (p1.m_a - p0.m_a);
+        float cy = 3.0f * (float) (p1.m_b - p0.m_b);
+        float bx = 3.0f * (float) (p2.m_a - p1.m_a) - cx;
+        float by = 3.0f * (float) (p2.m_b - p1.m_b) - cy;
         float ax = (float) p3.m_a - (float) p0.m_a - cx - bx;
         float ay = (float) p3.m_b - (float) p0.m_b - cy - by;
         float Cube = t * t * t;
         float Square = t * t;
- 
+
         float resX = (ax * Cube) + (bx * Square) + (cx * t) + p0.m_a;
         float resY = (ay * Cube) + (by * Square) + (cy * t) + p0.m_b;
- 
+
         return new Pair(Math.round(resX), Math.round(resY));
     }
-    
+
 }

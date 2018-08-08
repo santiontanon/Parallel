@@ -51,6 +51,7 @@ import optimization.OrthographicEmbeddingOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
+import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
 /**
@@ -63,17 +64,18 @@ public class PCG {
     public static boolean correct = true;
     public static void main(String args[]) throws FileNotFoundException, IOException, Exception {
         if (args.length < 2) {
-            System.out.println("Usage: support.PCG parameter_file|debug random_seed [keep_solution]");
+            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [keep_solution]");
             System.exit(4);
         }
         boolean keep_solution = false;
-        if (args.length >= 3) keep_solution = true;
+        if (args.length >= 4) keep_solution = true;
 
         String filename = args[0];
         // TODO Get parameters from filename and sample GG with parameters from filename
         long randomSeed = Long.parseLong(args[1]);
+        String sizeStr = args[2];
         if("debug".equals(filename)) randomSeed = 0;
-        GameState gs = generateGameState(randomSeed, keep_solution, ("debug".equals(filename)));
+        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, ("debug".equals(filename)));
         if(!("debug".equals(filename))){
             // Export
             export(gs, getNewFileFromFilename(filename, false));
@@ -100,8 +102,12 @@ public class PCG {
         return embeddGraph(graph, randomSeedEmbedding, debug);
     }
     
-    public static GameState generateGameState(long randomSeed, boolean keep_solution, boolean debug) throws Exception {
-        return generateGameState(randomSeed,randomSeed, 5, keep_solution, debug);
+    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, boolean debug) throws Exception {
+        int size = -1;
+        if (IsNumber.isNumber(sizeStr)) {
+            size = (int)Double.parseDouble(sizeStr);
+        }
+        return generateGameState(randomSeed,randomSeed, size, keep_solution, debug);
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
@@ -138,9 +144,11 @@ public class PCG {
                 lastGraph = graph;
             }
         } while (graph != null);
-        if (debug) {
+//        if (debug) {
             generator.printRuleApplicationCounts();
-        }
+            System.out.println("Current graph (after):");
+            System.out.println("  " + lastGraph);
+//        }
         if(rule_applications!=null){
             for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
                 rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
@@ -153,6 +161,9 @@ public class PCG {
         return generateGraph(randomSeed, size, keep_solution, debug, null);
     }
     public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug, Map<String,Integer> rule_applications) throws Exception {
+        Random r = new Random(randomSeed);
+        if (size == -1) size = r.nextInt(5)+1;
+
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
         Map<String,Integer> size_application_limits = new HashMap();
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
@@ -174,9 +185,6 @@ public class PCG {
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
         */
-
-        Random r = new Random(randomSeed);
-        r.nextInt();
         
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
@@ -185,6 +193,7 @@ public class PCG {
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
         // Instanciate situations
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
+//        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
         // Refine components
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
         // Remove solution
