@@ -231,6 +231,11 @@ public class GameManager : MonoBehaviour {
 		//SetGamePhase(GameManager.GamePhases.GenerateTrack);
 	}
 
+    public bool IsInPCG()
+    {
+        return linkJava.simulationMode == LinkJava.SimulationTypes.PCG;
+    }
+
 	public void InitiateTrackGeneration()
 	{
 		gridManager.GenerateGrid(/*dataManager.currentLevelData.layoutList,*/ dataManager.currentLevelData.tracks, dataManager.currentLevelData.components);
