@@ -185,13 +185,13 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	public void LoadButtonBehavior( string levelName ) 
 	{
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel( DataManager.LoadType.RESOURCES, levelName );
+        GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, levelName );
 	}
 
     public void LoadPCGButtonBehavior(string level)
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel(DataManager.LoadType.STRING, level);
+        GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.STRING, level);
     }
 
     public void LoadButtonBehavior(LevelReferenceObject levelReference)

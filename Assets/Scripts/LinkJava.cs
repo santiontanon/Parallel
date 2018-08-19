@@ -183,7 +183,8 @@ public class LinkJava : MonoBehaviour
                 StreamReader reader = new StreamReader(filename);
                 GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
                 GameManager.Instance.GetSaveManager().UpdateSave();
-				GameManager.Instance.TriggerLoadLevel(DataManager.LoadType.FILEPATH, filename);
+                bool restartPhase = (simulationMode == SimulationTypes.PCG);
+				GameManager.Instance.TriggerLoadLevel(restartPhase, DataManager.LoadType.FILEPATH, filename);
 				//in case it takes time to load larger levels
 				while(GameManager.Instance.gamePhase != GameManager.GamePhases.PlayerInteraction) yield return new WaitForEndOfFrame();
 				simulationFeedback = SimulationFeedback.success;

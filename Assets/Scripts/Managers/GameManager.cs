@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour {
     }
 
 
-	public void TriggerLoadLevel(DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
+	public void TriggerLoadLevel(bool restartPhase = false, DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
 		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
@@ -201,14 +201,14 @@ public class GameManager : MonoBehaviour {
             currentLevelReferenceObject = levRef;
         //TODO: Since this gets called when a simulation completes and re-opens everything, it can cause bugs with the tutorials loading
         InitiateTrackGeneration();
-        if (loadType == DataManager.LoadType.RESOURCES)
+        if (restartPhase)
             SetGamePhase(GamePhases.PlayerInteraction);
 	}
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
     {
         currentLevelReferenceObject = inputLevelReferenceObject;
-        TriggerLoadLevel( DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
+        TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
     }
 
     public void TriggerLoadTutorialLevel(string path)
@@ -314,7 +314,7 @@ public class GameManager : MonoBehaviour {
     {
         LevelReferenceObject nextLevel = dataManager.GetNextLevel(currentLevelReferenceObject);
         //Debug.Log("Next level is: " + nextLevel.levelId);
-        TriggerLoadLevel(DataManager.LoadType.RESOURCES, nextLevel.file);
+        TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, nextLevel.file);
     }
 
     public void TriggerLevelSimulation(LinkJava.SimulationFeedback feedback)
