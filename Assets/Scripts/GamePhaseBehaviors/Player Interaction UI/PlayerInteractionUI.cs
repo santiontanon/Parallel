@@ -182,7 +182,7 @@ public class PlayerInteraction_UI
 	{
         public Text titleText;
 		public Text feedbackText;
-        public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext;
+        public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext, saveLevel;
         public ToggleUIElement goalToggle;
 
         public GameObject starContainer;
@@ -279,6 +279,7 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.AddListener(() => OpenRootScreen());
 
             levelsNext.onClick.AddListener(() => { userInput = UserInputs.levelsNext; /*GameManager.Instance.TriggerAdvanceToNextLevel();*/ ClosePanel(); });
+            levelsNext.gameObject.SetActive(!GameManager.Instance.IsInPCG());
 
             exit.onClick.AddListener(()=> {userInput = UserInputs.exit; OpenExitConfirmationScreen(); } );
             exitConfirm.onClick.AddListener(() => { GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame);/* /*ClosePanel();*/ });
@@ -286,6 +287,10 @@ public class PlayerInteraction_UI
 
             goalToggle.toggleButton.onClick.RemoveAllListeners();
             goalToggle.toggleButton.onClick.AddListener(() => ToggleGoalVisibility());
+
+            saveLevel.onClick.RemoveAllListeners();
+            saveLevel.onClick.AddListener(() => Debug.Log("TODO: LEVEL SAVE FUNCTIONALITY") );
+            saveLevel.gameObject.SetActive( GameManager.Instance.IsInPCG() );
         }
 
         void ToggleGoalVisibility()
