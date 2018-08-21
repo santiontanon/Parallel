@@ -7,7 +7,20 @@ using ParallelProg.UI;
 public class Start_DebugUI : MonoBehaviour
 {
     bool isOpen;
-    public Dropdown JVMMemoryDropdown;
+    [SerializeField]
+    Dropdown JVMMemoryDropdown;
+    [SerializeField]
+    Toggle localToggle;
+    [SerializeField]
+    Toggle remoteToggle;
+    [SerializeField]
+    InputField ipInput;
+    [SerializeField]
+    Image connectedImage;
+    [SerializeField]
+    Color successColor;
+    [SerializeField]
+    Color failureColor;
 
     void Start() {
         PopulateJVMMemoryList();
@@ -40,5 +53,30 @@ public class Start_DebugUI : MonoBehaviour
         int selection = JVMMemoryDropdown.value;
         Debug.Log("Updating JVM Selection To: " + selection);
         GameManager.Instance.JVMMemorySelection = selection;
+    }
+
+    public void UpdateIPAddress()
+    {
+
+    }
+
+    public void CheckConnection()
+    {
+
+    }
+
+    public void SaveSettings()
+    {
+        ReportJVMMemoryAllocationChange();
+        GameManager.Instance.tracker.ChangeRemoteAddress(ipInput.text);
+        GameManager.Instance.tracker.UpdateTracking(localToggle.isOn, remoteToggle.isOn);
+    }
+
+    public void ConnectionSuccess(bool success)
+    {
+        if (success)
+            connectedImage.color = successColor;
+        else
+            connectedImage.color = failureColor;
     }
 }
