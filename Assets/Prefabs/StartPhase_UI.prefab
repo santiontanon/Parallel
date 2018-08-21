@@ -2528,6 +2528,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JVMMemoryDropdown: {fileID: 114457783487819284}
+  localToggle: {fileID: 0}
+  remoteToggle: {fileID: 0}
+  ipInput: {fileID: 0}
+  connectedImage: {fileID: 0}
+  successColor: {r: 0, g: 0, b: 0, a: 0}
+  failureColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &114643673381115894
 MonoBehaviour:
   m_ObjectHideFlags: 1
