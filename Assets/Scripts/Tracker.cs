@@ -19,11 +19,24 @@ public class Tracker : MonoBehaviour {
 	private bool allowQuitting = false;
 	private bool allowQuittingRequested = false;
 	public string url = "";
-	public string url_id = "";
-	public string url_logs = "";
-	public string url_data = "";
+	public string url_id
+    {
+        get { return url +"/id"; }
+    }
+	public string url_logs
+    {
+        get { return url + "/logs"; }
+    }
+    public string url_data
+    {
+        get { return url + "/data"; }
+    }
     public string level_data = "";
 	public float logs_uploaded_time = 0f;
+    public string session_id
+    {
+        get { return tracking_session_id; }
+    }
 	private string tracking_session_id = "NA";
 	private string tracking_session_user = "NONE";
 	private string tracking_session_version = "Study3/RC2";
@@ -78,9 +91,6 @@ public class Tracker : MonoBehaviour {
 		// to start the service in the server, start a `screen` session, then go into LogVisualizer and type `python httpserver.py -i 10000 -s 144.118.172.191 -p 8787`
 		// then you can close the `screen` by hitting `control+a`, `d`, and then you can `exit`.
 		// the logs are saved in a directory called `saved_data` relative to the location of the server script
-		url_id = url + "/id";
-		url_logs = url + "/log";
-		url_data = url + "/data";
 	}
 
 	public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD, string _url = "NA", bool trackLocal = true, bool trackRemote = true){
@@ -106,8 +116,9 @@ public class Tracker : MonoBehaviour {
 
     public void ChangeRemoteAddress(string ipAndPort, System.Action callback = null)
     {
-        url = "https://" + ipAndPort;
-        FetchConfig();
+        url = "http://" + ipAndPort;
+        Debug.Log(url);
+        FetchConfig(callback);
     }
 
     public void UpdateTracking(bool trackLocal, bool trackRemote)
@@ -125,6 +136,7 @@ public class Tracker : MonoBehaviour {
     {
         Debug.Log("FetchConfig");
         DebugInfoLabel = "FetchConfig from " + url_id;
+        Debug.Log(url_id);
         string ourPostData = "{\"user\":\"" + tracking_session_user + "\",\"version\":\"" + tracking_session_version + "\"}";
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Content-Type", "application/json");
@@ -152,6 +164,8 @@ public class Tracker : MonoBehaviour {
             Debug.Log(www.error);
             tracking_session_id = "NA";
         }
+        if (callback != null)
+            callback();
         //tracking_session_id = {"id": 11, "user": "hello"}
         yield return null; 
 	}

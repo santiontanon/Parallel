@@ -18,6 +18,8 @@ public class Start_DebugUI : MonoBehaviour
     [SerializeField]
     Image connectedImage;
     [SerializeField]
+    InputField trackingID;
+    [SerializeField]
     Color successColor;
     [SerializeField]
     Color failureColor;
@@ -26,6 +28,7 @@ public class Start_DebugUI : MonoBehaviour
         PopulateJVMMemoryList();
         ToggleDebugUI(false);
         JVMMemoryDropdown.value = GameManager.Instance.JVMMemorySelection;
+        ipInput.placeholder.GetComponent<Text>().text = GameManager.Instance.tracker.url;
     }
 
     public void ToggleDebugUI(bool force)
@@ -57,26 +60,27 @@ public class Start_DebugUI : MonoBehaviour
 
     public void UpdateIPAddress()
     {
+        GameManager.Instance.tracker.ChangeRemoteAddress(ipInput.text, CheckConnection);
+    }
 
+    public void UpdateTracking()
+    {
+        GameManager.Instance.tracker.UpdateTracking(localToggle.isOn, remoteToggle.isOn);
     }
 
     public void CheckConnection()
     {
-
+        trackingID.text = GameManager.Instance.tracker.session_id;
+        if (trackingID.text != "NA")
+            connectedImage.color = successColor;
+        else
+            connectedImage.color = failureColor;
     }
 
     public void SaveSettings()
     {
         ReportJVMMemoryAllocationChange();
-        GameManager.Instance.tracker.ChangeRemoteAddress(ipInput.text);
-        GameManager.Instance.tracker.UpdateTracking(localToggle.isOn, remoteToggle.isOn);
-    }
 
-    public void ConnectionSuccess(bool success)
-    {
-        if (success)
-            connectedImage.color = successColor;
-        else
-            connectedImage.color = failureColor;
+        GameManager.Instance.tracker.UpdateTracking(localToggle.isOn, remoteToggle.isOn);
     }
 }
