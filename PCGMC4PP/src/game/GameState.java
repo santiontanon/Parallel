@@ -73,9 +73,9 @@ public class GameState {
     public static final int RESULT_PROBLEMATIC_REGRESSION = 256;
     public static final int RESULT_PROBLEMATIC_WRONG_PATH = 512;
     
-    private ComponentState cs;
-    private UnitState us;
-    private BoardState bs;
+    public ComponentState cs;
+    public UnitState us;
+    public BoardState bs;
     public Map<Pair<Integer,Integer>,Integer> goals_delivery = new HashMap(); // TODO generalize this to other properties
     private int time_elapsed_total = 0;
     private int time_elapsed_this_step = 0;

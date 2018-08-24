@@ -26,6 +26,7 @@ package support;
 import orthographicembedding.DisconnectedGraphs;
 import game.GameState;
 import game.pcg.GraphManager;
+import game.pcg.LevelOptimizer;
 import game.pcg.PuzzleEmbeddingComparator;
 import game.pcg.PuzzleEmbeddingEvaluator;
 import java.io.File;
@@ -271,12 +272,16 @@ public class PCG {
                 System.err.println("The orthographic projection after optimization using custom comparator contains errors!");
                 System.exit(12);
             }
-            
+                        
             disconnectedEmbeddings.add(best_g_oe);
         }
         OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);        
         
-        return new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState();
+        // "Parallel"-specifiy optimizations
+        GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState();
+        gs = LevelOptimizer.optimize(gs);
+
+        return gs;
     }
 
     public static void export(GameState gs, File out_file) throws IOException {

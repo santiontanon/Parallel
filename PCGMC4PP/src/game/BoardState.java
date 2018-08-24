@@ -35,9 +35,9 @@ import java.util.Map;
  */
 public class BoardState {
 
-    private int width;
-    private int height;
-    private Tile[] tiles;
+    public int width;
+    public int height;
+    public Tile[] tiles;
 
     public int level_id = 1;
     public String level_title = "Parallel Programming";

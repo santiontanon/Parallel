@@ -275,6 +275,7 @@ public class GrammarStats {
         vector[0] = (double) gs.getBoardState().getWidth();
         vector[1] = (double) gs.getBoardState().getHeight();
         vector[2] = ((double) gs.getBoardState().getWidth()) / ((double) gs.getBoardState().getHeight());
+//        System.out.println(vector[0] + " x " + vector[1]);
         int track_num = 0;
         for(Tile tile:gs.getBoardState().getTiles()){
             if (tile.isPassable()){
