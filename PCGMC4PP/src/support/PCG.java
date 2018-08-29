@@ -48,10 +48,13 @@ import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
 import optimization.EmbeddingComparator;
+import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
+import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
+import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -247,9 +250,11 @@ public class PCG {
                 OrthographicEmbeddingResult g_oe = OrthographicEmbedding.orthographicEmbedding(g,simplify, correct, r); 
                 if (g_oe==null) continue;
                 if (!g_oe.sanityCheck(false)) continue;
-                if(optimizationAttempts>1){
-                    g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
-                }
+
+                g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
+                g_oe = OrthographicEmbeddingPathOptimizer.optimize(g_oe, g, pec);
+                g_oe = OrthographicEmbeddingBoardSizeOptimizer.optimize(g_oe, g, pec);
+
                 if (best_g_oe==null) {
                     best_g_oe = g_oe;
                     if(debug){
@@ -259,6 +264,7 @@ public class PCG {
                     if (pec.compare(g_oe, best_g_oe)<0) {
                         if(debug){
                             System.out.println("BETTER EMBEDDING FOUND "+pee.evaluate(g_oe));
+                            //SavePNG.savePNG("PCG-opt3.png", g_oe, 32, 32, true);
                         }
                         best_g_oe = g_oe;
                     }
@@ -279,7 +285,7 @@ public class PCG {
         
         // "Parallel"-specifiy optimizations
         GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState();
-        gs = LevelOptimizer.optimize(gs);
+        //gs = LevelOptimizer.optimize(gs);
 
         return gs;
     }

@@ -74,9 +74,9 @@ public class TestPCGExport {
         batchId = "santiTest";
         int accumWidth = 0;
         for(int size=3;size<=3;size++){        
-//            for(int randomSeed=0;randomSeed<10;randomSeed++){
-            int randomSeed = 0;
-            {
+            for(int randomSeed=0;randomSeed<10;randomSeed++){
+//            int randomSeed = 0;
+//            {
                 String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
                 accumWidth+=gs.bs.getWidth();

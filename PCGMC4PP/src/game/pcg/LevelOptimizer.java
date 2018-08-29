@@ -281,18 +281,21 @@ public class LevelOptimizer {
                 for(int column:emptyColumns) {
                     if (column != previous+1) {
                         if (consecutive >= MIN_SEPARATION) {
-                            System.out.println("Remove consecutive columns " + ((consecutive-MIN_SEPARATION)+1) + " at " + previous);
-
                             int nColumnsToRemove = (consecutive-MIN_SEPARATION)+1;
                             int startIndex = previous - nColumnsToRemove;
+
+                            System.out.println("Remove consecutive columns " + nColumnsToRemove + " at " + startIndex);
 
                             // move components:
                             for(Component c:allComponents) {
                                 if (c.x>=startIndex) c.x -= nColumnsToRemove;
                             }
-
+                            
                             // move tiles:
                             int new_w = w-nColumnsToRemove;
+
+                            System.out.println("Width goes from " + w + " to " + new_w);
+
                             BoardState bs = new BoardState(new_w, h);
                             for(int x = 0;x<new_w;x++) {
                                 for(int y = 0;y<h;y++) {
@@ -309,7 +312,7 @@ public class LevelOptimizer {
                                     Tile t = bs.tiles[x+y*new_w];
                                     Set<Tile> new_traveled_to = new HashSet<>();
                                     for(Tile t2:t.traveled_to) {
-                                        if (t2.x<startIndex) {
+                                        if (t2.x!=startIndex-1) {
                                             new_traveled_to.add(gs.getBoardState().tiles[t2.x+t2.y*w]);
                                         } else {
                                             new_traveled_to.add(gs.getBoardState().tiles[t2.x+nColumnsToRemove+t2.y*w]);
@@ -318,6 +321,7 @@ public class LevelOptimizer {
                                     t.traveled_to = new_traveled_to;
                                 }
                             }
+                                                        
                             for(int x = 0;x<new_w;x++) {
                                 for(int y = 0;y<h;y++) {
                                     bs.tiles[x+y*new_w].x = x;
