@@ -45,9 +45,9 @@ import java.util.Random;
  * @author Josep Valls-Vargas <josep@valls.name>
  */
 public class Play {
+    public static boolean debug = false;
 
     public static void main(String args[]) {
-        boolean debug = false;
         // ExitCode = 0: OK
         // ExitCode = 1: System Errors
         // ExitCode = 2: Errors parsing input, use support.validate to check input
@@ -74,12 +74,13 @@ public class Play {
                 List<GameState> eps = new ArrayList();
                 eps.add(gs);
                 GameState gs_ = gs.clone();
+                Random rand = new Random(deterministic);
                 for(int i=0;i<how_many;i++){
                     List<GameState> successors = gs_.getSuccessors();
+//                    System.out.println("successors: " + successors.size());
                     if (successors.size() > 0) {
-                        GameState successor;
+//                        GameState successor;
                         if (deterministic < 0) {
-                            Random rand = new Random();
                             gs_ = successors.get(rand.nextInt(successors.size()));
                         } else if (deterministic == 0) {
                             gs_ = successors.get(0);
@@ -87,7 +88,7 @@ public class Play {
                             gs_ = successors.get(deterministic % successors.size());
                         }
                         GameStateDescriptionWrapper gsw = new GameStateDescriptionWrapper(gs_);
-                        //System.out.println(Arrays.toString(gs_.stateDescription()));
+//                        System.out.println(Arrays.toString(gs_.stateDescription()));
                         if(gsh.containsKey(gsw)){
                             int num = gsh.get(gsw);
                             num++;

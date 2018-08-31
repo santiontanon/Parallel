@@ -112,7 +112,7 @@ public class GameStateParser {
         GameStateParser.prepareParser();
 
         if (verbose) {
-            System.err.println("Loading: " + filename);
+            System.out.println("Loading: " + filename);
         }
 
         BoardState board = null;
@@ -171,11 +171,11 @@ public class GameStateParser {
                         }
                     } else if ("EXECUTION".equals(current_section)) {
                         if (verbose) {
-                            System.err.println("EXECUTION Section ignored when parsing file.");
+                            System.out.println("EXECUTION Section ignored when parsing file.");
                         }
                         break;
                     } else if (verbose) {
-                        System.err.println("Unknown section ignored when parsing file.");
+                        System.out.println("Unknown section ignored when parsing file.");
                     }
                     current_section = null;
                     data.clear();
