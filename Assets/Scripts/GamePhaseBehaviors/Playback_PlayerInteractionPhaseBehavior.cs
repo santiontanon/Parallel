@@ -132,10 +132,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                 }
                             }
                         }
-                        
+
                         Vector2 nextPos = prevPos;
                         bool end = false;
-                        for (int k = i + 1; k < stepDictionary.Count; k++)
+                        for (int k = i + 1; k < maxStep; k++)
                         {
                             if (stepDictionary.ContainsKey(k))
                             {
@@ -450,6 +450,8 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                     stopwatch.Start();
                 }
             }
+
+            Debug.Log(timeSteps.Count);
 
             Debug.Log("Opening ui");
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
