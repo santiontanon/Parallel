@@ -233,13 +233,18 @@ public class TutorialManager : MonoBehaviour {
 
         bool foundSimEvents = false; //triggered once events made to play during the simulation are found, prevents queuing of beforePlay events that follow it
 
+        int currentSequence = -1;
+
         foreach (TutorialEvent t in tutorialEvents)
         {
             if (t.levelNumber == inputLevelId && !t.hasCompleted)
             {
                 if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.duringSimulation) foundSimEvents = true;
                 else if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.beforePlay && foundSimEvents == true) break;
-                returnEvents.Add(t);
+                if (currentSequence == -1)
+                    currentSequence = t.sequenceId;
+                if(currentSequence == t.sequenceId)
+                    returnEvents.Add(t);
             }
             else if (t.levelNumber > inputLevelId) break;
             /*if (t.init_trigger == inputInitPhase)

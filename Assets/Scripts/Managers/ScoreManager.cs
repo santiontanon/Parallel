@@ -126,7 +126,7 @@ public class ScoreManager : MonoBehaviour {
 
     public LevelScore GetSolutionInfo(LevelScore score, out bool success)
     {
-        if (solutions.Length > score.index)
+        if (solutions.Length > score.index && score.index >= 0)
         {
             success = true;
             return solutions[score.index];

@@ -460,7 +460,7 @@ public class GraphManager {
                     cc.directions_types[direction_bad] = new int[]{ComponentPickup.EMPTY};
                     
                 } else {
-                    System.err.println("The diverter doesn't have a TRASH");
+                    System.err.println("The diverter doesn't have a TRASH (1)");
                 }
                 if(direction_good>-1){
                     cc.directions_colors[direction_good] = new int[]{1,2,3,4,5,6};
@@ -662,7 +662,7 @@ public class GraphManager {
                     cc.directions_types[direction_bad] = new int[]{ComponentPickup.EMPTY};
                     
                 } else {
-                    //System.err.println("The diverter doesn't have a TRASH");
+//                    System.err.println("The diverter doesn't have a TRASH (2)");
                 }
                 if(direction_good>-1){
                     cc.directions_colors[direction_good] = new int[]{1,2,3,4,5,6};

@@ -73,9 +73,9 @@ public class GameState {
     public static final int RESULT_PROBLEMATIC_REGRESSION = 256;
     public static final int RESULT_PROBLEMATIC_WRONG_PATH = 512;
     
-    private ComponentState cs;
-    private UnitState us;
-    private BoardState bs;
+    public ComponentState cs;
+    public UnitState us;
+    public BoardState bs;
     public Map<Pair<Integer,Integer>,Integer> goals_delivery = new HashMap(); // TODO generalize this to other properties
     private int time_elapsed_total = 0;
     private int time_elapsed_this_step = 0;
@@ -442,6 +442,7 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
+                System.out.println("move unit: " + cu.id);
                 successors.add(successor);
             } else if (this.canUpdateComponent(cu)) {
                 successor = this.newSuccessor(GameState.STATE_EVENT);
@@ -454,23 +455,30 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
+//                System.out.println("update component: " + cu.id);
                 successors.add(successor);
             }
         }
         // Update all components
+//        System.out.println("update all components:");
         successor = this.newSuccessor(GameState.STATE_EVENT);
-        successors.add(successor);
+        boolean anyComponentUpdated = false;
         for (int i = 0; i < this.cs.getComponents().size(); i++) {
             Component c = cs.getComponent(i);
             if (this.canUpdateComponent(c)) {
+                System.out.println("    c: " + c.id);
                 successor.updateComponent(i);
+                anyComponentUpdated = true;
             }
         }
+        // if no components are updated, then the state did not change!
+        if (anyComponentUpdated) successors.add(successor);
         // See comment above for this block of code.
         // Move all units at once
         if (this.us.getUnits().size() > 1) {
+            int nUnitsUpdated = 0;
+            int nComponentsUpdated = 0;
             successor = this.newSuccessor(GameState.STATE_MOVE);
-            successors.add(successor);
             for (int i = 0; i < this.us.getUnits().size(); i++) {
                 ComponentUnit cu = us.getUnit(i);
                 successor.getUnitState().getUnit(i).consecutive_unscheduled = 0;
@@ -485,6 +493,10 @@ public class GameState {
                     // TODO this may be sufficient to identify starvation but may need to be updated also in all successors when moving a single unit for all "other" units
                 }
             }
+            // unless we updated both units and components, this is covered already with the previous moves!
+            if ((nUnitsUpdated != 0 &&
+                 nComponentsUpdated != 0) || 
+                 nUnitsUpdated > 1) successors.add(successor);
         } // END Move all units at once
         return successors;
     }
