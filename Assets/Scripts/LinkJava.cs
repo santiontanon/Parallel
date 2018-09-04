@@ -119,12 +119,14 @@ public class LinkJava : MonoBehaviour
             }
             else if (simulationMode == SimulationTypes.Play)
             {
-                int rSeed = UnityEngine.Random.Range(-100000, 100000);
+                int rSeed = UnityEngine.Random.Range(-100000, -1);
+                UnityEngine.Debug.Log(rSeed);
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed;
             }
             else
             {
-                int rSeed = UnityEngine.Random.Range(-100000, 100000);
+                int rSeed = UnityEngine.Random.Range(-100000, -1);
+                UnityEngine.Debug.Log(rSeed);
                 string size = " " + "\"" + "any" + "\"";
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + size;
             }
