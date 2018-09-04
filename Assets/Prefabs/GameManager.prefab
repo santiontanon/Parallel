@@ -194,7 +194,6 @@ MonoBehaviour:
   pathSeparator: /
   simulationMode: 0
   filename: 
-  budget: 30000
 --- !u!114 &11432306
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -723,6 +722,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Test".
     pause: 0
     pauseDuration: 0
@@ -758,6 +758,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Semaphores close when an arrow passes over them.
     pause: 1
     pauseDuration: 4
@@ -793,6 +794,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 0
+    sequenceId: 0
     popupDescription: Drag a signal to the track. ---->
     pause: 1
     pauseDuration: 2
@@ -828,6 +830,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Right click a signal and drag to a semaphore to link the two.
       Then press "Test" again.
     pause: 0
@@ -864,6 +867,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Signals open a closed semaphore
     pause: 1
     pauseDuration: 4
@@ -899,6 +903,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: 'Toggle on help mode, then click on a highlighted element to
       learn more about it. '
     pause: 0
@@ -935,6 +940,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Click the help toggle again to return to play mode when you
       are done.
     pause: 0
@@ -971,6 +977,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Test".
     pause: 0
     pauseDuration: 0
@@ -1006,6 +1013,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Packages need to be delivered to delivery points.
     pause: 1
     pauseDuration: 4
@@ -1041,6 +1049,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: This type of package respawns immediately upon delivery.
     pause: 1
     pauseDuration: 4
@@ -1076,6 +1085,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 0
     popupDescription: Your turn! Use signals to allow the package to be delivered
       twice. (click to close)
     pause: 0
@@ -1112,6 +1122,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Test" to see what happens in this level.
     pause: 0
     pauseDuration: 0
@@ -1147,6 +1158,7 @@ MonoBehaviour:
     type: 3
     init_trigger: 0
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: 
     pause: 0
     pauseDuration: 0
@@ -1182,6 +1194,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Looks like it worked, press "Submit" to complete the level and
       move on.
     pause: 0
@@ -1218,6 +1231,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 1
     popupDescription: Arrows move at random speeds, and can start and stop at any
       time. Multiple arrows can't deliver packages at once. (click to close)
     pause: 0
@@ -1254,6 +1268,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 1
     popupDescription: Test shows one possible outcome of the different arrow movments.
       Submit checks all outcomes to see if any ever fail. (click to close)
     pause: 0
@@ -1290,6 +1305,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 1
     popupDescription: To proceed through levels, your solution must succeed on submit.
       (click to close)
     pause: 0
@@ -1326,6 +1342,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 1
+    sequenceId: 1
     popupDescription: Drag a semaphore to the track. ---->
     pause: 0
     pauseDuration: 0
@@ -1361,6 +1378,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 1
     popupDescription: You can right click on a semaphore you placed to change it's
       default state. (click to close)
     pause: 0
@@ -1397,6 +1415,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 1
     popupDescription: Your turn! Use semaphores and signals to allow both arrows to
       deliver packages. (click to close)
     pause: 0
@@ -1433,6 +1452,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Submit". This level is just a demonstration.
     pause: 0
     pauseDuration: 0
@@ -1468,6 +1488,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: This type of package never respawns.
     pause: 1
     pauseDuration: 4
@@ -1503,6 +1524,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Diverters direct arrows based on what they are carrying. Arrows
       carrying nothing are diverted to paths with no icons.
     pause: 1
@@ -1539,6 +1561,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 0
+    sequenceId: 0
     popupDescription: You can also connect signals to direction switches like you
       would semaphores. Try that now.
     pause: 0
@@ -1575,6 +1598,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Test"
     pause: 0
     pauseDuration: 0
@@ -1610,6 +1634,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Direction switches direct arrows based on the active arrow.
       When an arrow passes a connected signal the switch rotates clockwise.
     pause: 1
@@ -1646,6 +1671,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 0
     popupDescription: Arrows can only move on their predefined path. Use the Flow
       Arrows above to view which paths arrows can take. Click the yellow Arrow now.
       (click to close)
@@ -1683,6 +1709,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
+    sequenceId: 0
     popupDescription: Your turn! Use direction switches, signals, and semaphores wisely,
       and pay attention to which paths arrows can follow. (click to close)
     pause: 0
@@ -1719,6 +1746,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
+    sequenceId: 0
     popupDescription: Press "Submit". This level is just a demonstration.
     pause: 0
     pauseDuration: 0
@@ -1754,6 +1782,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: This type of package respawns as soon as it's picked up.
     pause: 1
     pauseDuration: 4
@@ -1789,6 +1818,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Exchange points switch packages between arrows.
     pause: 1
     pauseDuration: 4
@@ -1824,6 +1854,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 1
     complete_trigger: 3
+    sequenceId: 0
     popupDescription: Arrows will wait at exchange points for an arrow to get to the
       paired exchange point.
     pause: 1
@@ -2113,13 +2144,10 @@ MonoBehaviour:
   DebugInfoLabel: 
   ShowDebugInfoLabel: 0
   url: https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod
-  url_id: 
-  url_logs: 
-  url_data: 
   level_data: 
   logs_uploaded_time: 0
   connected: 0
   ready: 0
-  tracking_local_enabled: 1
+  local_tracking_enabled: 1
+  remote_tracking_enabled: 1
   tracking_message_collection: 1
-  register_remote_enabled: 1

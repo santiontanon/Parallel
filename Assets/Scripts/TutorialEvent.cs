@@ -14,6 +14,8 @@ public class TutorialEvent
     public enum TutorialCompletionTriggers { placeSignal, placeSemaphore, clickButton, simulationInteraction, clickPopup }
     public TutorialCompletionTriggers complete_trigger;
 
+    public int sequenceId;
+
     public string popupDescription;
 
     [Header("Simulation Pausing")]
