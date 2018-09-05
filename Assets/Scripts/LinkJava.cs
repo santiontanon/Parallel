@@ -20,7 +20,9 @@ public class LinkJava : MonoBehaviour
 	public delegate void ME_Simulation(SimulationFeedback feedback);
 	public static event ME_Simulation OnSimulationCompleted;
 	public enum SimulationFeedback {none, success, failure}
-    
+
+    private string _lastPCGLevelGenerated;
+
     void Awake()
     {
     	checkEnvironment();
@@ -154,15 +156,18 @@ public class LinkJava : MonoBehaviour
 
 		if (externalProcess == null) 
 		{
-			//UnityEngine.Debug.Log ("Process is null");
+			UnityEngine.Debug.Log ("Process is null");
 		} 
 		else 
 		{
-			while (!externalProcess.HasExited) 
+            UnityEngine.Debug.Log("Waiting for process to complete");
+            while (!externalProcess.HasExited) 
 			{
-				yield return null;
-			}
-			int ExitCode = externalProcess.ExitCode;
+                //UnityEngine.Debug.Log("Process exited? " + externalProcess.HasExited);
+                yield return null;
+            }
+            UnityEngine.Debug.Log("Process has completed");
+            int ExitCode = externalProcess.ExitCode;
 			string mpout = "";
 			string line = null;
 			string filename = "";
@@ -172,9 +177,9 @@ public class LinkJava : MonoBehaviour
 				mpout += line + "\n";
 			}
 			mpout += "Exit code: "+ExitCode.ToString ();
-            //UnityEngine.Debug.Log(line);
-            //UnityEngine.Debug.Log(mpout);
-			//UnityEngine.Debug.Log ("Java finished here...");
+            UnityEngine.Debug.Log(line);
+            UnityEngine.Debug.Log(mpout);
+			UnityEngine.Debug.Log ("Java finished here...");
 			if (ExitCode == 0) 
 			{
 				UnityEngine.Debug.Log (externalProcess.StartInfo.Arguments);	
@@ -183,7 +188,11 @@ public class LinkJava : MonoBehaviour
 				GameManager.Instance.tracker.UploadData(upload_data);
 				UnityEngine.Debug.Log ("It's now time to load "+filename);
                 StreamReader reader = new StreamReader(filename);
-                GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+
+                /* should wait to save this */
+                //GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+                _lastPCGLevelGenerated = reader.ReadToEnd();
+
                 GameManager.Instance.GetSaveManager().UpdateSave();
                 bool restartPhase = (simulationMode == SimulationTypes.PCG);
 				GameManager.Instance.TriggerLoadLevel(restartPhase, DataManager.LoadType.FILEPATH, filename);
@@ -207,7 +216,10 @@ public class LinkJava : MonoBehaviour
 		if(OnSimulationCompleted!=null) { OnSimulationCompleted(simulationFeedback); }
 	}
 
-	public void SendToME () 
+    public string GetLastPCGGeneratedLevel() { return _lastPCGLevelGenerated; }
+    public void ClearLastPCGGeneratedLevel() { _lastPCGLevelGenerated = ""; }
+
+    public void SendToME () 
 	{
 		bool java_found = false;
 		if (checkEnvironment () != 0) 
