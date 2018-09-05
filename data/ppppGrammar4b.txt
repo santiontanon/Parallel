@@ -2,6 +2,9 @@ RULE DELIVERY_TRIVIAL 0.9 0.9 -1 TRIVIAL
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA)
+RULE JUST_CONNECT 0.1 0.9 -1 REFINEMENT
+    PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
+    REPLACEMENT B:track(to:C),C:track()
 RULE MAKE_EXCHANGE_POINT_BETWEEN_PROBLEMS 0.9 0.5 -1 SYNCRO
     PATTERN A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA),\
@@ -31,7 +34,7 @@ RULE MAKE_DELIVERY_CRITICAL 1.0 0.5 -1 CRITICAL,RACE
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
     D:track(),E:track(to:B),\
     F:{start_point}(partOf:AA)
-	REPLACEMENT A:situation_critical_misdelivery_due_to_race_condition(),AA:subproblem(),\
+    REPLACEMENT A:situation_critical_misdelivery_due_to_race_condition(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:N),\
     D:track(),E:track(to:M),\
     M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
@@ -83,9 +86,6 @@ RULE EXPAND_DEADLOCK 1.0 1.0 -1 REFINEMENT
     C:{track}(),\
     LA:situation_abst(),LAA:subproblem(),LB:track(is:LB_,partOf:LA,partOf:LAA),\
     LC:{track}(is:LC_,partOf:LA,partOf:LAA,to:C),LB_:out(),LC_:in()
-RULE JUST_CONNECT 0.1 0.9 -1 REFINEMENT
-    PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
-    REPLACEMENT B:track(to:C),C:track()
 RULE JESS_DEADLOCK1 0.7 0.1 -1 DEADLOCK
     PATTERN A:situation_abst(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
@@ -117,4 +117,3 @@ RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 REFINEMENT
     MERGE:merge(to:C),\
     CHALLENGE:challenge(),\
     SOLSEM:semaphore(),SOLB1:button(),SOLB2:button(),SOLB3:button(),SOLB4:button()
-    

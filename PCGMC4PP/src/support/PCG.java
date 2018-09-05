@@ -26,7 +26,6 @@ package support;
 import orthographicembedding.DisconnectedGraphs;
 import game.GameState;
 import game.pcg.GraphManager;
-import game.pcg.LevelOptimizer;
 import game.pcg.PuzzleEmbeddingComparator;
 import game.pcg.PuzzleEmbeddingEvaluator;
 import java.io.File;
@@ -34,7 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +53,6 @@ import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
-import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -169,7 +167,7 @@ public class PCG {
         if (size == -1) size = r.nextInt(5)+1;
 
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
-        Map<String,Integer> size_application_limits = new HashMap();
+        Map<String,Integer> size_application_limits = new LinkedHashMap();
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
         size_application_limits.put("ADD_MORE_PROBLEMS", sizes.get(0));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(1));
@@ -216,9 +214,9 @@ public class PCG {
         List<Sort> eoi = new LinkedList<Sort>();
         noi.add(Sort.getSort("track"));
         eoi.add(Sort.getSort("to"));
-        Map<LGraphNode, LGraphNode> map = new HashMap<LGraphNode, LGraphNode>();
+        Map<LGraphNode, LGraphNode> map = new LinkedHashMap<LGraphNode, LGraphNode>();
         LGraph layoutGraph = graph.cloneSubGraph(noi,eoi, map);
-        HashMap<LGraphNode, LGraphNode> map_inverse = ListToArrayUtility.swapMapKeysValues(map);
+        Map<LGraphNode, LGraphNode> map_inverse = ListToArrayUtility.swapMapKeysValues(map);
         
         Random r;
         if(randomSeed>-1){

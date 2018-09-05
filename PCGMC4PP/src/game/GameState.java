@@ -38,8 +38,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -76,10 +76,10 @@ public class GameState {
     public ComponentState cs;
     public UnitState us;
     public BoardState bs;
-    public Map<Pair<Integer,Integer>,Integer> goals_delivery = new HashMap(); // TODO generalize this to other properties
+    public Map<Pair<Integer,Integer>,Integer> goals_delivery = new LinkedHashMap(); // TODO generalize this to other properties
     private int time_elapsed_total = 0;
     private int time_elapsed_this_step = 0;
-    private Map<Integer, Integer> time_elapsed_per_unit_moved = new HashMap();
+    private Map<Integer, Integer> time_elapsed_per_unit_moved = new LinkedHashMap();
     public List<IntermediateUnitPosition> intermediate_unit_positions = new ArrayList();
     private int steps = 0;
     // Note, without state compression, time and steps should be the same
@@ -378,7 +378,7 @@ public class GameState {
     }
 
     private GameState newSuccessor(int successor_type) {
-        Map<Pair<Integer, Integer>, Integer> new_goal_delivery = new HashMap();
+        Map<Pair<Integer, Integer>, Integer> new_goal_delivery = new LinkedHashMap();
         for(Map.Entry<Pair<Integer, Integer>, Integer> entry : this.goals_delivery.entrySet()){
             new_goal_delivery.put(entry.getKey(), entry.getValue());
         }
@@ -442,7 +442,7 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
-                System.out.println("move unit: " + cu.id);
+//                System.out.println("move unit (individually): " + cu.id);
                 successors.add(successor);
             } else if (this.canUpdateComponent(cu)) {
                 successor = this.newSuccessor(GameState.STATE_EVENT);
@@ -455,7 +455,7 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
-//                System.out.println("update component: " + cu.id);
+//                System.out.println("update component (individually): " + cu.id);
                 successors.add(successor);
             }
         }
@@ -466,7 +466,7 @@ public class GameState {
         for (int i = 0; i < this.cs.getComponents().size(); i++) {
             Component c = cs.getComponent(i);
             if (this.canUpdateComponent(c)) {
-                System.out.println("    c: " + c.id);
+//                System.out.println("update component (all at once): " + c.id);
                 successor.updateComponent(i);
                 anyComponentUpdated = true;
             }
@@ -485,9 +485,13 @@ public class GameState {
                 if (this.canMoveUnit(cu)) {
                     successor.getUnitState().getUnit(i).consecutive_blocked = 0;
                     successor.moveUnit(i);
+//                    System.out.println("move unit (all units/components): " + cu.id);
+                    nUnitsUpdated++;
                 } else if (this.canUpdateComponent(cu)) {
                     successor.getUnitState().getUnit(i).consecutive_blocked = 0;
                     successor.updateComponentUnit(i);
+//                    System.out.println("update component (all units/components): " + cu.id);
+                    nComponentsUpdated++;
                 } else {
                     successor.getUnitState().getUnit(i).consecutive_blocked++;
                     // TODO this may be sufficient to identify starvation but may need to be updated also in all successors when moving a single unit for all "other" units

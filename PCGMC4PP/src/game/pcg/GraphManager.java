@@ -40,7 +40,7 @@ import game.component.ComponentSemaphore;
 import game.component.ComponentSignal;
 import game.component.ComponentUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -222,9 +222,9 @@ public class GraphManager {
     }
 
     private void addDirections() {
-        tile_to_node = new HashMap();
-        node_to_tile = new HashMap();
-        node_to_node_by_tile = new HashMap();
+        tile_to_node = new LinkedHashMap();
+        node_to_tile = new LinkedHashMap();
+        node_to_node_by_tile = new LinkedHashMap();
 
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
@@ -534,8 +534,8 @@ public class GraphManager {
     
     private void addComponentsForVisualEval() {
         
-        tile_to_node = new HashMap();
-        node_to_tile = new HashMap();
+        tile_to_node = new LinkedHashMap();
+        node_to_tile = new LinkedHashMap();
 
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder

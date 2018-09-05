@@ -25,17 +25,11 @@ package support;
 
 import game.GameState;
 import game.GameStateDescriptionWrapper;
-import game.GameStateSearch;
-import game.execution.ExecutionDeterministic;
-import game.execution.ExecutionDeterministic1;
-import game.execution.ExecutionFair;
-import game.execution.ExecutionNonDeterministic;
 import game.execution.ExecutionPlan;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -70,18 +64,19 @@ public class Play {
                 if (args.length >= 3) {
                     how_many = Integer.parseInt(args[2]);
                 }
-                Map<GameStateDescriptionWrapper,Integer> gsh = new HashMap();
+                Map<GameStateDescriptionWrapper,Integer> gsh = new LinkedHashMap();
                 List<GameState> eps = new ArrayList();
                 eps.add(gs);
                 GameState gs_ = gs.clone();
                 Random rand = new Random(deterministic);
                 for(int i=0;i<how_many;i++){
                     List<GameState> successors = gs_.getSuccessors();
-//                    System.out.println("successors: " + successors.size());
                     if (successors.size() > 0) {
 //                        GameState successor;
                         if (deterministic < 0) {
-                            gs_ = successors.get(rand.nextInt(successors.size()));
+                            int chosen = rand.nextInt(successors.size());
+//                            System.out.println("chosen: " + chosen + " / " + successors.size());
+                            gs_ = successors.get(chosen);
                         } else if (deterministic == 0) {
                             gs_ = successors.get(0);
                         } else {
