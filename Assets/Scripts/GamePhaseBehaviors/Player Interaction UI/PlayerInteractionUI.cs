@@ -289,7 +289,7 @@ public class PlayerInteraction_UI
             goalToggle.toggleButton.onClick.AddListener(() => ToggleGoalVisibility());
 
             saveLevel.onClick.RemoveAllListeners();
-            saveLevel.onClick.AddListener(() => Debug.Log("TODO: LEVEL SAVE FUNCTIONALITY") );
+            saveLevel.onClick.AddListener(() => GameManager.Instance.TriggerPCGLevelSave() );
             saveLevel.gameObject.SetActive( GameManager.Instance.IsInPCG() );
         }
 

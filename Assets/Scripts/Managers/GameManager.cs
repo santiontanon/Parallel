@@ -233,8 +233,23 @@ public class GameManager : MonoBehaviour {
 
     public bool IsInPCG()
     {
-        return linkJava.simulationMode == LinkJava.SimulationTypes.PCG;
+        return linkJava.simulationMode == 
+            LinkJava.SimulationTypes.PCG || 
+            (dataManager.currentLevelData.metadata.level_id == -1  && linkJava.GetLastPCGGeneratedLevel().Length>0);
     }
+
+    public void TriggerPCGLevelSave()
+    {
+        string lastLevelData = linkJava.GetLastPCGGeneratedLevel();
+        if (lastLevelData.Length > 0f)
+        {
+            GetSaveManager().currentSave.AddNewPCGLevel(lastLevelData);
+            linkJava.ClearLastPCGGeneratedLevel();
+            GetSaveManager().UpdateSave();
+        }
+        else Debug.Log("No previous PCG level was found.");
+    }
+
 
 	public void InitiateTrackGeneration()
 	{
