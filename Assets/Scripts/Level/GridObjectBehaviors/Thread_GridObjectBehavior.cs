@@ -52,6 +52,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
     public override void ReturnToStep(TimeStepData timeStep)
     {
+        Debug.Log("ReturnToSte");
         //thread
         iTween.Stop(gameObject);
         this.timeStep = timeStep;
@@ -87,6 +88,12 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
+        foreach(GameObject g in trailObjectList)
+        {
+            CabooseObject caboose = g.GetComponent<CabooseObject>();
+            if (caboose != null)
+                caboose.UpdateFollow(false);
+        }
         while(timeStep.timeStep != inputStep.timeStep)
         {
             if(timeStep.timeStep > inputStep.timeStep)
@@ -217,6 +224,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
     void UpdateCabooses(IEnumerable<int> payloadIds, bool instant)
     {
+        Debug.Log("updateCabooses: " + instant);
         List<int> currentCabooses = new List<int>();
         currentCabooses.AddRange(payloadIds);
 
