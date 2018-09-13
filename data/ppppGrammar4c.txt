@@ -29,7 +29,7 @@ RULE ADD_BUTTON_SEMAPHORE 1.0 0.5 -1 REFINEMENT
     PATTERN A:situation_inst(),B:{track,semaphore}(partOf:A),C:{track,button}(partOf:A)
     NEGATEDPATTERN B:{track}(has:B_),B_:semaphore()
     REPLACEMENT A:situation_inst(),B:{track}(partOf:A,has:B_),C:{track}(partOf:A,has:C_),\
-    B_:semaphore(),C_:button(partOf:B_)
+    B_:semaphore(),C_:button(link:B_)
 RULE ADD_DIVERTER 1.0 0.5 -1 REFINEMENT
     PATTERN A:situation_inst(),B:{track,diverter}(partOf:A)
     NEGATEDPATTERN B:{track}(has:B_),B_:diverter()
@@ -38,7 +38,7 @@ RULE ADD_BUTTON_DIRECTION 1.0 0.5 -1 REFINEMENT
     PATTERN B:{fork}(),C:{merge}(partOf:B)
     NEGATEDPATTERN B:{fork}(has:B_),B_:conditional()
     REPLACEMENT B:{fork}(has:B_),B_:conditional(),\
-    C:{merge}(partOf:B,has:C_),C_:button(partOf:B_)
+    C:{merge}(partOf:B,has:C_),C_:button(link:B_)
 RULE MAKE_LOOP 1.0 0.5 -1 LOOP
     PATTERN A:subproblem(),B:{track,start_point}(partOf:A),C:{track,end_point}(partOf:A)
     NEGATEDPATTERN C:{track,end_point}(to:D),D:track()

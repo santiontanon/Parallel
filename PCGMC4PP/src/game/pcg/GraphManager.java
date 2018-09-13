@@ -95,12 +95,15 @@ public class GraphManager {
     static Sort sortGoal = null;
     static Sort sortMerge = null;
     static Sort sortTo = null;
+    static Sort sortToWithPackage = null;
+    static Sort sortToWithoutPackage = null;
     static Sort sortIs = null;
     static Sort sortTrack = null;
     static Sort sortTrash = null;
     static Sort sortFirst = null;
     static Sort sortDiverter = null;
     static Sort sortExchange = null;
+    static Sort sortLink = null;
     
     public GraphManager(OrthographicEmbeddingResult oe, LGraph graph, LGraph layoutGraph, Map<LGraphNode, LGraphNode> map){
         this.oe = oe;
@@ -192,6 +195,8 @@ public class GraphManager {
     static private void initSorts() {
         try {
             sortTo = Sort.getSort("to");
+            sortToWithPackage = Sort.getSort("toWithPackage");
+            sortToWithoutPackage = Sort.getSort("toWithoutPackage");
             sortIs = Sort.getSort("is");
             sortTrack = Sort.getSort("track");
             sortHas = Sort.getSort("has");
@@ -216,6 +221,7 @@ public class GraphManager {
             sortFirst = Sort.getSort("first");
             sortExchange = Sort.getSort("exchange");
             sortPreventor = Sort.getSort("preventor");
+            sortLink = Sort.getSort("link");
         } catch (Exception ex) {
             Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -235,6 +241,7 @@ public class GraphManager {
             if (oe.nodeIndexes[i] >= 0) {
                 tile_to_node.put(board.getTile(x, y), map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
                 node_to_tile.put(map.get(layoutGraph.getNode(oe.nodeIndexes[i])), board.getTile(x, y));
+                System.out.println(i + " --> " + x + ", " + y);
             } else {
                 // Shoulders get a -1
             }
@@ -293,11 +300,14 @@ public class GraphManager {
         }
         return found ? found_route : null;
     }
+    
+    
     private static void addDirectionsMarkTilePathFromNodeToNode(Tile start, Tile first, Tile dest) {
         Tile current = first;
         Tile last = start;
+//        System.out.println("addDirectionsMarkTilePathFromNodeToNode start " + start.x + "," + start.y + "  first: " + first.x + "," + first.y + "  dest: " + dest.x + "," + dest.y);
         while (true) {
-            //System.out.println("marking" + current.toString());
+//            System.out.println("     last " + last.x + "," + last.y + "  current: " + current.x + "," + current.y);
             last.traveled_to.add(current);
             if (current.equals(dest)) {
                 break;
@@ -406,7 +416,9 @@ public class GraphManager {
                 ComponentSignal cb = new ComponentSignal(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode cs = null;
                 try {
-                    cs = hasComponent.end.getFirstChildNode(sortHas);
+//                    cs = hasComponent.end.getFirstChildNode(sortHas);
+//                    if (cs == null) cs = hasComponent.end.getFirstChildNode(sortPartOf);
+                    cs = hasComponent.end.getFirstChildNode(sortLink);
                 } catch (Exception ex) {
                     Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -445,27 +457,51 @@ public class GraphManager {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentDiverter cc = new ComponentDiverter(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 Tile t = node_to_tile.get(node);
-                int direction_bad = -1;
-                int direction_good = -1;
+                for(LGraphEdge e:node.getOutgoingEdges(sortTo)) {
+                    if (e.end.subsumedBy(sortTrack)) {
+                        int direction = t.getDirectionTo(node_to_tile.get(e.end));
+                        System.out.println("e.end position: " + node_to_tile.get(e.end).x + ", " + node_to_tile.get(e.end).y);
+                        if (e.labelSet.subsumedBy(sortToWithPackage)) {
+                            cc.directions_colors[direction] = new int[]{1,2,3,4,5,6};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                            System.out.println("Diverter -> toWithPackage -> " + direction);
+                        } else if (e.labelSet.subsumedBy(sortToWithoutPackage)) {
+                            cc.directions_colors[direction] = new int[]{-1};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};
+                            System.out.println("Diverter -> sortToWithoutPackage -> " + direction);
+                        } else if(e.end.getFirstChildNode(sortIs, sortTrash)!=null) {
+                            cc.directions_colors[direction] = new int[]{-1};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};                    
+                            System.out.println("Diverter -> trash -> " + direction);
+                        } else {
+                            cc.directions_colors[direction] = new int[]{1,2,3,4,5,6};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                            System.out.println("Diverter -> - -> " + direction);
+                        }
+                    }
+                }
+                /*
+                int direction_with_trash = -1;
+                int direction_without_trash = -1;
                 for(LGraphNode child:node.getChildNodes(sortTo,sortTrack)){
                     if(child.getFirstChildNode(sortIs, sortTrash)!=null){
-                        direction_bad = t.getDirectionTo(node_to_tile.get(child));
+                        direction_with_trash = t.getDirectionTo(node_to_tile.get(child));
                     } else {
-                        direction_good = t.getDirectionTo(node_to_tile.get(child));
+                        direction_without_trash = t.getDirectionTo(node_to_tile.get(child));
                     }
                 }
                 // get bad direction, set 
-                if(direction_bad>-1){
-                    cc.directions_colors[direction_bad] = new int[]{-1};
-                    cc.directions_types[direction_bad] = new int[]{ComponentPickup.EMPTY};
-                    
+                if(direction_with_trash>-1){
+                    cc.directions_colors[direction_with_trash] = new int[]{-1};
+                    cc.directions_types[direction_with_trash] = new int[]{ComponentPickup.EMPTY};                    
                 } else {
                     System.err.println("The diverter doesn't have a TRASH (1)");
                 }
-                if(direction_good>-1){
-                    cc.directions_colors[direction_good] = new int[]{1,2,3,4,5,6};
-                    cc.directions_types[direction_good] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                if(direction_without_trash>-1){
+                    cc.directions_colors[direction_without_trash] = new int[]{1,2,3,4,5,6};
+                    cc.directions_types[direction_without_trash] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
                 }
+                */
                 components.addComponent(cc);
                 n_components++;
 
@@ -613,7 +649,8 @@ public class GraphManager {
                 ComponentSignal cb = new ComponentSignal(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode cs = null;
                 try {
-                    cs = hasComponent.end.getFirstChildNode(sortHas);
+//                    cs = hasComponent.end.getFirstChildNode(sortHas);
+                    cs = hasComponent.end.getFirstChildNode(sortLink);
                 } catch (Exception ex) {
                     Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -72,9 +72,12 @@
 
     <sort name="relation" super="any"/>
     <sort name="to" super="relation"/>
+    <sort name="toWithPackage" super="to"/>
+    <sort name="toWithoutPackage" super="to"/>
     <sort name="is" super="relation"/>
     <sort name="has" super="relation"/>
     <sort name="partOf" super="relation"/>
+    <sort name="link" super="relation"/>
 
 <!-- THESE ARE INTENDED TO SELECT THE TOPICS ANNOTATED IN THE GRAMMAR RULES -->
     <sort name="TOPIC" super="any"/>

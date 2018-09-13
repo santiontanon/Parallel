@@ -76,10 +76,10 @@ RULE EXPAND_DEADLOCK 1.0 1.0 -1 REFINEMENT
     REPLACEMENT A:situation_deadlock_two_thread_semaphore(),\
     B:{track}(partOf:A,to:X),LLC:{track}(to:LB),\
     X:fork(to:HA,to:HB,has:X_),Y:merge(to:LLC),X_:conditional()\
-    HA:{track}(partOf:A,to:IA,has:HA_),HA_:button(partOf:X_)\
-    HB:{track}(partOf:A,to:IB,has:HB_),HB_:button(partOf:X_)\
-    IA:{track}(has:IA_,to:JA),IA_:button(has:JB_,partOf:K),\
-    IB:{track}(has:IB_,to:JB),IB_:button(has:JA_,partOf:K),\
+    HA:{track}(partOf:A,to:IA,has:HA_),HA_:button(link:X_)\
+    HB:{track}(partOf:A,to:IB,has:HB_),HB_:button(link:X_)\
+    IA:{track}(has:IA_,to:JA),IA_:button(link:JB_,partOf:K),\
+    IB:{track}(has:IB_,to:JB),IB_:button(link:JA_,partOf:K),\
     JA:{track}(has:JA_,to:Y),JA_:semaphore_red(partOf:K),\
     JB:{track}(has:JB_,to:Y),JB_:semaphore_red(partOf:K),\
     K:challenge(),\
@@ -102,18 +102,18 @@ RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 REFINEMENT
     B2:{track}(partOf:A,to:B3,has:SOLSEM),\
     B3:{track}(partOf:A,to:FORK1,has:SOLB1),\
     C:{track,delivery}(is:C_,partOf:A),C_:in(),\
-    FORK1:{track,diverter}(to:PATH1A,to:FORK2,partOf:A),\
-    FORK2:fork(to:PATH2A,to:PATH3A,has:COND,partOf:A,is:FORKTRASH),COND:conditional(),FORKTRASH:trash(),\
+    FORK1:{track,diverter}(toWithPackage:PATH1A,toWithoutPackage:FORK2,partOf:A),\
+    FORK2:fork(to:PATH3A,to:PATH2A,has:COND,partOf:A),COND:conditional(),\
     PATH1A:{track}(to:PATH1B,has:SOLB2,partOf:A),\
-    PATH1B:{track}(to:PATH1C,has:BUTTON1,partOf:A),BUTTON1:button(partOf:CHALLENGE,has:SEM2),\
+    PATH1B:{track}(to:PATH1C,has:BUTTON1,partOf:A),BUTTON1:button(partOf:CHALLENGE,link:SEM2),\
     PATH1C:track(to:PATH1D,has:SEM1,partOf:A),SEM1:semaphore_red(partOf:CHALLENGE),\
     PATH1D:{track,exchange}(to:MERGE,has:EXCHANGE1,partOf:A),EXCHANGE1:exchange(partOf:EXCHANGE3),\
     PATH3A:{track,thread}(to:PATH3B,partOf:A,has:SOLB4),\
     PATH3B:{track}(to:PATH3C,partOf:A),\
     PATH3C:track(to:MERGE,has:EXCHANGE3),EXCHANGE3:exchange(partOf:EXCHANGE1),\
     PATH2A:track(to:PATH2B,has:SOLB3,partOf:A),\
-    PATH2B:track(to:PATH2C,has:BUTTON2,partOf:A),BUTTON2:button(partOf:CHALLENGE,has:SEM1),\
+    PATH2B:track(to:PATH2C,has:BUTTON2,partOf:A),BUTTON2:button(partOf:CHALLENGE,link:SEM1),\
     PATH2C:track(to:MERGE,has:SEM2,partOf:A),SEM2:semaphore_red(partOf:CHALLENGE),\
     MERGE:merge(to:C),\
     CHALLENGE:challenge(),\
-    SOLSEM:semaphore(),SOLB1:button(),SOLB2:button(),SOLB3:button(),SOLB4:button()
+    SOLSEM:semaphore(),SOLB1:button(link:COND),SOLB2:button(link:SOLSEM),SOLB3:button(),SOLB4:button()

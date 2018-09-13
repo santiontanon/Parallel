@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import javax.swing.JFrame;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
 import lgraphs.ontology.Ontology;
@@ -46,6 +47,7 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
+import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
@@ -193,9 +195,13 @@ public class PCG {
         LGraph graph = LGraph.fromString("N0:problem()");
         // Create structure for problems and subproblems        
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
+//	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
+        
         // Instanciate situations
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
 //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
+//	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
+
         // Refine components
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
         // Remove solution
