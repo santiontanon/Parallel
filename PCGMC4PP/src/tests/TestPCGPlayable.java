@@ -29,6 +29,7 @@ import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
 import lgraphs.sampler.LGraphGrammarSampler;
+import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import support.PCG;
 import support.Play;
 
@@ -79,9 +80,10 @@ public class TestPCGPlayable {
         int accumWidth = 0;
         for(int size=1;size<=1;size++){        
 //            for(int randomSeed=0;randomSeed<10;randomSeed++){
-            int randomSeed = 4;
+            int randomSeed = 10;
             {
                 LGraphGrammarSampler.DEBUG = 1;
+                //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, true, true);
                 BoardGameStateJFrame f = new BoardGameStateJFrame("level", 1280, 640, gs);                
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
@@ -106,9 +108,9 @@ public class TestPCGPlayable {
         gs.init();
         ExecutionPlan ep = Play.PlayLevel(gs, executionRandomSeed, how_many, number_of_loops_before_breaking, break_when_complete);
         System.out.println("Simulation generated " + ep.getStates().size() + " states");
-        for(GameState gs2:ep.getStates()) {
-            System.out.println("  " + gs2.getTime());
-        }
+//        for(GameState gs2:ep.getStates()) {
+//            System.out.println("  " + gs2.getTime());
+//        }
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
         BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", 1280, 640, gs2);                
         for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
