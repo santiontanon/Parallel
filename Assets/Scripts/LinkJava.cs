@@ -111,6 +111,7 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.CreateNoWindow = true;
 			externalProcess.StartInfo.UseShellExecute = false;
 			externalProcess.StartInfo.RedirectStandardOutput = true;
+			externalProcess.StartInfo.RedirectStandardError = true;
 			externalProcess.StartInfo.FileName = "java";
             //externalProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
             //externalProcess.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
@@ -178,7 +179,7 @@ public class LinkJava : MonoBehaviour
             {
                 line = externalProcess.StandardOutput.ReadLine();
                 processOutput += processOutput + "/n";
-                if (line.Contains(".txt"))
+                if (line != null && line.Contains(".txt"))
                     filename = line;
                 yield return new WaitForSeconds(0.1f);
             }
