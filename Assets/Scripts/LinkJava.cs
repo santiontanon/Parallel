@@ -125,18 +125,18 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"OGE.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"JGGS.jar";
             externalProcess.StartInfo.Arguments += "\" support." + simulationMode.ToString();
-            if (simulationMode == SimulationTypes.ME)
+            if (simulationMode == SimulationTypes.ME) //submit
             {
                 int budget = 600000;
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + budget;
             }
-            else if (simulationMode == SimulationTypes.Play)
+            else if (simulationMode == SimulationTypes.Play) //testing
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed;
             }
-            else
+            else //pcg
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
