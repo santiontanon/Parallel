@@ -209,7 +209,6 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
                 /**/
                 if (Constants.ComponentLinkColor.componentLinkColors.ContainsKey(g.component.type))
                 {
-                    Debug.Log(g.component.type + "Should have a colored line.");
                     if (lineRenderer)
                     {
                         //int randomLineIndex = Random.Range(0, Constants.ComponentLinkColor.componentLinkColors[g.component.type].Count);
@@ -239,5 +238,5 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
             }
             UpdateBezier(transform.position, transform.position);
 		}
-	}
+    }
 }

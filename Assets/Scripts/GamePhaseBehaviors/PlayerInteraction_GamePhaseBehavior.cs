@@ -214,7 +214,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
         hover_bezier.eventID = EventTriggerType.PointerEnter;
-        hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
+        hover_bezier.callback.AddListener((eventData) => { Debug.Log("Bezier"); connectVisibility = false; ToggleConnectionVisibility(); });
         playerInteraction_UI.preview.triggers.Add(hover_bezier);
 
         EventTrigger.Entry click_bezier = new EventTrigger.Entry();
@@ -769,14 +769,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				else if( GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "conditional") ) 
 				{
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				playerInteraction_UI.onHoverLightbox.ClosePanel();
 
@@ -787,8 +789,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					if(connectVisibilityLock) otherSignal.SetHighlight( true );
 				}
 
-                
-                //Debug.Log("END CONNECTING");
 				interactionPhase = InteractionPhases.ingame_default;
 			}
 			else 
@@ -873,7 +873,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
     }
 
-    public void ToggleConnectionVisibility()
+    public void ToggleConnectionVisibility(float duration = -1.0f)
 	{
 		connectVisibility = !connectVisibility;
 
@@ -887,7 +887,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			Signal_GridObjectBehavior s = (Signal_GridObjectBehavior) g;
 			s.SetHighlight(connectVisibility);
 		}
+        if(duration > 0)
+        {
+            StartCoroutine(ToggleConnectionVisibilityRoutine(duration));
+        }
 	}
+
+    IEnumerator ToggleConnectionVisibilityRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ToggleConnectionVisibility();
+    }
 
     public void LockConnectionVisibility()
 	{
