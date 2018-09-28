@@ -154,7 +154,6 @@ public class LinkJava : MonoBehaviour
 	}
 
     SimulationFeedback simulationFeedback = SimulationFeedback.none;
-    string processOutput;
     string _filename;
 
     IEnumerator externalNonBlockingWait()
@@ -178,7 +177,6 @@ public class LinkJava : MonoBehaviour
             while (!externalProcess.HasExited)
             {
                 line = externalProcess.StandardOutput.ReadLine();
-                processOutput += processOutput + "/n";
                 if (line != null && line.Contains(".txt"))
                     filename = line;
                 yield return new WaitForSeconds(0.1f);
@@ -187,7 +185,6 @@ public class LinkJava : MonoBehaviour
             int ExitCode = externalProcess.ExitCode;
             while((line = externalProcess.StandardOutput.ReadLine()) != null)
             {
-                processOutput += processOutput + "/n";
                 if (line.Contains(".txt"))
                     filename = line;
             }
@@ -238,16 +235,6 @@ public class LinkJava : MonoBehaviour
         UnityEngine.Debug.LogError(externalProcess.StartInfo.Arguments);
         simulationFeedback = SimulationFeedback.failure;
         yield return null;
-    }
-
-    void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
-    {
-        string line = outLine.Data;
-        if (line.Contains(".txt"))
-            _filename = line;
-        else
-            processOutput += line + "\n";
-        UnityEngine.Debug.Log(line);
     }
 
     public string GetLastPCGGeneratedLevel() { return _lastPCGLevelGenerated; }
