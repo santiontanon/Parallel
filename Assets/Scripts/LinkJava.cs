@@ -183,20 +183,21 @@ public class LinkJava : MonoBehaviour
             }
             UnityEngine.Debug.Log("Process has completed");
             int ExitCode = externalProcess.ExitCode;
-            while((line = externalProcess.StandardOutput.ReadLine()) != null)
+            while ((line = externalProcess.StandardOutput.ReadLine()) != null)
             {
                 if (line.Contains(".txt"))
                     filename = line;
             }
-            while((line = externalProcess.StandardError.ReadLine()) != null)
+            while ((line = externalProcess.StandardError.ReadLine()) != null)
             {
                 UnityEngine.Debug.Log(line);
             }
-			if (ExitCode == 0) 
-			{
+            if (ExitCode == 0)
+            {
                 yield return StartCoroutine(ExternalProcessSucess());
-			} 
-			else 
+
+            }
+            else 
 			{
                 yield return StartCoroutine(ExternalProcessFailure());
 			}
