@@ -1673,8 +1673,7 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 0
     popupDescription: Arrows can only move on their predefined path. Use the Flow
-      Arrows above to view which paths arrows can take. Click the yellow Arrow now.
-      (click to close)
+      Arrows on the right to view which paths arrows can take. (click to close)
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
