@@ -1635,8 +1635,8 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
-    popupDescription: Direction switches direct arrows based on the active arrow.
-      When an arrow passes a connected signal the switch rotates clockwise.
+    popupDescription: Direction switches direct arrows based on the active direction.
+      When an arrow passes a connected signal, the switch rotates clockwise.
     pause: 1
     pauseDuration: 6
     overrideSimulation: 0
