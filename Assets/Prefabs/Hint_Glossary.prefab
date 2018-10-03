@@ -68,8 +68,8 @@ MonoBehaviour:
   - hint_component_type: signal
     hintTitle: Signal
     hintDescription: Signals can be dragged from the toolbar and placed on the track.
-      Signals are used to control semaphores and direction switches.   To connect
-      a signal to an item on the track, right-click the signal, then right-click the
+      Signals are used to control semaphores and direction switches. To connect a
+      signal to an item on the track, right click the signal, then right click the
       item that you want to connect it to. Hover over the signal to make sure that
       the connection has been made.
     hintImage: {fileID: 21300000, guid: 30a4810fcb34d5a46be4d842bdb1693e, type: 3}
