@@ -831,8 +831,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: Right click a signal and right click again on a semaphore to
-      link the them. Then press "Test" again.
+    popupDescription: After dragging to track, right click a signal and right click
+      again on a semaphore to link the them. Then press "Test" again.
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
