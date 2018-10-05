@@ -76,10 +76,11 @@ public class TestPCGExport {
         //batchId = "extra4";
         batchId = "santiTest";
         int accumWidth = 0;
-        for(int size=1;size<=1;size++){        
-//            for(int randomSeed=0;randomSeed<10;randomSeed++){
-            int randomSeed = 1;
-            {
+        for(int size=1;size<=1;size++){
+            for(int randomSeed=1;randomSeed<20000;randomSeed+=1000){
+//            int randomSeed = 1;
+//            int randomSeed = -66593;
+//            {
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
                 String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
                 BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 1280, 640, gs);                
