@@ -225,7 +225,7 @@ public class PCG {
         Map<LGraphNode, LGraphNode> map_inverse = ListToArrayUtility.swapMapKeysValues(map);
         
         Random r;
-        if(randomSeed>-1){
+        if(randomSeed<0){
             r = new Random(randomSeed);
         } else {
             r = new Random();
@@ -253,7 +253,10 @@ public class PCG {
             for(int attempt = 0;attempt<optimizationAttempts;attempt++) {
                 OrthographicEmbeddingResult g_oe = OrthographicEmbedding.orthographicEmbedding(g,simplify, correct, r); 
                 if (g_oe==null) continue;
-                if (!g_oe.sanityCheck(false)) continue;
+                if (!g_oe.sanityCheck(false)) {
+                    System.err.println("Sanity check failed!");
+                    continue;
+                }
 
                 g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
                 g_oe = OrthographicEmbeddingPathOptimizer.optimize(g_oe, g, pec);

@@ -78,10 +78,10 @@ public class TestPCGPlayable {
         //batchId = "extra4";
         batchId = "santiTest";
         int accumWidth = 0;
-        for(int size=1;size<=1;size++){        
-//            for(int randomSeed=0;randomSeed<10;randomSeed++){
-            int randomSeed = 10;
-            {
+        for(int size=2;size<=2;size++){        
+            for(int randomSeed=0;randomSeed<10000;randomSeed+=1000){
+//            int randomSeed = 10;
+//            {
                 LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, true, true);
