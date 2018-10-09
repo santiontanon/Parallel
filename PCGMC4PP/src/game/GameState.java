@@ -38,8 +38,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -536,7 +536,7 @@ public class GameState {
         // TODO since the semaphores now stop before entering, units should not move before entering a semaphore in a single movement, will lose some branches
         boolean allowed_to_continue = true;
         int time = 0;
-        Set<Integer> unit_hashes = new HashSet();
+        Set<Integer> unit_hashes = new LinkedHashSet();
         while (this.canMoveUnit(unit) && allowed_to_continue) {
             time++;
             allowed_to_continue = this.moveUnitRepeat(unit);

@@ -58,7 +58,7 @@ import valls.util.Pair;
  * @author Josep Valls-Vargas <josep@valls.name>
  */
 public class GraphManager {
-    
+
     OrthographicEmbeddingResult oe;
     LGraph graph;
     LGraph layoutGraph;
@@ -67,15 +67,14 @@ public class GraphManager {
     List<LGraphNode> node_list;
     Map<Tile, LGraphNode> tile_to_node;
     Map<LGraphNode, Tile> node_to_tile;
-    Map<Pair<LGraphNode,LGraphNode>, Tile> node_to_node_by_tile;
+    Map<Pair<LGraphNode, LGraphNode>, Tile> node_to_node_by_tile;
     ComponentState components;
-    
+
     double minx = -1;
     double maxx = -1;
     double miny = -1;
     double maxy = -1;
 
-    
     static Sort sortHas = null;
     static Sort sortPartOf = null;
     static Sort sortChallenge = null;
@@ -95,24 +94,25 @@ public class GraphManager {
     static Sort sortGoal = null;
     static Sort sortMerge = null;
     static Sort sortTo = null;
+    static Sort sortToStarting = null;
     static Sort sortToWithPackage = null;
     static Sort sortToWithoutPackage = null;
     static Sort sortIs = null;
     static Sort sortTrack = null;
     static Sort sortTrash = null;
-    static Sort sortFirst = null;
+//    static Sort sortFirst = null;
     static Sort sortDiverter = null;
     static Sort sortExchange = null;
     static Sort sortLink = null;
-    
-    public GraphManager(OrthographicEmbeddingResult oe, LGraph graph, LGraph layoutGraph, Map<LGraphNode, LGraphNode> map){
+
+    public GraphManager(OrthographicEmbeddingResult oe, LGraph graph, LGraph layoutGraph, Map<LGraphNode, LGraphNode> map) {
         this.oe = oe;
         this.graph = graph;
         this.layoutGraph = layoutGraph;
         this.map = map;
     }
 
-    public GameState graphToGameStateForVisualEval(){
+    public GameState graphToGameStateForVisualEval() {
         // Slightly faster, incomplete, to be used for OGE optimization
         initSorts();
         this.initBoard(false);
@@ -121,6 +121,7 @@ public class GraphManager {
         gs.initComponents();
         return gs;
     }
+
     public GameState graphToGameState() {
         initSorts();
         this.initBoard(true);
@@ -130,7 +131,8 @@ public class GraphManager {
         UnitState units = GameStateParser.extractUnitsFromComponents(components);
         return new GameState(board, components, units);
     }
-    public void initBoard(boolean allow_transpose_when_necessary){
+
+    public void initBoard(boolean allow_transpose_when_necessary) {
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             if (i == 0) {
                 minx = maxx = oe.x[i];
@@ -152,7 +154,7 @@ public class GraphManager {
         }
         int width_in_cells = (int) ((maxx - minx) + 1);
         int height_in_cells = (int) ((maxy - miny) + 1);
-        if (allow_transpose_when_necessary && height_in_cells>width_in_cells){
+        if (allow_transpose_when_necessary && height_in_cells > width_in_cells) {
             // Transpose
             double[] temp_ = oe.x;
             oe.x = oe.y;
@@ -164,7 +166,7 @@ public class GraphManager {
             minx = miny;
             miny = temp;
         }
-        
+
         board = new BoardState(width_in_cells * 2 - 1, height_in_cells * 2 - 1);
         //board = new BoardState(width_in_cells * 2 +1 , height_in_cells * 2 + 1);
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
@@ -192,9 +194,11 @@ public class GraphManager {
             node_list.add(node);
         }
     }
+
     static private void initSorts() {
         try {
             sortTo = Sort.getSort("to");
+            sortToStarting = Sort.getSort("toStarting");
             sortToWithPackage = Sort.getSort("toWithPackage");
             sortToWithoutPackage = Sort.getSort("toWithoutPackage");
             sortIs = Sort.getSort("is");
@@ -218,7 +222,7 @@ public class GraphManager {
             sortGoal = Sort.getSort("goal"); // currently unused
             sortMerge = Sort.getSort("merge");
             sortTrash = Sort.getSort("trash");
-            sortFirst = Sort.getSort("first");
+//            sortFirst = Sort.getSort("first");
             sortExchange = Sort.getSort("exchange");
             sortPreventor = Sort.getSort("preventor");
             sortLink = Sort.getSort("link");
@@ -234,14 +238,14 @@ public class GraphManager {
 
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
-            int x = (int) (oe.x[i]-minx) * 2;
-            int y = (int) (oe.y[i]-miny) * 2;
-            // TODO confirm redundant 
+            int x = (int) (oe.x[i] - minx) * 2;
+            int y = (int) (oe.y[i] - miny) * 2;
+            // TODO confirm redundant
             board.getTile(x, y).type = Tile.TILE_TRACK;
             if (oe.nodeIndexes[i] >= 0) {
                 tile_to_node.put(board.getTile(x, y), map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
                 node_to_tile.put(map.get(layoutGraph.getNode(oe.nodeIndexes[i])), board.getTile(x, y));
-                System.out.println(i + " --> " + x + ", " + y);
+                // System.out.println(i + " --> " + x + ", " + y);
             } else {
                 // Shoulders get a -1
             }
@@ -252,15 +256,16 @@ public class GraphManager {
                 Tile start = node_to_tile.get(node);
                 Tile dest = node_to_tile.get(child);
                 //System.out.println("planning route from "+start+" to "+dest);
-                Tile found_first = addDirectionsFindStartPathFromnodeToNode(tile_to_node,  start,  dest);
+                Tile found_first = addDirectionsFindStartPathFromnodeToNode(tile_to_node, start, dest);
                 if (found_first != null) {
                     //System.out.println(" route found starting at "+found_first);
-                    node_to_node_by_tile.put(new Pair(node,child), found_first);
+                    node_to_node_by_tile.put(new Pair(node, child), found_first);
                     addDirectionsMarkTilePathFromNodeToNode(start, found_first, dest);
                 }
             }
         }
     }
+
     private static Tile addDirectionsFindStartPathFromnodeToNode(Map<Tile, LGraphNode> tile_to_node, Tile start, Tile dest) {
         boolean found = false;
         Tile found_route = null;
@@ -300,8 +305,7 @@ public class GraphManager {
         }
         return found ? found_route : null;
     }
-    
-    
+
     private static void addDirectionsMarkTilePathFromNodeToNode(Tile start, Tile first, Tile dest) {
         Tile current = first;
         Tile last = start;
@@ -326,7 +330,7 @@ public class GraphManager {
     }
 
     private void addComponents() {
-         components = new ComponentState();
+        components = new ComponentState();
         int idx = 1;
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
@@ -347,19 +351,21 @@ public class GraphManager {
     private void addComponent(Tile tile, int x, int y, int idx, LGraphNode node) {
         int n_components = 0;
         int color = 1;
-        if(false && node.subsumedBy(sortMerge)){
+        if (false && node.subsumedBy(sortMerge)) {
             // add arrow in merges
             ComponentArrow ca = new ComponentArrow(x, y, idx, color, Component.OWNER_SYSTEM, true);
             LGraphNode next_node = null;
-            for(LGraphNode next_child : node.getChildNodes(sortTo, sortTrack)){
-                if (next_node!=null) System.out.println("MERGE cannot have more than one out TRACKS");
+            for (LGraphNode next_child : node.getChildNodes(sortTo, sortTrack)) {
+                if (next_node != null) {
+                    System.out.println("MERGE cannot have more than one out TRACKS");
+                }
                 next_node = next_child;
             }
-            if (next_node==null) {
+            if (next_node == null) {
                 System.out.println("MERGE doesnt have out TRACKS");
             } else {
                 Tile t_node_merge = node_to_tile.get(node);
-                Tile t_node_next = node_to_node_by_tile.get(new Pair(node,next_node));                
+                Tile t_node_next = node_to_node_by_tile.get(new Pair(node, next_node));
                 ca.direction = t_node_merge.getDirectionTo(t_node_next);
             }
             components.addComponent(ca);
@@ -375,8 +381,8 @@ public class GraphManager {
             if (skipTileComponents) {
                 break;
             }
-            */
-            if (hasComponent.end.subsumedBy(sortPreventor)){
+             */
+            if (hasComponent.end.subsumedBy(sortPreventor)) {
                 // Preventor prevents a component from being instantiated
                 continue;
             }
@@ -387,15 +393,15 @@ public class GraphManager {
                 }
                 components.addComponent(cu);
                 n_components++;
-                System.out.println("added thread at " + x + ", " + y + " (" + idx+ ")");
+                System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
             } else if (hasComponent.end.subsumedBy(sortPickup)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
                 ComponentPickup cp = new ComponentPickup(x, y, idx, color, Component.OWNER_SYSTEM, true);
-                if(hasComponent.end.subsumedBy(sortPickupConditional)){
+                if (hasComponent.end.subsumedBy(sortPickupConditional)) {
                     cp.type = ComponentPickup.CONDITIONAL;
-                } else if (hasComponent.end.subsumedBy(sortPickupUnconditional)){
+                } else if (hasComponent.end.subsumedBy(sortPickupUnconditional)) {
                     cp.type = ComponentPickup.UNCONDITIONAL;
-                } else if (hasComponent.end.subsumedBy(sortPickupLimited)){
+                } else if (hasComponent.end.subsumedBy(sortPickupLimited)) {
                     cp.type = ComponentPickup.LIMITED;
                 }
                 components.addComponent(cp);
@@ -431,7 +437,7 @@ public class GraphManager {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentSemaphore cs = new ComponentSemaphore(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 cs.value = ComponentSemaphore.GREEN;
-                if(hasComponent.end.subsumedBy(sortSemaphoreRed)) {
+                if (hasComponent.end.subsumedBy(sortSemaphoreRed)) {
                     cs.value = ComponentSemaphore.RED;
                 }
                 components.addComponent(cs);
@@ -439,13 +445,21 @@ public class GraphManager {
             } else if (hasComponent.end.subsumes(sortConditional)) {
                 List<Integer> directions = new ArrayList<Integer>();
                 Tile t = node_to_tile.get(node);
-                int current  = 0;
-                for(LGraphNode child : node.getChildNodes(sortTo, sortTrack) ){
-                    Tile t_ = node_to_node_by_tile.get(new Pair(node,child));
-                    directions.add(t.getDirectionTo(t_));
-                    if(child.getFirstChildNode(sortIs, sortFirst)!=null){
-                        current = directions.size()-1;
+                int current = 0;
+                for (LGraphNode child : node.getChildNodes(sortTo, sortTrack)) {
+                    Tile t_ = node_to_node_by_tile.get(new Pair(node, child));
+                    LGraphEdge edge = node.getEdge(child);
+                    System.out.println("conditional out edge: " + edge.labelSet);
+                    if (edge.labelSet.subsumedBy(sortToStarting)) {
+                        // we don't add it yet, we will add it later (also, we assume there is only one)
+                        directions.add(t.getDirectionTo(t_));
+                        current = directions.size() - 1;
+                    } else {
+                        directions.add(t.getDirectionTo(t_));
                     }
+//                    if (child.getFirstChildNode(sortIs, sortFirst) != null) {
+//                        current = directions.size() - 1;
+//                    }
                 }
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentConditional cc = new ComponentConditional(x, y, idx, color, Component.OWNER_SYSTEM, true);
@@ -457,25 +471,25 @@ public class GraphManager {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentDiverter cc = new ComponentDiverter(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 Tile t = node_to_tile.get(node);
-                for(LGraphEdge e:node.getOutgoingEdges(sortTo)) {
+                for (LGraphEdge e : node.getOutgoingEdges(sortTo)) {
                     if (e.end.subsumedBy(sortTrack)) {
                         int direction = t.getDirectionTo(node_to_tile.get(e.end));
                         System.out.println("e.end position: " + node_to_tile.get(e.end).x + ", " + node_to_tile.get(e.end).y);
                         if (e.labelSet.subsumedBy(sortToWithPackage)) {
-                            cc.directions_colors[direction] = new int[]{1,2,3,4,5,6};
-                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                            cc.directions_colors[direction] = new int[]{1, 2, 3, 4, 5, 6};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL, ComponentPickup.UNCONDITIONAL, ComponentPickup.LIMITED};
                             System.out.println("Diverter -> toWithPackage -> " + direction);
                         } else if (e.labelSet.subsumedBy(sortToWithoutPackage)) {
                             cc.directions_colors[direction] = new int[]{-1};
                             cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};
                             System.out.println("Diverter -> sortToWithoutPackage -> " + direction);
-                        } else if(e.end.getFirstChildNode(sortIs, sortTrash)!=null) {
+                        } else if (e.end.getFirstChildNode(sortIs, sortTrash) != null) {
                             cc.directions_colors[direction] = new int[]{-1};
-                            cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};                    
+                            cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};
                             System.out.println("Diverter -> trash -> " + direction);
                         } else {
-                            cc.directions_colors[direction] = new int[]{1,2,3,4,5,6};
-                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                            cc.directions_colors[direction] = new int[]{1, 2, 3, 4, 5, 6};
+                            cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL, ComponentPickup.UNCONDITIONAL, ComponentPickup.LIMITED};
                             System.out.println("Diverter -> - -> " + direction);
                         }
                     }
@@ -490,10 +504,10 @@ public class GraphManager {
                         direction_without_trash = t.getDirectionTo(node_to_tile.get(child));
                     }
                 }
-                // get bad direction, set 
+                // get bad direction, set
                 if(direction_with_trash>-1){
                     cc.directions_colors[direction_with_trash] = new int[]{-1};
-                    cc.directions_types[direction_with_trash] = new int[]{ComponentPickup.EMPTY};                    
+                    cc.directions_types[direction_with_trash] = new int[]{ComponentPickup.EMPTY};
                 } else {
                     System.err.println("The diverter doesn't have a TRASH (1)");
                 }
@@ -501,7 +515,7 @@ public class GraphManager {
                     cc.directions_colors[direction_without_trash] = new int[]{1,2,3,4,5,6};
                     cc.directions_types[direction_without_trash] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
                 }
-                */
+                 */
                 components.addComponent(cc);
                 n_components++;
 
@@ -509,7 +523,9 @@ public class GraphManager {
                 idx = 4000 + node_list.indexOf(hasComponent.end);
                 ComponentExchange cu = new ComponentExchange(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode other = hasComponent.end.getFirstChildNode(sortPartOf, sortExchange);
-                if(other!=null) cu.link = 4000 + node_list.indexOf(other);
+                if (other != null) {
+                    cu.link = 4000 + node_list.indexOf(other);
+                }
                 components.addComponent(cu);
                 n_components++;
             } else {
@@ -535,9 +551,9 @@ public class GraphManager {
                 for (LGraphEdge e_ : hasComponent.end.getOutgoingEdges(sortPartOf, sortGoal)) {
                     isGoal = true;
                 }
-                */
+                 */
                 if (isGoal) {
-                    if(hasComponent.end.subsumedBy(sortPreventor)){
+                    if (hasComponent.end.subsumedBy(sortPreventor)) {
                         // Preventor prevented the component from being instantiated therefore should not contribute to the goals
                         continue;
                     }
@@ -549,7 +565,7 @@ public class GraphManager {
                         int denominator = 0;
                         for (LGraphNode partOf : node.getChildNodes(sortPartOf, sortSubproblem)) {
                             if (partOf.subsumedBy(sortLoop)) {
-                                denominator = DENOMINATOR_PER_LOOP -1 ;
+                                denominator = DENOMINATOR_PER_LOOP - 1;
                             }
                         }
 
@@ -558,7 +574,7 @@ public class GraphManager {
                     } else if (hasComponent.end.subsumedBy(sortButton)) {
                     } else if (hasComponent.end.subsumedBy(sortSemaphore)) {
                     } else {
-                        //boolean isGoal = true;                        
+                        //boolean isGoal = true;
                         //System.out.println("Challenge has wrong component");
                     }
                 }
@@ -566,20 +582,19 @@ public class GraphManager {
 
         }
     }
-    
-    
+
     private void addComponentsForVisualEval() {
-        
+
         tile_to_node = new LinkedHashMap();
         node_to_tile = new LinkedHashMap();
 
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
-            int x = (int) (oe.x[i]-minx) * 2;
-            int y = (int) (oe.y[i]-miny) * 2;
-            // TODO confirm redundant 
+            int x = (int) (oe.x[i] - minx) * 2;
+            int y = (int) (oe.y[i] - miny) * 2;
+            // TODO confirm redundant
             board.getTile(x, y).type = Tile.TILE_TRACK;
-            
+
             if (oe.nodeIndexes[i] >= 0) {
                 tile_to_node.put(board.getTile(x, y), map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
                 node_to_tile.put(map.get(layoutGraph.getNode(oe.nodeIndexes[i])), board.getTile(x, y));
@@ -587,19 +602,21 @@ public class GraphManager {
                 // Shoulders get a -1
             }
         }
-        
+
         components = new ComponentState();
         int idx = 0;
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
-            int x = (int) (oe.x[i]-minx) * 2;
-            int y = (int) (oe.y[i]-miny) * 2;
+            int x = (int) (oe.x[i] - minx) * 2;
+            int y = (int) (oe.y[i] - miny) * 2;
             Tile tile = board.getTile(x, y);
             tile.type = Tile.TILE_TRACK;
             if (oe.nodeIndexes[i] >= 0) {
                 LGraphNode embedded_graph_node = layoutGraph.getNode(oe.nodeIndexes[i]);
                 LGraphNode original_graph_node = map.get(embedded_graph_node);
-                if (original_graph_node!=null) addComponentForVisualEval(tile, x, y, idx++, original_graph_node);
+                if (original_graph_node != null) {
+                    addComponentForVisualEval(tile, x, y, idx++, original_graph_node);
+                }
             } else {
                 // Shoulders get a -1
             }
@@ -610,7 +627,7 @@ public class GraphManager {
         int n_components = 0;
         int color = 1;
         for (LGraphEdge hasComponent : node.getOutgoingEdges(sortHas)) {
-            if (hasComponent.end.subsumedBy(sortPreventor)){
+            if (hasComponent.end.subsumedBy(sortPreventor)) {
                 // Preventor prevents a component from being instantiated
                 continue;
             }
@@ -624,11 +641,11 @@ public class GraphManager {
             } else if (hasComponent.end.subsumedBy(sortPickup)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
                 ComponentPickup cp = new ComponentPickup(x, y, idx, color, Component.OWNER_SYSTEM, true);
-                if(hasComponent.end.subsumedBy(sortPickupConditional)){
+                if (hasComponent.end.subsumedBy(sortPickupConditional)) {
                     cp.type = ComponentPickup.CONDITIONAL;
-                } else if (hasComponent.end.subsumedBy(sortPickupUnconditional)){
+                } else if (hasComponent.end.subsumedBy(sortPickupUnconditional)) {
                     cp.type = ComponentPickup.UNCONDITIONAL;
-                } else if (hasComponent.end.subsumedBy(sortPickupLimited)){
+                } else if (hasComponent.end.subsumedBy(sortPickupLimited)) {
                     cp.type = ComponentPickup.LIMITED;
                 }
                 components.addComponent(cp);
@@ -663,14 +680,14 @@ public class GraphManager {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentSemaphore cs = new ComponentSemaphore(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 cs.value = ComponentSemaphore.GREEN;
-                if(hasComponent.end.subsumedBy(sortSemaphoreRed)) {
+                if (hasComponent.end.subsumedBy(sortSemaphoreRed)) {
                     cs.value = ComponentSemaphore.RED;
                 }
                 components.addComponent(cs);
                 n_components++;
             } else if (hasComponent.end.subsumes(sortConditional)) {
                 List<Integer> directions = new ArrayList<Integer>();
-                int current  = 0;
+                int current = 0;
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentConditional cc = new ComponentConditional(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 cc.directions = valls.util.ListToArrayUtility.toIntArray(directions);
@@ -683,27 +700,27 @@ public class GraphManager {
                 Tile t = node_to_tile.get(node);
                 int direction_bad = -1;
                 int direction_good = -1;
-                for(LGraphNode child:node.getChildNodes(sortTo,sortTrack)){
-                    if(node_to_tile.get(child)!=null){
+                for (LGraphNode child : node.getChildNodes(sortTo, sortTrack)) {
+                    if (node_to_tile.get(child) != null) {
                         // TODO review why I get a nullpointer exception here, happened on game.pcg.GraphManager.addComponentForVisualEval(GraphManager.java:651)
-                        if(child.getFirstChildNode(sortIs, sortTrash)!=null){
+                        if (child.getFirstChildNode(sortIs, sortTrash) != null) {
                             direction_bad = t.getDirectionTo(node_to_tile.get(child));
                         } else {
                             direction_good = t.getDirectionTo(node_to_tile.get(child));
                         }
                     }
                 }
-                // get bad direction, set 
-                if(direction_bad>-1){
+                // get bad direction, set
+                if (direction_bad > -1) {
                     cc.directions_colors[direction_bad] = new int[]{-1};
                     cc.directions_types[direction_bad] = new int[]{ComponentPickup.EMPTY};
-                    
+
                 } else {
 //                    System.err.println("The diverter doesn't have a TRASH (2)");
                 }
-                if(direction_good>-1){
-                    cc.directions_colors[direction_good] = new int[]{1,2,3,4,5,6};
-                    cc.directions_types[direction_good] = new int[]{ComponentPickup.CONDITIONAL,ComponentPickup.UNCONDITIONAL,ComponentPickup.LIMITED};
+                if (direction_good > -1) {
+                    cc.directions_colors[direction_good] = new int[]{1, 2, 3, 4, 5, 6};
+                    cc.directions_types[direction_good] = new int[]{ComponentPickup.CONDITIONAL, ComponentPickup.UNCONDITIONAL, ComponentPickup.LIMITED};
                 }
                 components.addComponent(cc);
                 n_components++;
@@ -712,7 +729,9 @@ public class GraphManager {
                 idx = 4000 + node_list.indexOf(hasComponent.end);
                 ComponentExchange cu = new ComponentExchange(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode other = hasComponent.end.getFirstChildNode(sortPartOf, sortExchange);
-                if(other!=null) cu.link = 4000 + node_list.indexOf(other);
+                if (other != null) {
+                    cu.link = 4000 + node_list.indexOf(other);
+                }
                 components.addComponent(cu);
                 n_components++;
             } else {

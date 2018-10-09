@@ -51,19 +51,9 @@ RULE MAKE_DEADENDS_TRASH 1.0 0.5 -1 TRIVIAL
     PATTERN A:dead_end(is:A_),A_:trash()
     NEGATEDPATTERN A:track(to:B),B:track()
     REPLACEMENT A:merge(to:C,is:A_),A_:trash(),C:track(to:D),D:track(to:A)
-RULE MAKE_DEADENDS_NO_LOOP 0.1 0.1 -1 TRIVIAL
-    PATTERN A:dead_end()
-    NEGATEDPATTERN A:track(to:B),B:track()
-    REPLACEMENT A:merge(to:C),C:track(to:D),D:track(to:A)
 RULE MAKE_DIVERTER_DEADEND_LOOP 1.0 0.5 -1 TRIVIAL
     PATTERN PREX:track(to:X),X:{track,diverter}(to:Y),Y:{dead_end}(is:Y_),Y_:trash()
     REPLACEMENT PREX:track(to:MERGE),MERGE:merge(to:X),X:{track,diverter}(to:Z),Z:track(to:MERGE,is:Z_),Z_:trash()
-RULE SET_FIRST_FORK 1.0 1.0 -1 REFINEMENT
-    PATTERN A:fork(to:B,to:C),B:track(),C:track()
-    NEGATEDPATTERN A:fork(to:B,to:C),B:track(is:X),C:track(),X:first()
-    NEGATEDPATTERN A:fork(to:B,to:C),B:track(),C:track(is:X),X:first()
-    NEGATEDPATTERN A:fork(to:B,to:C),B:track(is:X),C:track(is:X_),X:first(),X_:first()
-    REPLACEMENT A:fork(to:B,to:C),B:track(is:X),C:track(),X:first()
 RULE INSTANTIATE_CONTROL_LOOP 1.0 1.0 -1 REFINEMENT
     PATTERN B:control_loop()
     REPLACEMENT M:{track,thread}(to:N),N:track(to:O),O:track(to:M)

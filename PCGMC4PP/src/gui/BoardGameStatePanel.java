@@ -523,17 +523,17 @@ public class BoardGameStatePanel extends JPanel {
             g2d.setColor(Color.WHITE);
             if (c instanceof ComponentPickup) {
                 ComponentPickup c2 = (ComponentPickup) c;
-                repr = "P:" + c2.available;
+                repr = "Pick:" + c2.available;
             } else if (c instanceof ComponentDelivery) {
                 ComponentDelivery c2 = (ComponentDelivery) c;
-                repr = "D:" + c2.delivered + "/" + c2.missed;
+                repr = "Del:" + c2.delivered + "/" + c2.missed;
             } else if (c instanceof ComponentSemaphore) {
                 ComponentSemaphore c2 = (ComponentSemaphore) c;
-                repr = "S:" + c2.id;
+                repr = "Sem:" + c2.id;
                 g2d.setColor(c2.value == ComponentSemaphore.RED ? Color.RED : Color.GREEN);
             } else if (c instanceof ComponentSignal) {
                 ComponentSignal c2 = (ComponentSignal) c;
-                repr = "B:" + c2.link;
+                repr = "Sig:" + c2.link;
             } else if (c instanceof ComponentConditional) {
                 ComponentConditional c2 = (ComponentConditional) c;
                 drawArrowsConditional(c2, g2d, grid);
@@ -546,7 +546,7 @@ public class BoardGameStatePanel extends JPanel {
                 drawArrowsDiverter(c2, g2d, grid, colors_bold[c2.color]);
                 repr = "Div";
             } else if (c instanceof ComponentUnit) {
-                repr = "A" + c.id;
+                repr = "Arr" + c.id;
 
             } else if (c instanceof ComponentExchange) {
                 ComponentExchange c2 = (ComponentExchange) c;

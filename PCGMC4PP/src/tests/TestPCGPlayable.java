@@ -48,12 +48,15 @@ to do:
  * @author Josep Valls-Vargas <josep@valls.name>
  */
 public class TestPCGPlayable {
+    
+    public static int WINDOW_WIDTH = 800;
+    public static int WINDOW_HEIGHT = 400;
 
     public static void main(String args[]) throws Exception {
         int bitmask = 0;
         for (int i = 0; i < 8; i++) {
-            System.out.println((char) ('@' + bitmask));
-            System.out.println(1 << i + '@');
+//            System.out.print((char) ('@' + bitmask) + " -> ");
+//            System.out.println(1 << i + '@');
             //System.out.println(1<<i);
             bitmask = 1 << i;
         }
@@ -78,17 +81,20 @@ public class TestPCGPlayable {
         //batchId = "extra4";
         batchId = "santiTest";
         int accumWidth = 0;
+        boolean debug = false;
         for(int size=2;size<=2;size++){        
-            for(int randomSeed=0;randomSeed<10000;randomSeed+=1000){
-//            int randomSeed = 10;
-//            {
-                LGraphGrammarSampler.DEBUG = 1;
+            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
+//            int randomSeed = 300; {
+                System.out.println("randomSeed: " + randomSeed);
+//                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
-                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, true, true);
-                BoardGameStateJFrame f = new BoardGameStateJFrame("level", 1280, 640, gs);                
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, debug);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
+//                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                 if (!solvable(gs)) {
-                    System.err.println("Level is not solvable!");
+                    BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+                    System.err.println("Level is not solvable! randomSeed: " + randomSeed);
+                    break;
                 } else {
                     System.out.println("Level worked!");
                 }                
@@ -112,10 +118,10 @@ public class TestPCGPlayable {
 //            System.out.println("  " + gs2.getTime());
 //        }
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
-        BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", 1280, 640, gs2);                
         for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
             GoalCondition goal = gs2.getBoardState().goal_struct.get(i);
             if(goal.goal_type==GoalCondition.GOAL_REQUIRED && !gs2.testGoal(goal)){
+                BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
                 System.err.println("Goal not achieved: " + goal.toString());
                 return false;
             } else {

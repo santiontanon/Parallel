@@ -168,12 +168,20 @@ public class PCG {
         Random r = new Random(randomSeed);
         if (size == -1) size = r.nextInt(5)+1;
 
+        List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 2);
+        Map<String,Integer> size_application_limits = new LinkedHashMap();
+        System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1));
+        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
+        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(0));
+        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(1));
+        /*
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
         Map<String,Integer> size_application_limits = new LinkedHashMap();
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
         size_application_limits.put("ADD_MORE_PROBLEMS", sizes.get(0));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(1));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(2));
+        */
         /*
         size_application_limits.put("ADD_MORE_PROBLEMS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 1);
@@ -208,6 +216,8 @@ public class PCG {
         if(!keep_solution){
             graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null);
         }
+//	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
+        
         return graph;
     }
 

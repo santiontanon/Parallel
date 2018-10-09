@@ -24,7 +24,7 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +60,7 @@ public class Tile {
         this.type = _type;
         this.id = _id;
         this.neighbors = new ArrayList<Tile>();  // UNITY List<>
-        this.traveled_to = new HashSet<Tile>();  // UNITY List<>
+        this.traveled_to = new LinkedHashSet<Tile>();  // UNITY List<>
         this.colors = _colors;
         this.tile_bitmask = 0;
         this.direction = _direction;
@@ -71,7 +71,7 @@ public class Tile {
         this.type = Tile.TILE_EMPTY;
         this.id = _id;
         this.neighbors = new ArrayList<Tile>();  // UNITY List<>
-        this.traveled_to = new HashSet<Tile>();  // UNITY List<>
+        this.traveled_to = new LinkedHashSet<Tile>();  // UNITY List<>
         this.colors = 0;
         this.tile_bitmask = 0;
     }
