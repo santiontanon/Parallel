@@ -254,6 +254,7 @@ public class PlayerInteraction_UI
 
 		public void EnableButtonBehaviors()
 		{
+            Debug.Log("Enable Button Behaviors");
 			retry.onClick.RemoveAllListeners();
 			replay.onClick.RemoveAllListeners();
 
@@ -264,8 +265,9 @@ public class PlayerInteraction_UI
 
             PlayerInteraction_GamePhaseBehavior playerInteraction = GameManager.Instance.playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
             bool showNextLevelButton = (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME && 
-                                        playerInteraction.playbackBehavior.success == true && 
-                                        GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
+                                        playerInteraction.playbackBehavior.success && 
+                                        GameManager.Instance.currentLevelReferenceObject.completionRank > 0 &&
+                                        !GameManager.Instance.IsInPCG());
             levelsNext.gameObject.SetActive(showNextLevelButton);
 
             exit.onClick.RemoveAllListeners();
@@ -279,7 +281,7 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.AddListener(() => OpenRootScreen());
 
             levelsNext.onClick.AddListener(() => { userInput = UserInputs.levelsNext; /*GameManager.Instance.TriggerAdvanceToNextLevel();*/ ClosePanel(); });
-            levelsNext.gameObject.SetActive(!GameManager.Instance.IsInPCG());
+            //levelsNext.gameObject.SetActive(!GameManager.Instance.IsInPCG());
 
             exit.onClick.AddListener(()=> {userInput = UserInputs.exit; OpenExitConfirmationScreen(); } );
             exitConfirm.onClick.AddListener(() => { GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame);/* /*ClosePanel();*/ });

@@ -26,6 +26,14 @@ public class LinkJava : MonoBehaviour
     void Awake()
     {
     	checkEnvironment();
+        if (IntPtr.Size == 8)
+        {
+            UnityEngine.Debug.Log("Running as 64 Bit process");
+        }
+        else
+        {
+            UnityEngine.Debug.Log("Running as 32 Bit process");
+        }
     	if(Application.isEditor){
         	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
         } else {
@@ -103,7 +111,10 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.CreateNoWindow = true;
 			externalProcess.StartInfo.UseShellExecute = false;
 			externalProcess.StartInfo.RedirectStandardOutput = true;
+			externalProcess.StartInfo.RedirectStandardError = true;
 			externalProcess.StartInfo.FileName = "java";
+            //externalProcess.OutputDataReceived += new DataReceivedEventHandler(OutputHandler);
+            //externalProcess.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);
 			externalProcess.StartInfo.Arguments = "";
             externalProcess.StartInfo.Arguments += Constants.JVMSettings.MemoryAllocation[GameManager.Instance.JVMMemorySelection] + " ";
             externalProcess.StartInfo.Arguments += "-cp \"";
@@ -114,22 +125,24 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"OGE.jar";
 			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"JGGS.jar";
             externalProcess.StartInfo.Arguments += "\" support." + simulationMode.ToString();
-            if (simulationMode == SimulationTypes.ME)
+            if (simulationMode == SimulationTypes.ME) //submit
             {
                 int budget = 600000;
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + budget;
             }
-            else if (simulationMode == SimulationTypes.Play)
+            else if (simulationMode == SimulationTypes.Play) //testing
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed;
             }
-            else
+            else //pcg
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
-                string size = " " + "\"" + "any" + "\"";
+                int rSize = UnityEngine.Random.Range(0, 3);
+                UnityEngine.Debug.Log("RSize: " + rSize);
+                string size = " " + "\"" + rSize.ToString() + "\"";
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + size;
             }
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
@@ -142,7 +155,10 @@ public class LinkJava : MonoBehaviour
 		}
 	}
 
-	IEnumerator externalNonBlockingWait()
+    SimulationFeedback simulationFeedback = SimulationFeedback.none;
+    string _filename;
+
+    IEnumerator externalNonBlockingWait()
 	{
         // ExitCode = 0: OK
         // ExitCode = 1: System Errors
@@ -152,69 +168,77 @@ public class LinkJava : MonoBehaviour
         // ExitCode = 5: Wrong arguments
         // ExitCode = 6: Other exception within the ME Java code
 
-		SimulationFeedback simulationFeedback = SimulationFeedback.none;
-
 		if (externalProcess == null) 
 		{
 			UnityEngine.Debug.Log ("Process is null");
 		} 
 		else 
 		{
+            string line = null;
             UnityEngine.Debug.Log("Waiting for process to complete");
-            while (!externalProcess.HasExited) 
-			{
-                //UnityEngine.Debug.Log("Process exited? " + externalProcess.HasExited);
-                yield return null;
+            while (!externalProcess.HasExited)
+            {
+                line = externalProcess.StandardOutput.ReadLine();
+                if (line != null && line.Contains(".txt"))
+                    filename = line;
+                yield return new WaitForSeconds(0.1f);
             }
             UnityEngine.Debug.Log("Process has completed");
             int ExitCode = externalProcess.ExitCode;
-			string mpout = "";
-			string line = null;
-			string filename = "";
-			while ((line = externalProcess.StandardOutput.ReadLine()) != null) 
-			{
-				filename = line;
-				mpout += line + "\n";
-			}
-			mpout += "Exit code: "+ExitCode.ToString ();
-            UnityEngine.Debug.Log(line);
-            UnityEngine.Debug.Log(mpout);
-			UnityEngine.Debug.Log ("Java finished here...");
-			if (ExitCode == 0) 
-			{
-				UnityEngine.Debug.Log (externalProcess.StartInfo.Arguments);	
-				// send this to the server first
-				string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") +"\n\n" + System.IO.File.ReadAllText(filename);
-				GameManager.Instance.tracker.UploadData(upload_data);
-				UnityEngine.Debug.Log ("It's now time to load "+filename);
-                StreamReader reader = new StreamReader(filename);
+            while ((line = externalProcess.StandardOutput.ReadLine()) != null)
+            {
+                if (line.Contains(".txt"))
+                    filename = line;
+            }
+            while ((line = externalProcess.StandardError.ReadLine()) != null)
+            {
+                UnityEngine.Debug.Log(line);
+            }
+            if (ExitCode == 0)
+            {
+                yield return StartCoroutine(ExternalProcessSucess());
 
-                /* should wait to save this */
-                //GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
-                _lastPCGLevelGenerated = reader.ReadToEnd();
-
-                GameManager.Instance.GetSaveManager().UpdateSave();
-                bool restartPhase = (simulationMode == SimulationTypes.PCG);
-				GameManager.Instance.TriggerLoadLevel(restartPhase, DataManager.LoadType.FILEPATH, filename);
-				//in case it takes time to load larger levels
-				while(GameManager.Instance.gamePhase != GameManager.GamePhases.PlayerInteraction) yield return new WaitForEndOfFrame();
-				simulationFeedback = SimulationFeedback.success;
-			} 
-			else 
+            }
+            else 
 			{
-				UnityEngine.Debug.LogError (mpout);	
-				UnityEngine.Debug.LogError (externalProcess.StartInfo.Arguments);	
-				simulationFeedback = SimulationFeedback.failure;
+                yield return StartCoroutine(ExternalProcessFailure());
 			}
 				
 			GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
 
 			externalProcess = null;	
 		}
-		//UnityEngine.Debug.Log ("Finished waiting.");
 
 		if(OnSimulationCompleted!=null) { OnSimulationCompleted(simulationFeedback); }
 	}
+
+    IEnumerator ExternalProcessSucess()
+    {
+        UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+        // send this to the server first
+        string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\n\n" + System.IO.File.ReadAllText(filename);
+        GameManager.Instance.tracker.UploadData(upload_data);
+        UnityEngine.Debug.Log("It's now time to load " + filename);
+        StreamReader reader = new StreamReader(filename);
+
+        /* should wait to save this */
+        //GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+        _lastPCGLevelGenerated = reader.ReadToEnd();
+
+        GameManager.Instance.GetSaveManager().UpdateSave();
+        bool restartPhase = (simulationMode == SimulationTypes.PCG);
+        GameManager.Instance.TriggerLoadLevel(restartPhase, DataManager.LoadType.FILEPATH, filename);
+        //in case it takes time to load larger levels
+        while (GameManager.Instance.gamePhase != GameManager.GamePhases.PlayerInteraction) yield return new WaitForEndOfFrame();
+        simulationFeedback = SimulationFeedback.success;
+    }
+    
+    IEnumerator ExternalProcessFailure()
+    {
+        UnityEngine.Debug.LogError(externalProcess.StartInfo.Arguments);
+        simulationFeedback = SimulationFeedback.failure;
+        yield return null;
+    }
 
     public string GetLastPCGGeneratedLevel() { return _lastPCGLevelGenerated; }
     public void ClearLastPCGGeneratedLevel() { _lastPCGLevelGenerated = ""; }

@@ -24,7 +24,7 @@
 package valls.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,8 +71,8 @@ public class ListToArrayUtility {
         return true;
     }
     
-    public static <K,V> HashMap<V,K> swapMapKeysValues(Map<K,V> map) {
-    HashMap<V,K> rev = new HashMap<V, K>();
+    public static <K,V> Map<V,K> swapMapKeysValues(Map<K,V> map) {
+    LinkedHashMap<V,K> rev = new LinkedHashMap<V, K>();
     for(Map.Entry<K,V> entry : map.entrySet())
         rev.put(entry.getValue(), entry.getKey());
     return rev;

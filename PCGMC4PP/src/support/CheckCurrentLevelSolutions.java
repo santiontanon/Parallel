@@ -5,52 +5,15 @@
  */
 package support;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import game.BoardState;
 import game.GameState;
 import game.GameStateSearch;
-import game.Tile;
-import game.component.Component;
-import game.component.ComponentDelivery;
-import game.component.ComponentDiverter;
-import game.component.ComponentExchange;
-import game.component.ComponentPickup;
-import game.component.ComponentSemaphore;
-import game.component.ComponentSignal;
-import game.component.ComponentUnit;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import lgraphs.LGraph;
-import lgraphs.ontology.Ontology;
-import lgraphs.ontology.Sort;
-import lgraphs.sampler.LGraphGrammarSampler;
-import lgraphs.sampler.LGraphRewritingGrammar;
-import lgraphs.sampler.LGraphRewritingRule;
 import support.GameStateExporter;
 import support.GameStateParser;
-import support.PCG;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import util.Sampler;
-import static support.PCG.applyGrammar;
-import valls.util.MathUtils;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
 
 /**
  *
@@ -58,7 +21,7 @@ import static support.PCG.applyGrammar;
  */
 public class CheckCurrentLevelSolutions {
     public Map<String, Double> getStatsOnGameState(GameState gs) {
-        Map<String, Double> export_map = new HashMap();
+        Map<String, Double> export_map = new LinkedHashMap();
         GameStateSearch gss = new GameStateSearch(gs);
         gss.setSearchOptions(false, true, true, true);
         gss.setSearchBudget(6000000);

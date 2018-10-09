@@ -5,9 +5,6 @@
  */
 package tests;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import game.BoardState;
 import game.GameState;
 import game.GameStateSearch;
 import game.Tile;
@@ -20,55 +17,17 @@ import game.component.ComponentSemaphore;
 import game.component.ComponentSignal;
 import game.component.ComponentUnit;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import lgraphs.LGraph;
-import lgraphs.ontology.Ontology;
-import lgraphs.ontology.Sort;
-import lgraphs.sampler.LGraphGrammarSampler;
-import lgraphs.sampler.LGraphRewritingGrammar;
-import lgraphs.sampler.LGraphRewritingRule;
-import support.GameStateExporter;
 import support.GameStateParser;
-import support.PCG;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import util.Sampler;
-import static support.PCG.applyGrammar;
-import static tests.GrammarStats.WRITE_ARFF;
 import valls.util.MathUtils;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
 
 /**
  *
@@ -110,7 +69,7 @@ public class GrammarStatsCurrentLevelSolutions {
         List<Integer> different_components_per_row = new ArrayList();
         List<Integer> same_components_per_row = new ArrayList();
         for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -131,7 +90,7 @@ public class GrammarStatsCurrentLevelSolutions {
         different_components_per_row = new ArrayList();
         same_components_per_row = new ArrayList();
         for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -149,8 +108,8 @@ public class GrammarStatsCurrentLevelSolutions {
         m.put("v_colSameComponentsAvg", MathUtils.average(same_components_per_row));
         m.put("v_colDifferentComponentsAvg", MathUtils.average(different_components_per_row));
 
-        Set anchors_w = new HashSet();
-        Set anchors_h = new HashSet();
+        Set anchors_w = new LinkedHashSet();
+        Set anchors_h = new LinkedHashSet();
         for (Component c : gs.getComponentState().getComponents()) {
             anchors_w.add(c.x);
             anchors_h.add(c.y);
@@ -329,7 +288,7 @@ public class GrammarStatsCurrentLevelSolutions {
 
     public Map<String, Double> getStatsOnGameState(GameState gs) {
         // Collect level statistics
-        Map<String, Double> export_map = new HashMap();
+        Map<String, Double> export_map = new LinkedHashMap();
         //export_map.putAll(rule_applications);
         // Level properties
         //getLevelProperties(gs, export_map);

@@ -10,7 +10,7 @@ import game.GameState;
 import game.Tile;
 import game.component.Component;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import valls.util.Pair;
@@ -310,7 +310,7 @@ public class LevelOptimizer {
                             for(int x = 0;x<new_w;x++) {
                                 for(int y = 0;y<h;y++) {
                                     Tile t = bs.tiles[x+y*new_w];
-                                    Set<Tile> new_traveled_to = new HashSet<>();
+                                    Set<Tile> new_traveled_to = new LinkedHashSet<>();
                                     for(Tile t2:t.traveled_to) {
                                         if (t2.x!=startIndex-1) {
                                             new_traveled_to.add(gs.getBoardState().tiles[t2.x+t2.y*w]);

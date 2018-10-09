@@ -28,6 +28,8 @@ import game.GameState;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
+import lgraphs.sampler.LGraphGrammarSampler;
+import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import support.PCG;
 import support.Play;
 
@@ -45,13 +47,16 @@ to do:
  *
  * @author Josep Valls-Vargas <josep@valls.name>
  */
-public class TestPCGExport {
+public class TestPCGPlayable {
+    
+    public static int WINDOW_WIDTH = 800;
+    public static int WINDOW_HEIGHT = 400;
 
     public static void main(String args[]) throws Exception {
         int bitmask = 0;
         for (int i = 0; i < 8; i++) {
-            System.out.println((char) ('@' + bitmask));
-            System.out.println(1 << i + '@');
+//            System.out.print((char) ('@' + bitmask) + " -> ");
+//            System.out.println(1 << i + '@');
             //System.out.println(1<<i);
             bitmask = 1 << i;
         }
@@ -76,19 +81,53 @@ public class TestPCGExport {
         //batchId = "extra4";
         batchId = "santiTest";
         int accumWidth = 0;
-        for(int size=1;size<=1;size++){
-            for(int randomSeed=1;randomSeed<20000;randomSeed+=1000){
-//            int randomSeed = 1;
-//            int randomSeed = -66593;
-//            {
-                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
-                String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
-                BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 1280, 640, gs);                
-                PCG.export(gs, new File(filename));
+        boolean debug = false;
+        for(int size=2;size<=2;size++){        
+            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
+//            int randomSeed = 300; {
+                System.out.println("randomSeed: " + randomSeed);
+//                LGraphGrammarSampler.DEBUG = 1;
+                //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, debug);
+//                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
+//                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+                if (!solvable(gs)) {
+                    BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+                    System.err.println("Level is not solvable! randomSeed: " + randomSeed);
+                    break;
+                } else {
+                    System.out.println("Level worked!");
+                }                
                 accumWidth+=gs.bs.getWidth();
             }
         }
         System.out.println("accumWidth = " + accumWidth);
     }
     
+    
+    public static boolean solvable(GameState gs)
+    {
+        int executionRandomSeed = 1;
+        int how_many = 1000;
+        int number_of_loops_before_breaking = 5;
+        boolean break_when_complete = true;
+        gs.init();
+        ExecutionPlan ep = Play.PlayLevel(gs, executionRandomSeed, how_many, number_of_loops_before_breaking, break_when_complete);
+        System.out.println("Simulation generated " + ep.getStates().size() + " states");
+//        for(GameState gs2:ep.getStates()) {
+//            System.out.println("  " + gs2.getTime());
+//        }
+        GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
+        for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
+            GoalCondition goal = gs2.getBoardState().goal_struct.get(i);
+            if(goal.goal_type==GoalCondition.GOAL_REQUIRED && !gs2.testGoal(goal)){
+                BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
+                System.err.println("Goal not achieved: " + goal.toString());
+                return false;
+            } else {
+                System.out.println("Goal achieved: " + goal.toString());
+            }
+        }
+        return true;
+    }
 }

@@ -6,16 +6,13 @@
 
 package tests;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
-import lgraphs.ontology.Ontology;
 import lgraphs.ontology.Sort;
-import lgraphs.sampler.LGraphGrammarSampler;
-import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.visualization.LGraphVisualizer;
 
 /**
@@ -30,7 +27,7 @@ public class GrammarVisualTest_ {
         List<Sort> eoi = new LinkedList<Sort>();
         noi.add(Sort.getSort("track"));
         eoi.add(Sort.getSort("to"));
-        LGraph layoutGraph = graph.cloneSubGraph(noi,eoi, new HashMap<LGraphNode, LGraphNode>());
+        LGraph layoutGraph = graph.cloneSubGraph(noi,eoi, new LinkedHashMap<LGraphNode, LGraphNode>());
         JFrame v2 = LGraphVisualizer.newWindow("Track graph", 1200, 600, layoutGraph);
     }
 }

@@ -40,7 +40,10 @@ public class TestSimulate {
     public static void main(String args[]) throws Exception {
         support.Play.debug = true;
 //        support.Play.main(new String[]{"Assets/Resources/Levels/level01.txt","1"});
-        support.Play.main(new String[]{"Assets/Resources/Levels/level01.txt","-1"});
+//        support.Play.main(new String[]{"Assets/Resources/Levels/level01.txt","-1"});
+//        support.Play.main(new String[]{"Assets/Resources/Levels/level01.txt","-10864"});
+
+        support.Play.main(new String[]{"Assets/Resources/Levels/level10.txt","-1771"});
 
     }
 }
