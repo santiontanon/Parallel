@@ -4583,13 +4583,13 @@ MonoBehaviour:
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: 'Drag and drop to place on tracks. Rick click and drag to semaphore
-          or direction switch. Right click to link. '
+        tooltipText: 'Drag and drop to place on tracks. Right click to connect to
+          semaphore or direction switch. Right click again to link. '
     - tooltipUiElement: {fileID: 114000012188733926}
       permanent: 1
       refString: 
       tooltipContent:
-        tooltipText: Drag to tracks, release to place. Right click to change default
+        tooltipText: Drag and drop to place on tracks. Right click to change default
           state.
     - tooltipUiElement: {fileID: 114000010808615036}
       permanent: 1
