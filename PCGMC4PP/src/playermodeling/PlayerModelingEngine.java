@@ -41,7 +41,6 @@ public class PlayerModelingEngine extends PlayerModeler {
         /*
             telemetryFilename - Telemetry file after submitting level data
             meExecutionFilename - Model Engine Execution file
-
          */
 
         ArrayList<String> telemetryData = telemetryUtils.readTelemetryFile(telemetryFilename);

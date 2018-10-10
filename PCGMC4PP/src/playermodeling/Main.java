@@ -1,9 +1,6 @@
 package playermodeling;
 
-
-//import org.apache.commons.cli.Options;
-import pmexperiments.SimulationLOO;
-import weka.classifiers.functions.MultilayerPerceptron;
+import org.apache.commons.cli.*;
 
 /**
  * Created by pavankantharaju on 2/26/18.
@@ -12,70 +9,39 @@ import weka.classifiers.functions.MultilayerPerceptron;
 
 public class Main {
 
+    public static final String TRAINING_MODEL_FILEPATH = "";
+
     public static void main(String [] args) throws Exception {
-        /* TODO: Set up command line arguments */
-//        Options cli_options = new Options();
-//        cli_options.addOption("train_data",true,"Training data location (should contain log, data, and id)");
-//        cli_options.addOption("test_data,",true,"Testing data location (should contain log, data, and id)");
-//        cli_options.addOption("slice_loc",true,"Location of slices data (None for none)");
-//        cli_options.addOption("interval",true,"Time Interval for feature extraction");
+        Options cliOptions = new Options();
+        cliOptions.addOption("mepath",true,"Model Engine Execution Filepath");
+        cliOptions.addOption("telemetrypath,",true,"Telemetry Filepath");
 
-//        String saved_data_location = "";
-//        String slices_location = "";
-//        int interval = 5;
-//        try {
-//            String saved_data_location = args[0];
-//        String slices_location = args[1];
-//        int interval = Integer.parseInt(args[2]);
+        String meExecutionFilepath = "";
+        String telemetryFilepath = "";
 
-        String saved_data_location = "../35_saved_data";
-        String testing_path = "../8_saved_data/8_saved_data";
-        String slices_location = "../LogVisualizer/slices.tsv";
-        int interval = Integer.parseInt("30");
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            CommandLine line = parser.parse( cliOptions, args );
+            if ( line.hasOption("mepath") ) {
+                meExecutionFilepath = line.getOptionValue("mepath");
+            }
+            if ( line.hasOption("telemetrypath") ) {
+                telemetryFilepath = line.getOptionValue("telemetrypath");
+            }
+        }
+        catch( ParseException exp ) {
+            // oops, something went wrong
+            System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+        }
 
+        if (meExecutionFilepath.equals("") || telemetryFilepath.equals("")) {
+            System.out.println("Need to specify arguments for ME Execution and Telemetry Filepath");
+            System.exit(-1);
+        }
 
-        String [] machine_learning_algorithms = {
-                "J48",
-                "Random Forest",
-                "Bagging",
-                "Ada Boost",
-                "Naive Bayes",
-                "Bayes Net",
-                "Multilayer Perceptron"
-        };
-
-        String [] machine_learning_classes = {
-                "weka.classifiers.trees.J48",
-                "weka.classifiers.trees.RandomForest",
-                "weka.classifiers.meta.Bagging",
-                "weka.classifiers.meta.AdaBoostM1",
-                "weka.classifiers.bayes.NaiveBayes",
-                "weka.classifiers.bayes.BayesNet",
-                "weka.classifiers.functions.MultilayerPerceptron"
-        };
-
-        int [] update_technique_flags = {0,1,2};
-        int [] rule_update_flags = {0,1};
-        int [] timings = { 10, 20, 30 };
-
-        /* Flags */
-        /*
-            0 : Machine Learning and Rules
-            1 : Machine Learning Only
-            2 : Rules Only
-         */
-
-        int update_technique_flag = 0;
-        /*
-            0 : Additive
-            1 : Absolute/Additive
-         */
-        int rule_update_flag = 0;
-
-
-//        //SimulationAccuracy8Dash sim = new SimulationAccuracy8Dash(saved_data_location, testing_path, slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
-//        SimulationLOO sim = new SimulationLOO(saved_data_location,slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
-//        sim.simulate();
+        PlayerModelingEngine pmEngine = new PlayerModelingEngine();
+        pmEngine.readTrainingModel(TRAINING_MODEL_FILEPATH);
+        pmEngine.executePM(telemetryFilepath, meExecutionFilepath);
     }
-
 }
