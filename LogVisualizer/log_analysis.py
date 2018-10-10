@@ -68,7 +68,7 @@ def write_to_web_status_panel(writer, ROOT_DATA_PATH):
         web_status_data[data['id']] = data
 
     for file_ in os.listdir(root_path + '/log'):
-        data = get_file_data(root_path + '/log/' + file_, me_output_files):
+        data = get_file_data(root_path + '/log/' + file_, me_output_files)
         data['filename'] = file_
         data['seq'] = ' '.join(data['seq'])
         #if 'id' in data and data['id'] in data_dict and data['user'] == data_dict[data['id']]['user']:

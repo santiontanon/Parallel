@@ -1,11 +1,10 @@
 import socket
-import BaseHTTPServer
-import SocketServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import socketserver
 import logging as log
 import os
 import argparse
 import sys
-import urllib2
 from datetime import date, datetime
 import uuid
 
@@ -27,11 +26,12 @@ START_COUNTER_DEFAULT = 3000
 def initialize_data_directory():
     for directory in ['data','id','log']:
         path = os.path.dirname(os.path.abspath(__file__))
-        path = path + '/' + ROOT_DATA_PATH + '/'+ directory
+        path = path + '/' + ROOT_DATA_PATH + directory
         try:
-            os.mkdirs(path, exist_ok=True)
+            log.debug("ROOT DATA PATH: {}".format(path))
+            os.makedirs(path, exist_ok=True)
         except:
-            raise OSError("Unable to create root data directory {}".format(DATA_PATH))
+            raise OSError("Unable to create root data directory {}".format(ROOT_DATA_PATH))
             sys.exit(-1)
 
 def save_data(data, directory = ''):
@@ -48,7 +48,7 @@ def save_data(data, directory = ''):
     with open(file_name, 'w') as f:
         f.write(data)
 
-class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
+class Handler(BaseHTTPRequestHandler):
     def log_request(s):
         log.debug("%s: %s/%s" %(s.client_address, s.command, s.path))
 
@@ -70,6 +70,8 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.log_request()
         if self.path.strip() == '/status':
             log_analysis.write_to_web_status_panel(self)
+        elif self.path.strip() == "/playermodel":
+            pass
         else:
             self.send_error_message()
 
@@ -143,7 +145,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             except:
                 self.send_error_message("bad json")
                 return
-            # Player modeling data content: { "user" : user_name, "level" : level, "skill_vector" : skill_vector}
+            # Player modeling data content: {"user" : user_name, "level" : level, "skill_vector" : skill_vector}
             save_data(content, "/playermodel")
             self.send_ok_message()
             return
@@ -151,7 +153,7 @@ class Handler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_error_message("wrong path")
             return
 
-class ForkingHTTPServer(SocketServer.ThreadingTCPServer, BaseHTTPServer.HTTPServer):
+class ForkingHTTPServer(socketserver.ThreadingTCPServer, HTTPServer):
     def finish_request(self, request, client_address):
         request.settimeout(300)
         BaseHTTPServer.HTTPServer.finish_request(self, request, client_address)
@@ -190,7 +192,7 @@ def main():
         log.info("ajaxserver: waiting for requests")
         httpd.serve_forever()
         log.info("ajaxserver: terminating")
-    except KeyboardInterrupt, k:
+    except KeyboardInterrupt:
         log.info("User has terminated AJAX Server!")
         if httpd: httpd.socket.close()
 
