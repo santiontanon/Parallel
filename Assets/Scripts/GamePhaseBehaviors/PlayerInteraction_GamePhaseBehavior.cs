@@ -544,6 +544,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
 	}	
 
+    public enum MouseInput
+    {
+        LeftMouse,
+        RightMouse,
+        MiddleMouse,
+        None
+    }
+
+    public MouseInput mouseInput;
+
     // Behavior for Player Interaction
 	void PlayerInteractionListener()
 	{
@@ -551,6 +561,48 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         lastMousePos = currentMousePos;
         currentMousePos = Input.mousePosition;
         deltaMousePos = currentMousePos - lastMousePos;
+
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) ||
+            Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand) ||
+            Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                mouseInput = MouseInput.RightMouse;
+            }
+            else
+            {
+                mouseInput = MouseInput.None;
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                mouseInput = MouseInput.MiddleMouse;
+            }
+            else
+            {
+                mouseInput = MouseInput.None;
+            }
+        }
+        else if (Input.GetKey(KeyCode.Mouse0))
+        {
+            mouseInput = MouseInput.LeftMouse;
+        }
+        else if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            mouseInput = MouseInput.RightMouse;
+        }
+        else if (Input.GetKey(KeyCode.Mouse2))
+        {
+            mouseInput = MouseInput.MiddleMouse;
+        }
+        else
+        {
+            mouseInput = MouseInput.None;
+        }
+
+        Debug.Log(mouseInput.ToString());
 
         // Interaction Phases
         switch (interactionPhase)
@@ -562,7 +614,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                  * if player LEFT clicks during basic play, they can 
                  * (1) Click and drag movable elements
                 */
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                if (mouseInput == MouseInput.LeftMouse)
                 {
                     if (GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
                     {
@@ -595,7 +647,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 * (1) link connectable elements through Signals
                 * (2) Open/Close Semaphores
                */
-                else if (Input.GetKeyDown(KeyCode.Mouse1))
+                else if (mouseInput == MouseInput.RightMouse)
                 {
                     if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal") && GameManager.Instance.GetGridManager().IsEditableElement( Input.mousePosition ) )
                     {
@@ -629,7 +681,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         hoverObject = null;
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.Mouse2))
+                else if (mouseInput == MouseInput.MiddleMouse)
                 {
                     ResetZoom();
                 }
@@ -708,7 +760,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
-			if(Input.GetKey(KeyCode.Mouse0))
+			if(mouseInput == MouseInput.LeftMouse)
 			{
 				if( currentGridObject != null )
 				{
@@ -761,7 +813,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
 
-			if(Input.GetKeyDown(KeyCode.Mouse1))
+			if(mouseInput == MouseInput.RightMouse)
 			{
 				currentGridObject.EndInteraction();
 				if( GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore") ) 
@@ -800,7 +852,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Help Phase
         case InteractionPhases.ingame_help:
             // On Left Click
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (mouseInput == MouseInput.LeftMouse)
             {
                     Button current_button = null;
                     Image current_image = null;
@@ -1101,7 +1153,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     IEnumerator PanRoutine()
     {
         yield return new WaitForSeconds(0.05f);
-        while (Input.GetMouseButton(0) && dragging == false)
+        while (mouseInput == MouseInput.LeftMouse && dragging == false)
         {
             Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
             orthoCam.transform.Translate(-deltaMousePos.x * .015f,-deltaMousePos.y * .015f, 0);
