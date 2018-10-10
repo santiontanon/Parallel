@@ -218,7 +218,7 @@ MonoBehaviour:
       state or move it, however, you can still connect signals or semaphores to it.
     hintImage: {fileID: 21300000, guid: c1c52e900e1756745aaecc03541c1ed6, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: zoom_meter
+  - hint_component_type: Zoom_icon
     hintTitle: Zoom
     hintDescription: ' Use the scroll wheel to zoom in and out. If a level is zoomed
       in, pan by clicking and dragging the screen.'
