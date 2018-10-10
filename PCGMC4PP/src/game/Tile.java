@@ -24,7 +24,7 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +60,7 @@ public class Tile {
         this.type = _type;
         this.id = _id;
         this.neighbors = new ArrayList<Tile>();  // UNITY List<>
-        this.traveled_to = new HashSet<Tile>();  // UNITY List<>
+        this.traveled_to = new LinkedHashSet<Tile>();  // UNITY List<>
         this.colors = _colors;
         this.tile_bitmask = 0;
         this.direction = _direction;
@@ -71,7 +71,7 @@ public class Tile {
         this.type = Tile.TILE_EMPTY;
         this.id = _id;
         this.neighbors = new ArrayList<Tile>();  // UNITY List<>
-        this.traveled_to = new HashSet<Tile>();  // UNITY List<>
+        this.traveled_to = new LinkedHashSet<Tile>();  // UNITY List<>
         this.colors = 0;
         this.tile_bitmask = 0;
     }
@@ -123,7 +123,46 @@ public class Tile {
         return this.colors;
     }
     public int getDirectionTo(Tile tile){
+        for(Tile t:traveled_to) {
+            int direction = -1;
+            if(t.x<this.x){
+                direction = 0;
+            } else if (t.x>this.x){
+                direction = 2;
+            } else if (t.y<this.y){
+                direction = 3;
+            } else if (t.y>this.y){
+                direction = 1;
+            }
+            // follow until we reach the target tile
+            List<Tile> visited = new ArrayList<>();
+//            System.out.println("getDirectionTo start with direction " + direction + " (target at " + tile.x + "," + tile.y + ")");
+//            System.out.println("    " + this.x+ "," + this.y);
+            while(t != tile) {
+//                System.out.println("    " + t.x+ "," + t.y);
+                visited.add(t);
+                if (t.traveled_to.size() == 1) {
+                    t = t.traveled_to.iterator().next();
+                    if (visited.contains(t)) {
+//                        System.out.println("    loop!");
+                        t = null;
+                        break;
+                    }
+                } else {
+//                    System.out.println("    fork!");
+                    t = null;
+                    break;
+                }
+            }
+            if (t == tile) {
+//                System.out.println("    target!");
+                return direction;
+            }
+        }
+        return -1;
+        /*
         //public static final String[] DIRECTIONS = new String[]{"West", "South", "East", "North"};
+//        System.out.println("getDirectionTo: " + this.x + ", " + this.y + " -> " + tile.x + ", " + this.y);
         if(tile.x<this.x){
             return 0;
         } else if (tile.x>this.x){
@@ -135,6 +174,7 @@ public class Tile {
         } else {
             return -1;
         }
+        */
     }
     public String toString(){
         return "Tile("+this.x+','+this.y+")";

@@ -218,7 +218,6 @@ public class GridManager : MonoBehaviour {
 			}
             instanceSpriteRenderer.color = new Color(0.2f,0.2f,0.2f,1f);
 			currentLevelObjects.Add(behavior);
-
 		}
 
 		averagePosition = averagePosition / gridTracks.Count;
@@ -282,16 +281,43 @@ public class GridManager : MonoBehaviour {
 				//delivery_Behavior.highlightObject = behavior.highlightObject;
 				delivery_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
+                //delivery_Behavior.name = 
 				behavior = delivery_Behavior;
+                if(gridComponent.configuration.accepted_types.Length == 0)
+                {
+                    gridElementInstance.name = "unconditional delivery";
+                }
+                else
+                {
+                    if (gridComponent.configuration.accepted_types[0] == "Unconditional")
+                    {
+                        gridElementInstance.name = "unconditional delivery";
+                    }
+                    else if (gridComponent.configuration.accepted_types[0] == "Conditional")
+                    {
+                        gridElementInstance.name = "conditional delivery";
+                    }
+                    else if (gridComponent.configuration.accepted_types[0] == "Limited")
+                    {
+                        gridElementInstance.name = "limited delivery";
+                    }
+                }
 			}
 
 			gridElementInstance.transform.SetParent(gridContainer);
 
-			gridElementInstance.name = type;
+            if(type != "delivery")
+			    gridElementInstance.name = type;
+
 			behavior.behaviorType = GridObjectBehavior.BehaviorTypes.component;
 			behavior.component = gridComponent;
+            if(type == "delivery")
+            {
+                Debug.Log(behavior.component);
+                Debug.Log(type);
+            }
 
-			instanceSpriteRenderer.sprite = GetSprite(gridComponent);
+            instanceSpriteRenderer.sprite = GetSprite(gridComponent);
 
 			currentLevelObjects.Add(behavior);
 			gridObjectLevelIDDictionary.Add(gridComponent.id,behavior);

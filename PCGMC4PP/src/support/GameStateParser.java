@@ -56,13 +56,11 @@ import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -90,7 +88,7 @@ public class GameStateParser {
         ComponentCustoms.class,
         ComponentArrow.class,
         ComponentComment.class,};
-    public static Set<String> componentNames = new HashSet();
+    public static Set<String> componentNames = new LinkedHashSet();
 
     public static void prepareParser() {
         if (componentNames.size() == 0) {
@@ -483,7 +481,7 @@ public class GameStateParser {
     }
 
     public static Map<String, Integer> parsePalette(String json, int line_number) {
-        Map<String, Integer> palette = new HashMap();
+        Map<String, Integer> palette = new LinkedHashMap();
         try {
             JsonElement root = new JsonParser().parse(json);
             for (Map.Entry<String, JsonElement> entry : root.getAsJsonObject().entrySet()) {
@@ -505,7 +503,7 @@ public class GameStateParser {
     public static void parseComponentJson(Component c, String json, int line_number) {
         // Lazy initialization
         if (properties_valid_set == null) {
-            properties_valid_set = new HashSet();
+            properties_valid_set = new LinkedHashSet();
             properties_valid_set.addAll(Arrays.asList(properties_valid));
         }
         JsonElement root = new JsonParser().parse(json);

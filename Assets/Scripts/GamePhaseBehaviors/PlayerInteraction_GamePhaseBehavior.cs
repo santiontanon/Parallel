@@ -214,7 +214,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
         hover_bezier.eventID = EventTriggerType.PointerEnter;
-        hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
+        hover_bezier.callback.AddListener((eventData) => { Debug.Log("Bezier"); connectVisibility = false; ToggleConnectionVisibility(); });
         playerInteraction_UI.preview.triggers.Add(hover_bezier);
 
         EventTrigger.Entry click_bezier = new EventTrigger.Entry();
@@ -769,14 +769,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				else if( GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "conditional") ) 
 				{
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				playerInteraction_UI.onHoverLightbox.ClosePanel();
 
@@ -787,8 +789,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					if(connectVisibilityLock) otherSignal.SetHighlight( true );
 				}
 
-                
-                //Debug.Log("END CONNECTING");
 				interactionPhase = InteractionPhases.ingame_default;
 			}
 			else 
@@ -805,17 +805,40 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     // Get Object at Mouse Position
                     GridManager grid = GameManager.Instance.GetGridManager();
                     GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
+                    Button current_button = null;
+
+                    //raycasting to find buttons for glossary
+                    GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+                    PointerEventData raycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                    raycastData.position = Input.mousePosition;
+                    List<RaycastResult> results = new List<RaycastResult>();
+                    uiRaycast.Raycast(raycastData, results);
+                    Debug.Log(results.Count);
+                    foreach(RaycastResult r in results)
+                    {
+                        Debug.Log(r.gameObject.name);
+                        if (r.gameObject.GetComponent<Button>() != null)
+                            current_button = r.gameObject.GetComponent<Button>();
+                    }
 
                     // If there is an object here
                     if (current_object)
                     {
                         // Display its hint UI
                         string obj_name = current_object.component.type;
+                        if (obj_name == "delivery")
+                            obj_name = current_object.name;
                         Debug.Log(obj_name);
                         TriggerHint(obj_name);
                         // Testing to make sure the interaction worked, always displays Track Hint
                         //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
                         //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+                    }
+                    else if (current_button)
+                    {
+                        string obj_name = current_button.name;
+                        Debug.Log(obj_name);
+                        TriggerHint(obj_name);
                     }
                 }
             break;
@@ -873,7 +896,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         }
     }
 
-    public void ToggleConnectionVisibility()
+    public void ToggleConnectionVisibility(float duration = -1.0f)
 	{
 		connectVisibility = !connectVisibility;
 
@@ -887,7 +910,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			Signal_GridObjectBehavior s = (Signal_GridObjectBehavior) g;
 			s.SetHighlight(connectVisibility);
 		}
+        if(duration > 0)
+        {
+            StartCoroutine(ToggleConnectionVisibilityRoutine(duration));
+        }
 	}
+
+    IEnumerator ToggleConnectionVisibilityRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ToggleConnectionVisibility();
+    }
 
     public void LockConnectionVisibility()
 	{

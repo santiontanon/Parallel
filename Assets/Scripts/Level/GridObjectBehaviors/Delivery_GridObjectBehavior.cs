@@ -8,6 +8,8 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 	int deliveries = 0;
 	int goalDeliveries = 0;
 
+    public string type;
+
 	public class DeliveryFractionPopUp
 	{
 		public int numerator, denominator = 0;

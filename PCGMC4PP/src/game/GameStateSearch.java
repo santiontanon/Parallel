@@ -27,7 +27,7 @@ import game.execution.ExecutionPlan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -185,8 +185,8 @@ public class GameStateSearch {
         this.start.updateGameStateDescriptionLength();
         this.open = new LinkedList<GameState>();
         this.open.add(gs);
-        this.closed_hashes = new HashSet();
-        this.open_hashes = new HashSet();
+        this.closed_hashes = new LinkedHashSet();
+        this.open_hashes = new LinkedHashSet();
     }
 
     public void search() {

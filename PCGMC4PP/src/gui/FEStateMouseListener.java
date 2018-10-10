@@ -8,7 +8,6 @@ package gui;
 
 import gui.*;
 import java.awt.event.*;
-import java.util.HashMap;
 
 import game.GameState;
 import valls.util.Pair;

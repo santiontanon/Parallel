@@ -795,7 +795,7 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 0
     sequenceId: 0
-    popupDescription: Drag a signal to the track. ---->
+    popupDescription: Drag a signal to the track.
     pause: 1
     pauseDuration: 2
     overrideSimulation: 0
@@ -831,8 +831,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: Right click a signal and drag to a semaphore to link the two.
-      Then press "Test" again.
+    popupDescription: After dragging to track, right click a signal and right click
+      again on a semaphore to link the them. Then press "Test" again.
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1635,8 +1635,8 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
-    popupDescription: Direction switches direct arrows based on the active arrow.
-      When an arrow passes a connected signal the switch rotates clockwise.
+    popupDescription: Direction switches direct arrows based on the active direction.
+      When an arrow passes a connected signal, the switch rotates clockwise.
     pause: 1
     pauseDuration: 6
     overrideSimulation: 0
@@ -1673,8 +1673,7 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 0
     popupDescription: Arrows can only move on their predefined path. Use the Flow
-      Arrows above to view which paths arrows can take. Click the yellow Arrow now.
-      (click to close)
+      Arrows on the right to view which paths arrows can take. (click to close)
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0

@@ -26,7 +26,6 @@ package support;
 import orthographicembedding.DisconnectedGraphs;
 import game.GameState;
 import game.pcg.GraphManager;
-import game.pcg.LevelOptimizer;
 import game.pcg.PuzzleEmbeddingComparator;
 import game.pcg.PuzzleEmbeddingEvaluator;
 import java.io.File;
@@ -34,12 +33,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import javax.swing.JFrame;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
 import lgraphs.ontology.Ontology;
@@ -47,6 +47,7 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
+import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
@@ -54,7 +55,6 @@ import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
-import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -168,12 +168,20 @@ public class PCG {
         Random r = new Random(randomSeed);
         if (size == -1) size = r.nextInt(5)+1;
 
+        List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 2);
+        Map<String,Integer> size_application_limits = new LinkedHashMap();
+        System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1));
+        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
+        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(0));
+        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(1));
+        /*
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
-        Map<String,Integer> size_application_limits = new HashMap();
+        Map<String,Integer> size_application_limits = new LinkedHashMap();
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
         size_application_limits.put("ADD_MORE_PROBLEMS", sizes.get(0));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(1));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(2));
+        */
         /*
         size_application_limits.put("ADD_MORE_PROBLEMS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 1);
@@ -195,15 +203,21 @@ public class PCG {
         LGraph graph = LGraph.fromString("N0:problem()");
         // Create structure for problems and subproblems        
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
+//	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
+        
         // Instanciate situations
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
 //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
+//	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
+
         // Refine components
         graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
         // Remove solution
         if(!keep_solution){
             graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null);
         }
+//	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
+        
         return graph;
     }
 
@@ -216,12 +230,12 @@ public class PCG {
         List<Sort> eoi = new LinkedList<Sort>();
         noi.add(Sort.getSort("track"));
         eoi.add(Sort.getSort("to"));
-        Map<LGraphNode, LGraphNode> map = new HashMap<LGraphNode, LGraphNode>();
+        Map<LGraphNode, LGraphNode> map = new LinkedHashMap<LGraphNode, LGraphNode>();
         LGraph layoutGraph = graph.cloneSubGraph(noi,eoi, map);
-        HashMap<LGraphNode, LGraphNode> map_inverse = ListToArrayUtility.swapMapKeysValues(map);
+        Map<LGraphNode, LGraphNode> map_inverse = ListToArrayUtility.swapMapKeysValues(map);
         
         Random r;
-        if(randomSeed>-1){
+        if(randomSeed<0){
             r = new Random(randomSeed);
         } else {
             r = new Random();
@@ -249,7 +263,10 @@ public class PCG {
             for(int attempt = 0;attempt<optimizationAttempts;attempt++) {
                 OrthographicEmbeddingResult g_oe = OrthographicEmbedding.orthographicEmbedding(g,simplify, correct, r); 
                 if (g_oe==null) continue;
-                if (!g_oe.sanityCheck(false)) continue;
+                if (!g_oe.sanityCheck(false)) {
+                    System.err.println("Sanity check failed!");
+                    continue;
+                }
 
                 g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
                 g_oe = OrthographicEmbeddingPathOptimizer.optimize(g_oe, g, pec);

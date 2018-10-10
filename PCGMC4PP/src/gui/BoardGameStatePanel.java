@@ -39,6 +39,7 @@ public class BoardGameStatePanel extends JPanel {
     public static int DISPLAY_COMPONENTS = 2;
     public static int DISPLAY_REDUCED_STATE = 3;
     public static int DISPLAY_LINKS = 4;
+    public static int DISPLAY_TILES_AND_LINKS = 5;
     public static Color[] colors = {Color.LIGHT_GRAY, new Color(255, 128, 128), new Color(128, 255, 128), new Color(128, 128, 255), Color.YELLOW, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.CYAN, Color.CYAN};
     public static Color[] colors_bold = {Color.GRAY, Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.CYAN, Color.CYAN};
 
@@ -54,12 +55,13 @@ public class BoardGameStatePanel extends JPanel {
     int last_start_y = 0;
     int last_grid = 0;
 
-    int displayLayer = DISPLAY_TILES;
+    int displayLayer = DISPLAY_TILES_AND_LINKS;
 
     public BoardGameStatePanel(GameState a_gs) {
         gs = a_gs;
         board = gs.getBoardState();
-        if (displayLayer == DISPLAY_TILES) {
+        if (displayLayer == DISPLAY_TILES ||
+            displayLayer == DISPLAY_TILES_AND_LINKS) {
             setBackground(Color.BLACK);
         } else {
             setBackground(Color.WHITE);
@@ -75,7 +77,8 @@ public class BoardGameStatePanel extends JPanel {
 
     public void setDisplayLayer(int cs) {
         displayLayer = cs;
-        if (displayLayer == DISPLAY_TILES) {
+        if (displayLayer == DISPLAY_TILES ||
+            displayLayer == DISPLAY_TILES_AND_LINKS) {
             setBackground(Color.BLACK);
         } else {
             setBackground(Color.WHITE);
@@ -133,6 +136,76 @@ public class BoardGameStatePanel extends JPanel {
             draw(g2d, this, this.getWidth(), this.getHeight(), gs, board, displayLayer);
         }
     }
+    
+    
+    public static void drawDirectionArrows(Tile tile, Graphics2D g2d, int grid) {
+        // put this back when viewing the compressed state
+        int reduction = 4;
+        int center_x = tile.x;
+        int center_y = tile.y;
+        int required_lines = 0;
+        // lines clockwise 
+        //  1  /\ 2
+        //  4  \/ 8
+        for (Tile neighbor : tile.neighbors) {
+            if (neighbor.type == Tile.TILE_EMPTY) {
+                continue;
+            }
+            if (tile.direction >= 0) {
+                if (neighbor.x < tile.x && (tile.direction == 1 || tile.direction == 0)) {
+                    required_lines |= 1;
+                    required_lines |= 4;
+                } else if (neighbor.x > tile.x && (tile.direction == 3 || tile.direction == 0)) {
+                    required_lines |= 2;
+                    required_lines |= 8;
+                } else if (neighbor.y < tile.y && (tile.direction == 4 || tile.direction == 0)) {
+                    required_lines |= 1;
+                    required_lines |= 2;
+                } else if (neighbor.y > tile.y && (tile.direction == 2 || tile.direction == 0)) {
+                    required_lines |= 4;
+                    required_lines |= 8;
+                }
+            } else if (tile.traveled_to.contains(neighbor)) {
+                if (neighbor.x < tile.x) {
+                    required_lines |= 1;
+                    required_lines |= 4;
+                } else if (neighbor.x > tile.x) {
+                    required_lines |= 2;
+                    required_lines |= 8;
+                } else if (neighbor.y < tile.y) {
+                    required_lines |= 1;
+                    required_lines |= 2;
+                } else if (neighbor.y > tile.y) {
+                    required_lines |= 4;
+                    required_lines |= 8;
+                }
+            }
+        }
+        //System.out.println(tile.neighbors.size()+" "+required_lines);
+        int sx, sy, nx, ny, wx, wy, ex, ey;
+        nx = tile.x * grid + grid / 2;
+        sx = nx;
+        ny = tile.y * grid;
+        sy = ny + grid;
+        wx = tile.x * grid;
+        ex = wx + grid;
+        wy = tile.y * grid + grid / 2;
+        ey = wy;
+        g2d.setColor(Color.GRAY);
+        if ((required_lines & 1) == 1) {
+            g2d.drawLine(wx, wy, nx, ny);
+        }
+        if ((required_lines & 2) == 2) {
+            g2d.drawLine(ex, ey, nx, ny);
+        }
+        if ((required_lines & 4) == 4) {
+            g2d.drawLine(wx, wy, sx, sy);
+        }
+        if ((required_lines & 8) == 8) {
+            g2d.drawLine(ex, ey, sx, sy);
+        }
+    }
+
 
     public static void drawArrows(Tile tile, Graphics2D g2d, int grid) {
         // put this back when viewing the compressed state
@@ -238,7 +311,64 @@ public class BoardGameStatePanel extends JPanel {
         }
         g2d.setStroke(new BasicStroke(1));
     }
+    
+    
+    public static void drawArrowsDiverter(ComponentDiverter div, Graphics2D g2d, int grid, Color color) {
+        int reduction = 4;
+        int center_x = div.x;
+        int center_y = div.y;
+        int required_lines = 0;
+//        int required_lines = 15;
+        // lines clockwise 
+        //  1  /\ 2
+        //  4  \/ 8
+        for(int direction = 0;direction<4;direction++) {
+            if (div.directions_types[direction].length == 0 &&
+                div.directions_colors[direction].length == 0) continue;
+            switch (direction) {
+                case Component.WEST:
+                    required_lines |= 1;
+                    required_lines |= 4;
+                    break;
+                case Component.EAST:
+                    required_lines |= 2;
+                    required_lines |= 8;
+                    break;
+                case Component.NORTH:
+                    required_lines |= 1;
+                    required_lines |= 2;
+                    break;
+                case Component.SOUTH:
+                    required_lines |= 4;
+                    required_lines |= 8;
+                    break;
+            }        
+        }
+        int sx, sy, nx, ny, wx, wy, ex, ey;
+        nx = div.x * grid + grid / 2;
+        sx = nx;
+        ny = div.y * grid;
+        sy = ny + grid;
+        wx = div.x * grid;
+        ex = wx + grid;
+        wy = div.y * grid + grid / 2;
+        ey = wy;
+        g2d.setColor(color);
+        if ((required_lines & 1) == 1) {
+            g2d.drawLine(wx, wy, nx, ny);
+        }
+        if ((required_lines & 2) == 2) {
+            g2d.drawLine(ex, ey, nx, ny);
+        }
+        if ((required_lines & 4) == 4) {
+            g2d.drawLine(wx, wy, sx, sy);
+        }
+        if ((required_lines & 8) == 8) {
+            g2d.drawLine(ex, ey, sx, sy);
+        }
+    }    
 
+    
     public static void drawArrowsIntersection(Component tile, Graphics2D g2d, int grid, Color color) {
         int reduction = 4;
         int center_x = tile.x;
@@ -364,7 +494,8 @@ public class BoardGameStatePanel extends JPanel {
                         color_o++;
 
                     }
-                    //drawArrows(board.getTile(j, i), g2d, grid);
+//                    drawArrows(board.getTile(j, i), g2d, grid);
+                    drawDirectionArrows(board.getTile(j, i), g2d, grid);
 
                 } else {
                 }
@@ -392,33 +523,34 @@ public class BoardGameStatePanel extends JPanel {
             g2d.setColor(Color.WHITE);
             if (c instanceof ComponentPickup) {
                 ComponentPickup c2 = (ComponentPickup) c;
-                repr = "P:" + c2.available;
+                repr = "Pick:" + c2.available;
             } else if (c instanceof ComponentDelivery) {
                 ComponentDelivery c2 = (ComponentDelivery) c;
-                repr = "D:" + c2.delivered + "/" + c2.missed;
+                repr = "Del:" + c2.delivered + "/" + c2.missed;
             } else if (c instanceof ComponentSemaphore) {
                 ComponentSemaphore c2 = (ComponentSemaphore) c;
-                repr = "S:" + c2.id;
+                repr = "Sem:" + c2.id;
                 g2d.setColor(c2.value == ComponentSemaphore.RED ? Color.RED : Color.GREEN);
             } else if (c instanceof ComponentSignal) {
                 ComponentSignal c2 = (ComponentSignal) c;
-                repr = "B:" + c2.link;
+                repr = "Sig:" + c2.link;
             } else if (c instanceof ComponentConditional) {
                 ComponentConditional c2 = (ComponentConditional) c;
                 drawArrowsConditional(c2, g2d, grid);
-                repr = String.valueOf(c2.id);
+                repr = String.valueOf("Cond: " + c2.id);
             } else if (c instanceof ComponentIntersection) {
                 ComponentIntersection c2 = (ComponentIntersection) c;
                 drawArrowsIntersection(c2, g2d, grid, colors_bold[c2.color]);
             } else if (c instanceof ComponentDiverter) {
                 ComponentDiverter c2 = (ComponentDiverter) c;
-                drawArrowsIntersection(c2, g2d, grid, colors_bold[c2.color]);
+                drawArrowsDiverter(c2, g2d, grid, colors_bold[c2.color]);
+                repr = "Div";
             } else if (c instanceof ComponentUnit) {
-                repr = "A" + c.id;
+                repr = "Arr" + c.id;
 
             } else if (c instanceof ComponentExchange) {
                 ComponentExchange c2 = (ComponentExchange) c;
-                repr = "E:" + c2.exchanged;
+                repr = "Ex:" + c2.exchanged;
             }
             if (repr.length() > 0 && repr.charAt(0) == ' ') {
                 g2d.fillOval(c.x * grid + reduction, c.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
@@ -426,7 +558,8 @@ public class BoardGameStatePanel extends JPanel {
             }
             g2d.drawOval(c.x * grid + reduction, c.y * grid + reduction, grid - reduction * 2, grid - reduction * 2);
             g2d.setColor(colors_bold[c.color]);
-            if (colorScheme == DISPLAY_TILES) {
+            if (colorScheme == DISPLAY_TILES ||
+                colorScheme == DISPLAY_TILES_AND_LINKS) {
                 g2d.drawString(repr, c.x * grid + reduction * 2, c.y * grid + grid / 2);
             }
         }
@@ -447,7 +580,8 @@ public class BoardGameStatePanel extends JPanel {
             g2d.setColor(Color.BLACK);
             g2d.drawLine(u.x * grid + grid / 2, u.y * grid + grid / 2, u.x * grid + grid / 2 + offsx, u.y * grid + grid / 2 + offsy);
             String repr = " P:" + u.payload.length + " D:" + u.delivered + "/" + u.missed;
-            if (colorScheme == DISPLAY_TILES) {
+            if (colorScheme == DISPLAY_TILES ||
+                colorScheme == DISPLAY_TILES_AND_LINKS) {
                 g2d.setColor(Color.WHITE);
                 g2d.drawString(repr, u.x * grid + reduction * 2, u.y * grid + grid / 2);
             }
@@ -469,7 +603,8 @@ public class BoardGameStatePanel extends JPanel {
             //          g2d.setColor(Color.GREEN);
             //        g2d.fillRect(u.getX()*grid+reduction, u.getY()*grid+reduction, (int)(grid*(((float)u.getHitPoints())/u.getMaxHitPoints())), 2);
         }
-        if (colorScheme == DISPLAY_LINKS) {
+        if (colorScheme == DISPLAY_LINKS ||
+            colorScheme == DISPLAY_TILES_AND_LINKS) {
             DrawLinks(g2d, panel, dx, dy, gs, board, colorScheme);
         }
 
@@ -502,7 +637,6 @@ public class BoardGameStatePanel extends JPanel {
                     if (c3 != null) {
                         UpdateBezier(g2d, new Pair((float) c2.x * grid + grid * 0.5f, (float) c2.y * grid + grid * 0.5f), new Pair((float) c3.x * grid + grid * 0.5f, (float) c3.y * grid + grid * 0.5f), grid);
                     }
-
                 }
             }
             //g2d.fillOval(c.x * grid, c.y * grid, grid, grid);
@@ -539,7 +673,7 @@ public class BoardGameStatePanel extends JPanel {
         for (int j = 0; j <= lineRendererSegments; j++) {
             Pair<Integer, Integer> pb = GetBezierPoint(((float) j / lineRendererSegments), p0, p1, p2, p3);
             if (pa != null) {
-                g2d.setColor(Color.BLACK);
+                g2d.setColor(Color.BLUE);
                 g2d.drawLine(pa.m_a, pa.m_b, pb.m_a, pb.m_b);
             }
             pa = pb;
