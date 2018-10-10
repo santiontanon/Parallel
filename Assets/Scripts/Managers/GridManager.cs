@@ -285,21 +285,21 @@ public class GridManager : MonoBehaviour {
 				behavior = delivery_Behavior;
                 if(gridComponent.configuration.accepted_types.Length == 0)
                 {
-                    gridElementInstance.name = "unconditional delivery";
+                    gridElementInstance.name = "universal_delivery";
                 }
                 else
                 {
                     if (gridComponent.configuration.accepted_types[0] == "Unconditional")
                     {
-                        gridElementInstance.name = "unconditional delivery";
+                        gridElementInstance.name = "unconditional_delivery";
                     }
                     else if (gridComponent.configuration.accepted_types[0] == "Conditional")
                     {
-                        gridElementInstance.name = "conditional delivery";
+                        gridElementInstance.name = "conditional_delivery";
                     }
                     else if (gridComponent.configuration.accepted_types[0] == "Limited")
                     {
-                        gridElementInstance.name = "limited delivery";
+                        gridElementInstance.name = "limited_delivery";
                     }
                 }
 			}
