@@ -805,17 +805,40 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     // Get Object at Mouse Position
                     GridManager grid = GameManager.Instance.GetGridManager();
                     GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
+                    Button current_button = null;
+
+                    //raycasting to find buttons for glossary
+                    GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+                    PointerEventData raycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                    raycastData.position = Input.mousePosition;
+                    List<RaycastResult> results = new List<RaycastResult>();
+                    uiRaycast.Raycast(raycastData, results);
+                    Debug.Log(results.Count);
+                    foreach(RaycastResult r in results)
+                    {
+                        Debug.Log(r.gameObject.name);
+                        if (r.gameObject.GetComponent<Button>() != null)
+                            current_button = r.gameObject.GetComponent<Button>();
+                    }
 
                     // If there is an object here
                     if (current_object)
                     {
                         // Display its hint UI
                         string obj_name = current_object.component.type;
+                        if (obj_name == "delivery")
+                            obj_name = current_object.name;
                         Debug.Log(obj_name);
                         TriggerHint(obj_name);
                         // Testing to make sure the interaction worked, always displays Track Hint
                         //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
                         //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+                    }
+                    else if (current_button)
+                    {
+                        string obj_name = current_button.name;
+                        Debug.Log(obj_name);
+                        TriggerHint(obj_name);
                     }
                 }
             break;
