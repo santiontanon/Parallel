@@ -60,9 +60,9 @@ MonoBehaviour:
     hintButtonImage: {fileID: 21300000, guid: c7ecf5ee43e267c43ac50e53766b0cfb, type: 3}
   - hint_component_type: thread
     hintTitle: Arrows
-    hintDescription: 'Arrows travel along tracks and interact with items that have
-      been placed on the tracks.  You can hover over the arrows at the top of the
-      screen to see which direction the arrow will travel on the track. '
+    hintDescription: Arrows travel along tracks and interact with items that have
+      been placed on the tracks.  You can hover over the arrows to the right of the
+      screen to see which direction the arrow will travel on each track.
     hintImage: {fileID: 21300000, guid: 50859f0aa4e6cec4697e6891701d1c98, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: signal
@@ -70,18 +70,19 @@ MonoBehaviour:
     hintDescription: Signals can be dragged from the toolbar and placed on the track.
       Signals are used to control semaphores and direction switches. To connect a
       signal to an item on the track, right click the signal, then right click the
-      item that you want to connect it to. Hover over the signal to make sure that
-      the connection has been made.
+      item that you want to connect it to. Hover over the signal to check what it
+      is connected to.
     hintImage: {fileID: 21300000, guid: 30a4810fcb34d5a46be4d842bdb1693e, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: semaphore
     hintTitle: Semaphore
-    hintDescription: Semaphores can be used to block or release an arrow (depending
-      on whether it is open or closed). Drag a semaphore from the toolbar to the track
-      and click to snap the semaphore to the track. Multiple signals can connect to
-      one semaphore. When closed (the top image) arrows cannot pass through the semaphore.
-      When open (the bottom image) arrows can pass through the semaphore. You can
-      right click on an unlocked semaphore to switch its default state.
+    hintDescription: Semaphores can be used to block or release an arrow. Semaphores
+      can be dragged from the toolbar and placed on the track. Multiple signals can
+      connect to one semaphore. When closed, the top image arrows cannot pass through
+      the semaphore. When open, the bottom image, arrows can pass through. You can
+      right click on an unlocked semaphore to switch its default state. A connected
+      signal can only open a semaphore, it will not close it. Semaphores can only
+      be closed when an arrow passes over the semaphore.
     hintImage: {fileID: 21300000, guid: 3babf36dea491e74c88bc2494b0ab992, type: 3}
     hintButtonImage: {fileID: 21300000, guid: fe7265002b887e843882fb18a0c895b8, type: 3}
   - hint_component_type: Link_Button
@@ -93,39 +94,41 @@ MonoBehaviour:
   - hint_component_type: Trash
     hintTitle: Trash Can
     hintDescription: Previously placed semaphores and signals can be dragged to the
-      trash can to remove them.
+      trash can to remove them. When trash is clicked, all items placed in the level
+      will be removed.
     hintImage: {fileID: 21300000, guid: 44e1a091741f69a499fd1df71c7f3979, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: conditional
     hintTitle: Direction Switches
     hintDescription: 'Arrows that pass through a direction switch will turn in the
       direction of the darker arrow on the switch.  If linked to a signal, the direction
-      switch will change direction when an arrow passes through that connected signal. '
+      switch will change direction when an arrow presses that connected signal. '
     hintImage: {fileID: 21300000, guid: a33a390811c13704ab293c29a87b6faa, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: track_color
     hintTitle: Arrow Specific Tracks
-    hintDescription: 'Some arrows can only travel on parts of a track. Hover over
-      the arrows at the top of the screen to see which path the arrow can travel on
-      the track. '
+    hintDescription: Some arrows can only travel on specific parts of track. Hover
+      over or click the arrows to the right of the screen to see which path the arrow
+      can travel on.
     hintImage: {fileID: 21300000, guid: ec7598f38049e3c4c96c125719e9736b, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: package
     hintTitle: Unlimited Conditional Packages
-    hintDescription: A type of package that will regenerate as soon as it has been
-      delivered to a delivery point.
+    hintDescription: This type of package will regenerate as soon as it has been delivered
+      to a delivery point. It can only be picked up by one arrow at a time.
     hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: limited
     hintTitle: Limited Conditional Packages
-    hintDescription: A type of package that will not regenerate after it is picked
-      up by an arrow.
+    hintDescription: This type of package can only be picked up once and will not
+      respawn after it is delivered. It can only be picked up by one arrow.
     hintImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
     hintButtonImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
   - hint_component_type: pickup
     hintTitle: Unlimited Unconditional Packages
-    hintDescription: 'A type of package that will regenerate as soon as it is picked
-      up by an arrow. '
+    hintDescription: This type of package will regenerate as soon as it is picked
+      up by an arrow. Multiple arrows can carry this package, but it can still only
+      be picked up by one arrow at a time.
     hintImage: {fileID: 21300000, guid: c06ebfed28ee54a4eb75c7e8d315f1cc, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: diverter
@@ -133,16 +136,16 @@ MonoBehaviour:
     hintDescription: 'Diverters will change the direction of an arrow based on the
       package that the arrow is carrying. Arrows will follow the track that has a
       shape that matches the shape of the package it is carrying.  If an arrow is
-      not carrying anything, then the arrow will turn in the direction of a blank
+      not carrying anything, then the arrow will turn in the direction of the blank
       track. '
     hintImage: {fileID: 21300000, guid: 1dc2188f7a1f7bf43912fe81975dfe7a, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: exchange
     hintTitle: Universal Exchange Points
-    hintDescription: 'When an arrow passes through these points, it can swap the package
+    hintDescription: When an arrow stops at an exchange point, it can swap the package
       it is carrying with another arrow that is also passing through an exchange point.
-      Arrows will wait here until another arrow arrives at a corresponding exchange
-      point. Hover over exchange points to view its corresponding points. '
+      Arrows will wait here until another arrow arrives at the connected exchange
+      point. Hover over exchange points to view what they are connected to.
     hintImage: {fileID: 21300000, guid: e0f36b07d181d214bba8b369ee044451, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: DELETE
@@ -160,8 +163,8 @@ MonoBehaviour:
     hintButtonImage: {fileID: 0}
   - hint_component_type: delivery
     hintTitle: Universal Delivery Points
-    hintDescription: These delivery points can accept packages with any symbol. Hover
-      over delivery points to view what packages can be delivered to them.
+    hintDescription: ' These delivery points will accept packages of any type. However,
+      they can only accept one delivery at a time.'
     hintImage: {fileID: 21300000, guid: a8084ed7fbcb45a4d815af9c24ac73b4, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: DELETE
@@ -187,38 +190,42 @@ MonoBehaviour:
     hintButtonImage: {fileID: 0}
   - hint_component_type: conditional_delivery
     hintTitle: Unlimited Conditional Delivery Point
-    hintDescription: Delivery points for unlimited conditional packages only. Hover
-      over delivery points to view what packages can be delivered to them.
+    hintDescription: ' This delivery point is for unlimited conditional packages only
+      (square packages). Hover over delivery points to view what packages can be delivered
+      to them, some pacakges may only be accepted by some deliveries. They can also
+      only accept one delivery at a time.'
     hintImage: {fileID: 21300000, guid: fd13872c56bdfd641b6ea9a3b6ff3008, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: unconditional_delivery
     hintTitle: Unlimited Unconditional Delivery Point
-    hintDescription: Delivery points for unlimited unconditional packages only. Hover
-      over delivery points to view what packages can be delivered to them.
+    hintDescription: This delivery point is for unlimited unconditional packages only
+      (infinity packages). Hover over delivery points to view what packages can be
+      delivered to them, some pacakges may only be accepted by some deliveries. They
+      can also only accept one delivery at a time.
     hintImage: {fileID: 21300000, guid: 084ec843850d5fb4682b6e7dc4c6470f, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: limited_delivery
     hintTitle: Limited Conditional Delivery Point
-    hintDescription: Delivery points for limited conditional packages only. Hover
-      over delivery points to view what packages can be delivered to them.
+    hintDescription: This delivery point is for limited conditional packages only
+      (diamond packages). Hover over delivery points to view what packages can be
+      delivered to them, some pacakges may only be accepted by some deliveries. They
+      can also only accept one delivery at a time.
     hintImage: {fileID: 21300000, guid: dbe87c96890258541b68796304d89081, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: 
     hintTitle: Locked Component
-    hintDescription: When a lock appears on a semaphore you cannot change its default
-      state or move it, however, you can still connect signals you place to it. If
-      a signal is locked you cannot move it, or change what it is linked to.
+    hintDescription: When a lock appears on an element you cannot change its default
+      state or move it, however, you can still connect signals or semaphores to it.
     hintImage: {fileID: 21300000, guid: c1c52e900e1756745aaecc03541c1ed6, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: zoom_meter
     hintTitle: Zoom
-    hintDescription: Use the scroll wheel to zoom in and out. The camera will pan
-      to the location you zoom into.
+    hintDescription: ' Use the scroll wheel to zoom in and out. If a level is zoomed
+      in, pan by clicking and dragging the screen.'
     hintImage: {fileID: 21300000, guid: f0d4d83883547a14087595eb7917fb5f, type: 3}
     hintButtonImage: {fileID: 0}
   - hint_component_type: toggle_goal_button
     hintTitle: Goal
-    hintDescription: To view, or hide, the goal of the level press this button in
-      the bottom left.
+    hintDescription: This button views or hides the goal of the level.
     hintImage: {fileID: 21300000, guid: 34fb8c23029c2d849b9d5a2097b8b713, type: 3}
     hintButtonImage: {fileID: 0}
