@@ -2,7 +2,7 @@ RULE DELIVERY_TRIVIAL 0.9 0.9 -1 TRIVIAL
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA)
-RULE JUST_CONNECT 0.1 0.9 -1 REFINEMENT
+RULE JUST_CONNECT 0.5 0.9 -1 REFINEMENT
     PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
     REPLACEMENT B:track(to:C),C:track()
 RULE MAKE_DELIVERY_CRITICAL 1.0 0.5 -1 CRITICAL,RACE
