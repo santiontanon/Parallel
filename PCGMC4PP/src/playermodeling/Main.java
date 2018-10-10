@@ -2,9 +2,8 @@ package playermodeling;
 
 
 //import org.apache.commons.cli.Options;
+import pmexperiments.SimulationLOO;
 import weka.classifiers.functions.MultilayerPerceptron;
-
-import java.io.*;
 
 /**
  * Created by pavankantharaju on 2/26/18.
@@ -74,9 +73,9 @@ public class Main {
         int rule_update_flag = 0;
 
 
-        //Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
-        Simulation_v1 sim = new Simulation_v1(saved_data_location,slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
-        sim.simulate();
+//        //SimulationAccuracy8Dash sim = new SimulationAccuracy8Dash(saved_data_location, testing_path, slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
+//        SimulationLOO sim = new SimulationLOO(saved_data_location,slices_location,interval, update_technique_flag, rule_update_flag, new MultilayerPerceptron(), false);
+//        sim.simulate();
     }
 
 }

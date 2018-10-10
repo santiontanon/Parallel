@@ -1,10 +1,12 @@
-package playermodeling;
-
+package pmexperiments;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.BayesNet;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 
 /**
@@ -12,38 +14,24 @@ import java.lang.reflect.Constructor;
  */
 
 
-public class ExperimentsMain {
+public class LOOExperimentsMain {
 
     public static void main(String [] args) throws Exception {
+        /* NOTE: LOO stands for Leave One Out */
+
         /* FLAGS */
         /*
-            0 : Machine Learning and Rules
-            1 : Machine Learning Only
-            2 : Rules Only
+            0 (RM) : Machine Learning and Rules
+            1 (M) : Machine Learning Only
+            2 (R) : Rules Only
          */
-        int[] update_technique_flags = {0, 1, 2};
+
+        int[] skill_vector_update_technique_flags = {0, 1, 2};
         String[] update_names = {"RM", "M", "R"};
-        /*
-            0 : Additive
-            1 : Absolute/Additive
-         */
+        int[] time_intervals = {10, 20, 30};
 
-        int[] rule_update_flags = {0};
-
-        int[] timings = {10, 20, 30};
-
-        String directory_name = "simulation_results_06132018_8_data/";
+        String directory_name = "loo-results/";
         new File(directory_name).mkdir();
-
-        String[] machine_learning_algorithms = {
-                "J48",
-                "RandForest",
-                "Bagging",
-                "AdaBoost",
-                "NaiveBayes",
-                "BayesNet",
-                "MultiPercep"
-        };
 
         String[] machine_learning_classes = {
                 "weka.classifiers.trees.J48",
@@ -54,12 +42,16 @@ public class ExperimentsMain {
                 "weka.classifiers.bayes.BayesNet",
                 "weka.classifiers.functions.MultilayerPerceptron"
         };
-        String saved_data_location = "../35_saved_data";
-        String testing_path = "../8_saved_data/8_saved_data";
-        String slices_location = "../LogVisualizer/slices.tsv";
+        String [] machine_learning_algorithms = new String[machine_learning_classes.length];
+        for ( int i = 0; i < machine_learning_classes.length; i++ ) {
+            String [] split_class_string = machine_learning_classes[i].split("\\.");
+            machine_learning_algorithms[i] = split_class_string[split_class_string.length-1];
+        }
 
-        for (int time : timings) {
-            for (int utf : update_technique_flags) {
+        String training_data_relative_path = "../35-dash-dataset";
+
+        for (int time : time_intervals) {
+            for (int utf : skill_vector_update_technique_flags) {
                 if (utf == 0 || utf == 1) {
                     for (int i = 0; i < machine_learning_algorithms.length; i++) {
                         Class c1 = Class.forName(machine_learning_classes[i]);
@@ -70,9 +62,8 @@ public class ExperimentsMain {
 
                         System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(fname)), true));
 
-                        //Simulation_v1 sim = new Simulation_v1(saved_data_location, slices_location, time, utf, 0, classifier,false);
-                        Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, classifier,false);
-                        sim.simulate();
+                        SimulationLOO sim = new SimulationLOO(classifier, time, utf, training_data_relative_path);
+                        sim.execute();
 
                         System.setOut(old);
                     }
@@ -82,9 +73,8 @@ public class ExperimentsMain {
 
                     System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(fname)), true));
 
-                    //Simulation_v1 sim = new Simulation_v1(saved_data_location, slices_location, time, utf, 0, new BayesNet(),false);
-                    Simulation_v2 sim = new Simulation_v2(saved_data_location, testing_path, slices_location, time, utf, 0, new BayesNet(),false);
-                    sim.simulate();
+                    SimulationLOO sim = new SimulationLOO(new BayesNet(), time, utf, training_data_relative_path);
+                    sim.execute();
 
                     System.setOut(old);
                 }
