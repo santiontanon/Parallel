@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hints:
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Tracks
     hintDescription: Tracks determine the path an arrow will follow. Items within
       the toolbar can snap to the track.
@@ -84,13 +84,13 @@ MonoBehaviour:
       right click on an unlocked semaphore to switch its default state.
     hintImage: {fileID: 21300000, guid: 3babf36dea491e74c88bc2494b0ab992, type: 3}
     hintButtonImage: {fileID: 21300000, guid: fe7265002b887e843882fb18a0c895b8, type: 3}
-  - hint_component_type: 
+  - hint_component_type: Link_Button
     hintTitle: Link Viewer
     hintDescription: Hover over the link viewer to view all connections between items
       within the level.
     hintImage: {fileID: 21300000, guid: 1b9a5b1cc178cac46ab26a4e185f9317, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: Trash
     hintTitle: Trash Can
     hintDescription: Previously placed semaphores and signals can be dragged to the
       trash can to remove them.
@@ -103,7 +103,7 @@ MonoBehaviour:
       switch will change direction when an arrow passes through that connected signal. '
     hintImage: {fileID: 21300000, guid: a33a390811c13704ab293c29a87b6faa, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: track_color
     hintTitle: Arrow Specific Tracks
     hintDescription: 'Some arrows can only travel on parts of a track. Hover over
       the arrows at the top of the screen to see which path the arrow can travel on
@@ -116,7 +116,7 @@ MonoBehaviour:
       delivered to a delivery point.
     hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: limited
     hintTitle: Limited Conditional Packages
     hintDescription: A type of package that will not regenerate after it is picked
       up by an arrow.
@@ -145,26 +145,26 @@ MonoBehaviour:
       point. Hover over exchange points to view its corresponding points. '
     hintImage: {fileID: 21300000, guid: e0f36b07d181d214bba8b369ee044451, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Symbol Specific Exchange Points
     hintDescription: When an arrow passes through these points, it can swap packages
       of the type on the exchange point with another arrow that is also passing through
       an exchange point.
     hintImage: {fileID: 21300000, guid: f65230e4ce02e954488f11f30f9642e5, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Package Specific Delivery Points
     hintDescription: 'Some packages can only be delivered to a specific delivery point.
       You must hover over the package to see its corresponding delivery point. '
     hintImage: {fileID: 21300000, guid: ef471d58ad0568b4ab66c5e9d5b780db, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: delivery
     hintTitle: Universal Delivery Points
     hintDescription: These delivery points can accept packages with any symbol. Hover
       over delivery points to view what packages can be delivered to them.
     hintImage: {fileID: 21300000, guid: a8084ed7fbcb45a4d815af9c24ac73b4, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Missed Delivery
     hintDescription: If two arrows attempt to deliver packages to a delivery point
       simultaneously, one package will get lost. When a missed delivery occurs the
@@ -172,32 +172,32 @@ MonoBehaviour:
       as expected.
     hintImage: {fileID: 21300000, guid: a3e47939783eb8648931bc2653b4a4bf, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Succesful Delivery
     hintDescription: If a package is succesfully delivered, the delivery point and
       it's pin will turn green and the progress pin will increment.
     hintImage: {fileID: 21300000, guid: 4afa6b24a5b03b946826bbb37ea9a212, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: DELETE
     hintTitle: Symbol Specific Delivery Points
     hintDescription: Packages can be delivered to delivery points with symbols that
       match the symbol on the package. Hover over delivery points to view what packages
       can be delivered to them.
     hintImage: {fileID: 21300000, guid: 59e677c03d719774ab273109ce284023, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: conditional_delivery
     hintTitle: Unlimited Conditional Delivery Point
     hintDescription: Delivery points for unlimited conditional packages only. Hover
       over delivery points to view what packages can be delivered to them.
     hintImage: {fileID: 21300000, guid: fd13872c56bdfd641b6ea9a3b6ff3008, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: unconditional_delivery
     hintTitle: Unlimited Unconditional Delivery Point
     hintDescription: Delivery points for unlimited unconditional packages only. Hover
       over delivery points to view what packages can be delivered to them.
     hintImage: {fileID: 21300000, guid: 084ec843850d5fb4682b6e7dc4c6470f, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: limited_delivery
     hintTitle: Limited Conditional Delivery Point
     hintDescription: Delivery points for limited conditional packages only. Hover
       over delivery points to view what packages can be delivered to them.
@@ -210,13 +210,13 @@ MonoBehaviour:
       a signal is locked you cannot move it, or change what it is linked to.
     hintImage: {fileID: 21300000, guid: c1c52e900e1756745aaecc03541c1ed6, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: zoom_meter
     hintTitle: Zoom
     hintDescription: Use the scroll wheel to zoom in and out. The camera will pan
       to the location you zoom into.
     hintImage: {fileID: 21300000, guid: f0d4d83883547a14087595eb7917fb5f, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: 
+  - hint_component_type: toggle_goal_button
     hintTitle: Goal
     hintDescription: To view, or hide, the goal of the level press this button in
       the bottom left.
