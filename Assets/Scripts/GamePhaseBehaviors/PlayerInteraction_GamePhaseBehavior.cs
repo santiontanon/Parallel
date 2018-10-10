@@ -802,41 +802,49 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             // On Left Click
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                    // Get Object at Mouse Position
-                    GridManager grid = GameManager.Instance.GetGridManager();
-                    GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
                     Button current_button = null;
+                    Image current_image = null;
+                    GridObjectBehavior current_object = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 
                     //raycasting to find buttons for glossary
                     GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
-                    PointerEventData raycastData = new PointerEventData(FindObjectOfType<EventSystem>());
-                    raycastData.position = Input.mousePosition;
-                    List<RaycastResult> results = new List<RaycastResult>();
-                    uiRaycast.Raycast(raycastData, results);
-                    Debug.Log(results.Count);
-                    foreach(RaycastResult r in results)
+                    PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                    uiRaycastData.position = Input.mousePosition;
+                    List<RaycastResult> uiResults = new List<RaycastResult>();
+                    uiRaycast.Raycast(uiRaycastData, uiResults);
+
+                    foreach (RaycastResult r in uiResults)
                     {
                         Debug.Log(r.gameObject.name);
                         if (r.gameObject.GetComponent<Button>() != null)
+                        {
                             current_button = r.gameObject.GetComponent<Button>();
+                            break;
+                        }
+                        if (r.gameObject.GetComponent<Image>() != null)
+                        {
+                            current_image = r.gameObject.GetComponent<Image>();
+                            break;
+                        }
                     }
 
-                    // If there is an object here
-                    if (current_object)
+                    if (current_button)
                     {
-                        // Display its hint UI
+                        string obj_name = current_button.name;
+                        Debug.Log(obj_name);
+                        TriggerHint(obj_name);
+                    }
+                    else if (current_image)
+                    {
+                        string obj_name = current_image.name;
+                        Debug.Log(obj_name);
+                        TriggerHint(obj_name);
+                    }
+                    else if (current_object)
+                    {
                         string obj_name = current_object.component.type;
                         if (obj_name == "delivery")
                             obj_name = current_object.name;
-                        Debug.Log(obj_name);
-                        TriggerHint(obj_name);
-                        // Testing to make sure the interaction worked, always displays Track Hint
-                        //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
-                        //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
-                    }
-                    else if (current_button)
-                    {
-                        string obj_name = current_button.name;
                         Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
@@ -954,6 +962,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             playerInteraction_UI.revealHintsToggle.SetToggle(true);
             playerInteraction_UI.simulationButton.interactable = true;
             playerInteraction_UI.submitButton.interactable = true;
+            playerInteraction_UI.trash.enabled = true;
+            playerInteraction_UI.preview.enabled = true;
+            playerInteraction_UI.place_semaphore.enabled = true;
+            playerInteraction_UI.place_button.enabled = true;
+            foreach (EventTrigger e in playerInteraction_UI.rightPanelColors)
+                e.enabled = true;
         }
         else
         {
@@ -963,6 +977,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             playerInteraction_UI.revealHintsToggle.SetToggle(false);
             playerInteraction_UI.simulationButton.interactable = false;
             playerInteraction_UI.submitButton.interactable = false;
+            playerInteraction_UI.trash.enabled = false;
+            playerInteraction_UI.preview.enabled = false;
+            playerInteraction_UI.place_semaphore.enabled = false;
+            playerInteraction_UI.place_button.enabled = false;
+            foreach(EventTrigger e in playerInteraction_UI.rightPanelColors)
+                e.enabled = false;
         }
         TriggerHintFader();
 
