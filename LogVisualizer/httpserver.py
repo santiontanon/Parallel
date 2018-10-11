@@ -70,8 +70,8 @@ class Handler(BaseHTTPRequestHandler):
         self.log_request()
         if self.path.strip() == '/status':
             log_analysis.write_to_web_status_panel(self)
-        elif self.path.strip() == "/playermodel":
-            pass
+        elif "/playermodel" in self.path.strip():
+            
         else:
             self.send_error_message()
 
@@ -146,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_error_message("bad json")
                 return
             # Player modeling data content: {"user" : user_name, "level" : level, "skill_vector" : skill_vector}
-            save_data(content, "/playermodel")
+            save_data(data, "/playermodel")
             self.send_ok_message()
             return
         else:
