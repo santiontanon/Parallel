@@ -21,7 +21,7 @@ public class GrammarTest_ {
 
     public static LGraph generateGraph(int randomSeed) throws Exception {
         LGraph.DEBUG = 1;
-        return PCG.generateGraph(randomSeed, 0, false, true);
+        return PCG.generateGraph(randomSeed, 0, false, null, true);
         /*
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
         LGraph graph = LGraph.fromString("N0:problem()");

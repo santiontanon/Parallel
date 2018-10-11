@@ -88,7 +88,7 @@ public class TestPCGPlayable {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
-                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, debug);
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, null, debug);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
                 new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                 if (!solvable(gs)) {

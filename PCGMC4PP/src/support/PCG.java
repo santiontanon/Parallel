@@ -28,8 +28,10 @@ import game.GameState;
 import game.pcg.GraphManager;
 import game.pcg.PuzzleEmbeddingComparator;
 import game.pcg.PuzzleEmbeddingEvaluator;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -76,10 +78,17 @@ public class PCG {
 
         String filename = args[0];
         // TODO Get parameters from filename and sample GG with parameters from filename
+        boolean debug = false;
         long randomSeed = Long.parseLong(args[1]);
         String sizeStr = args[2];
-        if("debug".equals(filename)) randomSeed = 0;
-        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, ("debug".equals(filename)));
+        LinkedHashMap<String, Double> playerModel = null;
+        if("debug".equals(filename)) {
+            randomSeed = 0;
+            debug = true;
+        } else {
+            playerModel = loadPlayerModel(filename);
+        }
+        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, playerModel, debug);
         if(!("debug".equals(filename))){
             // Export
             export(gs, getNewFileFromFilename(filename, false));
@@ -101,17 +110,17 @@ public class PCG {
         return out_file;
     }
 
-    public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, boolean debug) throws Exception {
-        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, false);
+    public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
+        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, playerModel, false);
         return embeddGraph(graph, randomSeedEmbedding, debug);
     }
     
-    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, boolean debug) throws Exception {
+    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
         int size = -1;
         if (IsNumber.isNumber(sizeStr)) {
             size = (int)Double.parseDouble(sizeStr);
         }
-        return generateGameState(randomSeed,randomSeed, size, keep_solution, debug);
+        return generateGameState(randomSeed,randomSeed, size, keep_solution, playerModel, debug);
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
@@ -161,12 +170,19 @@ public class PCG {
         return lastGraph;
     }
 
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug) throws Exception {
-        return generateGraph(randomSeed, size, keep_solution, debug, null);
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
+        return generateGraph(randomSeed, size, keep_solution, playerModel, debug, null);
     }
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug, Map<String,Integer> rule_applications) throws Exception {
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug, Map<String,Integer> rule_applications) throws Exception {
         Random r = new Random(randomSeed);
         if (size == -1) size = r.nextInt(5)+1;
+        
+        System.out.println("PlayerModel:");
+        if (playerModel != null) {
+            for(String skill:playerModel.keySet()) {
+                System.out.println(skill + ": " + playerModel.get(skill));
+            }
+        }
 
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 2);
         Map<String,Integer> size_application_limits = new LinkedHashMap();
@@ -313,5 +329,24 @@ public class PCG {
         writer.print(out);
         writer.close();
         System.out.println(out_file.getAbsolutePath());
+    }
+    
+    public static LinkedHashMap<String, Double> loadPlayerModel(String filename) throws Exception
+    {
+        LinkedHashMap<String, Double> playerModel = new LinkedHashMap<>();
+        
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        while(true) {
+            String line = br.readLine();
+            if (line == null) break;
+            String tokens[] = line.split(",");
+            if (tokens.length != 2) {
+                System.out.println("ERROR: parameters file has the wrong format, line: " + line);
+            } else {
+                playerModel.put(tokens[0].trim(), Double.parseDouble(tokens[1].trim()));
+            }
+        }
+        
+        return playerModel;
     }
 }
