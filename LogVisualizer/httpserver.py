@@ -7,6 +7,7 @@ import argparse
 import sys
 from datetime import date, datetime
 import uuid
+from urllib.parse import urlparse, parse_qs
 
 import log_analysis
 
@@ -24,7 +25,7 @@ ROOT_DATA_PATH = 'saved_data/'
 START_COUNTER_DEFAULT = 3000
 
 def initialize_data_directory():
-    for directory in ['data','id','log']:
+    for directory in ['data','id','log', 'playermodel']:
         path = os.path.dirname(os.path.abspath(__file__))
         path = path + '/' + ROOT_DATA_PATH + directory
         try:
@@ -48,8 +49,22 @@ def save_data(data, directory = ''):
     with open(file_name, 'w') as f:
         f.write(data)
 
+def get_player_model_data(user_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    filename = "{}.json".format(user_name)
+    path = path + '/' + ROOT_DATA_PATH + "/playermodel/" + filename
+    log.debug("Filename: {}".format(path))
+    if not os.path.isfile(path):
+        return ""
+    f = open(path, 'r')
+    json_data = f.readlines()
+    json_data = "\n".join(json_data)
+    json_data = json.loads(json_data)
+    log.debug("Data for user {}: {}".format(user_name, json_data))
+    return json_data
+
 class Handler(BaseHTTPRequestHandler):
-    def log_request(s):
+    def log_request(s, message=""):
         log.debug("%s: %s/%s" %(s.client_address, s.command, s.path))
 
     def send_error_message(self, msg = "only accepting post of application/json"):
@@ -57,21 +72,33 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'application/json')
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        self.wfile.write(json.dumps({"error": msg}))
+        json_str = json.dumps({"error": msg})
+        self.wfile.write(str.encode(json_str))
 
     def send_ok_message(self):
         self.send_response(200, "OK")
         self.send_header('Content-type', 'application/json')
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        self.wfile.write(json.dumps({"status": "OK"}))
+        json_str = json.dumps({"status": "OK"})
+        self.wfile.write(str.encode(json_str))
 
     def do_GET(self):
         self.log_request()
         if self.path.strip() == '/status':
-            log_analysis.write_to_web_status_panel(self)
+            log_analysis.write_to_web_status_panel(self, ROOT_DATA_PATH)
         elif "/playermodel" in self.path.strip():
-            
+            query_components = parse_qs(urlparse(self.path).query)
+            user_name = query_components["user"][0]
+            log.debug("Query components: {}".format(query_components))
+            # Find user in /playermodel directory and get data (empty if player doesn't exist)
+            json_data = get_player_model_data(user_name)
+            self.send_response(200, "OK")
+            self.send_header('Content-type', 'application/json')
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+            json_str = json.dumps(json_data)
+            self.wfile.write(str.encode(json_str))
         else:
             self.send_error_message()
 
@@ -83,7 +110,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "content-type")
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.end_headers()
-        self.wfile.write("OK")
+        self.wfile.write(str.encode("OK"))
 
     def do_POST(self):
         self.log_request()
@@ -129,7 +156,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            self.wfile.write(json.dumps(ret))
+            json_str = json.dumps(ret)
+            self.wfile.write(str.encode(json_str))
             return
         elif path.strip() == '/log':
             save_data(content, '/log')
@@ -145,7 +173,6 @@ class Handler(BaseHTTPRequestHandler):
             except:
                 self.send_error_message("bad json")
                 return
-            # Player modeling data content: {"user" : user_name, "level" : level, "skill_vector" : skill_vector}
             save_data(data, "/playermodel")
             self.send_ok_message()
             return
@@ -156,7 +183,7 @@ class Handler(BaseHTTPRequestHandler):
 class ForkingHTTPServer(socketserver.ThreadingTCPServer, HTTPServer):
     def finish_request(self, request, client_address):
         request.settimeout(300)
-        BaseHTTPServer.HTTPServer.finish_request(self, request, client_address)
+        HTTPServer.finish_request(self, request, client_address)
 
 def main():
     parser = argparse.ArgumentParser()

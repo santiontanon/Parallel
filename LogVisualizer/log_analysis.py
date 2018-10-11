@@ -87,12 +87,14 @@ def write_to_web_status_panel(writer, ROOT_DATA_PATH):
     writer.send_header('Content-type', 'text/html')
     writer.send_header("Access-Control-Allow-Origin", "*")
     writer.end_headers()
-    writer.wfile.write(html_wrap('html',html_wrap('body', table)))
+    html_str = html_wrap('html',html_wrap('body', table))
+    writer.wfile.write(str.encode(html_str))
+
 
 def get_file_data(fname, me_execution_files):
 
     data = {'levels': 0, 'me': 0, 'uploaded': 0, 'seq': list()}
-
+    last_line = ""
     with open(fname) as f:
         for line in f:
             try:
