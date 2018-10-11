@@ -7,6 +7,7 @@ import com.google.gson.JsonPrimitive;
 import org.apache.commons.cli.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -21,18 +22,23 @@ import java.util.ArrayList;
 
 public class ServerInterface {
 
-    public static final String SERVER_HOST = "129.25.151.236";
-    public static final String CURRENT_PARAMS_FILENAME = "currentParams.txt";
+    public static final String SERVER_HOST = "10.250.48.248";  /* TODO: Can we get this from Parallel */
+    public static final int PORT = 8787;
+    public static final String CURRENT_PARAMS_FILENAME = "currentParameters.txt";
+    public static final String LOCAL_PM_DATA = "localPMData.json";
 
     private CloseableHttpClient client;
+    private String paramFilepath;
 
-    public ServerInterface() {
+    public ServerInterface(String paramFilepath_) {
         client = HttpClients.createDefault();
+        paramFilepath = paramFilepath_;
     }
 
-    public void saveSkillVector(String level, String user, String paramFilepath) {
+    public void saveSkillVectorToServer(String level, String user) {
         String jsonString = getPlayerModelData(user);
-        String skillVector = readSkillVector(paramFilepath);
+        System.out.println("JSON String: " + jsonString);
+        String skillVector = readSkillVector();
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);
         jsonObject.addProperty("current", skillVector);
@@ -43,33 +49,47 @@ public class ServerInterface {
             jsonArray.add(skillVector);
             jsonObject.add(level, jsonArray);
         }
-        String updatedJsonString = jsonObject.getAsString();
-        postPlayerModelData(updatedJsonString);
+        String updatedJsonString = jsonObject.toString();
+        System.out.println("Updating player modeling: "+ updatedJsonString);
+        savePMDataLocally(updatedJsonString);
+        postPlayerModelData(updatedJsonString, user);
     }
 
-    public void readSkillVectorFromServer(String user, String paramFilepath) {
+    public void savePMDataLocally(String jsonData) {
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter(paramFilepath + "/" + LOCAL_PM_DATA));
+            writer.println(jsonData);
+            writer.close();
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readSkillVectorFromServer(String user) {
         String jsonString = getPlayerModelData(user);
+        System.out.println("JSON String: " + jsonString);
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);
         JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("current");
         String skillVector = jsonPrimitive.getAsString();
-        writeSkillVector(skillVector, paramFilepath);
+        savePMDataLocally(jsonObject.toString());
+        writeSkillVector(skillVector);
     }
 
-    public void postPlayerModelData(String jsonString) {
+    public void postPlayerModelData(String jsonString, String username) {
         try {
-            URI uri = new URIBuilder("http")
-                    .setHost(SERVER_HOST)
-                    .setPath("/playermodel")
-                    .build();
+            URIBuilder uriBuilder = new URIBuilder();
+            uriBuilder.setScheme("http");
+            uriBuilder.setHost(SERVER_HOST);
+            uriBuilder.setPort(PORT);
+            uriBuilder.setPath("/playermodel");
+            uriBuilder.setParameter("user", username);
+            URI uri = uriBuilder.build();
             HttpPost httpPost = new HttpPost(uri);
             StringEntity entity = new StringEntity(jsonString);
             httpPost.setEntity(entity);
             httpPost.setHeader("Accept", "application/json");
             httpPost.setHeader("Content-type", "application/json");
-
-            System.out.println(httpPost.getURI());
-
             CloseableHttpResponse response = client.execute(httpPost);
             assert(response.getStatusLine().getStatusCode() == 200);
             client.close();
@@ -85,20 +105,19 @@ public class ServerInterface {
     public String getPlayerModelData(String username) {
         String jsonString = "";
         try {
-            URI uri = new URIBuilder("http")
-                    .setHost(SERVER_HOST)
-                    .setPath("/playermodel")
-                    .setParameter("uname", username)
-                    .build();
-            HttpPost httpGet = new HttpPost(uri);
+            URIBuilder uriBuilder = new URIBuilder();
+            uriBuilder.setScheme("http");
+            uriBuilder.setHost(SERVER_HOST);
+            uriBuilder.setPort(PORT);
+            uriBuilder.setPath("/playermodel");
+            uriBuilder.setParameter("user", username);
+            URI uri = uriBuilder.build();
+            HttpGet httpGet = new HttpGet(uri);
             CloseableHttpResponse response = client.execute(httpGet);
             try {
                 HttpEntity entity = response.getEntity();
                 if ( entity != null ) {
-                    long len = entity.getContentLength();
-                    if ( len != -1 ) {
-                        jsonString = EntityUtils.toString(entity);
-                    }
+                    jsonString = EntityUtils.toString(entity);
                 }
             } finally {
                 response.close();
@@ -121,9 +140,9 @@ public class ServerInterface {
         }
     }
 
-    public void writeSkillVector(String skillVector, String paramFliePath) {
+    public void writeSkillVector(String skillVector) {
         try {
-            PrintWriter writer = new PrintWriter(new FileWriter(paramFliePath + "/" + CURRENT_PARAMS_FILENAME));
+            PrintWriter writer = new PrintWriter(new FileWriter(paramFilepath + "/" + CURRENT_PARAMS_FILENAME));
             String [] skillVectorSplit = skillVector.split(":");
             for ( String s : skillVectorSplit ) {
                 writer.println(s);
@@ -134,10 +153,10 @@ public class ServerInterface {
         }
     }
 
-    public String readSkillVector(String paramFliePath) {
+    public String readSkillVector() {
         ArrayList<String> skillVector = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(paramFliePath + "/" + CURRENT_PARAMS_FILENAME));
+            BufferedReader br = new BufferedReader(new FileReader(paramFilepath + "/" + CURRENT_PARAMS_FILENAME));
             String line;
             while ((line = br.readLine()) != null) {
                 String skillValuePair = line.trim();
@@ -157,18 +176,19 @@ public class ServerInterface {
 
         Options cliOptions = new Options();
         cliOptions.addOption("mode",true,"Mode of operation (read or write)");
+        cliOptions.addOption("local",true,"Get data locally (only used if there is no network connection)");
         cliOptions.addOption("user",true,"Name of player");
         cliOptions.addOption("level",true,"Current level");
-
-        cliOptions.addOption("path",true,"Path to currentParams.txt");
+        cliOptions.addOption("path",true,"Path to currentParameters.txt");
 
         String mode = "";
         String user = "";
         String level = "";
+        boolean local = false;
         String paramFilePath = "";
         CommandLineParser parser = new DefaultParser();
         try {
-            CommandLine line = parser.parse( cliOptions, args );
+            CommandLine line = parser.parse(cliOptions, args);
             if ( line.hasOption("user") ) {
                 user = line.getOptionValue("user");
             }
@@ -192,11 +212,11 @@ public class ServerInterface {
         System.out.println("Path to parameter file: " + paramFilePath);
         System.out.println("-------------------------------------------------");
 
-        ServerInterface serverInterface = new ServerInterface();
+        ServerInterface serverInterface = new ServerInterface(paramFilePath);
         if ( mode.equals("read") ) {
-            serverInterface.readSkillVectorFromServer(user, paramFilePath);
+            serverInterface.readSkillVectorFromServer(user);
         } else {
-            serverInterface.saveSkillVector(level, user, paramFilePath);
+            serverInterface.saveSkillVectorToServer(level, user);
         }
         serverInterface.closeClient();
     }

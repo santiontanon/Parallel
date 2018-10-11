@@ -49,11 +49,19 @@ def save_data(data, directory = ''):
     with open(file_name, 'w') as f:
         f.write(data)
 
+def save_player_model_data(json_data, user_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    filename = "{}.json".format(user_name)
+    path = path + '/' + ROOT_DATA_PATH + "/playermodel/" + filename
+    log.debug("Path for saving: {}".format(path))
+    with open(path, 'w') as f:
+        f.write(json_data)
+
 def get_player_model_data(user_name):
     path = os.path.dirname(os.path.abspath(__file__))
     filename = "{}.json".format(user_name)
     path = path + '/' + ROOT_DATA_PATH + "/playermodel/" + filename
-    log.debug("Filename: {}".format(path))
+    log.debug("Path for reading: {}".format(path))
     if not os.path.isfile(path):
         return ""
     f = open(path, 'r')
@@ -73,7 +81,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         json_str = json.dumps({"error": msg})
-        self.wfile.write(str.encode(json_str))
+        self.wfile.write(json_str.encode('utf-8'))
 
     def send_ok_message(self):
         self.send_response(200, "OK")
@@ -81,7 +89,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         json_str = json.dumps({"status": "OK"})
-        self.wfile.write(str.encode(json_str))
+        self.wfile.write(json_str.encode('utf-8'))
 
     def do_GET(self):
         self.log_request()
@@ -93,12 +101,13 @@ class Handler(BaseHTTPRequestHandler):
             log.debug("Query components: {}".format(query_components))
             # Find user in /playermodel directory and get data (empty if player doesn't exist)
             json_data = get_player_model_data(user_name)
+            json_str = json.dumps(json_data)
             self.send_response(200, "OK")
             self.send_header('Content-type', 'application/json')
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
-            json_str = json.dumps(json_data)
-            self.wfile.write(str.encode(json_str))
+            self.wfile.write(json_str.encode('utf-8'))
+            return
         else:
             self.send_error_message()
 
@@ -110,7 +119,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "content-type")
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.end_headers()
-        self.wfile.write(str.encode("OK"))
+        self.wfile.write("OK".encode('utf-8'))
 
     def do_POST(self):
         self.log_request()
@@ -131,7 +140,6 @@ class Handler(BaseHTTPRequestHandler):
             if not content_type.startswith('application/json'):
                 self.send_error_message()
                 return
-
             try:
                 data = json.loads(content)
             except:
@@ -157,7 +165,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.end_headers()
             json_str = json.dumps(ret)
-            self.wfile.write(str.encode(json_str))
+            self.wfile.write(json_str.encode('utf-8'))
             return
         elif path.strip() == '/log':
             save_data(content, '/log')
@@ -167,13 +175,16 @@ class Handler(BaseHTTPRequestHandler):
             save_data(content, '/data')
             self.send_ok_message()
             return
-        elif path.strip() == "/playermodel":
+        elif "/playermodel" in path.strip():
+            query_components = parse_qs(urlparse(self.path).query)
+            user_name = query_components["user"][0]
+            log.debug("Query components: {}".format(query_components))
             try:
-                data = json.loads(content)
+                data = json.loads(content.decode('utf-8'))
             except:
                 self.send_error_message("bad json")
                 return
-            save_data(data, "/playermodel")
+            save_player_model_data(content.decode('utf-8'), user_name)
             self.send_ok_message()
             return
         else:

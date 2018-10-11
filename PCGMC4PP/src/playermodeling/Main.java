@@ -9,15 +9,17 @@ import org.apache.commons.cli.*;
 
 public class Main {
 
-    public static final String TRAINING_MODEL_FILEPATH = "";
+    public static final String TRAINING_MODEL_FILEPATH = "pmfiles/";
 
     public static void main(String [] args) throws Exception {
         Options cliOptions = new Options();
         cliOptions.addOption("mepath",true,"Model Engine Execution Filepath");
         cliOptions.addOption("telemetrypath,",true,"Telemetry Filepath");
+        cliOptions.addOption("parameterpath,",true,"Parameter Filepath");
 
         String meExecutionFilepath = "";
         String telemetryFilepath = "";
+        String parameterFilepath = "";
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -29,10 +31,11 @@ public class Main {
             if ( line.hasOption("telemetrypath") ) {
                 telemetryFilepath = line.getOptionValue("telemetrypath");
             }
-        }
-        catch( ParseException exp ) {
-            // oops, something went wrong
-            System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+            if ( line.hasOption("parameterpath") ) {
+                parameterFilepath = line.getOptionValue("parameterpath");
+            }
+        } catch( ParseException exp ) {
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
         }
 
         if (meExecutionFilepath.equals("") || telemetryFilepath.equals("")) {
