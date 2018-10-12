@@ -152,7 +152,8 @@ public class PlayerInteraction_UI
 
 	public IEnumerator TriggerGoalPopUp(string titleText, string feedbackText)
 	{
-		GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp",titleText + feedbackText);
+        feedbackText = feedbackText.Replace("\n•", "");
+        GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp", titleText + (feedbackText.TrimStart(new char[2] { '/', 'n' })));
 		goalOverlay.SetText( titleText, feedbackText );
 		goalOverlay.OpenPanel();
 		while( goalOverlay.waitForUserInput ) { yield return new WaitForEndOfFrame(); }
