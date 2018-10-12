@@ -1,4 +1,4 @@
-package playermodeling;
+package pmexperiments;
 
 /**
  * Created by pavankantharaju on 3/1/18.
@@ -6,8 +6,10 @@ package playermodeling;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import playermodeling.*;
 import weka.classifiers.Classifier;
 
+import weka.classifiers.Evaluation;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -22,112 +24,110 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Simulation_v2 {
+public class SimulationLOO extends PlayerModeler {
 
-    /* Used for data analysis */
-    public static int DEBUG = 0;
-    public static String critical_section_path = "critical_section_annotations_8_dash";
-    public boolean experiments_one = true;
+    public static final String CRITICAL_SECTION_PATH = PLAYER_MODELING_DATA_DIR + "critical_section_annotations_35_dash/";
+    public static final String SLICE_FILE = PLAYER_MODELING_DATA_DIR + "slices.tsv";
+    public static final String SKILL_LIST_PATH = PLAYER_MODELING_DATA_DIR + "skill_list_per_level_35_dash/";
 
-    private Classifier classifier;
-    private TelemetryUtils tel_utils;
+    private String training_data_relative_path;
+
+    private SkillAnalyzerExperiment skill_analyzer_35_dash;
+    private TelemetryUtils35Dash telemetry_utils_35_dash;
     private FeatureExtraction feat_extract;
-    private SkillAnalysis analyzer;
 
-    private String training_path;
-    private String testing_path;
+    public HashMap<String, String> colors;
+    private double[][] confusion_matrix;
 
-    private String slices_file;
-    private double interval;
+    private Instances testing_dataset;
 
-    private ArrayList<Attribute> attributes;
-    private Instances instances;
-    private String cur_level;
+    public SimulationLOO(Classifier cls, double interval_, int u_technique_flag, String training_data_path) {
+        super(cls, interval_, u_technique_flag);
+        training_data_relative_path = training_data_path;
 
-    private Instances all_test_instances;
+        skill_analyzer_35_dash = new SkillAnalyzerExperiment("35_dash_skills_clean.csv");
+        telemetry_utils_35_dash = new TelemetryUtils35Dash();
 
-    int update_technique_flag;
-    int rule_update_flag;
+        feat_extract = new FeatureExtraction(skill_analyzer_35_dash);
 
-    public HashMap<String,String> colors;
-
-    public Simulation_v2(String train_path, String test_path, String slicefile, double ivl, int u_technique_flag, int u_flag, Classifier c, boolean exp_one) {
-
-        training_path = train_path;
-        testing_path = test_path;
-
-        slices_file = slicefile;
-        interval = ivl;
-        cur_level = "";
-
-        classifier = c; //new RandomForest();
-        analyzer = new SkillAnalysis(u_flag);
-        tel_utils = new TelemetryUtils(testing_path);
-        feat_extract = new FeatureExtraction(u_flag, analyzer);
-
-        update_technique_flag = u_technique_flag;
-        rule_update_flag = u_flag;
-
-        colors = new HashMap<String,String>();
-
-        String [] color_strings = { " ", "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "/", "." };
-        for ( int i = 0; i < color_strings.length; i++) {
-            colors.put(color_strings[i],Integer.toString(i));
+        colors = new HashMap<String, String>();
+        String[] color_strings = {" ", "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "/", "."};
+        for (int i = 0; i < color_strings.length; i++) {
+            colors.put(color_strings[i], Integer.toString(i));
         }
 
-        /* Setup attributes */
-        attributes = new ArrayList<Attribute>();
-        for (int i = 0; i < feat_extract.features.length; i++) {
-            attributes.add(new Attribute(feat_extract.features[i]));
+        confusion_matrix = new double[annotation_values.size()][annotation_values.size()];
+        for (int i = 0; i < confusion_matrix.length; i++) {
+            for (int j = 0; j < confusion_matrix[i].length; j++) {
+                confusion_matrix[i][j] = 0;
+            }
         }
-
-        ArrayList<String> annotation_values = new ArrayList<String>();
-        annotation_values.add("A");
-        annotation_values.add("B");
-        annotation_values.add("C");
-        annotation_values.add("B/C");
-        annotation_values.add("A/B");
-        attributes.add(new Attribute("annotations", annotation_values));
-
-        all_test_instances = new Instances("Testing_dataset", attributes, 10);
-        all_test_instances.setClassIndex(attributes.size() - 1);
-
-        experiments_one = exp_one;
     }
 
-    /* Train on the 3 and 5 dash initially as boostrap */
-    private void getTrainingDataset() {
-        /* Get all the players in the log files */
-        if ( DEBUG > 0 ) {
+    private ArrayList<String> getSlices(String username, double t1, double t2) {
+        ArrayList<String> slices = new ArrayList<String>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(SLICE_FILE));
+            String line = "";
+            br.readLine(); /* Skip first line */
+            while ((line = br.readLine()) != null) {
+                String[] tmp = line.split("\t");
+                int offset = Integer.parseInt(tmp[2]);
+                int start = Integer.parseInt(tmp[3]);
+                int end = Integer.parseInt(tmp[4]);
+
+
+                String label = tmp[5].trim();
+                if (!tmp[0].equals(username)) {
+                    continue;
+                }
+                if (start - offset == end - offset) {
+                    continue;
+                }
+
+                if ((t1 < start - offset) && (t2 > end - offset)) {
+                    /* Within the time window */
+                    String s = String.format("%d,%d,%s", start - offset, end - offset, label);
+                    slices.add(s);
+                } else {
+                    if ((t2 > end - offset && t1 < end - offset) || (t2 > start - offset && t1 < start - offset)) {
+                        String s = String.format("%d,%d,%s", start - offset, end - offset, label);
+                        slices.add(s);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return slices;
+    }
+
+    public void createTrainingDataset(ArrayList<String> train_files) {
+        if (DEBUG > 0) {
             System.out.println("-------------------Training dataset-------------------");
         }
-        instances = new Instances("Training_dataset", attributes, 10);
-        instances.setClassIndex(attributes.size() - 1);
+        training_dataset = new Instances("Training_dataset", attributes, 10);
+        training_dataset.setClassIndex(attributes.size() - 1);
 
-        HashMap<String, ArrayList<String>> data_files = tel_utils.getLevelData(training_path + "/data/");
-        /* For now, open a log file, and extract slices for a given time interval */
-        File directory = new File(training_path + "/log/");
+        HashMap<String, ArrayList<String>> data_files = telemetry_utils_35_dash.getLevelData(training_data_relative_path + "/data/");
+
+        File directory = new File(training_data_relative_path + "/log/");
         File[] dir_list = directory.listFiles();
         for (File f : dir_list) {
 
-            ArrayList<String> telemetry = tel_utils.getTelemetryData(f.getAbsolutePath());
-            String username = tel_utils.getUser(telemetry);
-
-            /* Don't train on 5-2 */
-            if (username.equals("5-2")) {
-                /* Don't consider 5-2 */
+            if (!train_files.contains(f.getName())) {
                 continue;
             }
 
-            HashMap<String, ArrayList<String>> telemetry_by_level = tel_utils.getTelemetryByLevel(telemetry);
+            ArrayList<String> telemetry = telemetry_utils_35_dash.readTelemetryFile(f.getAbsolutePath());
+            String username = telemetry_utils_35_dash.getUsername(telemetry);
 
-            /* Get calibration of user's monitor */
-            String calibration = tel_utils.getCalibration(telemetry);
+            HashMap<String, ArrayList<String>> telemetry_by_level = telemetry_utils_35_dash.splitTelemetryByLevels(telemetry);
 
             for (String level : telemetry_by_level.keySet()) {
                 ArrayList<String> tel_by_level = telemetry_by_level.get(level);
 
-                Pair<HashMap<Integer, PersistentData>, ArrayList<Integer>> persistent_data_info = getPersistentDataForLevel(tel_by_level, data_files,training_path);
+                Pair<HashMap<Integer, PersistentData>, ArrayList<Integer>> persistent_data_info = getPersistentDataForLevel(tel_by_level, data_files, training_data_relative_path);
 
                 String first_log = tel_by_level.get(0);
                 double start_time_ = Double.parseDouble(first_log.split("\t")[3]);
@@ -139,15 +139,15 @@ public class Simulation_v2 {
                 double t2 = start_time_ + interval;
 
                 while (t1 < final_time_) {
-                    Pair<ArrayList<String>, ArrayList<Integer>> tel_in_interval = tel_utils.getDataInIntervals(tel_by_level, t1, t2, persistent_data_info.p2);
+                    Pair<ArrayList<String>, ArrayList<Integer>> tel_in_interval = telemetry_utils_35_dash.getTelemetryInInterval(tel_by_level, t1, t2, persistent_data_info.p2);
 
-                    HashMap<String, Double> feature_vector = feat_extract.extractFeatureVector(training_path, tel_in_interval.p1, tel_in_interval.p2, persistent_data_info.p1, data_files, calibration);
+                    HashMap<String, Double> feature_vector = feat_extract.extractFeatureVector(training_data_relative_path, tel_in_interval.p1, tel_in_interval.p2, persistent_data_info.p1, data_files);
 
                     ArrayList<String> slices = getSlices(username, t1, t2);
                     ArrayList<String> labels = new ArrayList<String>();
                     for (String slice : slices) {
                         String[] split_slice = slice.split(",");
-                        if ( split_slice[2].equals("B/C") || split_slice[2].equals("A/B") ) {
+                        if (split_slice[2].equals("B/C") || split_slice[2].equals("A/B")) {
                             /* Just ignore this */
                             continue;
                         }
@@ -194,12 +194,13 @@ public class Simulation_v2 {
                             label = "A";
                         }
                     }
-                    if ( DEBUG > 0 ) {
+
+                    if (DEBUG > 0) {
                         System.out.println("----------------------------------");
                         int i = 0;
-                        for ( String s : feat_extract.features ) {
-                            System.out.print((i == feature_vector.size()-1) ? feature_vector.get(s) + "\n" : feature_vector.get(s) + ",");
-                            if( feature_vector.get(s) < 0.0 ) {
+                        for (String s : FeatureExtraction.features) {
+                            System.out.print((i == feature_vector.size() - 1) ? feature_vector.get(s) + "\n" : feature_vector.get(s) + ",");
+                            if (feature_vector.get(s) < 0.0) {
                                 System.err.println(s + " is negative. This is inappropriate behavior. Exiting");
                                 System.exit(-1);
                             }
@@ -207,7 +208,6 @@ public class Simulation_v2 {
                         }
                         System.out.println("----------------------------------");
                     }
-
 
                     Instance new_instance = new DenseInstance(feature_vector.size() + 1);
                     for (Attribute a : attributes) {
@@ -217,376 +217,375 @@ public class Simulation_v2 {
                             new_instance.setValue(a, feature_vector.get(a.name()));
                         }
                     }
-                    instances.add(new_instance);
+                    training_dataset.add(new_instance);
                 }
             }
         }
     }
 
-    /* Given a feature vector, convert to an instance, and evaulate against our classifier */
-    private double classifyInstance(HashMap<String, Double> feature_vector) {
-        if ( DEBUG > 0 ) {
-            System.out.println("-------------------Create and classifying instance-------------------");
-        }
-        Instance new_instance = new DenseInstance(feature_vector.size() + 1);
-        //Instance train_instance = new DenseInstance(feature_vector.size() + 1);
+    private void classifyBatch(ArrayList<Pair<String, HashMap<String, Double>>> feature_vectors, String player) {
+        testing_dataset = new Instances("Testing_dataset", attributes, 10);
+        testing_dataset.setClassIndex(attributes.size() - 1);
+        for (Pair<String, HashMap<String, Double>> feature_vector : feature_vectors) {
+            Instance new_instance = new DenseInstance(feature_vector.p2.size() + 1);
 
-        for (Attribute a : attributes) {
-            if (!a.name().equals("annotations")) {
-                new_instance.setValue(a, feature_vector.get(a.name()));
-                //train_instance.setValue(a, feature_vector.get(a.name()));
+            for (Attribute a : attributes) {
+                if (!a.name().equals("annotations")) {
+                    new_instance.setValue(a, feature_vector.p2.get(a.name()));
+                } else {
+                    new_instance.setValue(a, feature_vector.p1);
+                }
             }
+            new_instance.setDataset(training_dataset);
+            testing_dataset.add(new_instance);
         }
-        new_instance.setDataset(instances);
 
         try {
-            //return eval.evaluateModelOnceAndRecordPrediction(classifier,new_instance);
-            double classification = classifier.classifyInstance(new_instance);
-
-            /* TODO: Use this if we want loop back classified data */
-            /* Set classification, add to training dataset and retrain classifier */
-//            String cls = instances.classAttribute().value((int) classification);
-//            train_instance.setValue(attributes.get(attributes.size()-1),cls);
-//            instances.add(train_instance);
-//            classifier.buildClassifier(instances);
-
-            return classification;
+            Evaluation eval = new Evaluation(training_dataset);
+            eval.evaluateModel(classifier, testing_dataset);
+            System.out.println("=================================" + player + "=================================");
+            System.out.println(eval.toSummaryString());
+            System.out.println(eval.toMatrixString());
+            double[][] conf_matrix = eval.confusionMatrix();
+            for (int i = 0; i < confusion_matrix.length; i++) {
+                for (int j = 0; j < confusion_matrix[i].length; j++) {
+                    confusion_matrix[i][j] += conf_matrix[i][j];
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0.0;
     }
 
-    public void simulate() {
+    @Override
+    public void execute() {
 
-        LinkedHashMap<String, LinkedHashMap<String, Double> > week_total_square_error_for_each_skill = new LinkedHashMap<>();
+        /* Used to computer MSE for each level over all users */
+        LinkedHashMap<String, LinkedHashMap<String, Double>> total_squared_error_per_level_over_users = new LinkedHashMap<String, LinkedHashMap<String, Double>>();
 
-        /* For printing data */
-        ArrayList<String> csv_skill_predictions = new ArrayList<String>();
-        ArrayList<String> csv_ground_truth = new ArrayList<String>();
-        ArrayList<String> squared_error_per_week = new ArrayList<String>();
-        ArrayList<String> rules_skill_vector = new ArrayList<String>();
+        /* Average MSE for each skill over all levels and users */
+        LinkedHashMap<String, Double> overall_total_squared_error_for_each_skill = new LinkedHashMap<String, Double>();
 
-        /* Get all the players. Log files will be in ordered by time */
-        HashMap< String, LinkedHashMap< String, ArrayList<String> > >  players = tel_utils.getPlayers_v2();
+        ArrayList<String> skill_vectors_as_csv = new ArrayList<String>();
+        ArrayList<String> ground_truth_as_csv = new ArrayList<String>();
+        ArrayList<String> squared_error_as_csv = new ArrayList<String>();
+        ArrayList<String> rule_evidence_as_csv = new ArrayList<String>();
+        ArrayList<String> user_mse_as_csv = new ArrayList<String>();
 
-        /* User, Level, Skill list */
+        LinkedHashMap<String, Integer> skill_to_num_iterations = new LinkedHashMap<String, Integer>();
+        LinkedHashMap<String, LinkedHashMap<String, Integer>> level_to_skill_to_num_users = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
+
+        /* Maps players to list of log filenames */
+        HashMap<String, ArrayList<String>> players = telemetry_utils_35_dash.getPlayers(training_data_relative_path + "/log/");
+        LinkedHashMap<String, ArrayList<String>> data_files = telemetry_utils_35_dash.getLevelData(training_data_relative_path + "/data/");
+
         System.out.print("User,Level,");
-        System.out.println(String.join(",", analyzer.skill_vector.keySet()));
-
-        LinkedHashMap<String, LinkedHashMap<String, Integer>> week_to_skill_to_num_users = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
-
-        /* Train on all 3 and 5 dash students */
-        getTrainingDataset();
-        try {
-            classifier.buildClassifier(instances);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        /* NOTE: It is possible that we may not have ground truth for all players. Ignore these players */
-        LinkedHashMap< String, LinkedHashMap< String, Double > > ground_truth = analyzer.ground_truth;
-        ArrayList<String> actual_players = new ArrayList<String>();
-        for ( String s : ground_truth.keySet() ) {
-            String [] tmp = s.split(",");
-            String player = tmp[0].replace(".", "-");
-            if ( !actual_players.contains(player) ) {
-                actual_players.add(player);
-            }
-        }
-
-        if ( DEBUG > 0 ) {
-            System.out.println("Players to files played in a week");
-            for (String player : players.keySet()) {
-                for (String week : players.get(player).keySet()) {
-                    System.out.println(player + "," + week + "," + String.join(",", players.get(player).get(week)));
-                }
-            }
-        }
-
-        LinkedHashMap<String, ArrayList<String>> data_files = tel_utils.getLevelData(testing_path + "/data/");
-
-        /* Stores what labels were given to testing instances ( used for analysis ) */
-        ArrayList<String> labels = new ArrayList<String>();
+        System.out.println(String.join(",", skill_analyzer_35_dash.skill_vector.keySet()));
 
         for (String player : players.keySet()) {
 
-            if ( !actual_players.contains(player) ) {
-                /* Don't have ground truth for this player */
+            Set<String> player_training_set = new TreeSet<String>(players.keySet());
+            player_training_set.remove(player);
+
+            ArrayList<String> train_files = new ArrayList<String>();
+            for (String s : player_training_set) {
+                train_files.addAll(players.get(s));
+            }
+
+            createTrainingDataset(train_files);
+            trainModel();
+
+            assert players.get(player).size() == 1;
+            File f = new File(training_data_relative_path + "/log/" + players.get(player).get(0));
+            ArrayList<String> telemetry = telemetry_utils_35_dash.readTelemetryFile(f.getAbsolutePath());
+
+            LinkedHashMap<String, ArrayList<String>> telemetry_by_level = telemetry_utils_35_dash.splitTelemetryByLevels(telemetry);
+            String username = telemetry_utils_35_dash.getUsername(telemetry);
+
+            if (username.equals("5-2")) {
+                /* TODO: Remove this user */
                 continue;
             }
 
-            analyzer.resetSkillVector();
+            String reformatted_username = username.replace("-", ".");
 
-            String new_username_becuase_excel_think_it_is_a_date = player.replace("-", ".");
+            /* Used to compute MSE for user over all levels */
+            LinkedHashMap<String, Integer> skill_to_num_levels = new LinkedHashMap<String, Integer>();
+            LinkedHashMap<String, Double> user_total_squared_error_for_each_skill = new LinkedHashMap<String, Double>();
 
-            for ( String week : players.get(player).keySet() ) {
-                for (String fname : players.get(player).get(week)) {
-                    File f = new File(testing_path + "/log/" + fname);
+            skill_analyzer_35_dash.resetSkillVector();
 
-                    ArrayList<String> telemetry = tel_utils.getTelemetryData(f.getAbsolutePath());
+            ArrayList<Pair<String, HashMap<String, Double>>> feature_vectors = new ArrayList<>();
 
-                    LinkedHashMap<String, ArrayList<String>> telemetry_by_level = tel_utils.getTelemetryByLevel(telemetry);
+            for (String level : telemetry_by_level.keySet()) {
 
-                    /* Get calibration of user's monitor ( not necessary, but I'll keep it for future use ) */
-                    String calibration = tel_utils.getCalibration(telemetry);
+                skill_analyzer_35_dash.resetRuleEvidence();
+                skill_analyzer_35_dash.resetSkillsPerLevel();
 
-                    /* If a player has definite knowledge about a given skill based on the set of hard-coded rules, it should persist over all levels */
-                    for (String level : telemetry_by_level.keySet()) {
+                if (!skill_analyzer_35_dash.readSkillsForLevel(SKILL_LIST_PATH, level)) {
+                    /* If level was not supposed to be played, then move to the next level */
+                    continue;
+                }
 
-                        analyzer.resetSkillsPerLevel();
-                        analyzer.resetRuleEvidence();
+                ArrayList<String> tel_by_level = telemetry_by_level.get(level);
 
-                        if (!analyzer.readSkillList("skills_8_dash", level)) {
-                            /* If level was not supposed to be played, then move to the next level */
+                /* Time to explain the Integer arraylist:
+                 *      In a given level, students can run the model checker as many times as they want. We have to separate executions in each level.
+                 *      This arraylist maps what execution each telemetry entry is part of.
+                 * */
+                Pair<HashMap<Integer, PersistentData>, ArrayList<Integer>> persistent_data_info = getPersistentDataForLevel(tel_by_level, data_files, training_data_relative_path);
+
+                String first_log = tel_by_level.get(0);
+                double start_time_ = Double.parseDouble(first_log.split("\t")[3]);
+
+                String last_log = tel_by_level.get(tel_by_level.size() - 1);
+                double final_time_ = Double.parseDouble(last_log.split("\t")[3]);
+
+                double t1 = start_time_;
+                double t2 = start_time_ + interval;
+
+                if (DEBUG > 0) {
+                    System.out.println("Player: " + username + ", Level: " + level + ", start time: " + start_time_ + ", end time: " + final_time_);
+                }
+
+                while (t1 < final_time_) {
+                    Pair<ArrayList<String>, ArrayList<Integer>> tel_in_interval = telemetry_utils_35_dash.getTelemetryInInterval(tel_by_level, t1, t2, persistent_data_info.p2);
+
+                    HashMap<String, Double> feature_vector = feat_extract.extractFeatureVector(training_data_relative_path, tel_in_interval.p1, tel_in_interval.p2, persistent_data_info.p1, data_files);
+
+                    ArrayList<String> slices = getSlices(username, t1, t2);
+
+                    t1 += interval / 2.0;
+                    t2 = t1 + interval;
+
+                    if (feature_vector.size() == 0) {
+                        continue;
+                    }
+
+                    ArrayList<String> labels = new ArrayList<String>();
+                    for (String slice : slices) {
+                        String[] split_slice = slice.split(",");
+                        if (split_slice[2].equals("B/C") || split_slice[2].equals("A/B")) {
+                            /* Just ignore this */
                             continue;
                         }
+                        labels.add(split_slice[2]);
+                    }
 
-                        ArrayList<String> tel_by_level = telemetry_by_level.get(level);
+                    Set<String> unique_values = new HashSet<String>(labels);
+                    ArrayList<String> common = new ArrayList<String>();
 
-                        /* Time to explain the Integer arraylist:
-                         *      In a given level, students can run the model checker as many times as they want. We have to separate executions in each level.
-                         *      This arraylist maps what execution each telemetry entry is part of.
-                         * */
-
-                        Pair<HashMap<Integer, PersistentData>, ArrayList<Integer>> persistent_data_info = getPersistentDataForLevel(tel_by_level, data_files, testing_path);
-
-                        String first_log = tel_by_level.get(0);
-                        double start_time_ = Double.parseDouble(first_log.split("\t")[3]);
-
-                        String last_log = tel_by_level.get(tel_by_level.size() - 1);
-                        double final_time_ = Double.parseDouble(last_log.split("\t")[3]);
-
-                        double t1 = start_time_;
-                        double t2 = start_time_ + interval;
-
-                        if (DEBUG > 0) {
-                            System.out.println("Level: " + level + ", start time: " + start_time_ + ", end time: " + final_time_);
-                        }
-                        while (t1 < final_time_) {
-                            Pair<ArrayList<String>, ArrayList<Integer>> tel_in_interval = tel_utils.getDataInIntervals(tel_by_level, t1, t2, persistent_data_info.p2);
-
-                            HashMap<String, Double> feature_vector = feat_extract.extractFeatureVector_v2(testing_path, tel_in_interval.p1, tel_in_interval.p2, persistent_data_info.p1, data_files, calibration);
-
-
-                            t1 += interval / 2.0;
-                            t2 = t1 + interval;
-
-                            /* If feature vector is empty, then either there's no telemetry in the interval OR we have insufficient data to create the feature vector */
-                            if (feature_vector.size() == 0) {
-                                continue;
+                    int max_freq = 0;
+                    for (String s : unique_values) {
+                        int freq = Collections.frequency(labels, s);
+                        if (freq > max_freq) {
+                            max_freq = freq;
+                            common.clear();
+                            common.add(s);
+                        } else {
+                            if (freq == max_freq) {
+                                /* Check the ranking */
+                                common.add(s);
                             }
-
-                            switch (update_technique_flag) {
-                                case 0:
-                                    /* Both Machine Learning and Rules */
-                                    double classification = classifyInstance(feature_vector);
-                                    labels.add(instances.classAttribute().value((int) classification));
-                                    analyzer.updateSkillsBasedOnClassification(instances.classAttribute().value((int) classification));
-                                    //analyzer.updateSkillsBasedOnRules(rule_update_flag);
-                                case 1:
-                                    /* Only machine learning */
-                                    classification = classifyInstance(feature_vector);
-                                    labels.add(instances.classAttribute().value((int) classification));
-                                    analyzer.updateSkillsBasedOnClassification(instances.classAttribute().value((int) classification));
-                                    break;
-                                case 2:
-                                    /* Only rules */
-                                    //analyzer.updateSkillsBasedOnRules(rule_update_flag);
-                                    break;
-                            }
-                        }
-
-                        /* Update from rules after completing the level */
-                        switch (update_technique_flag) {
-                            case 0:
-                                /* Both Machine Learning and Rules */
-                                analyzer.updateSkillsBasedOnRules(rule_update_flag);
-                            case 1:
-                                break;
-                            case 2:
-                                /* Only rules */
-                                analyzer.updateSkillsBasedOnRules(rule_update_flag);
-                                break;
                         }
                     }
+
+                    String label = "";
+                    if (common.size() == 0) {
+                        continue;
+                    } else if (common.size() == 1) {
+                        label = common.get(0);
+                    } else {
+                        if (common.contains("C")) {
+                            label = "C";
+                        } else if (common.contains("B")) {
+                            label = "B";
+                        } else if (common.contains("A")) {
+                            label = "A";
+                        }
+                    }
+
+                    Pair<String, HashMap<String, Double>> instance = new Pair<String, HashMap<String, Double>>();
+                    instance.p1 = label;
+                    instance.p2 = feature_vector;
+                    feature_vectors.add(instance);
+
+                    switch (skill_vector_update_technique_flag) {
+                        case 0:
+                            /* Both Machine Learning and Rules */
+                            double classification = classifyInstance(feature_vector);
+                            skill_analyzer_35_dash.updateSkillVectorUsingMachineLearning(training_dataset.classAttribute().value((int) classification));
+                            break;
+                        case 1:
+                            /* Only machine learning */
+                            classification = classifyInstance(feature_vector);
+                            skill_analyzer_35_dash.updateSkillVectorUsingMachineLearning(training_dataset.classAttribute().value((int) classification));
+                            break;
+                        case 2:
+                            break;
+                    }
+                }
+
+                switch (skill_vector_update_technique_flag) {
+                    case 0:
+                        skill_analyzer_35_dash.updateSkillVectorUsingRules();
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        /* Only rule_evidence */
+                        skill_analyzer_35_dash.updateSkillVectorUsingRules();
+                        break;
                 }
 
 //                /* Testing skill vector of one */
-//                for ( String s : analyzer.skill_vector.keySet() ) {
-//                    analyzer.skill_vector.replace(s, new Pair<Integer,Double>(1,1.0) );
+//                for (String s : skill_analyzer_35_dash.skill_vector.keySet()) {
+//                    if (skill_analyzer_35_dash.skills_specific_to_level.contains(s)) {
+//                        skill_analyzer_35_dash.skill_vector.replace(s, new Pair<Integer, Double>(1, 1.0));
+//                    }
 //                }
 
-                /* Data structure should contain all skills that have ground truth */
-                LinkedHashMap<String, Double> squared_error = analyzer.evaluateSkillsPerWeek(week, new_username_becuase_excel_think_it_is_a_date);
+                skill_vectors_as_csv.add(reformatted_username + "," + level + "," + skill_analyzer_35_dash.printSkillVector());
+                ground_truth_as_csv.add(reformatted_username + "," + level + "," + skill_analyzer_35_dash.getGroundTruthCSV(level, username));
+                squared_error_as_csv.add(reformatted_username + "," + level + "," + skill_analyzer_35_dash.getSquaredErrorCSV(level, username));
+                rule_evidence_as_csv.add(reformatted_username + "," + level + "," + skill_analyzer_35_dash.printRuleEvidence());
 
-                if ( !week_to_skill_to_num_users.containsKey(week) ) {
-                    LinkedHashMap<String, Integer> skill_to_num_users = new LinkedHashMap<>();
-                    for ( String s : squared_error.keySet() ) {
-                        if ( squared_error.get(s) < 0 ) {
-                            /* SE doesn't exist for this skill in this week for this specific user.  */
-                            skill_to_num_users.put(s,0);
+                /* MSE for each skill. NOTE: All skills should be in here in order... */
+                LinkedHashMap<String, Double> squared_error = skill_analyzer_35_dash.evaluateSkills(level, username);
+
+                for (String s : squared_error.keySet()) {
+                    /* Computation for overall */
+                    if (!overall_total_squared_error_for_each_skill.containsKey(s)) {
+                        overall_total_squared_error_for_each_skill.put(s, squared_error.get(s));
+                    } else {
+                        /* Don't consider this if tmp.get(s) < 0 */
+                        if (overall_total_squared_error_for_each_skill.get(s) > -0.00000000000000000000000000001) {
+                            /* There's a value associated with this skill. Keep adding */
+                            if (squared_error.get(s) > -0.00000000000000000000000000001) {
+                                double d = overall_total_squared_error_for_each_skill.get(s);
+                                overall_total_squared_error_for_each_skill.replace(s, squared_error.get(s) + d);
+                            }
                         } else {
-                            skill_to_num_users.put(s,1);
+                            overall_total_squared_error_for_each_skill.replace(s, squared_error.get(s));
                         }
                     }
-                    week_to_skill_to_num_users.put(week,skill_to_num_users);
-                } else {
-                    LinkedHashMap<String, Integer> skill_to_num_users = week_to_skill_to_num_users.get(week);
-                    for ( String s : squared_error.keySet() ) {
-                        if ( squared_error.get(s) > -0.00000000000000000000000000001 ) {
-                            skill_to_num_users.put(s, skill_to_num_users.get(s) + 1);
+
+                    /* Computation for user */
+                    if (!user_total_squared_error_for_each_skill.containsKey(s)) {
+                        user_total_squared_error_for_each_skill.put(s, squared_error.get(s));
+                    } else {
+                        if (user_total_squared_error_for_each_skill.get(s) > -0.00000000000000000000000000001) {
+                            /* There's a value associated with this skill. Keep adding */
+                            if (squared_error.get(s) > -0.00000000000000000000000000001) {
+                                double d = user_total_squared_error_for_each_skill.get(s);
+                                user_total_squared_error_for_each_skill.replace(s, squared_error.get(s) + d);
+                            }
+                        } else {
+                            user_total_squared_error_for_each_skill.replace(s, squared_error.get(s));
                         }
                     }
-                    week_to_skill_to_num_users.put(week,skill_to_num_users);
-                }
 
-                if ( !week_total_square_error_for_each_skill.containsKey(week) ) {
-                    week_total_square_error_for_each_skill.put(week,squared_error);
-                } else {
-                    LinkedHashMap<String, Double > square_error_for_week = week_total_square_error_for_each_skill.get(week);
-                    for (String s : squared_error.keySet()) {
-                        if (!square_error_for_week.containsKey(s)) {
-                            /* This should technically never happen */
-                            System.err.println("A skill is missing when summing up the squared errors for a week???");
-                            System.exit(-1);
+                    if (squared_error.get(s) > -0.00000000000000000000000000001) {
+                        /* This skill was used in the level (i.e. ground truth existed for it) */
+                        if (!skill_to_num_levels.containsKey(s)) {
+                            skill_to_num_levels.put(s, 1);
                         } else {
-                            if ( square_error_for_week.get(s) > -0.00000000000000000000000000001 ) {
-                                if ( squared_error.get(s) >  -0.00000000000000000000000000001 ) {
-                                    double val = square_error_for_week.get(s);
-                                    square_error_for_week.replace(s,val + squared_error.get(s));
-                                }
+                            int t = skill_to_num_levels.get(s);
+                            skill_to_num_levels.replace(s, t + 1);
+                        }
+                        if (!skill_to_num_iterations.containsKey(s)) {
+                            skill_to_num_iterations.put(s, 1);
+                        } else {
+                            int t = skill_to_num_iterations.get(s);
+                            skill_to_num_iterations.replace(s, t + 1);
+                        }
+
+                        if (!level_to_skill_to_num_users.containsKey(level)) {
+                            LinkedHashMap<String, Integer> tmp = new LinkedHashMap<String, Integer>();
+                            tmp.put(s, 1);
+                            level_to_skill_to_num_users.put(level, tmp);
+                        } else {
+                            if (!level_to_skill_to_num_users.get(level).containsKey(s)) {
+                                LinkedHashMap<String, Integer> tmp = level_to_skill_to_num_users.get(level);
+                                tmp.put(s, 1);
+                                level_to_skill_to_num_users.replace(level, tmp);
                             } else {
-                                square_error_for_week.replace(s, squared_error.get(s));
+                                LinkedHashMap<String, Integer> tmp = level_to_skill_to_num_users.get(level);
+                                tmp.replace(s, tmp.get(s) + 1);
+                                level_to_skill_to_num_users.replace(level, tmp);
                             }
                         }
                     }
                 }
 
-                csv_skill_predictions.add(new_username_becuase_excel_think_it_is_a_date + "," + week + "," + analyzer.getPredictionsAsCSV());
-                csv_ground_truth.add(new_username_becuase_excel_think_it_is_a_date + "," + week + "," + analyzer.getGroundTruthAsCSVWeek(week,new_username_becuase_excel_think_it_is_a_date));
-                rules_skill_vector.add(new_username_becuase_excel_think_it_is_a_date + "," + week + "," + analyzer.getRuleEvidenceAsCSV(analyzer.rules));
-                squared_error_per_week.add(new_username_becuase_excel_think_it_is_a_date + "," + week + "," + analyzer.getSEAsCSVPerWeek(week,new_username_becuase_excel_think_it_is_a_date));
-            }
-        }
-
-        if ( !experiments_one ) {
-
-            System.out.println("Skill vectors");
-            System.out.println(String.join("\n", csv_skill_predictions));
-            System.out.println("Rules skill vector");
-            System.out.println(String.join("\n", rules_skill_vector));
-            System.out.println("Ground Truth");
-            System.out.println(String.join("\n", csv_ground_truth));
-            System.out.println("Squared Error (SE)");
-            System.out.println(String.join("\n", squared_error_per_week));
-//        System.out.println("Mean Squared Error over weeks per user ( Sum of SE for all levels/# levels )");
-//        System.out.println(String.join("\n", csv_average_mse_users));
-
-            System.out.println("Mean Squared Error over all users per week ( For each skill, sum of squared error for all users in the week / number of users in that week )");
-            for (String week : week_total_square_error_for_each_skill.keySet()) {
-                LinkedHashMap<String, Double> total_square_error = week_total_square_error_for_each_skill.get(week);
-                ArrayList<String> print_strings = new ArrayList<String>();
-                //for ( String skill : analyzer.skill_vector.keySet() ) {
-                for (String skill : total_square_error.keySet()) {
-                    if (total_square_error.get(skill) < 0) {
-                        print_strings.add("");
-                    } else {
-                        if (week_to_skill_to_num_users.get(week).get(skill) == 0) {
-                            /* This should actually never happen ( means this skill was never used by anyone ) */
-                            System.out.println("Skill was not used by anyone: " + skill);
-                            System.exit(-1);
+                if (!total_squared_error_per_level_over_users.containsKey(level)) {
+                    total_squared_error_per_level_over_users.put(level, squared_error);
+                } else {
+                    LinkedHashMap<String, Double> squared_error_level = total_squared_error_per_level_over_users.get(level);
+                    for (String s : squared_error_level.keySet()) {
+                        if (squared_error_level.get(s) > -0.00000000000000000000000000001) {
+                            if (squared_error.get(s) > -0.00000000000000000000000000001) {
+                                double d = squared_error_level.get(s);
+                                squared_error_level.replace(s, d + squared_error.get(s));
+                            }
                         } else {
-                            print_strings.add(Double.toString(total_square_error.get(skill) / week_to_skill_to_num_users.get(week).get(skill)));
+                            squared_error_level.replace(s, squared_error.get(s));
                         }
                     }
+                    total_squared_error_per_level_over_users.replace(level, squared_error_level);
                 }
-                System.out.println("user," + week + "," + String.join(",", print_strings));
             }
-        } else {
-            System.out.println("Overall classification spread: ");
-            System.out.println("Classification, # classified");
-            /* NOTE: The following is used for analysis */
-            Set<String> unique_values = new HashSet<String>(labels);
-            for ( String s : unique_values ) {
-                int freq = Collections.frequency(labels, s);
-                System.out.println(s + "," + freq);
+
+            /* Over all the levels for a given user...get the MSE for all skills */
+            ArrayList<String> mse_for_skills_lst = new ArrayList<String>();
+            for (String s : user_total_squared_error_for_each_skill.keySet()) {
+                if (user_total_squared_error_for_each_skill.get(s) < 0) {
+                    mse_for_skills_lst.add("");
+                } else {
+                    mse_for_skills_lst.add(Double.toString(user_total_squared_error_for_each_skill.get(s) / skill_to_num_levels.get(s)));
+                }
             }
+
+            user_mse_as_csv.add(reformatted_username + ",level," + String.join(",", mse_for_skills_lst));
         }
 
-        /* NOTE: The following is used for analysis */
-//        Set<String> unique_values = new HashSet<String>(labels);
-//        for ( String s : unique_values ) {
-//            int freq = Collections.frequency(labels, s);
-//            System.out.println("Classification: " + s + ", frequency: " + freq);
-//        }
+        System.out.println("Skill vectors");
+        System.out.println(String.join("\n", skill_vectors_as_csv));
+        System.out.println("Rules skill vector");
+        System.out.println(String.join("\n", rule_evidence_as_csv));
+        System.out.println("Ground Truth");
+        System.out.println(String.join("\n", ground_truth_as_csv));
+        System.out.println("Squared Error (SE)");
+        System.out.println(String.join("\n", squared_error_as_csv));
+        System.out.println("Mean Squared Error over levels per user ( Sum of SE for all levels/# levels )");
+        System.out.println(String.join("\n", user_mse_as_csv));
 
-//        for (String s : level_average_mses_for_each_skill.keySet()) {
-//            LinkedHashMap<String, Double> tmp = level_average_mses_for_each_skill.get(s);
-//            ArrayList<String> tmp2 = new ArrayList<String>();
-//            //System.out.println(level_to_skill_to_num_users.get(s));
-//            for (String skill : tmp.keySet()) {
-//                if (tmp.get(skill) < 0) {
-//                    tmp2.add("");
-//                } else {
-//                    tmp2.add(Double.toString(tmp.get(skill) / level_to_skill_to_num_users.get(s).get(skill)));
-//                }
-//            }
-//            System.out.println("user," + s + "," + String.join(",", tmp2));
-//        }
+        System.out.println("Mean Squared Error over users per level ( Sum of SE for all users that completed level/# users that completed level )");
+        for (String level : total_squared_error_per_level_over_users.keySet()) {
+            LinkedHashMap<String, Double> tmp = total_squared_error_per_level_over_users.get(level);
+            ArrayList<String> print_lst = new ArrayList<String>();
+            for (String skill : tmp.keySet()) {
+                if (tmp.get(skill) < 0) {
+                    print_lst.add("");
+                } else {
+                    print_lst.add(Double.toString(tmp.get(skill) / level_to_skill_to_num_users.get(level).get(skill)));
+                }
+            }
+            System.out.println("user," + level + "," + String.join(",", print_lst));
+        }
 
         /* Over all the users and levels...get the MSE for a given skill */
-//        System.out.println("Average Squared Error over all weeks and users ( MSE of week 4 / users )");
-//3        System.out.print("user,week,");
-//        System.out.print("user,level,");
-//        ArrayList<String> mse_for_skills_lst = new ArrayList<String>();
-//        for (String s : overall_avg_mse_for_each_skill.keySet()) {
-//            if (overall_avg_mse_for_each_skill.get(s) < 0) {
-//                mse_for_skills_lst.add("");
-//            } else {
-//                mse_for_skills_lst.add(Double.toString(overall_avg_mse_for_each_skill.get(s) / skill_to_num_iterations.get(s)));
-//            }
-//        }
-//        System.out.println(String.join(",", mse_for_skills_lst));
-    }
-
-    public ArrayList<String> getSlices(String username, double t1, double t2) {
-        ArrayList<String> slices = new ArrayList<String>();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(slices_file));
-            String line = "";
-            br.readLine(); /* Skip first line */
-            while ((line = br.readLine()) != null) {
-                String[] tmp = line.split("\t");
-                int offset = Integer.parseInt(tmp[2]);
-                int start = Integer.parseInt(tmp[3]);
-                int end = Integer.parseInt(tmp[4]);
-
-
-                String label = tmp[5].trim();
-                if (!tmp[0].equals(username)) {
-                    continue;
-                }
-                if (start - offset == end - offset) {
-                    continue;
-                }
-
-                if ((t1 < start - offset) && (t2 > end - offset)) {
-                    /* Within the time window */
-                    String s = String.format("%d,%d,%s", start - offset, end - offset, label);
-                    slices.add(s);
-                } else {
-                    if ((t2 > end - offset && t1 < end - offset) || (t2 > start - offset && t1 < start - offset)) {
-                        String s = String.format("%d,%d,%s", start - offset, end - offset, label);
-                        slices.add(s);
-                    }
-                }
-
+        System.out.println("Mean Squared Error over all levels and users ( Sum of SE for all users and levels/(users*levels) )");
+        System.out.print("user,level,");
+        ArrayList<String> mse_for_skills_lst = new ArrayList<String>();
+        for (String s : overall_total_squared_error_for_each_skill.keySet()) {
+            if (overall_total_squared_error_for_each_skill.get(s) < 0) {
+                mse_for_skills_lst.add("");
+            } else {
+                mse_for_skills_lst.add(Double.toString(overall_total_squared_error_for_each_skill.get(s) / skill_to_num_iterations.get(s)));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return slices;
+        System.out.println(String.join(",", mse_for_skills_lst));
     }
 
     public Pair<HashMap<Integer, PersistentData>, ArrayList<Integer>> getPersistentDataForLevel(ArrayList<String> telemetry,
@@ -631,7 +630,7 @@ public class Simulation_v2 {
 
             if ( name_.equals("SubmitCurrentLevelME") ) {
                 if ( testing_before_submitting ) {
-                    analyzer.updateRules("Testing before submitting");
+                    skill_analyzer_35_dash.updateRuleEvidence("Testing before submitting");
                     testing_before_submitting = false;
                 }
             }
@@ -642,11 +641,11 @@ public class Simulation_v2 {
                         /* Get the critical section for this level */
                         try {
                             //num_tests = 0;
-                            if ( new File(critical_section_path + "/" + data_ + ".txt").exists() && !critical_section_data_populated ) {
+                            if ( new File(CRITICAL_SECTION_PATH + "/" + data_ + ".txt").exists() && !critical_section_data_populated ) {
                                 critical_section_data_populated = true;
                                 critical_section_data = new LinkedHashMap< String, LinkedHashMap< String, ArrayList< Pair<Integer,Integer> > > >();
 
-                                BufferedReader br = new BufferedReader(new FileReader(critical_section_path + "/" + data_ + ".txt"));
+                                BufferedReader br = new BufferedReader(new FileReader(CRITICAL_SECTION_PATH + "/" + data_ + ".txt"));
                                 String line; int num_lines = 0;
                                 ArrayList<ArrayList<String>> critical_section = new ArrayList<ArrayList<String>>();
 
@@ -702,7 +701,7 @@ public class Simulation_v2 {
                                             LinkedHashMap< String, ArrayList< Pair<Integer,Integer> > > tmp = critical_section_data.get(critical_section.get(i).get(j).toLowerCase());
                                             ArrayList< Pair<Integer,Integer> > coords = tmp.get("button");
                                             if ( i-1 >= 0 && direction_board.get(i - 1).get(j).equals("A") ) {
-                                                    coords.add(new Pair<Integer, Integer>( j, i - 1));
+                                                coords.add(new Pair<Integer, Integer>( j, i - 1));
                                             }
 
                                             if ( i+1 < direction_board.size() && direction_board.get(i + 1).get(j).equals("V") ) {
@@ -785,7 +784,7 @@ public class Simulation_v2 {
 //                                /* NOTE: This is actually not correct. There is currently no way to differentiate between testing and submitting.
 //                                *  Thus, I made an assumption. If you submit to the ME two or more times, you're testing before submitting.
 //                                * */
-//                                analyzer.updateRules("Testing before submitting");
+//                                analyzer.updateRuleEvidence("Testing before submitting");
 //                                testing_before_submitting_added = true;
 //                            }
 
@@ -822,9 +821,9 @@ public class Simulation_v2 {
 //                            if ( (final_condition & GameState.RESULT_PROBLEMATIC_STARVATION) == 0 &&
 //                                (final_condition & GameState.RESULT_PROBLEMATIC_LOOPY_HASH) == 0) {
 //                                    /* Starvation detected */
-//                                    analyzer.updateRules("Prevent starvation");
+//                                    analyzer.updateRuleEvidence("Prevent starvation");
 //                            }
-                           //String level = "";
+                            //String level = "";
 
                             try {
                                 BufferedReader br = new BufferedReader(new FileReader(path + "/data/" + data_files.get(data_).get(0)));
@@ -886,12 +885,12 @@ public class Simulation_v2 {
 //                                        if ( (final_condition.get("final_condition").intValue() & GameState.RESULT_PROBLEMATIC_STARVATION) == 0 &&
 //                                                (final_condition.get("final_condition").intValue() & GameState.RESULT_PROBLEMATIC_LOOPY_HASH) == 0) {
 //                                            /* Starvation detected */
-//                                            analyzer.updateRules("Prevent starvation");
+//                                            analyzer.updateRuleEvidence("Prevent starvation");
 //                                        }
 //
 //                                        if ((final_condition.get("final_condition").intValue() & GameState.RESULT_PROBLEMATIC_INFINITE_LOOP) == 0) {
 //                                            /* Starvation detected */
-//                                            analyzer.updateRules("Prevent starvation");
+//                                            analyzer.updateRuleEvidence("Prevent starvation");
 //                                        }
 //                                    }
 
@@ -907,11 +906,11 @@ public class Simulation_v2 {
                                             if ( delivery_execution.containsKey("exchange_between_b") ) {
                                                 /* Check if both have packages. If both do, then exchange. NOTE: Is it possible to exchange with a thread that doesn't have a package? */
                                                 if ( delivery_execution.get("exchange_between_a") != null && delivery_execution.get("exchange_between_b") != null ) {
-                                                    analyzer.updateRules("Understand exchange points");
+                                                    skill_analyzer_35_dash.updateRuleEvidence("Understand exchange points");
                                                 }
                                                 //int a = ((Double) tmp.get("exchange_between_a")).intValue();
                                                 //int b = ((Double) tmp.get("exchange_between_b")).intValue();
-                                                //analyzer.updateRules("Understand exchange points");
+                                                //analyzer.updateRuleEvidence("Understand exchange points");
                                             } else {
                                                 continue;
                                             }
@@ -1008,7 +1007,7 @@ public class Simulation_v2 {
                                                     case "semaphore":
                                                         if ( comp_info[4].equals("P") ) {
                                                             /* Placed by Player */
-                                                            analyzer.updateRules("Place objects on the track");
+                                                            skill_analyzer_35_dash.updateRuleEvidence("Place objects on the track");
                                                         }
 
                                                         all_semaphore_ids.add(comp_info[0]);
@@ -1036,7 +1035,7 @@ public class Simulation_v2 {
                                                     case "signal":
                                                         if ( comp_info[4].equals("P") ) {
                                                             /* Placed by Player */
-                                                            analyzer.updateRules("Place objects on the track");
+                                                            skill_analyzer_35_dash.updateRuleEvidence("Place objects on the track");
                                                         }
 
                                                         if (info.containsKey("link") && ((Double) info.get("link")).intValue() != -1) {
@@ -1095,14 +1094,14 @@ public class Simulation_v2 {
                                         int manhattan_distance = Math.abs(prev_coord.p1-cur_coord.p1) + Math.abs(prev_coord.p2-cur_coord.p2);
                                         if ( !(prev_coord.equals(cur_coord)) && (manhattan_distance > 1) ) {
                                             /* Changed "significantly" */
-                                            analyzer.updateRules("Understand that arrows move at unpredictable rates");
+                                            skill_analyzer_35_dash.updateRuleEvidence("Understand that arrows move at unpredictable rates");
                                         }
                                         /* Check whether the object has been moved by + or -1 in any direction */
 //                                        if ( (prev_coord.p1 + 1 != cur_coord.p1) && (prev_coord.p1 - 1 != cur_coord.p1) &&
 //                                                (prev_coord.p2 + 1 != cur_coord.p2) && (prev_coord.p2 - 1 != cur_coord.p2)
 //                                                && !(prev_coord.equals(cur_coord)) ) {
 //                                            /* Not moved + or -1 in any direction, are on the same track, and has at least changed. */
-//                                            analyzer.updateRules("Understand that arrows move at unpredictable rates");
+//                                            analyzer.updateRuleEvidence("Understand that arrows move at unpredictable rates");
 //                                        }
                                     }
                                 }
@@ -1123,7 +1122,7 @@ public class Simulation_v2 {
                             for ( String sem_id : component_to_button.keySet() ) {
                                 if ( all_semaphore_ids.contains(sem_id) ) {
                                     /* Element is linked and is actually a semaphore */
-                                    analyzer.updateRules("Be able to link semaphores to buttons");
+                                    skill_analyzer_35_dash.updateRuleEvidence("Be able to link semaphores to buttons");
                                     for ( String button_id : component_to_button.get(sem_id) ) {
                                         button_to_semaphore.put(button_id,sem_id);
                                     }
@@ -1152,7 +1151,7 @@ public class Simulation_v2 {
 
                             for (String track : num_semaphores_unlinked_per_track.keySet()) {
                                 if (num_semaphores_unlinked_per_track.get(track) < 2) {
-                                    analyzer.updateRules("Understand that arrows move at unpredictable rates");
+                                    skill_analyzer_35_dash.updateRuleEvidence("Understand that arrows move at unpredictable rates");
                                 }
                             }
 
@@ -1199,7 +1198,7 @@ public class Simulation_v2 {
                                             2) Blocked more than the critical section
                                         */
                                         if (potential_button_copy.isEmpty() && potential_sem_copy.isEmpty()) {
-                                            analyzer.updateRules("Block critical sections");
+                                            skill_analyzer_35_dash.updateRuleEvidence("Block critical sections");
                                         }
                                     } else {
                                         if (potential_button_copy.size() > potential_sem_copy.size()) {
@@ -1230,7 +1229,7 @@ public class Simulation_v2 {
                                                 }
                                             }
                                             if ( potential_button_copy.isEmpty() && potential_sem_copy.isEmpty() ) {
-                                                analyzer.updateRules("Block critical sections");
+                                                skill_analyzer_35_dash.updateRuleEvidence("Block critical sections");
                                             }
 
 //                                            for (String s : button_to_semaphore.keySet()) {
@@ -1251,7 +1250,7 @@ public class Simulation_v2 {
 //                                                }
 //                                            }
 //                                            if (potential_button_copy.isEmpty()) {
-//                                                analyzer.updateRules("Block critical sections");
+//                                                analyzer.updateRuleEvidence("Block critical sections");
 //                                            }
                                         }
                                     }
@@ -1285,7 +1284,7 @@ public class Simulation_v2 {
                                             String button2_color = color_map.get(button);
                                             /* Check if lock2's color is the same as sem2's color, and check if lock2 isn't the same color as sem1 */
                                             if (button2_color.equals(sem2_color)) {
-                                                analyzer.updateRules("Synchronize multiple arrows");
+                                                skill_analyzer_35_dash.updateRuleEvidence("Synchronize multiple arrows");
                                             }
                                         }
                                     }
@@ -1317,13 +1316,11 @@ public class Simulation_v2 {
                                 }
                             }
                             if (delivered_all_packages) {
-                                //System.out.println("You successfully delivered all the packages!");
-                                analyzer.updateRules("Deliver packages");
+                                skill_analyzer_35_dash.updateRuleEvidence("Deliver packages");
                             }
 
                             if (total_missed == 0) {
-                                //System.out.println("You successfully didn't miss any packages!");
-                                analyzer.updateRules("Understand specific delivery points");
+                                skill_analyzer_35_dash.updateRuleEvidence("Understand specific delivery points");
                             }
 
                             index_vector.add(incr);

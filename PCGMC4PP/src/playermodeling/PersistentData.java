@@ -12,7 +12,7 @@ public class PersistentData {
     public HashMap<String, Object > persistent_data;
 
     public PersistentData() {
-        persistent_data = new HashMap<String,Object>();
+        persistent_data = new HashMap<>();
 
         persistent_data.put("cur_track", -1);
         persistent_data.put("cur_mouse_comp", "");
@@ -41,6 +41,4 @@ public class PersistentData {
     public Set<String> getPersistentInfo() {
         return persistent_data.keySet();
     }
-
-
 }

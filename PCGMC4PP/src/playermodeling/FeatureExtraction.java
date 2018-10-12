@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 
 /**
@@ -16,7 +15,7 @@ import java.util.LinkedHashMap;
  */
 public class FeatureExtraction {
 
-    public String[] features = {
+    public static String[] features = {
             "start_date",
             "start_time",
             "end_date",
@@ -93,8 +92,7 @@ public class FeatureExtraction {
             /* "total_reposition_dist"   Total reposition euclidean distance */
     };
 
-    int update_flag;
-    private SkillAnalysis analyzer;
+    private SkillAnalyzer analyzer;
 
     public String[] additional_features = {
             "_timestamp_last_dragged_component",
@@ -105,9 +103,8 @@ public class FeatureExtraction {
             "_tracks_used_lst",
     };
 
-    public FeatureExtraction(int u_flag, SkillAnalysis a ) {
+    public FeatureExtraction(SkillAnalyzer a ) {
         analyzer = a;
-        update_flag = u_flag;
     }
 
     public HashMap<String,Object> parseComponentInformation( String comp_info ) {
@@ -120,12 +117,9 @@ public class FeatureExtraction {
     public HashMap< String, Double > extractFeatureVector(String path, ArrayList<String> telemetry_at_interval,
                                                           ArrayList<Integer> index_vector,
                                                           HashMap<Integer, PersistentData > all_persistent_data,
-                                                          HashMap<String, ArrayList< String > > data_files, String calibration ) {
+                                                          HashMap<String, ArrayList< String > > data_files) {
 
         /* NOTE: The is_testing argument is required because in the training data, we never had an endDrag event, but in the testing we do */
-
-        int calib_width = Integer.parseInt(calibration.split("x")[0]);
-        int calib_height = Integer.parseInt(calibration.split("x")[1]);
 
         HashMap< String, Double > feature_vector = new HashMap< String, Double >();
 
@@ -176,9 +170,6 @@ public class FeatureExtraction {
             double x_ = Double.parseDouble(data[4]);
             double y_ = Double.parseDouble(data[5]);
 
-            double normx_ = x_/calib_width;
-            double normy_ = y_/calib_height;
-
             formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
             time = LocalDateTime.parse(date_, formatter);
 
@@ -195,42 +186,6 @@ public class FeatureExtraction {
 
             HashMap<String, Object > persistent_data = all_persistent_data.get(index_vector.get(i)).persistent_data;
             s_ = s_ - (Long)persistent_data.get("start_time");
-
-            /* Get the world height and world width for converting x,y mouse coordinates to positions on the board */
-            double board_height = Double.parseDouble(String.valueOf(persistent_data.get("height")));
-            double board_width = Double.parseDouble(String.valueOf(persistent_data.get("width")));
-
-            double aspectRatio = (double)calib_width/(double)calib_height; // Aspect Ratio = Screen Width / Screen Height
-            double levelRatio = board_width / board_height;
-            double height = Double.parseDouble(String.valueOf(persistent_data.get("height")));
-
-            if ( levelRatio > 1.78 ) {
-                height *= (levelRatio/1.78 );
-                height /= 0.9;
-            } else {
-                height++;
-            }
-
-            double world_height =  height/0.78;
-            double world_width = aspectRatio*world_height;
-            double [] center_coord = { world_width/2.0, world_height/2.0 };
-
-            /* Translate xmin and ymin to 0,0 */
-            int xmin = 0;
-            int ymin = 0;
-
-            /* I completely forgot the reasoning for this...I should at least document this */
-            double xmax_tmp = Math.ceil( (center_coord[0] + board_width/2.0) - (center_coord[0] - board_width/2.0) );
-            double ymax_tmp = Math.ceil( (center_coord[1] + board_height/2.0) - (center_coord[1] - board_height/2.0) );
-            int xmax = Double.valueOf(xmax_tmp).intValue();
-            int ymax = Double.valueOf(ymax_tmp).intValue();
-
-            int board_x = Double.valueOf(Math.ceil( (world_width*normx_) - (center_coord[0] - board_width/2.0) )).intValue();
-            int board_y = (int)board_height - Double.valueOf(Math.ceil( (world_height*normy_) - (center_coord[1] - board_height/2.0) ) ).intValue(); // top of board is 0, but bottom is 0 in Unity
-
-            /* Get board direction in 2D array. */
-            ArrayList< ArrayList<String> > board = (ArrayList< ArrayList<String> >)persistent_data.get("direction_layout");
-            //String direction = board.get(board_x).get(board_y);
 
             switch (name_) {
                 case "TriggerLoadLevel":
@@ -275,7 +230,7 @@ public class FeatureExtraction {
                 case "SubmitCurrentLevelME":
                     /* This is submit */
 //                    if ( (Boolean)persistent_data.get("test_before_submit") ) {
-//                        analyzer.updateRules("Testing before submitting");
+//                        analyzer.updateRuleEvidence("Testing before submitting");
 //                        persistent_data.replace("test_before_submit",false);
 //                    }
 
@@ -310,8 +265,8 @@ public class FeatureExtraction {
                 case "startDrag":
                     if ( (Boolean)persistent_data.get("dragging") ) {
                         /* Training dataset didn't have endDrag due to bug (only had startDrag startDrag pair). This is fixed in the testing dataset */
-                        analyzer.updateRules("Drag objects");
-                        //updateRules("Drag objects",rules);
+                        analyzer.updateRuleEvidence("Drag objects");
+                        //updateRuleEvidence("Drag objects",rule_evidence);
 
                         fd_coord.p1 = x_;
                         fd_coord.p2 = y_;
@@ -328,8 +283,8 @@ public class FeatureExtraction {
                         fd_coord.reset();
 
 //                        if ( (Integer)persistent_data.get("num_dragged") > 2 ) {
-//                            analyzer.updateRules("Place objects on track");
-//                            //updateRules("Place objects on the track",rules);
+//                            analyzer.updateRuleEvidence("Place objects on track");
+//                            //updateRuleEvidence("Place objects on the track",rule_evidence);
 //                        }
 
                         persistent_data.replace("num_dragged",(Integer)persistent_data.get("num_dragged") + 1);
@@ -363,51 +318,6 @@ public class FeatureExtraction {
                     }
                     break;
                 case "endDrag":
-//                    analyzer.updateRules("Drag objects");
-//                    //updateRules("Drag objects",rules);
-//
-//                    fd_coord.p1 = x_;
-//                    fd_coord.p2 = y_;
-//                    double dist = 0.0;
-//
-//                    // Euclidean distance
-//                    if (id_coord.p1 != null && id_coord.p2 != null) {
-//                        dist = Math.sqrt(Math.pow((fd_coord.p1 - id_coord.p1), 2.0) + Math.pow((fd_coord.p2 - id_coord.p2), 2.0));
-//                    } else {
-//                        dist = 0.0;
-//                    }
-//
-//                    id_coord.reset();
-//                    fd_coord.reset();
-//
-//                    if ( (Integer)persistent_data.get("num_dragged") > 2 ) {
-//                        analyzer.updateRules("Place objects on the track");
-//                        //updateRules("Place objects on the track",rules);
-//                    }
-//
-//                    persistent_data.replace("num_dragged",(Integer)persistent_data.get("num_dragged") + 1);
-//
-//                    n = feature_vector.get("total_dragged_components_dist");
-//                    feature_vector.replace("total_dragged_components_dist", n + dist);
-//                    persistent_data.replace("dragging",false);
-
-//                    fd_coord.p1 = x_;
-//                    fd_coord.p2 = y_;
-//                    double dist = 0.0;
-//                    // Euclidean distance
-//                    if (id_coord.p1 != null && id_coord.p2 != null) {
-//                        dist = Math.sqrt(Math.pow((fd_coord.p1 - id_coord.p1), 2.0) + Math.pow((fd_coord.p2 - id_coord.p2), 2.0));
-//                        rules.replace("Drag objects",1.0);
-//                    } else {
-//                        dist = 0.0;
-//                    }
-//
-//                    id_coord.reset();
-//                    fd_coord.reset();
-//
-//                    n = feature_vector.get("total_dragged_components_dist");
-//                    feature_vector.replace("total_dragged_components_dist", n + dist);
-
                     break;
                 case "Destroying":
                     if ( feature_vector.containsKey("trashed") ) {
@@ -419,8 +329,8 @@ public class FeatureExtraction {
                         double n = feature_vector.get("trashed_" + data_);
                         feature_vector.replace("trashed_" + data_, n + 1);
                     }
-                    analyzer.updateRules("Remove unnecessary elements");
-                    //updateRules("Remove unnecessary elements",rules);
+                    analyzer.updateRuleEvidence("Remove unnecessary elements");
+                    //updateRuleEvidence("Remove unnecessary elements",rule_evidence);
                     break;
                 case "OnHoverBehavior":
                     // This implies that we are on a track...but we hover on an object though..?
@@ -434,8 +344,8 @@ public class FeatureExtraction {
                         feature_vector.replace("hover_" + data_, n + 1);
                     }
 
-                    analyzer.updateRules("Hover over objects to see what they do");
-                    //updateRules("Hover over objects to see what they do",rules);
+                    analyzer.updateRuleEvidence("Hover over objects to see what they do");
+                    //updateRuleEvidence("Hover over objects to see what they do",rule_evidence);
 
                     break;
                 case "BeginReposition":
@@ -565,13 +475,13 @@ public class FeatureExtraction {
                         *       direction switch -> conditional
                         * */
 //                        if ( data_.contains("signal")  ) {
-//                            analyzer.updateRules("Be able to link semaphores to buttons");
-//                            //updateRules("Be able to link semaphores to buttons",rules);
+//                            analyzer.updateRuleEvidence("Be able to link semaphores to buttons");
+//                            //updateRuleEvidence("Be able to link semaphores to buttons",rule_evidence);
 //                        }
 
                         if ( data_.contains("conditional")  ) {
-                            analyzer.updateRules("Be able to link buttons to direction switches");
-                            //updateRules("Be able to link buttons to direction switches",rules);
+                            analyzer.updateRuleEvidence("Be able to link buttons to direction switches");
+                            //updateRuleEvidence("Be able to link buttons to direction switches",rule_evidence);
                         }
 
                         if ( comp_color_map.size() != 0 ) {
@@ -614,8 +524,8 @@ public class FeatureExtraction {
                         feature_vector.replace("flow_visibility", n + 1);
                     }
 
-                    analyzer.updateRules("Hover over side arrows to see different colored tracks");
-                    //updateRules("Hover over side arrows to see different colored tracks",rules);
+                    analyzer.updateRuleEvidence("Hover over side arrows to see different colored tracks");
+                    //updateRuleEvidence("Hover over side arrows to see different colored tracks",rule_evidence);
 
                     break;
                 case "LockFlowVisibility":
@@ -628,8 +538,8 @@ public class FeatureExtraction {
                     }
                     break;
                 case "hint":
-                    analyzer.updateRules("Use help bar");
-                    //updateRules("Use help bar",rules);
+                    analyzer.updateRuleEvidence("Use help bar");
+                    //updateRuleEvidence("Use help bar",rule_evidence);
                     break;
                 case "TriggerGoalPopUp":
                     if ( data_.contains("Successfully") ) {
@@ -766,12 +676,7 @@ public class FeatureExtraction {
     public HashMap< String, Double > extractFeatureVector_v2(String path, ArrayList<String> telemetry_at_interval,
                                                           ArrayList<Integer> index_vector,
                                                           HashMap<Integer, PersistentData > all_persistent_data,
-                                                          HashMap<String, ArrayList< String > > data_files, String calibration ) {
-
-        /* NOTE: The is_testing argument is required because in the training data, we never had an endDrag event, but in the testing we do */
-
-        int calib_width = Integer.parseInt(calibration.split("x")[0]);
-        int calib_height = Integer.parseInt(calibration.split("x")[1]);
+                                                          HashMap<String, ArrayList< String > > data_files) {
 
         HashMap< String, Double > feature_vector = new HashMap< String, Double >();
 
@@ -822,9 +727,6 @@ public class FeatureExtraction {
             double x_ = Double.parseDouble(data[4]);
             double y_ = Double.parseDouble(data[5]);
 
-            double normx_ = x_/calib_width;
-            double normy_ = y_/calib_height;
-
             formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
             time = LocalDateTime.parse(date_, formatter);
 
@@ -841,42 +743,6 @@ public class FeatureExtraction {
 
             HashMap<String, Object > persistent_data = all_persistent_data.get(index_vector.get(i)).persistent_data;
             s_ = s_ - (Long)persistent_data.get("start_time");
-
-            /* Get the world height and world width for converting x,y mouse coordinates to positions on the board */
-            double board_height = Double.parseDouble(String.valueOf(persistent_data.get("height")));
-            double board_width = Double.parseDouble(String.valueOf(persistent_data.get("width")));
-
-            double aspectRatio = (double)calib_width/(double)calib_height; // Aspect Ratio = Screen Width / Screen Height
-            double levelRatio = board_width / board_height;
-            double height = Double.parseDouble(String.valueOf(persistent_data.get("height")));
-
-            if ( levelRatio > 1.78 ) {
-                height *= (levelRatio/1.78 );
-                height /= 0.9;
-            } else {
-                height++;
-            }
-
-            double world_height =  height/0.78;
-            double world_width = aspectRatio*world_height;
-            double [] center_coord = { world_width/2.0, world_height/2.0 };
-
-            /* Translate xmin and ymin to 0,0 */
-            int xmin = 0;
-            int ymin = 0;
-
-            /* I completely forgot the reasoning for this...I should at least document this */
-            double xmax_tmp = Math.ceil( (center_coord[0] + board_width/2.0) - (center_coord[0] - board_width/2.0) );
-            double ymax_tmp = Math.ceil( (center_coord[1] + board_height/2.0) - (center_coord[1] - board_height/2.0) );
-            int xmax = Double.valueOf(xmax_tmp).intValue();
-            int ymax = Double.valueOf(ymax_tmp).intValue();
-
-            int board_x = Double.valueOf(Math.ceil( (world_width*normx_) - (center_coord[0] - board_width/2.0) )).intValue();
-            int board_y = (int)board_height - Double.valueOf(Math.ceil( (world_height*normy_) - (center_coord[1] - board_height/2.0) ) ).intValue(); // top of board is 0, but bottom is 0 in Unity
-
-            /* Get board direction in 2D array. */
-            ArrayList< ArrayList<String> > board = (ArrayList< ArrayList<String> >)persistent_data.get("direction_layout");
-            //String direction = board.get(board_x).get(board_y);
 
             switch (name_) {
                 case "TriggerLoadLevel":
@@ -914,7 +780,7 @@ public class FeatureExtraction {
                     break;
                 case "SubmitCurrentLevelME":
 //                    if ( (Boolean)persistent_data.get("test_before_submit") ) {
-//                        analyzer.updateRules("Testing before submitting");
+//                        analyzer.updateRuleEvidence("Testing before submitting");
 //                        persistent_data.replace("test_before_submit",false);
 //                    }
 
@@ -962,8 +828,8 @@ public class FeatureExtraction {
                     break;
                 case "endDrag":
                     /* Training dataset didn't have endDrag due to bug (only had startDrag startDrag pair). This is fixed in the testing dataset */
-                    analyzer.updateRules("Drag objects");
-                    //updateRules("Drag objects",rules);
+                    analyzer.updateRuleEvidence("Drag objects");
+                    //updateRuleEvidence("Drag objects",rule_evidence);
 
                     fd_coord.p1 = x_;
                     fd_coord.p2 = y_;
@@ -980,8 +846,8 @@ public class FeatureExtraction {
                     fd_coord.reset();
 
                     //if ( (Integer)persistent_data.get("num_dragged") > 2 ) {
-                    //    analyzer.updateRules("Place objects on track");
-                        //updateRules("Place objects on the track",rules);
+                    //    analyzer.updateRuleEvidence("Place objects on track");
+                        //updateRuleEvidence("Place objects on the track",rule_evidence);
                     //}
 
                     persistent_data.replace("num_dragged",(Integer)persistent_data.get("num_dragged") + 1);
@@ -989,8 +855,8 @@ public class FeatureExtraction {
                     n = feature_vector.get("total_dragged_components_dist");
                     feature_vector.replace("total_dragged_components_dist", n + dist);
                     //persistent_data.replace("dragging",false);
-//                    analyzer.updateRules("Drag objects");
-//                    //updateRules("Drag objects",rules);
+//                    analyzer.updateRuleEvidence("Drag objects");
+//                    //updateRuleEvidence("Drag objects",rule_evidence);
 //
 //                    fd_coord.p1 = x_;
 //                    fd_coord.p2 = y_;
@@ -1007,8 +873,8 @@ public class FeatureExtraction {
 //                    fd_coord.reset();
 //
 //                    if ( (Integer)persistent_data.get("num_dragged") > 2 ) {
-//                        analyzer.updateRules("Place objects on the track");
-//                        //updateRules("Place objects on the track",rules);
+//                        analyzer.updateRuleEvidence("Place objects on the track");
+//                        //updateRuleEvidence("Place objects on the track",rule_evidence);
 //                    }
 //
 //                    persistent_data.replace("num_dragged",(Integer)persistent_data.get("num_dragged") + 1);
@@ -1023,7 +889,7 @@ public class FeatureExtraction {
 //                    // Euclidean distance
 //                    if (id_coord.p1 != null && id_coord.p2 != null) {
 //                        dist = Math.sqrt(Math.pow((fd_coord.p1 - id_coord.p1), 2.0) + Math.pow((fd_coord.p2 - id_coord.p2), 2.0));
-//                        rules.replace("Drag objects",1.0);
+//                        rule_evidence.replace("Drag objects",1.0);
 //                    } else {
 //                        dist = 0.0;
 //                    }
@@ -1041,8 +907,8 @@ public class FeatureExtraction {
 
                     n = feature_vector.get("trashed_" + data_);
                     feature_vector.replace("trashed_" + data_,n+1);
-                    analyzer.updateRules("Remove unnecessary elements");
-                    //updateRules("Remove unnecessary elements",rules);
+                    analyzer.updateRuleEvidence("Remove unnecessary elements");
+                    //updateRuleEvidence("Remove unnecessary elements",rule_evidence);
                     break;
                 case "OnHoverBehavior":
                     // This implies that we are on a track...but we hover on an object though..?
@@ -1052,8 +918,8 @@ public class FeatureExtraction {
                     n = feature_vector.get("hover_" + data_);
                     feature_vector.replace("hover_" + data_,n+1);
 
-                    analyzer.updateRules("Hover over objects to see what they do");
-                    //updateRules("Hover over objects to see what they do",rules);
+                    analyzer.updateRuleEvidence("Hover over objects to see what they do");
+                    //updateRuleEvidence("Hover over objects to see what they do",rule_evidence);
 
                     break;
                 case "BeginReposition":
@@ -1181,13 +1047,13 @@ public class FeatureExtraction {
                          *       direction switch -> conditional
                          * */
 //                        if ( data_.contains("signal")  ) {
-//                            analyzer.updateRules("Be able to link semaphores to buttons");
-//                            //updateRules("Be able to link semaphores to buttons",rules);
+//                            analyzer.updateRuleEvidence("Be able to link semaphores to buttons");
+//                            //updateRuleEvidence("Be able to link semaphores to buttons",rule_evidence);
 //                        }
 
                         if ( data_.contains("conditional")  ) {
-                            analyzer.updateRules("Be able to link buttons to direction switches");
-                            //updateRules("Be able to link buttons to direction switches",rules);
+                            analyzer.updateRuleEvidence("Be able to link buttons to direction switches");
+                            //updateRuleEvidence("Be able to link buttons to direction switches",rule_evidence);
                         }
 
                         if ( comp_color_map.size() != 0 ) {
@@ -1222,8 +1088,7 @@ public class FeatureExtraction {
                     n = feature_vector.get("flow_visibility");
                     feature_vector.replace("flow_visibility", n + 1);
 
-                    analyzer.updateRules("Hover over side arrows to see different colored tracks");
-                    //updateRules("Hover over side arrows to see different colored tracks",rules);
+                    analyzer.updateRuleEvidence("Hover over side arrows to see different colored tracks");
 
                     break;
                 case "LockFlowVisibility":
@@ -1234,8 +1099,8 @@ public class FeatureExtraction {
                     feature_vector.replace("flow_tooltip", n + 1);
                     break;
                 case "hint":
-                    analyzer.updateRules("Use help bar");
-                    //updateRules("Use help bar",rules);
+                    analyzer.updateRuleEvidence("Use help bar");
+                    //updateRuleEvidence("Use help bar",rule_evidence);
                     break;
                 case "TriggerGoalPopUp":
                     if ( data_.contains("Successfully") ) {
@@ -1357,5 +1222,421 @@ public class FeatureExtraction {
 
         return feature_vector;
 
+    }
+
+    public HashMap< String, Double > extractFeatureVectorPM(ArrayList<String> telemetryData,
+                                                            PersistentData levelData) {
+
+        HashMap< String, Double > featureVector = new HashMap< String, Double >();
+
+        /* Used to store list of values for later computation */
+        HashMap< String, ArrayList<Double> > statisticsFeatures = new HashMap< String, ArrayList<Double> >();
+
+        Pair<Double,Double> repositionBeginCoord = new Pair<Double,Double>(), repositionEndCoord = new Pair<Double,Double>();
+        Pair<Double,Double> il_coord = new Pair<Double,Double>(), fl_coord = new Pair<Double,Double>();
+        Pair<Double,Double> dragStartCoord = new Pair<Double,Double>(), dragEndCoord = new Pair<Double,Double>();
+
+        if ( telemetryData.size() == 0 ) {
+            return featureVector;
+        }
+        /* Initialize feature vector */
+        for ( String f : features ) {
+            featureVector.put(f,0.0);
+        }
+
+        String [] data = telemetryData.get(0).split("\t");
+        String date_ = data[0];
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
+        LocalDateTime time = LocalDateTime.parse(date_,formatter);
+
+        /* Time in seconds */
+        long startTime = ( time.toInstant(ZoneOffset.ofHours(0)).toEpochMilli() / 1000 );
+
+        featureVector.replace("start_date", (double)startTime);
+        featureVector.replace("start_time", ((double)startTime) - ((Long)levelData.persistent_data.get("start_time")).doubleValue() );
+
+        HashMap<String, Object > levelData_ = levelData.persistent_data;
+        HashMap<String,String> colorMap = (HashMap<String,String>) levelData_.get("comp_color_map");
+
+        for ( String telemetry : telemetryData ) {
+            data = telemetry.split("\t");
+            date_ = data[0];
+            String name_ = data[1];
+            String data_ = data[2];
+
+            double time_ = Double.parseDouble(data[3]);
+            double x_ = Double.parseDouble(data[4]);
+            double y_ = Double.parseDouble(data[5]);
+
+            formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
+            time = LocalDateTime.parse(date_, formatter);
+
+            /* Time in seconds */
+            startTime = (time.toInstant(ZoneOffset.ofHours(0)).toEpochMilli() / 1000);
+
+            startTime = startTime - (Long)levelData_.get("start_time");
+
+            switch (name_) {
+                case "TriggerLoadLevel":
+                    /* Get level data */
+                    if (data_.length() != 0) {
+                        if (data_.startsWith("l")) {
+                        } else {
+                        }
+                    } else {
+                        double nreplays = featureVector.get("me_replays");
+                        featureVector.replace("me_replays", nreplays + 1);
+                    }
+                    break;
+                case "endTutorial":
+                    featureVector.replace("tutorial_time", (startTime - featureVector.get("start_time")) / 60.0);
+                    break;
+                case "SubmitCurrentLevelPlay":
+                    /* This is testing */
+                    double val = featureVector.get("me_tests");
+                    featureVector.replace("me_tests", val + 1);
+                    if ( featureVector.containsKey("_timestamp_last_dragged_component") ) {
+                        double t = startTime - featureVector.get("_timestamp_last_dragged_component");
+
+                        if (statisticsFeatures.get("_t_d_component_dragged_me_lst_tests") == null) {
+                            ArrayList<Double> tmp = new ArrayList<Double>();
+                            tmp.add(t);
+                            statisticsFeatures.replace("_t_d_component_dragged_me_lst_tests", tmp);
+                        } else {
+                            ArrayList<Double> tmp = statisticsFeatures.get("_t_d_component_dragged_me_lst_tests");
+                            tmp.add(t);
+                            statisticsFeatures.replace("_t_d_component_dragged_me_lst_tests",tmp);
+                        }
+                    }
+                    break;
+                case "SubmitCurrentLevelME":
+                    val = featureVector.get("me_submissions");
+                    featureVector.replace("me_submissions", val + 1);
+                    if (featureVector.containsKey("_timestamp_last_dragged_component")) {
+                        double t = startTime - featureVector.get("_timestamp_last_dragged_component");
+                        if (statisticsFeatures.get("_t_d_component_dragged_me_lst_submissions") == null) {
+                            ArrayList<Double> tmp = new ArrayList<Double>();
+                            tmp.add(t);
+                            statisticsFeatures.replace("_t_d_component_dragged_me_lst_submissions", tmp);
+                        } else {
+                            ArrayList<Double> tmp = statisticsFeatures.get("_t_d_component_dragged_me_lst_submissions");
+                            tmp.add(t);
+                            statisticsFeatures.replace("_t_d_component_dragged_me_lst_submissions",tmp);
+                        }
+                    }
+                    break;
+                case "tooltip":
+                    double n = featureVector.get("tooltips");
+                    featureVector.replace("tooltips", n + 1);
+
+                    if ( featureVector.containsKey("tooltip_" + data_) ) {
+                        n = featureVector.get("tooltip_" + data_);
+                        featureVector.replace("tooltip_" + data_, n + 1);
+                    }
+                    break;
+                case "startDrag":
+                    n = featureVector.get("dragged");
+                    featureVector.replace("dragged", n + 1);
+
+                    n = featureVector.get("dragged_" + data_);
+                    featureVector.replace("dragged_" + data_, n + 1);
+
+                    if (!featureVector.containsKey("_timestamp_last_dragged_component")) {
+                        featureVector.put("_timestamp_last_dragged_component", (double) startTime);
+                    } else {
+                        featureVector.replace("_timestamp_last_dragged_component", (double) startTime);
+                    }
+
+                    dragStartCoord.p1 = x_;
+                    dragStartCoord.p2 = y_;
+                    break;
+                case "endDrag":
+                    dragEndCoord.p1 = x_;
+                    dragEndCoord.p2 = y_;
+                    double dist;
+
+                    // Euclidean distance
+                    if (dragStartCoord.p1 != null && dragStartCoord.p2 != null) {
+                        dist = Math.sqrt(Math.pow((dragEndCoord.p1 - dragStartCoord.p1), 2.0) + Math.pow((dragEndCoord.p2 - dragStartCoord.p2), 2.0));
+                    } else {
+                        dist = 0.0;
+                    }
+
+                    dragStartCoord.reset();
+                    dragEndCoord.reset();
+
+                    levelData_.replace("num_dragged",(Integer)levelData_.get("num_dragged") + 1);
+
+                    n = featureVector.get("total_dragged_components_dist");
+                    featureVector.replace("total_dragged_components_dist", n + dist);
+                    break;
+                case "Destroying":
+                    n = featureVector.get("trashed");
+                    featureVector.replace("trashed",n+1);
+
+                    n = featureVector.get("trashed_" + data_);
+                    featureVector.replace("trashed_" + data_,n+1);
+                    break;
+                case "OnHoverBehavior":
+                    // This implies that we are on a track...but we hover on an object though..?
+                    n = featureVector.get("hover");
+                    featureVector.replace("hover",n+1);
+
+                    n = featureVector.get("hover_" + data_);
+                    featureVector.replace("hover_" + data_,n+1);
+                    break;
+                case "BeginReposition":
+                    repositionBeginCoord.p1 = x_;
+                    repositionBeginCoord.p2 = y_;
+                    break;
+                case "EndReposition":
+                    if ( ((String)levelData_.get("cur_mouse_comp")).length() == 0 ) {
+                        break;
+                    }
+
+                    String componentID =  ((String)levelData_.get("cur_mouse_comp")).split("/")[1];
+                    if ( colorMap == null ) {
+                        /* This really should never happen.. */
+                        break;
+                    }
+
+                    if ( !colorMap.containsKey(componentID) ) {
+                        break;
+                    }
+
+                    n = featureVector.get("num_tracks_used");
+                    featureVector.replace("num_tracks_used", n+1);
+
+                    repositionEndCoord.p1 = x_;
+                    repositionEndCoord.p2 = y_;
+
+                    repositionBeginCoord.reset();
+                    repositionEndCoord.reset();
+
+                    break;
+                case "BeginLink":
+                    if ( ((String)levelData_.get("cur_mouse_comp")).length() == 0 ) {
+                        break;
+                    }
+
+                    componentID =  ((String)levelData_.get("cur_mouse_comp")).split("/")[1];
+                    if ( colorMap == null ) {
+                        /* This really should never happen.. */
+                        break;
+                    }
+
+                    if ( !colorMap.containsKey(componentID) ) {
+                        break;
+                    }
+
+                    n = featureVector.get("num_tracks_used");
+                    featureVector.replace("num_tracks_used",n+1);
+
+                    il_coord.p1 = x_;
+                    il_coord.p2 = y_;
+                    break;
+                case "LinkTo":
+                    levelData_.replace("linking",true);
+
+                    fl_coord.p1 = x_;
+                    fl_coord.p2 = y_;
+
+                    il_coord.reset();
+                    fl_coord.reset();
+                    break;
+                case "OnMouseComponent":
+                    double numTimesMouseOnComponent = featureVector.get("num_mouse_on_comp");
+                    featureVector.replace("num_mouse_on_comp", numTimesMouseOnComponent+1);
+
+                    levelData_.replace("cur_mouse_comp",data_);
+                    levelData_.replace("cur_mouse_time",time_);
+
+                    componentID = data_.split("/")[1];
+
+                    colorMap = (HashMap< String, String >)levelData_.get("comp_color_map");
+                    if ( colorMap == null ) {
+                        /* This really should never happen.. */
+                        break;
+                    }
+
+                    if ( colorMap.size() != 0 && colorMap.containsKey(componentID) ) {
+//                        System.out.println(persistent_data.toString());
+//                        System.out.println("Current track: " + persistent_data.get("cur_track"));
+                        int curTrack = Integer.parseInt(String.valueOf(levelData_.get("cur_track")));
+                        if ( curTrack == -1) {
+                            levelData_.replace("cur_track", Integer.parseInt(colorMap.get(componentID)));
+                        } else if ( curTrack != Integer.parseInt(colorMap.get(componentID))) {
+                            n = featureVector.get("num_track_changes");
+                            featureVector.replace("num_track_changes", n + 1);
+                            levelData_.replace("cur_track", colorMap.get(componentID));
+                        } else {
+                            n = featureVector.get("num_track_no_changes");
+                            featureVector.replace("num_track_no_changes", n + 1);
+                        }
+                    }
+
+                    if ( (Boolean)levelData_.get("linking") ) {
+                        /* Check the component */
+
+                        /* Check which component we are linking to
+                         *       direction switch -> conditional
+                         * */
+
+                        if ( colorMap.size() != 0 ) {
+                            if ( colorMap.containsKey(componentID) ) {
+                                n = featureVector.get("num_tracks_used");
+                                featureVector.replace("num_tracks_used", n + 1);
+                            }
+                        }
+                    }
+                    levelData_.replace("linking",false);
+                    break;
+                case "OutMouseComponent":
+                    //System.out.println(telemetry);
+                    double totalTimeOnComponent = featureVector.get("total_time_on_component");
+                    if ( time_ - (Double)levelData_.get("cur_mouse_time") < 0 ) {
+                        /* This actually happens when the cur_mouse_time is taken from a previous time interval, and time_ starts before cur_mouse_time ) */
+                        break; /* Don't use this time_ */
+                    }
+                    featureVector.replace("total_time_on_component",totalTimeOnComponent + (time_ - (Double)levelData_.get("cur_mouse_time")));
+                    break;
+                case "ToggleConnectionVisibility":
+                    if ( !data_.equals("True") ) {
+                        break;
+                    }
+                    n = featureVector.get("connection_visibility");
+                    featureVector.replace("connection_visibility", n + 1);
+                    break;
+                case "ToggleFlowVisibility":
+                    if ( !data_.equals("True") ) {
+                        break;
+                    }
+                    n = featureVector.get("flow_visibility");
+                    featureVector.replace("flow_visibility", n + 1);
+
+                    break;
+                case "LockFlowVisibility":
+                    if ( !data_.equals("True") ) {
+                        break;
+                    }
+                    n = featureVector.get("flow_tooltip");
+                    featureVector.replace("flow_tooltip", n + 1);
+                    break;
+                case "hint":
+                    break;
+                case "TriggerGoalPopUp":
+                    if ( data_.contains("Successfully") ) {
+                        n = featureVector.get("popup_success");
+                        featureVector.replace("popup_success", n + 1);
+                    } else if ( data_.contains("starvation") ) {
+                        n = featureVector.get("popup_error_starvation");
+                        featureVector.replace("popup_error_starvation", n + 1);
+
+                        n = featureVector.get("popup_error");
+                        featureVector.replace("popup_error", n + 1);
+
+                    } else if ( data_.contains("dead") ) {
+
+                        n = featureVector.get("popup_error_deadend");
+                        featureVector.replace("popup_error_deadend", n + 1);
+
+                        n = featureVector.get("popup_error");
+                        featureVector.replace("popup_error", n + 1);
+
+                    } else if ( data_.contains("deliveries") ) {
+                        n = featureVector.get("popup_error_delivery");
+                        featureVector.replace("popup_error_delivery", n + 1);
+
+                        n = featureVector.get("popup_error");
+                        featureVector.replace("popup_error", n + 1);
+
+                    } else {
+                        n = featureVector.get("popup_error_badgoals");
+                        featureVector.replace("popup_error_badgoals", n + 1);
+
+                        n = featureVector.get("popup_error");
+                        featureVector.replace("popup_error", n + 1);
+                    }
+                    break;
+            }
+        }
+        /* Compute averages */
+        String lastLine = telemetryData.get(telemetryData.size()-1);
+        String [] splitLastLine = lastLine.split("\t");
+        date_ = splitLastLine[0];
+        formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
+        time = LocalDateTime.parse(date_,formatter);
+
+        /* Time in seconds */
+        long endTime = ( time.toInstant(ZoneOffset.ofHours(0)).toEpochMilli() / 1000 );
+        featureVector.replace("end_date", (double)endTime);
+        long elapsedTimeFromStartOfRun = endTime - (Long)levelData_.get("start_time");
+
+        featureVector.replace("total_time", elapsedTimeFromStartOfRun - featureVector.get("start_time"));
+
+        if ( featureVector.get("total_time") < 0 ) {
+            System.out.println("This should never happen");
+            System.exit(0);
+        }
+
+        double meTotal = 0.0;
+        String [] tsr = { "tests" , "submissions" ,"replays" };
+        for ( String s : tsr  ) {
+            meTotal += featureVector.get("me_" + s);
+        }
+
+        /* NOTE: I'm not sure how good double comparison is here...but we'll use it for now... */
+        if ( Double.compare(featureVector.get("total_time"),0.0) != 0 ) {
+            featureVector.put("r_me_per_minute", meTotal/(featureVector.get("total_time")/60.0));
+
+            featureVector.replace("r_num_tracks_used_per_minute", featureVector.get("num_tracks_used") / (featureVector.get("total_time") / 60.0));
+            featureVector.replace("r_num_track_no_changes_per_minute", featureVector.get("num_track_no_changes") / (featureVector.get("total_time") / 60.0));
+            featureVector.replace("r_num_track_changes_per_minute", featureVector.get("num_track_changes") / (featureVector.get("total_time") / 60.0));
+            featureVector.replace("r_mouse_on_comp_per_minute",  featureVector.get("num_mouse_on_comp") / (featureVector.get("total_time") / 60.0));
+            featureVector.replace("r_dragged_components_per_minute", featureVector.get("dragged") / (featureVector.get("total_time") / 60.0));
+            featureVector.replace("r_hover_components_per_minute", featureVector.get("hover") / (featureVector.get("total_time") / 60.0));
+        }
+
+        if ( Double.compare(featureVector.get("num_mouse_on_comp"),0) != 0 ) {
+            featureVector.replace("avg_time_on_component", featureVector.get("total_time_on_component") / featureVector.get("num_mouse_on_comp") );
+        }
+
+        if ( Double.compare(featureVector.get("dragged"),0) != 0 ) {
+            featureVector.replace("avg_dragged_components_dist", featureVector.get("total_dragged_components_dist") / featureVector.get("dragged") );
+        }
+
+        for ( String s : tsr  ) {
+            if (Double.compare(featureVector.get("total_time"), 0.0) != 0) {
+                featureVector.replace("r_me_" + s + "_per_minute", 1.0 * featureVector.get("me_" + s) / (featureVector.get("total_time") / 60.0));
+            }
+
+            if ( Double.compare(meTotal,0.0) != 0 ) {
+                featureVector.replace("r_me_" + s, featureVector.get("me_" + s) / meTotal);
+            }
+        }
+
+        String [] tse = { "_tests", "_submissions", "" };
+        for ( String s : tse ) {
+            ArrayList<Double> lst_ = new ArrayList<Double>();
+
+            for ( String j : statisticsFeatures.keySet() ) {
+                if ( j.contains(s) || s.length() == 0 ) {
+                    lst_.addAll(statisticsFeatures.get(s));
+                }
+            }
+
+            double avg = 0;
+            for ( Double d : lst_ ) {
+                avg += d;
+            }
+            avg = ( avg / (double)lst_.size() );
+
+            if ( lst_.size() != 0 ) {
+                featureVector.replace("t_d_component_dragged_me_" + s + "_avg", avg);
+                featureVector.replace("t_d_component_dragged_me_" + s + "_min", Collections.min(lst_));
+            }
+        }
+        return featureVector;
     }
 }
