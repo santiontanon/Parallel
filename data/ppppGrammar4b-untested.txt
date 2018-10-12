@@ -1,0 +1,117 @@
+RULE DELIVERY_TRIVIAL 0.9 0.9 -1 TRIVIAL
+    PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
+    REPLACEMENT A:situation_trivial(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA)
+RULE JUST_CONNECT 0.1 0.9 -1 REFINEMENT
+    PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
+    REPLACEMENT B:track(to:C),C:track()
+RULE MAKE_EXCHANGE_POINT_BETWEEN_PROBLEMS 0.9 0.5 -1 SYNCRO
+    PATTERN A:situation_trivial(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA),\
+    A2:situation_trivial(),AA2:subproblem(),\
+    B2:{track,pickup}(partOf:A2,partOf:AA2,to:C2),C2:{track,delivery}(partOf:A2,partOf:AA2)
+    REPLACEMENT A:situation_exchange(),\
+    B:{track,pickup}(partOf:A,to:X,has:B_),C:{track,delivery}(partOf:A,has:C_),\
+    B2:{track,pickup}(partOf:A,to:X2,has:B2_),C2:{track,delivery}(partOf:A,has:C2_),\
+    X:{track,exchange}(to:C,has:X_),X2:{track,exchange}(to:C2,has:X2_),\
+    B_:pickup_conditional(),B2_:pickup_preventor(),C_:delivery_preventor(),C2_:delivery(),\
+    X_:exchange(partOf:X2_),X2_:exchange(partOf:X_)
+RULE MAKE_EXCHANGE_POINT_BETWEEN_FORK 0.9 0.5 -1 SYNCRO
+    PATTERN A:situation_trivial(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA),\
+    A2:situation_trivial(),\
+    B2:{track,pickup}(partOf:A2,partOf:AA,to:C2),C2:{track,delivery}(partOf:A2,partOf:AA),\
+    F:{start_point}(partOf:AA)
+    REPLACEMENT A:situation_exchange(),\
+    B:{track,pickup}(partOf:A,to:X,has:B_),C:{track,delivery}(partOf:A,has:C_),\
+    B2:{track,pickup}(partOf:A,to:X2,has:B2_),C2:{track,delivery}(partOf:A,has:C2_),\
+    X:{track,exchange}(to:C,has:X_),X2:{track,exchange}(to:C2,has:X2_),\
+    B_:pickup_conditional(),B2_:pickup_preventor(),C_:delivery_preventor(),C2_:delivery(),\
+    X_:exchange(partOf:X2_),X2_:exchange(partOf:X_),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+RULE MAKE_DELIVERY_CRITICAL 1.0 0.5 -1 CRITICAL,RACE
+    PATTERN A:situation_abst(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
+    D:track(),E:track(to:B),\
+    F:{start_point}(partOf:AA)
+    REPLACEMENT A:situation_critical_misdelivery_due_to_race_condition(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:N),\
+    D:track(),E:track(to:M),\
+    M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+RULE MAKE_DELIVERY_DEADLOCK 0.8 0.1 -1 CRITICAL,DEADLOCK
+    PATTERN A:situation_abst(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
+    F:{start_point}(partOf:AA),\
+    D:track(),E:track(to:B)
+    REPLACEMENT A:situation_deadlock_two_pickup_delivery(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:B2),C:{track,delivery}(partOf:A,partOf:AA,to:C2),\
+    B2:{track,pickup}(partOf:A,partOf:AA,to:X),C2:{track,delivery}(partOf:A,partOf:AA,to:N),\
+    D:track(),E:track(to:M),\
+    M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}(),\
+    X:{track,diverter}(partOf:A,to:Y,to:X2),Y:{dead_end}(is:Y_),Y_:trash(),\
+    X2:{track,diverter}(partOf:A,to:Y2,to:C),Y2:{dead_end}(is:Y2_),Y2_:trash()
+RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 DEADLOCK
+    PATTERN A:situation_trivial(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
+    D:track(),E:track(to:B),\
+    F:{start_point}(partOf:AA)
+    REPLACEMENT A:situation_critical_misdelivery_due_to_race_condition(),AA:subproblem(),\
+    B:{track,pickup}(partOf:A,partOf:AA,to:X),C:{track,delivery}(partOf:A,partOf:AA,to:N),\
+    X:{track,diverter}(partOf:A,to:Y,to:C),Y:{dead_end}(is:Y_),Y_:trash(),\
+    D:track(),E:track(to:M),\
+    M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+RULE SIMPLE_DEADLOCK 0.7 0.1 -1 DEADLOCK
+    PATTERN A:situation_abst(),AA:subproblem(),\
+    B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
+    F:{start_point}(partOf:AA)
+    REPLACEMENT A:two_thread_semaphore(),AA:subproblem(),\
+    B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+RULE EXPAND_DEADLOCK 1.0 1.0 -1 REFINEMENT
+    PATTERN A:two_thread_semaphore(),\
+    B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
+    REPLACEMENT A:situation_deadlock_two_thread_semaphore(),\
+    B:{track}(partOf:A,to:X,has:BUTTON),BUTTON:button(link:COND),LLC:{track}(to:LB),\
+    X:fork(toStarting:IA,to:IB,has:COND),Y:merge(to:LLC),COND:conditional()\
+    IA:{track}(has:IA_,to:JA),IA_:button(link:JB_,partOf:K),\
+    IB:{track}(has:IB_,to:JB),IB_:button(link:JA_,partOf:K),\
+    JA:{track}(has:JA_,to:Y),JA_:semaphore_red(partOf:K),\
+    JB:{track}(has:JB_,to:Y),JB_:semaphore_red(partOf:K),\
+    K:challenge(),\
+    C:{track}(),\
+    LA:situation_abst(),LAA:subproblem(),LB:track(is:LB_,partOf:LA,partOf:LAA),\
+    LC:{track}(is:LC_,partOf:LA,partOf:LAA,to:C),LB_:out(),LC_:in()
+RULE JESS_DEADLOCK1 0.7 0.1 -1 DEADLOCK
+    PATTERN A:situation_abst(),AA:subproblem(),\
+    B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
+    F:{start_point}(partOf:AA)
+    REPLACEMENT A:three_path_exchange_deadlock(),AA:subproblem(),\
+    B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
+    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 REFINEMENT
+    PATTERN A:three_path_exchange_deadlock(),\
+    B:track(is:B_,partOf:A),B_:out(),\
+    C:{track}(is:C_,partOf:A),C_:in()
+    REPLACEMENT A:situation_three_path_exchange_deadlock(),\
+    B:{track,pickup}(is:B_,partOf:A,to:B2),B_:out(),\
+    B2:{track}(partOf:A,to:FORK1,has:SOLSEM),\
+    C1:{track,delivery}(to:C,partOf:A),\
+    C:{track}(is:C_,partOf:A,has:SOLB5),C_:in(),\
+    FORK1:{track,diverter}(toWithPackage:PATH1A,toWithoutPackage:PATHTOFORK2,partOf:A),\
+    PATHTOFORK2:{track}(to:FORK2,partOf:A,has:SOLB3),\
+    FORK2:fork(to:PATH2B,toStarting:PATH3A,has:COND,partOf:A),COND:conditional(),\
+    PATH1A:{track}(to:PATH1B,has:SOLB2,partOf:A),\
+    PATH1B:{track}(to:PATH1C,has:BUTTON1,partOf:A),BUTTON1:button(partOf:CHALLENGE,link:SEM2),\
+    PATH1C:track(to:PATH1D,has:SEM1,partOf:A),SEM1:semaphore_red(partOf:CHALLENGE),\
+    PATH1D:{track,exchange}(to:MERGE,has:EXCHANGE1,partOf:A),EXCHANGE1:exchange(partOf:EXCHANGE3),\
+    PATH3A:{track}(to:PATH3B,partOf:A,has:SOLB4),\
+    PATH3B:{track,thread}(to:PATH3C,partOf:A),\
+    PATH3C:track(to:MERGE,has:EXCHANGE3),EXCHANGE3:exchange(partOf:EXCHANGE1),\
+    PATH2B:track(to:PATH2C,has:BUTTON2,partOf:A),BUTTON2:button(partOf:CHALLENGE,link:SEM1),\
+    PATH2C:track(to:MERGE,has:SEM2,partOf:A),SEM2:semaphore_red(partOf:CHALLENGE),\
+    MERGE:merge(to:C1),\
+    CHALLENGE:challenge(),\
+    SOLSEM:semaphore(),SOLB2:button(link:SOLSEM),SOLB3:button(link:COND),SOLB4:button(link:SOLSEM),SOLB5:button(link:SOLSEM)
