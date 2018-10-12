@@ -124,9 +124,13 @@ public class PCG {
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
-        return applyGrammar(ontology, graph, filename, r, debug, null, null);
+        return applyGrammar(ontology, graph, filename, r, debug, null, null, null, null);
     }
-    public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug, Map<String,Integer> rule_applications, Map<String,Integer> size_application_limits) throws Exception {
+    public static LGraph applyGrammar(Ontology ontology, LGraph startingGraph, String filename, Random r, boolean debug, 
+                                      Map<String,Integer> rule_applications, 
+                                      Map<String,Integer> size_application_limits, List<String> tags_to_be_ensured,
+                                      LinkedHashMap<String, Double> playerModel) throws Exception {
+        int attempts_left = 10;
         if (debug) {
             System.out.println("Applying " + filename);
         }
@@ -139,34 +143,56 @@ public class PCG {
             }
         }
         
-        LGraph lastGraph = graph;
-        LGraphGrammarSampler generator = new LGraphGrammarSampler(graph, grammar, true, r);
-        if(size_application_limits!=null){
-            for(Entry<String,Integer> entry:size_application_limits.entrySet()){
-                generator.addApplicationLimit(entry.getKey(), entry.getValue());
+        if (playerModel != null) PCGPlayerModelUtils.applyPlayerModel(playerModel, grammar);
+        
+        LGraph lastGraph = null;
+        do{
+            LGraph graph = startingGraph;
+            lastGraph = graph;
+            LGraphGrammarSampler generator = new LGraphGrammarSampler(graph, grammar, true, r);
+            if(size_application_limits!=null){
+                for(Entry<String,Integer> entry:size_application_limits.entrySet()){
+                    generator.addApplicationLimit(entry.getKey(), entry.getValue());
+                }
             }
-        }
-        // Use the grammar to rewrite the graph:
-        do {
-            if (debug) {
-                System.out.println("Current graph:");
-                System.out.println("  " + graph);
+            // Use the grammar to rewrite the graph:
+            do {
+                if (debug) {
+                    System.out.println("Current graph:");
+                    System.out.println("  " + graph);
+                }
+                graph = generator.applyRuleStochastically();
+                if (graph != null) {
+                    lastGraph = graph;
+                }
+            } while (graph != null);
+    //        if (debug) {
+                generator.printRuleApplicationCounts();
+                System.out.println("Current graph (after):");
+                System.out.println("  " + lastGraph);
+    //        }
+    
+            boolean found = true;
+            if (tags_to_be_ensured != null) {
+                for(String tag:tags_to_be_ensured) {
+                    if (!generator.ruleWithTagWasTriggered(tag)) {
+                        found = false;
+                        break;
+                    }
+                }
             }
-            graph = generator.applyRuleStochastically();
-            if (graph != null) {
-                lastGraph = graph;
+            if (found) {
+                // we are good! we succeeded!
+                if(rule_applications!=null){
+                    for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
+                        rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
+                    }
+                }
+                break;
             }
-        } while (graph != null);
-//        if (debug) {
-            generator.printRuleApplicationCounts();
-            System.out.println("Current graph (after):");
-            System.out.println("  " + lastGraph);
-//        }
-        if(rule_applications!=null){
-            for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
-                rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
-            }
-        }
+            attempts_left--;
+        }while(attempts_left>0);
+        
         return lastGraph;
     }
 
@@ -175,7 +201,12 @@ public class PCG {
     }
     public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug, Map<String,Integer> rule_applications) throws Exception {
         Random r = new Random(randomSeed);
-        if (size == -1) size = r.nextInt(5)+1;
+        if (size == -1) {
+            size = PCGPlayerModelUtils.determineLevelSize(playerModel);
+            System.out.println("Player model recommended level size: " + size);
+        } else {
+            System.out.println("Size fixed by input parameters: " + size);
+        }
         
         System.out.println("PlayerModel:");
         if (playerModel != null) {
@@ -185,52 +216,33 @@ public class PCG {
         }
 
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 2);
-        Map<String,Integer> size_application_limits = new LinkedHashMap();
+        Map<String,Integer> size_application_limits = new LinkedHashMap<>();
+        List<String> tags_to_be_ensured = new LinkedList<>();
+
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1));
         size_application_limits.put("ADD_MORE_PROBLEMS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(0));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(1));
-        /*
-        List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
-        Map<String,Integer> size_application_limits = new LinkedHashMap();
-        System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
-        size_application_limits.put("ADD_MORE_PROBLEMS", sizes.get(0));
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(1));
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(2));
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 1);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 1);
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 2);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
-        */
+
+        tags_to_be_ensured.add("deliver_packages");
         
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
         LGraph graph = LGraph.fromString("N0:problem()");
         // Create structure for problems and subproblems        
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel);
 //	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
         
         // Instanciate situations
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel);
 //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
 //	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
 
         // Refine components
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel);
         // Remove solution
         if(!keep_solution){
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null);
+            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel);
         }
 //	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
         
@@ -330,6 +342,7 @@ public class PCG {
         writer.close();
         System.out.println(out_file.getAbsolutePath());
     }
+    
     
     public static LinkedHashMap<String, Double> loadPlayerModel(String filename) throws Exception
     {

@@ -1,59 +1,59 @@
-RULE JUST_CONNECT 1.0 1.0 -1 REFINEMENT
+RULE JUST_CONNECT 1.0 1.0 -1 none
     PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
     REPLACEMENT B:track(to:C),C:track()
 # I think this is not in use anymore, not sure
-RULE ADD_THREAD 1.0 0.5 -1 REFINEMENT
+RULE ADD_THREAD 1.0 0.5 -1 none
     PATTERN A:{track,thread}()
     NEGATEDPATTERN A:{track,thread}(has:B),B:thread()
     REPLACEMENT A:track(has:B),B:thread()
-RULE ADD_MULTITHREAD 1.0 0.5 -1 REFINEMENT
+RULE ADD_MULTITHREAD 1.0 0.5 -1 none
     PATTERN A:track(to:B,has:C),B:track(),C:multithread()
     REPLACEMENT A:track(to:A2),A2:track(has:A2_,to:B),B:track(),A2_:thread()
-RULE ADD_PICKUP 1.0 0.5 -1 REFINEMENT
+RULE ADD_PICKUP 1.0 0.5 -1 none
     PATTERN A:{track,pickup}(partOf:X),X:situation_critical_misdelivery_due_to_race_condition()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()
     REPLACEMENT A:track(has:B),B:pickup_unconditional()
-RULE ADD_PICKUP 1.0 0.5 -1 REFINEMENT
+RULE ADD_PICKUP 1.0 0.5 -1 none
     PATTERN A:{track,pickup}(partOf:X),X:situation_critical_thread_lost()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()
     REPLACEMENT A:track(has:B),B:pickup_conditional()
-RULE ADD_PICKUP 0.9 0.5 -1 REFINEMENT
+RULE ADD_PICKUP 0.9 0.5 -1 none
     PATTERN A:{track,pickup}()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()
     REPLACEMENT A:track(has:B),B:pickup_conditional()
-RULE ADD_DELIVERY 0.9 0.5 -1 REFINEMENT
+RULE ADD_DELIVERY 0.9 0.5 -1 none
     PATTERN A:{track,delivery}()
     NEGATEDPATTERN A:{track,delivery}(has:B),B:delivery()
     REPLACEMENT A:track(has:B),B:delivery()
-RULE ADD_BUTTON_SEMAPHORE 1.0 0.5 -1 REFINEMENT
+RULE ADD_BUTTON_SEMAPHORE 1.0 0.5 -1 none
     PATTERN A:situation_inst(),B:{track,semaphore}(partOf:A),C:{track,button}(partOf:A)
     NEGATEDPATTERN B:{track}(has:B_),B_:semaphore()
     REPLACEMENT A:situation_inst(),B:{track}(partOf:A,has:B_),C:{track}(partOf:A,has:C_),\
     B_:semaphore(),C_:button(link:B_)
-RULE ADD_DIVERTER 1.0 0.5 -1 REFINEMENT
+RULE ADD_DIVERTER 1.0 0.5 -1 none
     PATTERN A:situation_inst(),B:{track,diverter}(partOf:A)
     NEGATEDPATTERN B:{track}(has:B_),B_:diverter()
     REPLACEMENT A:situation_inst(),B:{track}(partOf:A,has:B_),B_:diverter()
-RULE ADD_BUTTON_DIRECTION 1.0 0.5 -1 REFINEMENT
+RULE ADD_BUTTON_DIRECTION 1.0 0.5 -1 none
     PATTERN B:{fork}(),C:{merge}(partOf:B)
     NEGATEDPATTERN B:{fork}(has:B_),B_:conditional()
     REPLACEMENT B:{fork}(has:B_),B_:conditional(),\
     C:{merge}(partOf:B,has:C_),C_:button(link:B_)
-RULE MAKE_LOOP 1.0 0.5 -1 LOOP
+RULE MAKE_LOOP 1.0 0.5 -1 none
     PATTERN A:subproblem(),B:{track,start_point}(partOf:A),C:{track,end_point}(partOf:A)
     NEGATEDPATTERN C:{track,end_point}(to:D),D:track()
     REPLACEMENT A:{subproblem,loop}(),B:{track,start_point}(partOf:A),C:{track,end_point}(to:B,partOf:A)
-RULE MAKE_CONNECT_PROBLEMS 0.1 0.5 -1 COMPLICATE
+RULE MAKE_CONNECT_PROBLEMS 0.1 0.5 -1 complexity
     PATTERN B:{track,start_point}(),C:{track,end_point}()
     NEGATEDPATTERN C:{track,end_point}(to:D),D:track()
     REPLACEMENT B:{track,start_point}(),C:{track,end_point}(to:B)
-RULE MAKE_DEADENDS_TRASH 1.0 0.5 -1 TRIVIAL
+RULE MAKE_DEADENDS_TRASH 1.0 0.5 -1 none
     PATTERN A:dead_end(is:A_),A_:trash()
     NEGATEDPATTERN A:track(to:B),B:track()
     REPLACEMENT A:merge(to:C,is:A_),A_:trash(),C:track(to:D),D:track(to:A)
-RULE MAKE_DIVERTER_DEADEND_LOOP 1.0 0.5 -1 TRIVIAL
+RULE MAKE_DIVERTER_DEADEND_LOOP 1.0 0.5 -1 none
     PATTERN PREX:track(to:X),X:{track,diverter}(to:Y),Y:{dead_end}(is:Y_),Y_:trash()
     REPLACEMENT PREX:track(to:MERGE),MERGE:merge(to:X),X:{track,diverter}(to:Z),Z:track(to:MERGE,is:Z_),Z_:trash()
-RULE INSTANTIATE_CONTROL_LOOP 1.0 1.0 -1 REFINEMENT
+RULE INSTANTIATE_CONTROL_LOOP 1.0 1.0 -1 none
     PATTERN B:control_loop()
     REPLACEMENT M:{track,thread}(to:N),N:track(to:O),O:track(to:M)
