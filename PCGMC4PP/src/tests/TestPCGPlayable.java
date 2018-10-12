@@ -84,13 +84,13 @@ public class TestPCGPlayable {
         boolean debug = false;
         for(int size=2;size<=2;size++){        
             for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 300; {
+//            int randomSeed = 200; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
                 GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, debug);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
-//                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                 if (!solvable(gs)) {
                     BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                     System.err.println("Level is not solvable! randomSeed: " + randomSeed);
