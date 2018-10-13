@@ -9,7 +9,7 @@ import java.util.*;
 public abstract class PlayerModeler {
 
     public static final int DEBUG = 0;
-    public static final String PLAYER_MODELING_DATA_DIR = "player_modeling_files/";
+    public static final String PLAYER_MODELING_DATA_DIR = "pmfiles/";
 
     /* Player-modeling specific variables */
     protected double interval;
@@ -34,7 +34,7 @@ public abstract class PlayerModeler {
         for (int i = 0; i < FeatureExtraction.features.length; i++) {
             attributes.add(new Attribute(FeatureExtraction.features[i]));
         }
-
+        System.out.println(attributes);
         annotation_values = new ArrayList<String>();
         annotation_values.add("A");
         annotation_values.add("B");
@@ -55,6 +55,7 @@ public abstract class PlayerModeler {
     protected void readTrainingModel(String filename) {
         try {
             classifier = (Classifier) weka.core.SerializationHelper.read(filename);
+            System.out.println("Successfully read in trained model!");
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -72,8 +73,7 @@ public abstract class PlayerModeler {
         if ( DEBUG > 0 ) {
             System.out.println("-------------------Create and classifying instance-------------------");
         }
-        Instance new_instance = new DenseInstance(feature_vector.size() + 1);
-
+        Instance new_instance = new DenseInstance(FeatureExtraction.features.length + 1);
         for (Attribute a : attributes) {
             if (!a.name().equals("annotations")) {
                 new_instance.setValue(a, feature_vector.get(a.name()));

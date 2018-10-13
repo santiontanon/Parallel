@@ -88,6 +88,9 @@ public class TelemetryUtils {
         ArrayList<String> ret = new ArrayList<String>();
         for ( int i = 0; i < data.size(); i++ ) {
             String [] tmp = data.get(i).split("\t");
+            if ( tmp.length != 6 ) {
+                continue;
+            }
             double time_ = Double.parseDouble(tmp[3]);
             if ( ( t1 < time_ ) && ( t2 > time_ ) ) {
                 ret.add(data.get(i));

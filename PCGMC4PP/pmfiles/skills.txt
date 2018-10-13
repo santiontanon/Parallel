@@ -1,0 +1,21 @@
+Hover over objects to see what they do
+Use help bar
+Drag objects
+Place objects on the track
+Hover over side arrows to see different colored tracks
+Remove unnecessary elements
+Deliver packages
+Be able to link buttons to direction switches
+Understand the use of semaphores
+Understand that arrows move at unpredictable rates
+Be able to link semaphores to buttons
+Understand that events happen in different orders
+Use diverters
+Prevent starvation
+Block critical sections
+Synchronize multiple arrows
+Alternating access with semaphores and buttons (ensure mutual exclusion)
+Testing before submitting
+Understand specific delivery points
+Understand exchange points
+Deliver packages with multiple synchronized arrows

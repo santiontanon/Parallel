@@ -6,10 +6,12 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import org.apache.commons.cli.*;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -31,7 +33,12 @@ public class ServerInterface {
     private String paramFilepath;
 
     public ServerInterface(String paramFilepath_) {
-        client = HttpClients.createDefault();
+        RequestConfig defaultRequestConfig = RequestConfig.custom()
+                .setSocketTimeout(5000)
+                .setConnectTimeout(5000)
+                .setConnectionRequestTimeout(5000)
+                .build();
+        client = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
         paramFilepath = paramFilepath_;
     }
 
@@ -39,8 +46,15 @@ public class ServerInterface {
         String jsonString = getPlayerModelData(user);
         System.out.println("JSON String: " + jsonString);
         String skillVector = readSkillVector();
-        JsonParser jsonParser = new JsonParser();
-        JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);
+        JsonObject jsonObject;
+        System.out.println(jsonString.length());
+        if ( jsonString.equals("\"\"") ) {
+            jsonObject = new JsonObject();
+            jsonObject.addProperty("user", user);
+        } else {
+            JsonParser jsonParser = new JsonParser();
+            jsonObject = (JsonObject)jsonParser.parse(jsonString);
+        }
         jsonObject.addProperty("current", skillVector);
         if ( jsonObject.has(level) ) {
             jsonObject.getAsJsonArray(level).add(skillVector);
@@ -97,6 +111,8 @@ public class ServerInterface {
             e.printStackTrace();
         } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
+        } catch ( ConnectTimeoutException e ) {
+
         } catch ( IOException e ) {
             e.printStackTrace();
         }
@@ -176,7 +192,6 @@ public class ServerInterface {
 
         Options cliOptions = new Options();
         cliOptions.addOption("mode",true,"Mode of operation (read or write)");
-        cliOptions.addOption("local",true,"Get data locally (only used if there is no network connection)");
         cliOptions.addOption("user",true,"Name of player");
         cliOptions.addOption("level",true,"Current level");
         cliOptions.addOption("path",true,"Path to currentParameters.txt");
@@ -184,7 +199,6 @@ public class ServerInterface {
         String mode = "";
         String user = "";
         String level = "";
-        boolean local = false;
         String paramFilePath = "";
         CommandLineParser parser = new DefaultParser();
         try {
