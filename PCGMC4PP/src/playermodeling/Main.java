@@ -12,7 +12,7 @@ import weka.classifiers.bayes.NaiveBayes;
 
 public class Main {
 
-    public static final String TRAINING_MODEL_FILEPATH = "pmfiles/weka.classifiers.bayes.NaiveBayes.10.model";
+    public static final String TRAINING_MODEL_FILEPATH = "pmfiles/classifier-model.model";
     public static final double interval = 5;
     public static final int skillVectorUpdateTechniqueFlag = 0;
     public static final Classifier cls = new NaiveBayes();
