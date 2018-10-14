@@ -16,6 +16,7 @@ import lgraphs.sampler.LGraphRewritingRule;
  */
 public class PCGPlayerModelUtils {
     static final LinkedHashMap<String, String> skills = new LinkedHashMap<>();
+    static final LinkedHashMap<String, String> skills_inv = new LinkedHashMap<>();
     static final ArrayList<String> targetSkills = new ArrayList<>();
     static{
         skills.put("Hover over objects to see what they do", "hover_objects");
@@ -48,6 +49,10 @@ public class PCGPlayerModelUtils {
         targetSkills.add("Block critical sections");
         targetSkills.add("Synchronize multiple arrows");
         targetSkills.add("Alternating access with semaphores and buttons (ensure mutual exclusion)");
+        
+        for(String skill:skills.keySet()) {
+            skills_inv.put(skills.get(skill), skill);
+        }
     }
     
     
@@ -56,6 +61,12 @@ public class PCGPlayerModelUtils {
         return skills.get(name);
     }
 
+    
+    public static String skillCodeToSkillName(String name)
+    {
+        return skills_inv.get(name);
+    }
+    
 
     public static int determineLevelSize(LinkedHashMap<String, Double> playerModel)
     {

@@ -111,8 +111,11 @@ public class PCG {
     }
 
     public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
-        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, playerModel, false);
-        return embeddGraph(graph, randomSeedEmbedding, debug);
+        List<String> skills = new ArrayList<>();    // the set of skills required by this level
+        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, playerModel, skills, false);
+        GameState gs = embeddGraph(graph, randomSeedEmbedding, debug);
+        gs.skills = skills;
+        return gs;
     }
     
     public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
@@ -124,12 +127,13 @@ public class PCG {
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
-        return applyGrammar(ontology, graph, filename, r, debug, null, null, null, null);
+        return applyGrammar(ontology, graph, filename, r, debug, null, null, null, null, null);
     }
     public static LGraph applyGrammar(Ontology ontology, LGraph startingGraph, String filename, Random r, boolean debug, 
                                       Map<String,Integer> rule_applications, 
                                       Map<String,Integer> size_application_limits, List<String> tags_to_be_ensured,
-                                      LinkedHashMap<String, Double> playerModel) throws Exception {
+                                      LinkedHashMap<String, Double> playerModel,
+                                      List<String> skills) throws Exception {
         int attempts_left = 10;
         if (debug) {
             System.out.println("Applying " + filename);
@@ -188,6 +192,19 @@ public class PCG {
                         rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
                     }
                 }
+                if (skills != null) {
+                    for(LGraphRewritingRule rule:grammar.getRules()) {
+                        Integer count = generator.getRuleApplicationCounts().get(rule.getName());
+                        if (count != null && count > 0) {
+                            for(String tag:rule.getTags()) {
+                                String skill = PCGPlayerModelUtils.skillCodeToSkillName(tag);
+                                if (skill != null && !skills.contains(skill)) {
+                                    skills.add(skill);
+                                }
+                            }
+                        }
+                    }
+                }
                 break;
             }
             attempts_left--;
@@ -196,10 +213,10 @@ public class PCG {
         return lastGraph;
     }
 
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
-        return generateGraph(randomSeed, size, keep_solution, playerModel, debug, null);
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, List<String> skills, boolean debug) throws Exception {
+        return generateGraph(randomSeed, size, keep_solution, playerModel, skills, debug, null);
     }
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug, Map<String,Integer> rule_applications) throws Exception {
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, List<String> skills, boolean debug, Map<String,Integer> rule_applications) throws Exception {
         Random r = new Random(randomSeed);
         if (size == -1) {
             size = PCGPlayerModelUtils.determineLevelSize(playerModel);
@@ -229,23 +246,53 @@ public class PCG {
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
         LGraph graph = LGraph.fromString("N0:problem()");
+        
         // Create structure for problems and subproblems        
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel, skills);
 //	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
         
         // Instanciate situations
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel, skills);
 //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
 //	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
 
         // Refine components
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel, skills);
+
+        // find additional skills that might not have been tagged by the grammar:
+        /*
+        skills.put("Understand that arrows move at unpredictable rates", "nondeterministic_arrows");
+        */
+        if (skills != null) {
+            for(LGraphNode n:graph.getNodes()) {
+                if (n.subsumedBy(Sort.getSort("delivery"))) {
+                    if (!skills.contains("Deliver packages")) skills.add("Deliver packages");
+                }
+                if (n.subsumedBy(Sort.getSort("fork"))) {
+                    if (!skills.contains("Be able to link buttons to direction switches")) skills.add("Be able to link buttons to direction switches");
+                }
+                if (n.subsumedBy(Sort.getSort("semaphore"))) {
+                    if (!skills.contains("Be able to link semaphores to buttons")) skills.add("Be able to link semaphores to buttons");
+                    if (!skills.contains("Understand the use of semaphores")) skills.add("Understand the use of semaphores");
+                }
+                if (n.subsumedBy(Sort.getSort("diverter"))) {
+                    if (!skills.contains("Use diverters")) skills.add("Use diverters");
+                }
+                if (n.subsumedBy(Sort.getSort("exchange"))) {
+                    if (!skills.contains("Understand exchange points")) skills.add("Understand exchange points");
+                }
+                if (n.subsumedBy(Sort.getSort("multithread"))) {
+                    if (!skills.contains("Understand that arrows move at unpredictable rates")) skills.add("Understand that arrows move at unpredictable rates");
+                }
+            }
+        }
+        
         // Remove solution
         if(!keep_solution){
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel);
+            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel, skills);
         }
 //	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
-        
+
         return graph;
     }
 

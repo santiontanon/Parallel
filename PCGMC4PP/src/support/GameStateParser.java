@@ -172,6 +172,11 @@ public class GameStateParser {
                             System.out.println("EXECUTION Section ignored when parsing file.");
                         }
                         break;
+                    } else if ("SKILLS".equals(current_section)) {
+                        if (verbose) {
+                            System.out.println("SKILLS Section ignored when parsing file.");
+                        }
+                        break;
                     } else if (verbose) {
                         System.out.println("Unknown section ignored when parsing file.");
                     }

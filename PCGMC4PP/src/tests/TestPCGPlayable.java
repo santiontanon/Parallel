@@ -23,14 +23,11 @@
  */
 package tests;
 
-import java.io.File;
 import game.GameState;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
 import java.util.LinkedHashMap;
-import lgraphs.sampler.LGraphGrammarSampler;
-import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import support.PCG;
 import support.PCGPlayerModelUtils;
 import support.Play;
@@ -60,8 +57,6 @@ public class TestPCGPlayable {
         LinkedHashMap<String, Double> playerModel = PCG.loadPlayerModel("currentParameters.txt");
         System.out.println("Player model recommended level size: " + PCGPlayerModelUtils.determineLevelSize(playerModel));
         
-        String batchId;
-        batchId = "santiTest";
         int accumWidth = 0;
         boolean debug = false;
         for(int size=0;size<=0;size++){        
@@ -71,6 +66,7 @@ public class TestPCGPlayable {
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
                 GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, playerModel, debug);
+                System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
                 new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                 if (!solvable(gs)) {
