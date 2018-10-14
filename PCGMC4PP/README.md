@@ -1,6 +1,6 @@
 # Player Modeling for Parallel
 
-This README provides an introduction to running our player modeling system. There are two JAR executables: `PlayerModel.jar` and `ServerInterface.jar`. Both of these are located in the `executables/` directory.
+This README provides an introduction to running our player modeling system. There are two JAR executables: `PlayerModel.jar` and `ServerInterface.jar`. Both of these are located in the `dist/` directory.
 
 ## Installation/Setup Instructions
 
