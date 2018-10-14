@@ -1254,7 +1254,7 @@ public class FeatureExtraction {
         long startTime = ( time.toInstant(ZoneOffset.ofHours(0)).toEpochMilli() / 1000 );
 
         featureVector.replace("start_date", (double)startTime);
-        featureVector.replace("start_time", ((double)startTime) - ((Long)levelData.persistent_data.get("start_time")).doubleValue() );
+        featureVector.replace("start_time", ((double)startTime) - ((Long)levelData.persistent_data.get("start_time")).doubleValue());
 
         HashMap<String, Object > levelData_ = levelData.persistent_data;
         HashMap<String,String> colorMap = (HashMap<String,String>) levelData_.get("comp_color_map");
@@ -1352,6 +1352,7 @@ public class FeatureExtraction {
                     dragStartCoord.p2 = y_;
                     break;
                 case "endDrag":
+                    analyzer.updateRuleEvidence("Drag objects");
                     dragEndCoord.p1 = x_;
                     dragEndCoord.p2 = y_;
                     double dist;
@@ -1377,6 +1378,7 @@ public class FeatureExtraction {
 
                     n = featureVector.get("trashed_" + data_);
                     featureVector.replace("trashed_" + data_,n+1);
+                    analyzer.updateRuleEvidence("Remove unnecessary elements");
                     break;
                 case "OnHoverBehavior":
                     // This implies that we are on a track...but we hover on an object though..?
@@ -1385,6 +1387,7 @@ public class FeatureExtraction {
 
                     n = featureVector.get("hover_" + data_);
                     featureVector.replace("hover_" + data_,n+1);
+                    analyzer.updateRuleEvidence("Hover over objects to see what they do");
                     break;
                 case "BeginReposition":
                     repositionBeginCoord.p1 = x_;
@@ -1437,7 +1440,7 @@ public class FeatureExtraction {
                     il_coord.p2 = y_;
                     break;
                 case "LinkTo":
-                    levelData_.replace("linking",true);
+                    levelData_.replace("linking", true);
 
                     fl_coord.p1 = x_;
                     fl_coord.p2 = y_;
@@ -1449,8 +1452,8 @@ public class FeatureExtraction {
                     double numTimesMouseOnComponent = featureVector.get("num_mouse_on_comp");
                     featureVector.replace("num_mouse_on_comp", numTimesMouseOnComponent+1);
 
-                    levelData_.replace("cur_mouse_comp",data_);
-                    levelData_.replace("cur_mouse_time",time_);
+                    levelData_.replace("cur_mouse_comp", data_);
+                    levelData_.replace("cur_mouse_time", time_);
 
                     componentID = data_.split("/")[1];
 
@@ -1482,6 +1485,9 @@ public class FeatureExtraction {
                         /* Check which component we are linking to
                          *       direction switch -> conditional
                          * */
+                        if ( data_.contains("conditional")  ) {
+                            analyzer.updateRuleEvidence("Be able to link buttons to direction switches");
+                        }
 
                         if ( colorMap.size() != 0 ) {
                             if ( colorMap.containsKey(componentID) ) {
@@ -1514,6 +1520,7 @@ public class FeatureExtraction {
                     }
                     n = featureVector.get("flow_visibility");
                     featureVector.replace("flow_visibility", n + 1);
+                    analyzer.updateRuleEvidence("Hover over side arrows to see different colored tracks");
 
                     break;
                 case "LockFlowVisibility":
@@ -1524,6 +1531,7 @@ public class FeatureExtraction {
                     featureVector.replace("flow_tooltip", n + 1);
                     break;
                 case "hint":
+                    analyzer.updateRuleEvidence("Use help bar");
                     break;
                 case "TriggerGoalPopUp":
                     if ( data_.contains("Successfully") ) {

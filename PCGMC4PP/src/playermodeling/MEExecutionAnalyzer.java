@@ -19,6 +19,7 @@ public class MEExecutionAnalyzer {
 
     SkillAnalyzer skillAnalyzer;
 
+
     public MEExecutionAnalyzer(SkillAnalyzer analyzer, String criticalSectionPath) {
         skillAnalyzer = analyzer;
         criticalSectionRootPath = criticalSectionPath;
@@ -80,7 +81,45 @@ public class MEExecutionAnalyzer {
             int meExecutionNumLines = 0;
             int boardWidth, boardHeight = 0;
             boolean startComponentParsing = false;
+            boolean startExecutionParsing = false;
             while ((meExecutionFileLine = br.readLine()) != null) {
+
+                if (meExecutionFileLine.startsWith("board_width")) {
+                    boardWidth = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
+                    persistentData.persistent_data.put("width", boardWidth);
+                }
+
+                if (meExecutionFileLine.startsWith("board_height")) {
+                    boardHeight = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
+                    persistentData.persistent_data.put("height", boardHeight);
+                }
+
+                if (meExecutionFileLine.startsWith("DIRECTIONS")) {
+                    ArrayList<ArrayList<String>> directionBoard = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("direction_layout");
+                    for (int i = meExecutionNumLines + 1; i < meExecutionNumLines + boardHeight + 1; i++) {
+                        String tmp = br.readLine();
+                        ArrayList<String> row = new ArrayList<String>();
+                        for (int m = 0; m < tmp.length(); m++) {
+                            row.add(String.valueOf(tmp.charAt(m)));
+                        }
+                        directionBoard.add(row);
+                        persistentData.persistent_data.replace("direction_layout", directionBoard);
+                    }
+                }
+
+
+                if (meExecutionFileLine.startsWith("COLORS")) {
+                    ArrayList<ArrayList<String>> color = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
+                    for (int i = meExecutionNumLines + 1; i < meExecutionNumLines + boardHeight + 1; i++) {
+                        String tmp = br.readLine();
+                        ArrayList<String> row = new ArrayList<String>();
+                        for (int m = 0; m < tmp.length(); m++) {
+                            row.add(String.valueOf(tmp.charAt(m)));
+                        }
+                        color.add(row);
+                    }
+                    persistentData.persistent_data.replace("color_layout", color);
+                }
 
                 if (meExecutionFileLine.startsWith(("level_id"))) {
                     int levelID = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
@@ -100,46 +139,8 @@ public class MEExecutionAnalyzer {
                         String criticalSectionFileLines;
                         int criticalSectionFileNumLines = 0;
 
-                        boardWidth = 0;
-                        boardHeight = 0;
+
                         while ((criticalSectionFileLines = criticalSectionFileBufferedReader.readLine()) != null) {
-                            if (criticalSectionFileLines.startsWith("board_width")) {
-                                boardWidth = Integer.parseInt(criticalSectionFileLines.split("\t")[1]);
-                                persistentData.persistent_data.put("width", boardWidth);
-                            }
-
-                            if (criticalSectionFileLines.startsWith("board_height")) {
-                                boardHeight = Integer.parseInt(criticalSectionFileLines.split("\t")[1]);
-                                persistentData.persistent_data.put("height", boardHeight);
-                            }
-
-                            if (criticalSectionFileLines.startsWith("DIRECTIONS")) {
-                                ArrayList<ArrayList<String>> directionBoard = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("direction_layout");
-                                for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeight + 1; i++) {
-                                    String tmp = criticalSectionFileBufferedReader.readLine();
-                                    ArrayList<String> row = new ArrayList<String>();
-                                    for (int m = 0; m < tmp.length(); m++) {
-                                        row.add(String.valueOf(tmp.charAt(m)));
-                                    }
-                                    directionBoard.add(row);
-                                    persistentData.persistent_data.replace("direction_layout", directionBoard);
-                                }
-                            }
-
-
-                            if (criticalSectionFileLines.startsWith("COLORS")) {
-                                ArrayList<ArrayList<String>> color = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
-                                for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeight + 1; i++) {
-                                    String tmp = br.readLine();
-                                    ArrayList<String> row = new ArrayList<String>();
-                                    for (int m = 0; m < tmp.length(); m++) {
-                                        row.add(String.valueOf(tmp.charAt(m)));
-                                    }
-                                    color.add(row);
-                                }
-                                persistentData.persistent_data.replace("color_layout", color);
-                            }
-
                             if (criticalSectionFileLines.startsWith("CRITICALSECTIONS")) {
                                 ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("critical_section");
                                 for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeight + 1; i++) {
@@ -266,6 +267,40 @@ public class MEExecutionAnalyzer {
                     }
                 }
 
+                if (meExecutionFileLine.startsWith("EXECUTION")) {
+                    startExecutionParsing = true;
+                    continue;
+                }
+
+                if (startExecutionParsing && meExecutionFileLine.split("\t")[0].equals("D")) {
+                    /* Execution denotes a package was delivered */
+                    HashMap<String, Object> deliveryExecution = gson.fromJson(meExecutionFileLine.split("\t")[5], HashMap.class);
+                    /* Structure example:
+                        {"missed_items":[],"delivered_items":[2002],"delivered_to":3001}
+                        {exchange_between_b=1004.0, exchange_between_a=1001.0}
+                    */
+                    if (!deliveryExecution.containsKey("delivered_items")) {
+                        /* This is an exchange point */
+                        if ( deliveryExecution.containsKey("exchange_between_b") ) {
+                            /* Check if both have packages. If both do, then exchange. NOTE: Is it possible to exchange with a thread that doesn't have a package? */
+                            if ( deliveryExecution.get("exchange_between_a") != null && deliveryExecution.get("exchange_between_b") != null ) {
+                                skillAnalyzer.updateRuleEvidence("Understand exchange points");
+                            }
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        ArrayList<Integer> delivered = (ArrayList<Integer>) deliveryExecution.get("delivered_items");
+                        ArrayList<Integer> missed = (ArrayList<Integer>) deliveryExecution.get("missed_items");
+                        if ( DEBUG > 0 ) { System.out.println("Delivery execution: " + deliveryExecution.toString()); }
+                        int id = ((Double) deliveryExecution.get("delivered_to")).intValue();
+                        if ( componentIDToNumMissed.containsKey(id) ) {
+                            componentIDToNumMissed.replace(id, componentIDToNumMissed.get(id) + missed.size());
+                            componentIDToNumDelivered.replace(id, componentIDToNumDelivered.get(id) + delivered.size());
+                        }
+                    }
+                }
+
                 if (meExecutionFileLine.startsWith("COMPONENTS")) {
                     startComponentParsing = true;
                 } else {
@@ -298,6 +333,8 @@ public class MEExecutionAnalyzer {
                                     ArrayList<ArrayList<String>> colorBoard =
                                             (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
                                     String colorID = colors.get(colorBoard.get(y).get(x));
+                                    System.out.println(colorBoard);
+                                    System.out.println(parsedInfo);
                                     if (colorID == null) {
                                         System.out.println("Add this color to the list: " + colorBoard.get(y).get(x));
                                         System.exit(-1);
@@ -317,6 +354,9 @@ public class MEExecutionAnalyzer {
                                     pickupIDs.add(componentInfo[0]);
                                     break;
                                 case "semaphore":
+                                    if ( componentInfo[4].equals("P") ) {
+                                        skillAnalyzer.updateRuleEvidence("Place objects on the track");
+                                    }
                                     semaphoreIDs.add(componentInfo[0]);
                                     ArrayList<ArrayList<String>> colorBoard =
                                             (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
@@ -342,6 +382,9 @@ public class MEExecutionAnalyzer {
                                     }
                                     break;
                                 case "signal":
+                                    if ( componentInfo[4].equals("P") ) {
+                                        skillAnalyzer.updateRuleEvidence("Place objects on the track");
+                                    }
                                     if (parsedInfo.containsKey("link") && ((Double) parsedInfo.get("link")).intValue() != -1) {
                                         String linkedItemID = Integer.toString(((Double) parsedInfo.get("link")).intValue());
                                         buttonComponentMap.put(componentInfo[0], linkedItemID);
@@ -394,8 +437,8 @@ public class MEExecutionAnalyzer {
                     Pair<Integer, Integer> prevSemaphoreCoord = prevSemaphoreLocations.get(semID);
                     Pair<Integer, Integer> curSemaphoreCoord = curLocSemaphores.get(semID);
 
-                    int manhattan_distance = Math.abs(prevSemaphoreCoord.p1 - curSemaphoreCoord.p1) + Math.abs(prevSemaphoreCoord.p2 - curSemaphoreCoord.p2);
-                    if (!(prevSemaphoreCoord.equals(curSemaphoreCoord)) && (manhattan_distance > 1)) {
+                    int manhattanDistance = Math.abs(prevSemaphoreCoord.p1 - curSemaphoreCoord.p1) + Math.abs(prevSemaphoreCoord.p2 - curSemaphoreCoord.p2);
+                    if (!(prevSemaphoreCoord.equals(curSemaphoreCoord)) && (manhattanDistance > 1)) {
                         /* Changed "significantly" */
                         skillAnalyzer.updateRuleEvidence("Understand that arrows move at unpredictable rates");
                     }
@@ -417,6 +460,7 @@ public class MEExecutionAnalyzer {
         /* Rule: "Be able to link semaphores to buttons" and "Understand that arrows move at unpredictable rates" */
         for (String semID : componentButtonMap.keySet()) {
             if (semaphoreIDs.contains(semID)) {
+                skillAnalyzer.updateRuleEvidence("Be able to link semaphores to buttons");
                 for (String buttonID : componentButtonMap.get(semID)) {
                     buttonSemaphoreLinkMap.put(buttonID, semID);
                 }
@@ -559,6 +603,40 @@ public class MEExecutionAnalyzer {
                     }
                 }
             }
+        }
+
+        /* NOTE: Is this computed for each file sent over to the ME or for all executions? */
+        int totalMissed = 0;
+        boolean allPackagesDelivered = true;
+        for (Integer id : componentIDToNumDeliveryRequired.keySet()) {
+            String condition = componentIDToCondition.get(id);
+            int value = componentIDToNumDelivered.get(id);
+            int component_value = componentIDToNumDeliveryRequired.get(id);
+            int missed = componentIDToNumMissed.get(id);
+            totalMissed += missed;
+
+            if ("eq".equals(condition) && !(value == component_value)) {
+                allPackagesDelivered = false;
+                break;
+            } else if ("lt".equals(condition) && !(value < component_value)) {
+                allPackagesDelivered = false;
+                break;
+            } else if ("gt".equals(condition) && !(value > component_value)) {
+                allPackagesDelivered = false;
+                break;
+            } else if ("ne".equals(condition) && !(value != component_value)) {
+                allPackagesDelivered = false;
+                break;
+            }
+        }
+        if (allPackagesDelivered) {
+            //System.out.println("You successfully delivered all the packages!");
+            skillAnalyzer.updateRuleEvidence("Deliver packages");
+        }
+
+        if (totalMissed == 0) {
+            //System.out.println("You successfully didn't miss any packages!");
+            skillAnalyzer.updateRuleEvidence("Understand specific delivery points");
         }
 
         return persistentData;

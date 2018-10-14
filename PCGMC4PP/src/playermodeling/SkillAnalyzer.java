@@ -40,7 +40,11 @@ public class SkillAnalyzer {
                 String [] skillValuePairSplit = skillValuePair.split(",");
                 String skill = skillValuePairSplit[0];
                 double skillValue = Double.parseDouble(skillValuePairSplit[1]);
-                skill_vector.put(skill, new Pair< Integer, Double >(1, skillValue));
+                if ( skillValue < 0 ) {
+                    skill_vector.put(skill, new Pair< Integer, Double >(0, skillValue));
+                } else {
+                    skill_vector.put(skill, new Pair< Integer, Double >(1, skillValue));
+                }
             }
             br.close();
         } catch (IOException e) {
