@@ -83,7 +83,8 @@ public class GameState {
     public List<IntermediateUnitPosition> intermediate_unit_positions = new ArrayList();
     private int steps = 0;
     // Note, without state compression, time and steps should be the same
-
+    public List<String> skills = null;
+    
     private GameState parent = null;
     private boolean[] achieved_goals = null;
 

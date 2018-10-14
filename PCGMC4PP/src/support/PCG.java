@@ -28,8 +28,10 @@ import game.GameState;
 import game.pcg.GraphManager;
 import game.pcg.PuzzleEmbeddingComparator;
 import game.pcg.PuzzleEmbeddingEvaluator;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -76,10 +78,17 @@ public class PCG {
 
         String filename = args[0];
         // TODO Get parameters from filename and sample GG with parameters from filename
+        boolean debug = false;
         long randomSeed = Long.parseLong(args[1]);
         String sizeStr = args[2];
-        if("debug".equals(filename)) randomSeed = 0;
-        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, ("debug".equals(filename)));
+        LinkedHashMap<String, Double> playerModel = null;
+        if("debug".equals(filename)) {
+            randomSeed = 0;
+            debug = true;
+        } else {
+            playerModel = loadPlayerModel(filename);
+        }
+        GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, playerModel, debug);
         if(!("debug".equals(filename))){
             // Export
             export(gs, getNewFileFromFilename(filename, false));
@@ -101,23 +110,31 @@ public class PCG {
         return out_file;
     }
 
-    public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, boolean debug) throws Exception {
-        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, false);
-        return embeddGraph(graph, randomSeedEmbedding, debug);
+    public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
+        List<String> skills = new ArrayList<>();    // the set of skills required by this level
+        LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, playerModel, skills, false);
+        GameState gs = embeddGraph(graph, randomSeedEmbedding, debug);
+        gs.skills = skills;
+        return gs;
     }
     
-    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, boolean debug) throws Exception {
+    public static GameState generateGameState(long randomSeed, String sizeStr, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
         int size = -1;
         if (IsNumber.isNumber(sizeStr)) {
             size = (int)Double.parseDouble(sizeStr);
         }
-        return generateGameState(randomSeed,randomSeed, size, keep_solution, debug);
+        return generateGameState(randomSeed,randomSeed, size, keep_solution, playerModel, debug);
     }
 
     public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug) throws Exception {
-        return applyGrammar(ontology, graph, filename, r, debug, null, null);
+        return applyGrammar(ontology, graph, filename, r, debug, null, null, null, null, null);
     }
-    public static LGraph applyGrammar(Ontology ontology, LGraph graph, String filename, Random r, boolean debug, Map<String,Integer> rule_applications, Map<String,Integer> size_application_limits) throws Exception {
+    public static LGraph applyGrammar(Ontology ontology, LGraph startingGraph, String filename, Random r, boolean debug, 
+                                      Map<String,Integer> rule_applications, 
+                                      Map<String,Integer> size_application_limits, List<String> tags_to_be_ensured,
+                                      LinkedHashMap<String, Double> playerModel,
+                                      List<String> skills) throws Exception {
+        int attempts_left = 10;
         if (debug) {
             System.out.println("Applying " + filename);
         }
@@ -130,94 +147,152 @@ public class PCG {
             }
         }
         
-        LGraph lastGraph = graph;
-        LGraphGrammarSampler generator = new LGraphGrammarSampler(graph, grammar, true, r);
-        if(size_application_limits!=null){
-            for(Entry<String,Integer> entry:size_application_limits.entrySet()){
-                generator.addApplicationLimit(entry.getKey(), entry.getValue());
+        if (playerModel != null) PCGPlayerModelUtils.applyPlayerModel(playerModel, grammar);
+        
+        LGraph lastGraph = null;
+        do{
+            LGraph graph = startingGraph;
+            lastGraph = graph;
+            LGraphGrammarSampler generator = new LGraphGrammarSampler(graph, grammar, true, r);
+            if(size_application_limits!=null){
+                for(Entry<String,Integer> entry:size_application_limits.entrySet()){
+                    generator.addApplicationLimit(entry.getKey(), entry.getValue());
+                }
             }
-        }
-        // Use the grammar to rewrite the graph:
-        do {
-            if (debug) {
-                System.out.println("Current graph:");
-                System.out.println("  " + graph);
+            // Use the grammar to rewrite the graph:
+            do {
+                if (debug) {
+                    System.out.println("Current graph:");
+                    System.out.println("  " + graph);
+                }
+                graph = generator.applyRuleStochastically();
+                if (graph != null) {
+                    lastGraph = graph;
+                }
+            } while (graph != null);
+    //        if (debug) {
+                generator.printRuleApplicationCounts();
+                System.out.println("Current graph (after):");
+                System.out.println("  " + lastGraph);
+    //        }
+    
+            boolean found = true;
+            if (tags_to_be_ensured != null) {
+                for(String tag:tags_to_be_ensured) {
+                    if (!generator.ruleWithTagWasTriggered(tag)) {
+                        found = false;
+                        break;
+                    }
+                }
             }
-            graph = generator.applyRuleStochastically();
-            if (graph != null) {
-                lastGraph = graph;
+            if (found) {
+                // we are good! we succeeded!
+                if(rule_applications!=null){
+                    for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
+                        rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
+                    }
+                }
+                if (skills != null) {
+                    for(LGraphRewritingRule rule:grammar.getRules()) {
+                        Integer count = generator.getRuleApplicationCounts().get(rule.getName());
+                        if (count != null && count > 0) {
+                            for(String tag:rule.getTags()) {
+                                String skill = PCGPlayerModelUtils.skillCodeToSkillName(tag);
+                                if (skill != null && !skills.contains(skill)) {
+                                    skills.add(skill);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
             }
-        } while (graph != null);
-//        if (debug) {
-            generator.printRuleApplicationCounts();
-            System.out.println("Current graph (after):");
-            System.out.println("  " + lastGraph);
-//        }
-        if(rule_applications!=null){
-            for(Entry<String,Integer> entry:generator.getRuleApplicationCounts().entrySet()){
-                rule_applications.put(entry.getKey(), rule_applications.get(entry.getKey())+entry.getValue());
-            }
-        }
+            attempts_left--;
+        }while(attempts_left>0);
+        
         return lastGraph;
     }
 
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug) throws Exception {
-        return generateGraph(randomSeed, size, keep_solution, debug, null);
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, List<String> skills, boolean debug) throws Exception {
+        return generateGraph(randomSeed, size, keep_solution, playerModel, skills, debug, null);
     }
-    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, boolean debug, Map<String,Integer> rule_applications) throws Exception {
+    public static LGraph generateGraph(long randomSeed, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, List<String> skills, boolean debug, Map<String,Integer> rule_applications) throws Exception {
         Random r = new Random(randomSeed);
-        if (size == -1) size = r.nextInt(5)+1;
+        if (size == -1) {
+            size = PCGPlayerModelUtils.determineLevelSize(playerModel);
+            System.out.println("Player model recommended level size: " + size);
+        } else {
+            System.out.println("Size fixed by input parameters: " + size);
+        }
+        
+        System.out.println("PlayerModel:");
+        if (playerModel != null) {
+            for(String skill:playerModel.keySet()) {
+                System.out.println(skill + ": " + playerModel.get(skill));
+            }
+        }
 
         List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 2);
-        Map<String,Integer> size_application_limits = new LinkedHashMap();
+        Map<String,Integer> size_application_limits = new LinkedHashMap<>();
+        List<String> tags_to_be_ensured = new LinkedList<>();
+
         System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1));
         size_application_limits.put("ADD_MORE_PROBLEMS", 0);
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(0));
         size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(1));
-        /*
-        List<Integer> sizes = new Sampler(randomSeed).createDistribution(size, 3);
-        Map<String,Integer> size_application_limits = new LinkedHashMap();
-        System.out.println("Sizes: "+sizes.get(0)+" "+sizes.get(1)+" "+sizes.get(2));
-        size_application_limits.put("ADD_MORE_PROBLEMS", sizes.get(0));
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", sizes.get(1));
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", sizes.get(2));
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 1);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 1);
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
-        */
-        /*
-        size_application_limits.put("ADD_MORE_PROBLEMS", 2);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_SERIAL_TASKS", 0);
-        size_application_limits.put("MAKE_SUBPROBLEM_ABST_PARALLEL_TASKS", 0);
-        */
+
+        tags_to_be_ensured.add("deliver_packages");
         
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
         LGraph graph = LGraph.fromString("N0:problem()");
+        
         // Create structure for problems and subproblems        
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel, skills);
 //	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
         
         // Instanciate situations
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel, skills);
 //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
 //	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
 
         // Refine components
-        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null);
+        graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel, skills);
+
+        // find additional skills that might not have been tagged by the grammar:
+        /*
+        skills.put("Understand that arrows move at unpredictable rates", "nondeterministic_arrows");
+        */
+        if (skills != null) {
+            for(LGraphNode n:graph.getNodes()) {
+                if (n.subsumedBy(Sort.getSort("delivery"))) {
+                    if (!skills.contains("Deliver packages")) skills.add("Deliver packages");
+                }
+                if (n.subsumedBy(Sort.getSort("fork"))) {
+                    if (!skills.contains("Be able to link buttons to direction switches")) skills.add("Be able to link buttons to direction switches");
+                }
+                if (n.subsumedBy(Sort.getSort("semaphore"))) {
+                    if (!skills.contains("Be able to link semaphores to buttons")) skills.add("Be able to link semaphores to buttons");
+                    if (!skills.contains("Understand the use of semaphores")) skills.add("Understand the use of semaphores");
+                }
+                if (n.subsumedBy(Sort.getSort("diverter"))) {
+                    if (!skills.contains("Use diverters")) skills.add("Use diverters");
+                }
+                if (n.subsumedBy(Sort.getSort("exchange"))) {
+                    if (!skills.contains("Understand exchange points")) skills.add("Understand exchange points");
+                }
+                if (n.subsumedBy(Sort.getSort("multithread"))) {
+                    if (!skills.contains("Understand that arrows move at unpredictable rates")) skills.add("Understand that arrows move at unpredictable rates");
+                }
+            }
+        }
+        
         // Remove solution
         if(!keep_solution){
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null);
+            graph = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel, skills);
         }
 //	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
-        
+
         return graph;
     }
 
@@ -313,5 +388,25 @@ public class PCG {
         writer.print(out);
         writer.close();
         System.out.println(out_file.getAbsolutePath());
+    }
+    
+    
+    public static LinkedHashMap<String, Double> loadPlayerModel(String filename) throws Exception
+    {
+        LinkedHashMap<String, Double> playerModel = new LinkedHashMap<>();
+        
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        while(true) {
+            String line = br.readLine();
+            if (line == null) break;
+            String tokens[] = line.split(",");
+            if (tokens.length != 2) {
+                System.out.println("ERROR: parameters file has the wrong format, line: " + line);
+            } else {
+                playerModel.put(tokens[0].trim(), Double.parseDouble(tokens[1].trim()));
+            }
+        }
+        
+        return playerModel;
     }
 }

@@ -23,14 +23,13 @@
  */
 package tests;
 
-import java.io.File;
 import game.GameState;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
-import lgraphs.sampler.LGraphGrammarSampler;
-import optimization.OrthographicEmbeddingBoardSizeOptimizer;
+import java.util.LinkedHashMap;
 import support.PCG;
+import support.PCGPlayerModelUtils;
 import support.Play;
 
 /*
@@ -53,42 +52,21 @@ public class TestPCGPlayable {
     public static int WINDOW_HEIGHT = 400;
 
     public static void main(String args[]) throws Exception {
-        int bitmask = 0;
-        for (int i = 0; i < 8; i++) {
-//            System.out.print((char) ('@' + bitmask) + " -> ");
-//            System.out.println(1 << i + '@');
-            //System.out.println(1<<i);
-            bitmask = 1 << i;
-        }
-
-        /*GameState gs;
-        gs = MapGenerator.SmallestTest();
-        System.out.println(GameStateExporter.export(gs));
-        gs = MapGenerator.SmallerTest();
-        System.out.println(GameStateExporter.export(gs));
-        gs = MapGenerator.SmallTest();
-        System.out.println(GameStateExporter.export(gs));
-        gs.setBoardState(gs.getBoardState().expand(7, 3));
-        System.out.println(GameStateExporter.export(gs));
-        gs = MapGenerator.SmallestTest();
-        gs.setBoardState(gs.getBoardState().expand(7, 3));
-        System.out.println(GameStateExporter.export(gs));*/
         
-        String batchId;
-        //batchId = "week2"; // Doesn't have SYNCRO nor DEADLOCK
-        //batchId = "week45"; // Doesn't have SYNCRO
-        //batchId = "week79"; 
-        //batchId = "extra4";
-        batchId = "santiTest";
+        
+        LinkedHashMap<String, Double> playerModel = PCG.loadPlayerModel("currentParameters.txt");
+        System.out.println("Player model recommended level size: " + PCGPlayerModelUtils.determineLevelSize(playerModel));
+        
         int accumWidth = 0;
         boolean debug = false;
-        for(int size=2;size<=2;size++){        
-            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 200; {
+        for(int size=0;size<=0;size++){        
+//            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
+            int randomSeed = 200; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
-                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, debug);
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, playerModel, debug);
+                System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
                 new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                 if (!solvable(gs)) {
@@ -118,6 +96,12 @@ public class TestPCGPlayable {
 //            System.out.println("  " + gs2.getTime());
 //        }
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
+        System.out.println("goal_struct.size() = " + gs2.getBoardState().goal_struct.size());
+        if (gs2.getBoardState().goal_struct.size() == 0) {
+                BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
+                System.err.println("There are no goals!");
+                return false;
+        }
         for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
             GoalCondition goal = gs2.getBoardState().goal_struct.get(i);
             if(goal.goal_type==GoalCondition.GOAL_REQUIRED && !gs2.testGoal(goal)){
