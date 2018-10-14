@@ -137,6 +137,13 @@ public class GameStateExporter {
         sb.append("DIRECTIONS\n");
         sb.append(exportBoardToTextDirections(board));
         sb.append("\n");
+        if (gs.skills!=null) {
+            sb.append("SKILLS\n");
+            for(String s:gs.skills) {
+                sb.append(s + "\n");
+            }
+            sb.append("\n");
+        }
 
         ComponentState components = gs.getComponentState();
         sb.append(exportComponentsToTextRepresentation(components));

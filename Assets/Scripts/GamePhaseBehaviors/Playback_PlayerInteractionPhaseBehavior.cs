@@ -565,27 +565,27 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         goalString = "";
                                         if ((step.componentStatus.final_condition & 1) != 0)
                                         {
-                                            goalString += "• Make sure arrows aren't blocked.\n";
+                                            goalString += "\n• Make sure arrows aren't blocked.";
                                         }
                                         if ((step.componentStatus.final_condition & 4) != 0)
                                         {
-                                            goalString += "• This solution was unsuccessful.\n";
+                                            goalString += "\n• This solution was unsuccessful.";
                                         }
                                         if ((step.componentStatus.final_condition & 16) != 0)
                                         {
-                                            goalString += "• Make sure arrows can't deliver at the same time.\n";
+                                            goalString += "\n• Make sure arrows can't deliver at the same time.";
                                         }
                                         if ((step.componentStatus.final_condition & 32) != 0)
                                         {
-                                            goalString += "• Make sure all arrows can move.\n";
+                                            goalString += "\n• Make sure all arrows can move.";
                                         }
                                         if ((step.componentStatus.final_condition & 64) != 0)
                                         {
-                                            goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
+                                            goalString += "\n• Make sure arrows don't get caught in an infinite loop.";
                                         }
                                         if ((step.componentStatus.final_condition & 512) != 0)
                                         {
-                                            goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
+                                            goalString += "\n• Wrong turn! Check the Flow Arrows at the top of the screen.";
                                         }
                                         List<string> errorFeedback = new List<string>();
                                         foreach (string errorKey in step.componentStatus.goal_descriptions)

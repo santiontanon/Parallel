@@ -602,8 +602,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             mouseInput = MouseInput.None;
         }
 
-        Debug.Log(mouseInput.ToString());
-
         // Interaction Phases
         switch (interactionPhase)
 		{

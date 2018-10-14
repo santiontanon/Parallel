@@ -2,13 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
 using System.Text;
 //using SimpleJSON; // http://wiki.unity3d.com/index.php/SimpleJSON
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 using System.IO;
 using System.Net.NetworkInformation;
 #endif
@@ -47,12 +43,12 @@ public class Tracker : MonoBehaviour {
     public bool remote_tracking_enabled = true;
     public bool tracking_message_collection = true;
 	
-	#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
 	StreamWriter log = null;
-	#endif
 	private StringBuilder log2 = null;
+    public StreamWriter modelLog = null;
+    public string modelLogPath;
 
-	private static int[] keys_of_interest = new int[] {
+    private static int[] keys_of_interest = new int[] {
 		(int)KeyCode.Return, (int)KeyCode.Escape, (int)KeyCode.Space,
 		(int)KeyCode.Keypad8, (int)KeyCode.Keypad2, (int)KeyCode.Keypad4, (int)KeyCode.Keypad6,
 		(int)KeyCode.UpArrow, (int)KeyCode.DownArrow, (int)KeyCode.LeftArrow, (int)KeyCode.RightArrow,
@@ -150,6 +146,7 @@ public class Tracker : MonoBehaviour {
                 Debug.Log(www.text);
                 JSONObject ob = new JSONObject(www.text.Trim());
                 tracking_session_id = ob.GetField("id").ToString();
+                PlayerModelingInit(ob.GetField("user").ToString());
                 level_data = www.text;
             }
             catch (System.Exception e)
@@ -170,9 +167,14 @@ public class Tracker : MonoBehaviour {
         yield return null; 
 	}
 
+    void PlayerModelingInit(string user)
+    {
+        //call to java with user name so it can try to retrieve that data
+        //make sure the java process is async/on another thread so unity can still do stuff
+    }
+
     void SetupTracking()
     {
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
         string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
         log = File.CreateText(fileName);
         if (log == null)
@@ -182,7 +184,6 @@ public class Tracker : MonoBehaviour {
         {
             Debug.Log("Logging locally to " + fileName);
         }
-#endif
         log2 = new StringBuilder();
         CreateEvent("SessionID", tracking_session_id);
         CreateEvent("SessionUser", tracking_session_user);
@@ -308,16 +309,35 @@ public class Tracker : MonoBehaviour {
 			+ e.e + "\t" + e.data + "\t" + e.time + "\t" 
 			+ e.mouse_x + "\t" + e.mouse_y;
 
-		#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
 		if(local_tracking_enabled && log!=null){
 			log.WriteLine(line);
 		}
-		#endif
 		if(log2!=null){
 			log2.Append(line+"\n");
 		}
+        if(modelLog != null)
+        {
+            modelLog.WriteLine(line);
+        }
 		return e;
 	}
+
+    public void ResetModelLog()
+    {
+        if(modelLog != null)
+            modelLog.Close();
+        modelLogPath = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
+        modelLog = File.CreateText(modelLogPath);
+    }
+
+    public void SendModelLog(string executionPath)
+    {
+        Debug.Log("Sending execution path: " + executionPath);
+        Debug.Log("Sending model log path: " + modelLogPath);
+        Debug.Log("Sending currentparameters.txt path: " + "currentparameters.txt");
+        modelLog.Close();
+        //java call to send modellog path, execution path and currentparameters.txt path
+    }
 
 	void Update(){
 		if(ready) EventCollection();

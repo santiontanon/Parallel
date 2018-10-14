@@ -214,6 +214,11 @@ public class LinkJava : MonoBehaviour
 
     IEnumerator ExternalProcessSucess()
     {
+        if(simulationMode == SimulationTypes.ME || simulationMode == SimulationTypes.Play)
+        {
+            GameManager.Instance.tracker.SendModelLog(filename);
+            GameManager.Instance.tracker.ResetModelLog();
+        }
         UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
         // send this to the server first
         string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\n\n" + System.IO.File.ReadAllText(filename);

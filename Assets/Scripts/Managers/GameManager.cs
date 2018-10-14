@@ -193,6 +193,8 @@ public class GameManager : MonoBehaviour {
 
 	public void TriggerLoadLevel(bool restartPhase = false, DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
+        Debug.Log("Trigger A");
+        tracker.ResetModelLog();
 		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
 		dataManager.InitializeLoadLevel( inputLevelName, loadType );
@@ -207,6 +209,8 @@ public class GameManager : MonoBehaviour {
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
     {
+        Debug.Log("Trigger B");
+        tracker.ResetModelLog();
         currentLevelReferenceObject = inputLevelReferenceObject;
         TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
     }

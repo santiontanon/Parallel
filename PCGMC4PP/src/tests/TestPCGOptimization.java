@@ -10,7 +10,6 @@ import lgraphs.LGraph;
 import support.GameStateExporter;
 import static support.PCG.embeddGraph;
 import static support.PCG.generateGraph;
-import static tests.GrammarTest_.generateGraph;
 
 /**
  *
@@ -19,7 +18,7 @@ import static tests.GrammarTest_.generateGraph;
 public class TestPCGOptimization {
 
     public static void main(String args[]) throws Exception {
-         LGraph graph = generateGraph(0, 8, true, false);
+         LGraph graph = generateGraph(0, 8, true, null, null, false);
          for(int i=0;i<1;i++){
              System.out.println("USING SEED "+Integer.toString(i));
              GameState gs = embeddGraph(graph, i, true, 100);
