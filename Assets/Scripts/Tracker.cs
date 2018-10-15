@@ -14,7 +14,12 @@ public class Tracker : MonoBehaviour {
 	public bool ShowDebugInfoLabel = true;
 	private bool allowQuitting = false;
 	private bool allowQuittingRequested = false;
-	public string url = "";
+    public string hostname;
+    public string port;
+	public string url
+    {
+        get { return "http://" + hostname + ":" + port; }
+    }
 	public string url_id
     {
         get { return url +"/id"; }
@@ -81,9 +86,10 @@ public class Tracker : MonoBehaviour {
 		allowQuittingRequested = false;
 		connected = false;
 		ready = false;
-		url = "https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod"; // this is out of date, not to be used
-		url = "http://129.25.12.216:8787"; // this is the CCI cloud "centos" server
-		url = "http://129.25.141.236:8787"; // this is the "magic" server in Santi's office
+		hostname = "https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod"; // this is out of date, not to be used
+		hostname = "129.25.12.216"; // this is the CCI cloud "centos" server
+		hostname = "129.25.141.236"; // this is the "magic" server in Santi's office
+        port = "8787";
 		// to start the service in the server, start a `screen` session, then go into LogVisualizer and type `python httpserver.py -i 10000 -s 144.118.172.191 -p 8787`
 		// then you can close the `screen` by hitting `control+a`, `d`, and then you can `exit`.
 		// the logs are saved in a directory called `saved_data` relative to the location of the server script
@@ -93,7 +99,7 @@ public class Tracker : MonoBehaviour {
 		onSuccess = onSuccessD;
 		onFail = onFailD;
         if (_url != "NA")
-            url = _url;
+            hostname = _url;
         local_tracking_enabled = trackLocal;
         remote_tracking_enabled = trackRemote;
         StartTracker();
@@ -112,7 +118,7 @@ public class Tracker : MonoBehaviour {
 
     public void ChangeRemoteAddress(string ipAndPort, System.Action callback = null)
     {
-        url = "http://" + ipAndPort;
+        hostname =  ipAndPort;
         Debug.Log(url);
         FetchConfig(callback);
     }
@@ -321,6 +327,12 @@ public class Tracker : MonoBehaviour {
         }
 		return e;
 	}
+
+    [ContextMenu("Test Player Modeling Server")]
+    public void PlayerModelingServerCall()
+    {
+        GameManager.Instance.GetLinkJava().StartPlayerModelingServerCall(tracking_session_user, hostname);
+    }
 
     public void ResetModelLog()
     {

@@ -377,6 +377,7 @@ public class GameManager : MonoBehaviour {
 	public DataManager GetDataManager(){ return dataManager;}
     public ScoreManager GetScoreManager() { return scoreManager; }
     public SaveManager GetSaveManager() { return saveManager; }
+    public LinkJava GetLinkJava() { return linkJava; }
     public LinkJava.SimulationTypes GetCurrentSimulationType() { return linkJava.simulationMode; }
 
 }
