@@ -348,7 +348,7 @@ public class Tracker : MonoBehaviour {
         Debug.Log("Sending model log path: " + modelLogPath);
         Debug.Log("Sending currentparameters.txt path: " + "currentparameters.txt");
         modelLog.Close();
-        //java call to send modellog path, execution path and currentparameters.txt path
+        GameManager.Instance.GetLinkJava().StartPlayerModelingProcess(executionPath, modelLogPath, tracking_session_user, "level one", hostname);
     }
 
 	void Update(){

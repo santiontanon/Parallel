@@ -218,6 +218,7 @@ public class LinkJava : MonoBehaviour
             {
                 UnityEngine.Debug.Log(line);
             }
+            GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
             if (ExitCode == 0)
             {
                 yield return StartCoroutine(SimulationSuccess());
@@ -227,23 +228,21 @@ public class LinkJava : MonoBehaviour
 			{
                 yield return StartCoroutine(ExternalProcessFailure());
 			}
-				
-			GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
 
-			externalProcess = null;	
-		}
+			externalProcess = null;
+
+            if (simulationMode == SimulationTypes.ME || simulationMode == SimulationTypes.Play && ExitCode == 0)
+            {
+                GameManager.Instance.tracker.SendModelLog(filename);
+                GameManager.Instance.tracker.ResetModelLog();
+            }
+        }
 
 		if(OnSimulationCompleted!=null) { OnSimulationCompleted(simulationFeedback); }
 	}
 
     IEnumerator SimulationSuccess()
     {
-        if(simulationMode == SimulationTypes.ME || simulationMode == SimulationTypes.Play)
-        {
-            GameManager.Instance.tracker.SendModelLog(filename);
-            GameManager.Instance.tracker.ResetModelLog();
-        }
-        UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
         // send this to the server first
         string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\n\n" + System.IO.File.ReadAllText(filename);
         GameManager.Instance.tracker.UploadData(upload_data);
@@ -315,19 +314,28 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
             externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator + "currentparameters.txt";
-            externalProcess.StartInfo.Arguments += " -hostname " + "http://" + hostname + " -port 8787";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+            externalProcess.Start();
+            StartCoroutine(PlayerModelingServerRoutine());
             return "sucess";
         }
     }
 
     IEnumerator PlayerModelingServerRoutine()
     {
+        while (!externalProcess.HasExited)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        externalProcess = null;
+        UnityEngine.Debug.Log("Player Modeling Server Routine Complete");
         yield return null;
     }
 
-    public string StartPlayerModelingProcess()
+    public string StartPlayerModelingProcess(string executionPath, string logPath, string username, string levelname, string hostname)
     {
+        UnityEngine.Debug.Log("START PLAYER MODELING PROCESS");
         // prevent concurrent calls
         if (externalProcess != null)
         {
@@ -335,12 +343,34 @@ public class LinkJava : MonoBehaviour
         }
         else
         {
+            externalProcess = new Process();
+            externalProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            externalProcess.StartInfo.CreateNoWindow = true;
+            externalProcess.StartInfo.UseShellExecute = false;
+            externalProcess.StartInfo.RedirectStandardOutput = true;
+            externalProcess.StartInfo.RedirectStandardError = true;
+            externalProcess.StartInfo.FileName = "java";
+            externalProcess.StartInfo.Arguments = " -jar " + externalPath + "ServerInterface.jar";
+            externalProcess.StartInfo.Arguments += " -mepath " + executionPath;
+            externalProcess.StartInfo.Arguments += " -telemetrypath " + logPath;
+            externalProcess.StartInfo.Arguments += " -user " + username;
+            externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator + "currentparameters.txt";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+            externalProcess.Start();
+            StartCoroutine(PlayerModelingRoutine());
             return "sucess";
         }
     }
 
     IEnumerator PlayerModelingRoutine()
     {
+        while (!externalProcess.HasExited)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        externalProcess = null;
+        UnityEngine.Debug.Log("Player Modeling Routine Complete");
         yield return null;
     }
     #endregion
