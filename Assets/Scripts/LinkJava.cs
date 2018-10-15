@@ -313,7 +313,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments = " -jar " + externalPath + "ServerInterface.jar";
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
-            externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator + "currentparameters.txt";
+            externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator;
             externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
@@ -350,11 +350,11 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.RedirectStandardOutput = true;
             externalProcess.StartInfo.RedirectStandardError = true;
             externalProcess.StartInfo.FileName = "java";
-            externalProcess.StartInfo.Arguments = " -jar " + externalPath + "ServerInterface.jar";
+            externalProcess.StartInfo.Arguments = " -jar " + externalPath + "PlayerModel.jar";
             externalProcess.StartInfo.Arguments += " -mepath " + executionPath;
             externalProcess.StartInfo.Arguments += " -telemetrypath " + logPath;
             externalProcess.StartInfo.Arguments += " -user " + username;
-            externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator + "currentparameters.txt";
+            externalProcess.StartInfo.Arguments += " -parameterpath " + Application.persistentDataPath + pathSeparator;
             externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
