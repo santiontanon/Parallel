@@ -49,7 +49,7 @@ public class ServerInterface {
     public void saveSkillVectorToServer(String level, String user) {
         String jsonString = getPlayerModelData(user);
         if ( debug ) {
-            System.out.println(String.format("JSON from server for user %s %s", user, jsonString));
+            System.out.println(String.format("JSON from server for user %s: %s", user, jsonString));
         }
         String skillVector = readSkillVector();
         JsonObject jsonObject;
@@ -92,7 +92,12 @@ public class ServerInterface {
     public void readSkillVectorFromServer(String user) {
         String jsonString = getPlayerModelData(user);
         if ( debug ) {
-            System.out.println(String.format("JSON from server for user %s %s", user, jsonString));
+            System.out.println(String.format("JSON from server for user %s: %s", user, jsonString));
+        }
+        if ( jsonString.equals("\"\"") ) {
+            savePMDataLocally("");
+            writeSkillVector("");
+            return;
         }
         JsonParser jsonParser = new JsonParser();
         JsonObject jsonObject = (JsonObject)jsonParser.parse(jsonString);
