@@ -17,7 +17,9 @@ public class LinkJava : MonoBehaviour
 
 	GameManager gameManager;
 
-	public delegate void ME_Simulation(SimulationFeedback feedback);
+    private Process externalProcess = null;
+
+    public delegate void ME_Simulation(SimulationFeedback feedback);
 	public static event ME_Simulation OnSimulationCompleted;
 	public enum SimulationFeedback {none, success, failure}
 
@@ -25,7 +27,7 @@ public class LinkJava : MonoBehaviour
 
     void Awake()
     {
-    	checkEnvironment();
+    	CheckEnvironment();
         if (IntPtr.Size == 8)
         {
             UnityEngine.Debug.Log("Running as 64 Bit process");
@@ -43,7 +45,11 @@ public class LinkJava : MonoBehaviour
 		gameManager = GameManager.Instance;
     }
 
-	private int checkEnvironment()
+    /// <summary>
+    /// Checks the OS to determine how to format file paths
+    /// </summary>
+    /// <returns></returns>
+	private int CheckEnvironment()
 	{
 		switch (Application.platform) 
 		{
@@ -68,11 +74,15 @@ public class LinkJava : MonoBehaviour
 		return 0;
 	}
 
-	private int checkJava()
+    /// <summary>
+    /// Checks to see if Java installed an accessible
+    /// ExitCode = 0: OK
+    /// ExitCode = 1: Not found
+    /// ExitCode = -1: Some exception
+    /// </summary>
+    /// <returns></returns>
+    public int CheckJava()
 	{
-		// ExitCode = 0: OK
-		// ExitCode = 1: Not found
-		// ExitCode = -1: Some exception
 		int ExitCode = -1;
 		try 
 		{
@@ -95,10 +105,20 @@ public class LinkJava : MonoBehaviour
 		return ExitCode;
 	}
 
-	private Process externalProcess = null;
-	private string externalNonBlocking()
-	{
-		
+    IEnumerator ExternalProcessFailure()
+    {
+        UnityEngine.Debug.LogError(externalProcess.StartInfo.Arguments);
+        simulationFeedback = SimulationFeedback.failure;
+        yield return null;
+    }
+
+    #region Simulation
+    /// <summary>
+    /// Sets up java arguments for the PCG/ME
+    /// </summary>
+    /// <returns></returns>
+    private string StartSimulationProcess()
+    {
 		// prevent concurrent calls
 		if (externalProcess != null) 
 		{
@@ -150,7 +170,7 @@ public class LinkJava : MonoBehaviour
             UnityEngine.Debug.Log(externalPath + "PCGMC4PP.jar");
             UnityEngine.Debug.Log(pathCPSeparator + externalPath + "lib" + pathSeparator + "gson-2.6.2.jar");
             externalProcess.Start ();
-			StartCoroutine (externalNonBlockingWait ());
+			StartCoroutine (SimulationRoutine ());
 			return "External Async";
 		}
 	}
@@ -158,7 +178,11 @@ public class LinkJava : MonoBehaviour
     SimulationFeedback simulationFeedback = SimulationFeedback.none;
     string _filename;
 
-    IEnumerator externalNonBlockingWait()
+    /// <summary>
+    /// Waits for the PCG/ME process to finish, then handles the result
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator SimulationRoutine()
 	{
         // ExitCode = 0: OK
         // ExitCode = 1: System Errors
@@ -194,32 +218,31 @@ public class LinkJava : MonoBehaviour
             {
                 UnityEngine.Debug.Log(line);
             }
+            GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
             if (ExitCode == 0)
             {
-                yield return StartCoroutine(ExternalProcessSucess());
+                yield return StartCoroutine(SimulationSuccess());
 
             }
             else 
 			{
                 yield return StartCoroutine(ExternalProcessFailure());
 			}
-				
-			GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
 
-			externalProcess = null;	
-		}
+			externalProcess = null;
+
+            if (simulationMode == SimulationTypes.ME || simulationMode == SimulationTypes.Play && ExitCode == 0)
+            {
+                GameManager.Instance.tracker.SendModelLog(filename);
+                GameManager.Instance.tracker.ResetModelLog();
+            }
+        }
 
 		if(OnSimulationCompleted!=null) { OnSimulationCompleted(simulationFeedback); }
 	}
 
-    IEnumerator ExternalProcessSucess()
+    IEnumerator SimulationSuccess()
     {
-        if(simulationMode == SimulationTypes.ME || simulationMode == SimulationTypes.Play)
-        {
-            GameManager.Instance.tracker.SendModelLog(filename);
-            GameManager.Instance.tracker.ResetModelLog();
-        }
-        UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
         // send this to the server first
         string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\n\n" + System.IO.File.ReadAllText(filename);
         GameManager.Instance.tracker.UploadData(upload_data);
@@ -237,13 +260,6 @@ public class LinkJava : MonoBehaviour
         while (GameManager.Instance.gamePhase != GameManager.GamePhases.PlayerInteraction) yield return new WaitForEndOfFrame();
         simulationFeedback = SimulationFeedback.success;
     }
-    
-    IEnumerator ExternalProcessFailure()
-    {
-        UnityEngine.Debug.LogError(externalProcess.StartInfo.Arguments);
-        simulationFeedback = SimulationFeedback.failure;
-        yield return null;
-    }
 
     public string GetLastPCGGeneratedLevel() { return _lastPCGLevelGenerated; }
     public void ClearLastPCGGeneratedLevel() { _lastPCGLevelGenerated = ""; }
@@ -251,7 +267,7 @@ public class LinkJava : MonoBehaviour
     public void SendToME () 
 	{
 		bool java_found = false;
-		if (checkEnvironment () != 0) 
+		if (CheckEnvironment () != 0) 
 		{
             UINotifications.Notification error_message = new UINotifications.Notification("Environment Error", "An error with Java has been encountered.");
             error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
@@ -260,7 +276,7 @@ public class LinkJava : MonoBehaviour
 		} 
 		else 
 		{
-			java_found = (checkJava () == 0);
+			java_found = (CheckJava () == 0);
 		}
 		if (!java_found) 
 		{
@@ -271,8 +287,91 @@ public class LinkJava : MonoBehaviour
         }
 		else {
 		//UnityEngine.Debug.Log ("Calling Java...");
-		UnityEngine.Debug.Log(externalNonBlocking ()); //this is what calls the ME simulation
+		UnityEngine.Debug.Log(StartSimulationProcess ()); //this is what calls the ME simulation
 		//UnityEngine.Debug.Log ("Finished calling Java...");
 		}
 	}
+    #endregion
+
+    #region Player Modeling
+    public string StartPlayerModelingServerCall(string username, string hostname)
+    {
+        // prevent concurrent calls
+        if (externalProcess != null)
+        {
+            return "Process may not have finished";
+        }
+        else
+        {
+            externalProcess = new Process();
+            externalProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            externalProcess.StartInfo.CreateNoWindow = true;
+            externalProcess.StartInfo.UseShellExecute = false;
+            externalProcess.StartInfo.RedirectStandardOutput = true;
+            externalProcess.StartInfo.RedirectStandardError = true;
+            externalProcess.StartInfo.FileName = "java";
+            externalProcess.StartInfo.Arguments = " -jar " + externalPath + "ServerInterface.jar";
+            externalProcess.StartInfo.Arguments += " -mode read";
+            externalProcess.StartInfo.Arguments += " -user " + username;
+            externalProcess.StartInfo.Arguments += " -path " + Application.persistentDataPath + pathSeparator;
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+            externalProcess.Start();
+            StartCoroutine(PlayerModelingServerRoutine());
+            return "sucess";
+        }
+    }
+
+    IEnumerator PlayerModelingServerRoutine()
+    {
+        while (!externalProcess.HasExited)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        externalProcess = null;
+        UnityEngine.Debug.Log("Player Modeling Server Routine Complete");
+        yield return null;
+    }
+
+    public string StartPlayerModelingProcess(string executionPath, string logPath, string username, string levelname, string hostname)
+    {
+        UnityEngine.Debug.Log("START PLAYER MODELING PROCESS");
+        // prevent concurrent calls
+        if (externalProcess != null)
+        {
+            return "Process may not have finished";
+        }
+        else
+        {
+            externalProcess = new Process();
+            externalProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            externalProcess.StartInfo.CreateNoWindow = true;
+            externalProcess.StartInfo.UseShellExecute = false;
+            externalProcess.StartInfo.RedirectStandardOutput = true;
+            externalProcess.StartInfo.RedirectStandardError = true;
+            externalProcess.StartInfo.FileName = "java";
+            externalProcess.StartInfo.Arguments = " -jar " + externalPath + "PlayerModel.jar";
+            externalProcess.StartInfo.Arguments += " -mepath " + executionPath;
+            externalProcess.StartInfo.Arguments += " -telemetrypath " + logPath;
+            externalProcess.StartInfo.Arguments += " -user " + username;
+            externalProcess.StartInfo.Arguments += " -parameterpath " + Application.persistentDataPath + pathSeparator;
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
+            externalProcess.Start();
+            StartCoroutine(PlayerModelingRoutine());
+            return "sucess";
+        }
+    }
+
+    IEnumerator PlayerModelingRoutine()
+    {
+        while (!externalProcess.HasExited)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        externalProcess = null;
+        UnityEngine.Debug.Log("Player Modeling Routine Complete");
+        yield return null;
+    }
+    #endregion
 }
