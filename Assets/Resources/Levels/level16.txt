@@ -129,3 +129,19 @@ EXECUTION
 
 PLAYER
 
+SKILLS
+Hover over objects to see what they do
+Use help bar
+Hover over side arrows to see different colored tracks
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Understand that arrows move at unpredictable rates
+Be able to link semaphores to buttons
+Be able to link buttons to direction switches
+Alternating access with semaphores and buttons (ensure mutual exclusion)
+Synchronize multiple arrows
+Block critical sections
+Understand specific delivery points
+Deliver packages with multiple synchronized arrows
+Testing before submitting
