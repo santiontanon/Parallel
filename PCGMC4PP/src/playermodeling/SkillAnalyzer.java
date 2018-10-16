@@ -30,21 +30,31 @@ public class SkillAnalyzer {
                 skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
             }
             br.close();
-            rule_evidence = new LinkedHashMap<String,Double>();
+            rule_evidence = new LinkedHashMap<String, Double>();
             for ( String s : skill_vector.keySet() ) {
                 rule_evidence.put(s,0.0);
             }
             br = new BufferedReader(new FileReader(skillVectorFilename));
             while ((line = br.readLine()) != null) {
+                if (line.length() == 0) {
+                    continue;
+                }
                 String skillValuePair = line.trim();
                 String [] skillValuePairSplit = skillValuePair.split(",");
                 String skill = skillValuePairSplit[0];
                 double skillValue = Double.parseDouble(skillValuePairSplit[1]);
-                if ( skillValue < 0 ) {
+                int evidenceValue = Integer.parseInt(skillValuePairSplit[2]);
+                if ( evidenceValue == 0 ) {
                     skill_vector.put(skill, new Pair< Integer, Double >(0, skillValue));
                 } else {
-                    skill_vector.put(skill, new Pair< Integer, Double >(1, skillValue));
+                    skill_vector.put(skill, new Pair< Integer, Double >(evidenceValue, skillValue));
                 }
+
+//                if ( skillValue < 0 ) {
+//                    skill_vector.put(skill, new Pair< Integer, Double >(0, skillValue));
+//                } else {
+//                    skill_vector.put(skill, new Pair< Integer, Double >(1, skillValue));
+//                }
             }
             br.close();
         } catch (IOException e) {
@@ -121,6 +131,17 @@ public class SkillAnalyzer {
         } catch (IOException e) {
             return false;
         }
+    }
+
+    public boolean readSkillsForLevel(PersistentData persistentData) {
+        ArrayList<String> skillsPerLevel = (ArrayList<String>)persistentData.persistent_data.get("skills_per_level");
+        if ( skillsPerLevel.size() == 0 ) {
+            return false;
+        }
+        for ( String s : skillsPerLevel ) {
+            skills_specific_to_level.add(s);
+        }
+        return true;
     }
 
     public void updateRuleEvidence(String skill) {
@@ -211,7 +232,12 @@ public class SkillAnalyzer {
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(filename));
             for ( String s : skill_vector.keySet() ) {
-                String format = String.format("%s,%f",s,skill_vector.get(s).p2);
+                String format;
+                if ( skill_vector.get(s).p2 < 0 ) {
+                    format = String.format("%s,%f,%d", s, 0.5, skill_vector.get(s).p1);
+                } else {
+                    format = String.format("%s,%f,%d", s, skill_vector.get(s).p2, skill_vector.get(s).p1);
+                }
                 writer.println(format);
             }
             writer.close();

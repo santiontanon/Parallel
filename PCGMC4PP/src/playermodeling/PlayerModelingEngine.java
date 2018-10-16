@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class PlayerModelingEngine extends PlayerModeler {
 
     public static final String CRITICAL_SECTION_PATH = PLAYER_MODELING_DATA_DIR + "critical_sections/";
-    public static String SKILL_VECTOR_FILE = "currentParameters.txt";
+//    public static String SKILL_VECTOR_FILE = "currentParameters.txt";
 
     public String skillVectorFilepath;
     public String user;
@@ -27,7 +27,7 @@ public class PlayerModelingEngine extends PlayerModeler {
 
     public PlayerModelingEngine() {
         super(new BayesNet(), 10, 1);
-        skillVectorFilepath = SKILL_VECTOR_FILE;
+        skillVectorFilepath = "";
         training_dataset = new Instances("Training_dataset", attributes, 10);
         training_dataset.setClassIndex(attributes.size() - 1);
         user = "";
@@ -44,7 +44,7 @@ public class PlayerModelingEngine extends PlayerModeler {
         training_dataset.setClassIndex(attributes.size() - 1);
         user = user_;
         level = level_;
-        skillVectorFilepath = skillVectorFilepath_ + "/" + SKILL_VECTOR_FILE;
+        skillVectorFilepath = skillVectorFilepath_;
         skillAnalyzer = new SkillAnalyzer(skillVectorFilepath);
         telemetryUtils = new TelemetryUtils();
         featureExtraction = new FeatureExtraction(skillAnalyzer);
@@ -81,9 +81,12 @@ public class PlayerModelingEngine extends PlayerModeler {
             System.out.println("Start time: " + startTime + ", end time: " + endTime);
         }
 
-        if (!skillAnalyzer.readSkillsForLevel(PLAYER_MODELING_DATA_DIR + "/level_skills/", level)) {
-            return;
+        if (!skillAnalyzer.readSkillsForLevel(persistentData)) {
+            if (!skillAnalyzer.readSkillsForLevel(PLAYER_MODELING_DATA_DIR + "/level_skills/", level)) {
+                return;
+            }
         }
+
         while (t1 < endTime) {
             ArrayList<String> telemetryDataInInterval = telemetryUtils.getTelemetryInInterval(telemetryData, t1, t2);
             HashMap<String, Double> featureVector = featureExtraction.extractFeatureVectorPM(telemetryDataInInterval, persistentData);

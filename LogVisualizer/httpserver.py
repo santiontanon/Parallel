@@ -141,7 +141,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_error_message()
                 return
             try:
-                data = json.loads(content)
+                data = json.loads(content.decode('utf-8'))
             except:
                 self.send_error_message("bad json")
                 return
@@ -168,11 +168,11 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(json_str.encode('utf-8'))
             return
         elif path.strip() == '/log':
-            save_data(content, '/log')
+            save_data(content.decode('utf-8'), '/log')
             self.send_ok_message()
             return
         elif path.strip() == '/data':
-            save_data(content, '/data')
+            save_data(content.decode('utf-8'), '/data')
             self.send_ok_message()
             return
         elif "/playermodel" in path.strip():
