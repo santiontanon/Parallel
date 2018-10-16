@@ -35,6 +35,7 @@ public class PersistentData {
         persistent_data.put("comp_color_map",new HashMap<String, String >());
         persistent_data.put("comp_loc_layout",new HashMap<String, ArrayList<Integer> >());
         persistent_data.put("comp_loc_map",new HashMap<String, ArrayList<Integer> >());
+        persistent_data.put("skills_per_level", new ArrayList<>());
 
     }
 

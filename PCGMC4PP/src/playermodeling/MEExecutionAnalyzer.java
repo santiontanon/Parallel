@@ -89,6 +89,14 @@ public class MEExecutionAnalyzer {
                     persistentData.persistent_data.put("width", boardWidth);
                 }
 
+                if (meExecutionFileLine.startsWith("SKILLS")) {
+                    ArrayList<String> skillsPerLevel = (ArrayList<String>)persistentData.persistent_data.get("skills_per_level");
+                    String line;
+                    while ((line = br.readLine()) != "\n") {
+                        skillsPerLevel.add(line);
+                    }
+                }
+
                 if (meExecutionFileLine.startsWith("board_height")) {
                     boardHeight = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
                     persistentData.persistent_data.put("height", boardHeight);

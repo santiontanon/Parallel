@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 public class ServerInterface {
 
-    public static final String CURRENT_PARAMS_FILENAME = "currentParameters.txt";
+//    public static final String CURRENT_PARAMS_FILENAME = "currentParameters.txt";
     public static final String LOCAL_PM_DATA = "localPMData.json";
 
     private CloseableHttpClient client;
@@ -78,10 +78,11 @@ public class ServerInterface {
 
     public void savePMDataLocally(String jsonData) {
         try {
+            String filepath = paramFilepath.substring(0, paramFilepath.lastIndexOf(File.separator));
             if (debug) {
-                System.out.println("Saving Player Modeling data locally at: " + paramFilepath + "/" + LOCAL_PM_DATA);
+                System.out.println("Saving Player Modeling data locally at: " + filepath + File.separator + LOCAL_PM_DATA);
             }
-            PrintWriter writer = new PrintWriter(new FileWriter(paramFilepath + "/" + LOCAL_PM_DATA));
+            PrintWriter writer = new PrintWriter(new FileWriter(filepath + File.separator + LOCAL_PM_DATA));
             writer.println(jsonData);
             writer.close();
         } catch ( IOException e ) {
@@ -182,10 +183,10 @@ public class ServerInterface {
     public void writeSkillVector(String skillVector) {
         try {
             if (debug) {
-                System.out.println("Writing skill vector to: " + paramFilepath + "/" + CURRENT_PARAMS_FILENAME);
+                System.out.println("Writing skill vector to: " + paramFilepath);
                 System.out.println("Writing data: " + skillVector);
             }
-            PrintWriter writer = new PrintWriter(new FileWriter(paramFilepath + "/" + CURRENT_PARAMS_FILENAME));
+            PrintWriter writer = new PrintWriter(new FileWriter(paramFilepath));
 
             String [] skillVectorSplit = skillVector.split(":");
             for ( String s : skillVectorSplit ) {
@@ -201,16 +202,16 @@ public class ServerInterface {
         ArrayList<String> skillVector = new ArrayList<>();
         try {
             if (debug) {
-                System.out.println("Reading skill vector from: " + paramFilepath + "/" + CURRENT_PARAMS_FILENAME);
+                System.out.println("Reading skill vector from: " + paramFilepath);
             }
-            BufferedReader br = new BufferedReader(new FileReader(paramFilepath + "/" + CURRENT_PARAMS_FILENAME));
+            BufferedReader br = new BufferedReader(new FileReader(paramFilepath));
             String line;
             while ((line = br.readLine()) != null) {
-                String skillValuePair = line.trim();
-                String [] skillValuePairSplit = skillValuePair.split(",");
-                String skill = skillValuePairSplit[0];
-                double skillValue = Double.parseDouble(skillValuePairSplit[1]);
-                skillVector.add(String.format("%s,%f", skill, skillValue));
+//                String skillValuePair = line.trim();
+//                String [] skillValuePairSplit = skillValuePair.split(",");
+//                String skill = skillValuePairSplit[0];
+//                double skillValue = Double.parseDouble(skillValuePairSplit[1]);
+                skillVector.add(line.trim());
             }
             br.close();
 
@@ -218,7 +219,7 @@ public class ServerInterface {
             e.printStackTrace();
         }
         if (debug) {
-            System.out.println("Read skill vector: " +String.join(":", skillVector));
+            System.out.println("Read skill vector: " + String.join(":", skillVector));
         }
         return String.join(":", skillVector);
     }
@@ -229,7 +230,7 @@ public class ServerInterface {
         cliOptions.addOption("mode",true,"Mode of operation (read or write)");
         cliOptions.addOption("user",true,"Name of player");
         cliOptions.addOption("level",true,"Current level");
-        cliOptions.addOption("path",true,"Path to currentParameters.txt");
+        cliOptions.addOption("path",true,"Path to currentparameters.txt");
         cliOptions.addOption("hostname",true,"Hostname of server");
         cliOptions.addOption("port",true,"Port number of server");
         cliOptions.addOption("debug",false,"Port number of server");
