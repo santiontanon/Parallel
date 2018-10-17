@@ -400,7 +400,7 @@ public class PCG {
             String line = br.readLine();
             if (line == null) break;
             String tokens[] = line.split(",");
-            if (tokens.length != 2) {
+            if (tokens.length < 2) {
                 System.out.println("ERROR: parameters file has the wrong format, line: " + line);
             } else {
                 playerModel.put(tokens[0].trim(), Double.parseDouble(tokens[1].trim()));
