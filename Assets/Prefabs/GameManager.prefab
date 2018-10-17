@@ -899,6 +899,43 @@ MonoBehaviour:
         missed: 0
         missed_items: 
         delivered_items: 
+  - levelNumber: 1
+    type: 0
+    init_trigger: 0
+    complete_trigger: 2
+    sequenceId: 1
+    popupDescription: When you think you have the correct solution, press "Submit"
+      to turn it in.
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: -1
+        goal_descriptions: []
+        speed: -1
+        value: 0
+        passed: 0
+        delivered: 0
+        available: -1
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
   - levelNumber: 2
     type: 0
     init_trigger: 0
@@ -1782,6 +1819,43 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
+    popupDescription: Arrows will wait at exchange points for an arrow to get to the
+      paired exchange point.
+    pause: 1
+    pauseDuration: 4
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 4002
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 1
+        delivered: 0
+        available: 0
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 11
+    type: 0
+    init_trigger: 1
+    complete_trigger: 3
+    sequenceId: 0
     popupDescription: This type of package respawns as soon as it's picked up.
     pause: 1
     pauseDuration: 4
@@ -1818,7 +1892,8 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
-    popupDescription: Exchange points switch packages between arrows.
+    popupDescription: When two arrows are on corresponding exchange points, they switch
+      packages.
     pause: 1
     pauseDuration: 4
     overrideSimulation: 0
@@ -1830,43 +1905,6 @@ MonoBehaviour:
       eventType: 
       timeStep: 0
       componentID: 4001
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 1
-        delivered: 0
-        available: 0
-        payload: 
-        current: -1
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 11
-    type: 0
-    init_trigger: 1
-    complete_trigger: 3
-    sequenceId: 0
-    popupDescription: Arrows will wait at exchange points for an arrow to get to the
-      paired exchange point.
-    pause: 1
-    pauseDuration: 4
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 4002
       componentPos: {x: 0, y: 0}
       componentStatus:
         final_condition: 0
