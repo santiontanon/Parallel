@@ -506,10 +506,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                 string levelFileName = "";
                                 if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
 
-                                /* allowed attempts */
-                                bool foundSolution = false;
-                                LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(playerInteraction.score, out foundSolution);
-
                                 switch (step.componentStatus.final_condition)
                                 {
                                     case 2:
@@ -522,11 +518,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                             titleString = "SUCCESSFUL SOLUTION";
                                             goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
                                             playerInteraction.score.completed = true;
-
-                                            if (foundSolution)
-                                            {
-                                                goalString += "\n• Attempts Allowed: " + solution.attemptCount;
-                                            }
 
                                             //get current score
                                             int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(playerInteraction.score);
@@ -585,7 +576,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         if ((step.componentStatus.final_condition & 512) != 0)
                                         {
-                                            goalString += "\n• Wrong turn! Check the Flow Arrows at the top of the screen.";
+                                            goalString += "\n• Wrong turn! Check the Flow Arrows on the right of the screen.";
                                         }
                                         List<string> errorFeedback = new List<string>();
                                         foreach (string errorKey in step.componentStatus.goal_descriptions)
@@ -598,11 +589,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                             }
                                         }
                                         foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
-
-                                        if (foundSolution)
-                                        {
-                                            goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
-                                        }
 
                                         break;
                                 }
