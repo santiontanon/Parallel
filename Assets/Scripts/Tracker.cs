@@ -336,19 +336,27 @@ public class Tracker : MonoBehaviour {
 
     public void ResetModelLog()
     {
-        if(modelLog != null)
+        Debug.Log(modelLogPath);
+        if (modelLog != null)
+        {
+            Debug.Log("MODEL LOG IS NOT NULL");
             modelLog.Close();
+            modelLog = null;
+        }
         modelLogPath = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
         modelLog = File.CreateText(modelLogPath);
+        Debug.Log(modelLogPath);
     }
 
     public void SendModelLog(string executionPath)
     {
-        Debug.Log("Sending execution path: " + executionPath);
-        Debug.Log("Sending model log path: " + modelLogPath);
-        Debug.Log("Sending currentparameters.txt path: " + "currentparameters.txt");
+        //Debug.Log("SendModelLog");
+        //Debug.Log("Sending execution path: " + executionPath);
+        //Debug.Log("Sending model log path: " + modelLogPath);
+        //Debug.Log("Sending currentparameters.txt path: " + "currentparameters.txt");
         modelLog.Close();
-        GameManager.Instance.GetLinkJava().StartPlayerModelingProcess(executionPath, modelLogPath, tracking_session_user, "level one", hostname);
+        modelLog = null;
+        GameManager.Instance.GetLinkJava().StartPlayerModelingProcess(executionPath, modelLogPath, tracking_session_user, "level"+GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString(), hostname);
     }
 
 	void Update(){

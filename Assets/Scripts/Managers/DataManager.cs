@@ -64,7 +64,6 @@ public class DataManager : MonoBehaviour {
     public void GetLevels(string inputJson)
     {
         allLevels.Clear();
-        Debug.Log(inputJson);
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
 
         //Load pre-existing scores

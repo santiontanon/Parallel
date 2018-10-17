@@ -313,8 +313,7 @@ public class GridManager : MonoBehaviour {
 			behavior.component = gridComponent;
             if(type == "delivery")
             {
-                Debug.Log(behavior.component);
-                Debug.Log(type);
+                
             }
 
             instanceSpriteRenderer.sprite = GetSprite(gridComponent);
