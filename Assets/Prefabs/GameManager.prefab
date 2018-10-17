@@ -899,6 +899,43 @@ MonoBehaviour:
         missed: 0
         missed_items: 
         delivered_items: 
+  - levelNumber: 1
+    type: 0
+    init_trigger: 0
+    complete_trigger: 2
+    sequenceId: 1
+    popupDescription: When you think you have the correct solution, press "Submit"
+      to turn it in.
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: -1
+        goal_descriptions: []
+        speed: -1
+        value: 0
+        passed: 0
+        delivered: 0
+        available: -1
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
   - levelNumber: 2
     type: 0
     init_trigger: 0
