@@ -976,10 +976,10 @@ MonoBehaviour:
   - levelNumber: 2
     type: 0
     init_trigger: 0
-    complete_trigger: 2
+    complete_trigger: 4
     sequenceId: 0
     popupDescription: Click the help toggle again to return to play mode when you
-      are done.
+      are done. (click to close)
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1490,7 +1490,7 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: Press "Submit". This level is just a demonstration.
+    popupDescription: Press "Submit".
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1526,7 +1526,7 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
-    popupDescription: This type of package never respawns.
+    popupDescription: This type of package never respawns after it is picked up.
     pause: 1
     pauseDuration: 4
     overrideSimulation: 0
@@ -1783,7 +1783,7 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: Press "Submit". This level is just a demonstration.
+    popupDescription: Press "Submit".
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
