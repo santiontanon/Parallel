@@ -83,13 +83,16 @@ public class PCGPlayerModelUtils {
 
         if (average <= 0.5) {
             return 0;
-        } else if (average <= 0.8) {
+        } else /*if (average <= 0.8) */{
+            return 1;
+            /*
             if (minimum < 0.3) return 1;
             return 2;
         } else if (average <= 0.9) {
             return 3;
         } else {
             return 4;
+            */
         }
     }   
     

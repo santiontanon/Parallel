@@ -78,3 +78,8 @@ RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 none
     MERGE:merge(to:C1),\
     CHALLENGE:challenge(),\
     SOLSEM:semaphore(),SOLB2:button(link:SOLSEM),SOLB3:button(link:COND),SOLB4:button(link:SOLSEM),SOLB5:button(link:SOLSEM)
+RULE SIMPLE_EXCHANGE 0.75 0.25 -1 exchange_points,deliver_packages
+    PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
+    REPLACEMENT A:situation_trivial(),AA:subproblem(),\
+    B:{track,exchange}(partOf:A,partOf:AA,to:C,has:EX1),EX1:exchange(partOf:EX2),C:{track,delivery}(partOf:A,partOf:AA),\
+    Z1:{track,thread}(to:Z2),Z2:{track,pickup}(to:Z3),Z3:{track,exchange}(to:Z1,has:EX2),EX2:exchange(partOf:EX1)
