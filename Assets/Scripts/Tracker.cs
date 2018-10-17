@@ -152,7 +152,7 @@ public class Tracker : MonoBehaviour {
                 Debug.Log(www.text);
                 JSONObject ob = new JSONObject(www.text.Trim());
                 tracking_session_id = ob.GetField("id").ToString();
-                PlayerModelingInit(ob.GetField("user").ToString());
+                PlayerModelingServerCall();
                 level_data = www.text;
             }
             catch (System.Exception e)
@@ -172,12 +172,6 @@ public class Tracker : MonoBehaviour {
         //tracking_session_id = {"id": 11, "user": "hello"}
         yield return null; 
 	}
-
-    void PlayerModelingInit(string user)
-    {
-        //call to java with user name so it can try to retrieve that data
-        //make sure the java process is async/on another thread so unity can still do stuff
-    }
 
     void SetupTracking()
     {
