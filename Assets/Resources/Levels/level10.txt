@@ -59,3 +59,13 @@ EXECUTION
 
 PLAYER
 
+SKILLS
+Hover over objects to see what they do
+Use help bar
+Hover over side arrows to see different colored tracks
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Block critical sections
+Be able to link buttons to direction switches
+Testing before submitting

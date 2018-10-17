@@ -832,7 +832,7 @@ MonoBehaviour:
     complete_trigger: 2
     sequenceId: 0
     popupDescription: After dragging to track, right click a signal and right click
-      again on a semaphore to link the them. Then press "Test" again.
+      again on a semaphore to link them. Then press "Test" again.
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1086,8 +1086,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: Your turn! Use signals to allow the package to be delivered
-      twice. (click to close)
+    popupDescription: Use signals to allow the package to be delivered twice. (click
+      to close)
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1709,8 +1709,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: Your turn! Use direction switches, signals, and semaphores wisely,
-      and pay attention to which paths arrows can follow. (click to close)
+    popupDescription: Use direction switches, signals, and semaphores wisely, and
+      pay attention to which paths arrows can follow. (click to close)
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -2142,7 +2142,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugInfoLabel: 
   ShowDebugInfoLabel: 0
-  url: https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod
+  hostname: 
+  port: 
   level_data: 
   logs_uploaded_time: 0
   connected: 0
@@ -2150,3 +2151,4 @@ MonoBehaviour:
   local_tracking_enabled: 1
   remote_tracking_enabled: 1
   tracking_message_collection: 1
+  modelLogPath: 
