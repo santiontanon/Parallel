@@ -81,7 +81,7 @@ public class PCGPlayerModelUtils {
         }
         average/=count;
 
-        if (average <= 0.5) {
+        if (average <= 0.38) {  // 0.38 is the "mean - stddev" of the average skill vectors in our 3-, 4- and 9- expeirments
             return 0;
         } else /*if (average <= 0.8) */{
             return 1;
