@@ -112,18 +112,27 @@ public class ScoreManager : MonoBehaviour {
         if (score.completed == true)
         {
             _score++;
-            if (score.attemptCount <= solutions[score.index].attemptCount)
+            if(score.index >= 0)
             {
-                _score++;
-            }
-            if (score.stepCount <= solutions[score.index].stepCount)
-            {
-                _score++;
+                if (score.attemptCount <= solutions[score.index].attemptCount)
+                {
+                    _score++;
+                }
+                if (score.stepCount <= solutions[score.index].stepCount)
+                {
+                    _score++;
+                }
             }
         }
         return _score;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="score"></param>
+    /// <param name="success"></param>
+    /// <returns></returns>
     public LevelScore GetSolutionInfo(LevelScore score, out bool success)
     {
         if (solutions.Length > score.index && score.index >= 0)
@@ -171,7 +180,7 @@ public class ScoreManager : MonoBehaviour {
     /// <param name="score">LevelScore object that holds data for scoring</param>
     public void ScoreLevel(LevelScore score)
     {
-        if(solutions.Length > score.index)
+        if(solutions.Length > score.index && score.index >= 0)
         {
             int _score = GetCalculatedScore(score);
             if(scores.Length <= score.index)
