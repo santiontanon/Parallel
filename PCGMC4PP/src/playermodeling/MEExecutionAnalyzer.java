@@ -31,9 +31,9 @@ public class MEExecutionAnalyzer {
         }
     }
 
-    public HashMap<String, Object> parseComponentInformation(String comp_info) {
+    public HashMap<String, Object> parseComponentInformation(String componentInfo) {
         Gson gson = new Gson();
-        HashMap<String, Object> info = gson.fromJson(comp_info, HashMap.class);
+        HashMap<String, Object> info = gson.fromJson(componentInfo, HashMap.class);
         return info;
     }
 
@@ -42,12 +42,6 @@ public class MEExecutionAnalyzer {
 
         Gson gson = new Gson();
         PersistentData persistentData = new PersistentData();
-
-//        String[] data = telemetry.get(0).split("\t");
-//        String date_ = data[0];
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
-//        LocalDateTime time = LocalDateTime.parse(date_, formatter);
-
 
         /* Specific component information */
         ArrayList<String> diverterIDs = new ArrayList<String>();
@@ -92,8 +86,8 @@ public class MEExecutionAnalyzer {
                 if (meExecutionFileLine.startsWith("SKILLS")) {
                     ArrayList<String> skillsPerLevel = (ArrayList<String>)persistentData.persistent_data.get("skills_per_level");
                     String line;
-                    while ((line = br.readLine()) != "\n") {
-                        skillsPerLevel.add(line);
+                    while ( (line = br.readLine()) != null && (line = br.readLine()).equals("\n")) {
+                        skillsPerLevel.add(line.trim());
                     }
                 }
 
@@ -341,8 +335,8 @@ public class MEExecutionAnalyzer {
                                     ArrayList<ArrayList<String>> colorBoard =
                                             (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
                                     String colorID = colors.get(colorBoard.get(y).get(x));
-                                    System.out.println(colorBoard);
-                                    System.out.println(parsedInfo);
+//                                    System.out.println(colorBoard);
+//                                    System.out.println(parsedInfo);
                                     if (colorID == null) {
                                         System.out.println("Add this color to the list: " + colorBoard.get(y).get(x));
                                         System.exit(-1);

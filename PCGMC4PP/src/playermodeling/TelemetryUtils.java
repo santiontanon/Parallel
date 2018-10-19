@@ -130,6 +130,40 @@ public class TelemetryUtils {
         return ret;
     }
 
+    public LinkedHashMap<String, ArrayList<String>> splitTelemetryByRun(ArrayList<String> telemetry) {
+        LinkedHashMap<String, ArrayList<String>> telemetryByRun = new LinkedHashMap<>();
+        ArrayList<String> runTelemetry = new ArrayList<>();
+
+        for ( String tel : telemetry ) {
+            String [] data = tel.split("\t");
+
+            if ( data.length != 6 ) {
+                if ( DEBUG > 0 ) {
+                    System.out.println("======================================================");
+                    for ( String s : data ) {
+                        System.out.println("Data: " + s);
+                    }
+                }
+                continue;
+            }
+            String name_ = data[1];
+            String data_ = data[2];
+            runTelemetry.add(tel);
+
+            if ( name_.equals("SubmitCurrentLevelME") ) {
+                if ( telemetryByRun.containsKey(data_) ) {
+                    System.err.println("Same ME Execution File maps to different runs.");
+                    System.exit(1);
+                } else {
+                    telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
+                    runTelemetry = new ArrayList<>();
+                }
+            }
+        }
+
+        return telemetryByRun;
+    }
+
     public LinkedHashMap<String, ArrayList<String> > splitTelemetryByLevels(ArrayList<String> telemetry) {
         LinkedHashMap<String, ArrayList<String> > telemetry_by_level = new LinkedHashMap<String, ArrayList<String> >();
         /* TODO: What if a user plays a level multiple times?
