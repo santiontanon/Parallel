@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
-    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, ingame_help, simulation, awaitingSimulation }
+    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_placing, ingame_connecting, ingame_help, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
     public Playback_PlayerInteractionPhaseBehavior playbackBehavior;
@@ -238,7 +238,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.simulationButton.interactable = true;
 
         playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); Debug.Log("End Simulation Button hit."); });
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); });
         playerInteraction_UI.stopSimulationButton.interactable = false;
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 
@@ -386,6 +386,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
 
+        interactionPhase = InteractionPhases.ingame_placing;
+
 		Sprite[] spriteSheet = Resources.LoadAll<Sprite>("Sprites/gridsprites_v3") as Sprite[];
 		GameManager.Instance.tracker.CreateEventExt("startDrag",selectedOption.ToString());
 
@@ -424,7 +426,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void EndDrag(MenuOptions selectedOption)
 	{
-		if(interactionPhase != InteractionPhases.ingame_default) return;
+		if(interactionPhase != InteractionPhases.ingame_placing) return;
+        interactionPhase = InteractionPhases.ingame_default;
 		playerInteraction_UI.ReleaseDraggableElement();
 		GameManager.Instance.tracker.CreateEventExt("endDrag",selectedOption.ToString());
 		if( GameManager.Instance.GetGridManager().IsValidLocation(Input.mousePosition) && !GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition) ) 
@@ -808,6 +811,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 			}
 		break;
+
+            case InteractionPhases.ingame_placing:
+                if(mouseInput == MouseInput.LeftMouse)
+                {
+
+                }
+                break;
 
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
