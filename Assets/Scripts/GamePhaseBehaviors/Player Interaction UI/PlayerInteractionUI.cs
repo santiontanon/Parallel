@@ -257,7 +257,6 @@ public class PlayerInteraction_UI
 
 		public void EnableButtonBehaviors()
 		{
-            Debug.Log("Enable Button Behaviors");
 			retry.onClick.RemoveAllListeners();
 			replay.onClick.RemoveAllListeners();
 

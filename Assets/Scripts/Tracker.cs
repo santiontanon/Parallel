@@ -136,7 +136,6 @@ public class Tracker : MonoBehaviour {
     
 	IEnumerator FetchConfigRoutine(System.Action callback = null)
     {
-        Debug.Log("FetchConfig");
         DebugInfoLabel = "FetchConfig from " + url_id;
         Debug.Log(url_id);
         string ourPostData = "{\"user\":\"" + tracking_session_user + "\",\"version\":\"" + tracking_session_version + "\"}";

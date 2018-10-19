@@ -85,7 +85,6 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
-        Debug.Log("PlayerFieldChangedEvent");
         if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (playerIdField.text.Length > 0)
@@ -143,36 +142,27 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     }
 
 	void StartPlaying(){
-        Debug.Log("StartPlaying");
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
         }
         else
         {
-
-
-            //Show some waiting message here
-        if (PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId")))
+            if (PlayerPrefs.HasKey("PlayerId") && !String.IsNullOrEmpty(PlayerPrefs.GetString("PlayerId")))
             {
                 if (GameManager.Instance.tracker.ready)
                 {
-                    Debug.Log("TrackerRead");
                     GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
                 }
                 else
                 {
-                    Debug.Log("StartTrackerWithCallback");
                     GameManager.Instance.tracker.StartTrackerWithCallback(StartPlayingWithLevelInformation, NoInternetError);
                     fetchConfigInProgressOverlay.OpenPanel();
                 }
             }
             else
             {
-                Debug.Log("missing PlayerId");
-                //playerIdField.transform.FindChild("Text").GetComponent<Text>().color = Color.red;
-                //playerIdField.Select();
-                //playerIdField.ActivateInputField();
+
             }
         }
     }

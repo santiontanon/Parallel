@@ -451,9 +451,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 }
             }
 
-            Debug.Log(timeSteps.Count);
-
-            Debug.Log("Opening ui");
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
             playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);

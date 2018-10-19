@@ -33,7 +33,6 @@ public class SaveManager : MonoBehaviour{
 
     public void LoadSave(string s)
     {
-        Debug.Log("LoadSave");
         if (s != "")
         {
             ParallelSave save = GetSave(s);
@@ -54,9 +53,7 @@ public class SaveManager : MonoBehaviour{
                 LevelScore[] scores = new LevelScore[0];
                 List<LevelScore> pcgScores = new List<LevelScore>();
                 List<string> pcgLevels = new List<string>();
-                Debug.Log("Time for a new save");
                 currentSave = NewSave(s, scores, pcgScores, pcgLevels);
-                Debug.Log("Save created");
                 GameManager.Instance.GetScoreManager().LoadScores();
                 GameManager.Instance.GetDataManager().GetLevels();
                 GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
@@ -66,7 +63,6 @@ public class SaveManager : MonoBehaviour{
 
     public void UpdateSave()
     {
-        Debug.Log("UpdateSave");
         UpdateSave(currentSave.name, currentSave.scores, currentSave.pcgScores, currentSave.pcgLevels);
     }
 
@@ -84,7 +80,6 @@ public class SaveManager : MonoBehaviour{
             }
             else
             {
-                Debug.Log("Save does not exist, creating new save");
                 NewSave(s, scores, pcgScores, pcgLevels);
             }
         }

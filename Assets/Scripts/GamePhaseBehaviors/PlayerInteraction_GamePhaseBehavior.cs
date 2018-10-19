@@ -866,7 +866,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                     foreach (RaycastResult r in uiResults)
                     {
-                        Debug.Log(r.gameObject.name);
                         if (r.gameObject.GetComponent<Button>() != null)
                         {
                             current_button = r.gameObject.GetComponent<Button>();
@@ -882,13 +881,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     if (current_button)
                     {
                         string obj_name = current_button.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                     else if (current_image)
                     {
                         string obj_name = current_image.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                     else if (current_object)
@@ -896,7 +893,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         string obj_name = current_object.component.type;
                         if (obj_name == "delivery")
                             obj_name = current_object.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                 }
@@ -1052,7 +1048,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         {
             bool success = false;
             HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
-            Debug.Log(g.component.type + ": " + success);
             if (success == false)
             {
                 SpriteRenderer s = g.GetComponent<SpriteRenderer>();
@@ -1061,7 +1056,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             else
             {
                 g.SetHighlight(fadeNonInteractables);
-                Debug.Log("Keeping Active: " + g.component.type);
             }
         }
 

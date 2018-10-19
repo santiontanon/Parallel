@@ -152,7 +152,6 @@ public class GameManager : MonoBehaviour {
 
 	void EndGamePhaseBehavior()
 	{
-        Debug.Log("Ending phase " + gamePhase.ToString());
 		switch( gamePhase )
 		{
 		case GamePhases.PlayerInteraction:
@@ -193,7 +192,6 @@ public class GameManager : MonoBehaviour {
 
 	public void TriggerLoadLevel(bool restartPhase = false, DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
-        Debug.Log("Trigger A");
         tracker.ResetModelLog();
 		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
@@ -201,7 +199,6 @@ public class GameManager : MonoBehaviour {
         LevelReferenceObject levRef = dataManager.GetLevelByFile(inputLevelName);
         if (levRef != null)
             currentLevelReferenceObject = levRef;
-        //TODO: Since this gets called when a simulation completes and re-opens everything, it can cause bugs with the tutorials loading
         InitiateTrackGeneration();
         if (restartPhase)
             SetGamePhase(GamePhases.PlayerInteraction);
@@ -209,7 +206,6 @@ public class GameManager : MonoBehaviour {
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
     {
-        Debug.Log("Trigger B");
         tracker.ResetModelLog();
         currentLevelReferenceObject = inputLevelReferenceObject;
         TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
