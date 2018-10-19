@@ -245,8 +245,7 @@ public class LinkJava : MonoBehaviour
         UnityEngine.Debug.Log("It's now time to load " + filename);
         StreamReader reader = new StreamReader(filename);
 
-        /* should wait to save this */
-        //GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+        GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
         _lastPCGLevelGenerated = reader.ReadToEnd();
 
         GameManager.Instance.GetSaveManager().UpdateSave();
