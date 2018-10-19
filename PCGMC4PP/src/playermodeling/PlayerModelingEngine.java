@@ -33,29 +33,34 @@ public class PlayerModelingEngine extends PlayerModeler {
 
     public PlayerModelingEngine() {
         super(new BayesNet(), 10, 1);
-        training_dataset = new Instances("Training_dataset", attributes, 10);
-        training_dataset.setClassIndex(attributes.size() - 1);
+        debug = false;
         user = "";
         level = "";
         skillVectorFilepath = "";
         playerModelingDirectory = PLAYER_MODELING_DATA_DIR;
-        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory);
+
+        training_dataset = new Instances("Training_dataset", attributes, 10);
+        training_dataset.setClassIndex(attributes.size() - 1);
+
+        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory, debug);
         telemetryUtils = new TelemetryUtils();
         featureExtraction = new FeatureExtraction(skillAnalyzer);
-        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, "");
+        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, "", debug);
     }
 
     public PlayerModelingEngine(Classifier cls, double interval_, int u_technique_flag, String skillVectorFilepath_, String playerModelingDirectory_,
                                 String level_, String user_, boolean debug_) {
         super(cls, interval_, u_technique_flag);
         debug = debug_;
-        training_dataset = new Instances("Training_dataset", attributes, 10);
-        training_dataset.setClassIndex(attributes.size() - 1);
         user = user_;
         level = level_;
         skillVectorFilepath = skillVectorFilepath_;
         playerModelingDirectory = playerModelingDirectory_ + File.separator + PLAYER_MODELING_DATA_DIR;
-        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory);
+
+        training_dataset = new Instances("Training_dataset", attributes, 10);
+        training_dataset.setClassIndex(attributes.size() - 1);
+
+        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory, debug);
         telemetryUtils = new TelemetryUtils();
         featureExtraction = new FeatureExtraction(skillAnalyzer);
         String criticalSectionPath =  playerModelingDirectory + "critical_sections" + File.separator;
@@ -63,7 +68,7 @@ public class PlayerModelingEngine extends PlayerModeler {
             System.out.println("Setting player modeling directory path to: " + playerModelingDirectory);
             System.out.println("Setting critical section path to: " + criticalSectionPath);
         }
-        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, criticalSectionPath);
+        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, criticalSectionPath, debug);
     }
 
     @Override

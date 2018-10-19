@@ -81,7 +81,7 @@ public class TelemetryUtils {
                 bit_vector_in_interval.add(bit_vector.get(i));
             }
         }
-        return new Pair< ArrayList<String> , ArrayList<Integer> >(ret, bit_vector_in_interval);
+        return new Pair<>(ret, bit_vector_in_interval);
     }
 
     public ArrayList<String> getTelemetryInInterval(ArrayList<String> data, double t1, double t2) {
@@ -109,7 +109,7 @@ public class TelemetryUtils {
         for ( File f : dir_list ) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
-                String line = "";
+                String line;
                 while ((line = br.readLine()) != null) {
                     if (line.startsWith("filename")) {
                         String filename = line.split("\t")[1];
