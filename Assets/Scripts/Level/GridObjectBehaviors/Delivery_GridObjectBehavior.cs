@@ -243,7 +243,6 @@ public class Delivery_GridObjectBehavior : GridObjectBehavior {
 
 	public override void ResetPosition()
 	{
-        Debug.Log("Delivery Reset");
 		iTween.Stop(gameObject);
 		deliveryPopup.Reset();
 		transform.localScale = Vector3.one;

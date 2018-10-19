@@ -224,7 +224,6 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
     void UpdateCabooses(IEnumerable<int> payloadIds, bool instant)
     {
-        Debug.Log("updateCabooses: " + instant);
         List<int> currentCabooses = new List<int>();
         currentCabooses.AddRange(payloadIds);
 

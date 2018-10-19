@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
-    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, ingame_help, simulation, awaitingSimulation }
+    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_placing, ingame_connecting, ingame_help, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
     public Playback_PlayerInteractionPhaseBehavior playbackBehavior;
@@ -238,7 +238,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.simulationButton.interactable = true;
 
         playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); Debug.Log("End Simulation Button hit."); });
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); });
         playerInteraction_UI.stopSimulationButton.interactable = false;
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 
@@ -386,6 +386,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
 
+        interactionPhase = InteractionPhases.ingame_placing;
+
 		Sprite[] spriteSheet = Resources.LoadAll<Sprite>("Sprites/gridsprites_v3") as Sprite[];
 		GameManager.Instance.tracker.CreateEventExt("startDrag",selectedOption.ToString());
 
@@ -424,7 +426,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void EndDrag(MenuOptions selectedOption)
 	{
-		if(interactionPhase != InteractionPhases.ingame_default) return;
+		if(interactionPhase != InteractionPhases.ingame_placing) return;
+        interactionPhase = InteractionPhases.ingame_default;
 		playerInteraction_UI.ReleaseDraggableElement();
 		GameManager.Instance.tracker.CreateEventExt("endDrag",selectedOption.ToString());
 		if( GameManager.Instance.GetGridManager().IsValidLocation(Input.mousePosition) && !GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition) ) 
@@ -762,6 +765,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			{
 				if( currentGridObject != null )
 				{
+                        Debug.Log("Conintue Dragging");
 					currentGridObject.ContinueDrag();
 					if(trashHover) { }
 					else { }
@@ -807,6 +811,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 			}
 		break;
+
+            case InteractionPhases.ingame_placing:
+                if(mouseInput == MouseInput.LeftMouse)
+                {
+
+                }
+                break;
 
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
@@ -865,7 +876,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                     foreach (RaycastResult r in uiResults)
                     {
-                        Debug.Log(r.gameObject.name);
                         if (r.gameObject.GetComponent<Button>() != null)
                         {
                             current_button = r.gameObject.GetComponent<Button>();
@@ -881,13 +891,11 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     if (current_button)
                     {
                         string obj_name = current_button.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                     else if (current_image)
                     {
                         string obj_name = current_image.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                     else if (current_object)
@@ -895,7 +903,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         string obj_name = current_object.component.type;
                         if (obj_name == "delivery")
                             obj_name = current_object.name;
-                        Debug.Log(obj_name);
                         TriggerHint(obj_name);
                     }
                 }
@@ -1051,7 +1058,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         {
             bool success = false;
             HintConstructor h = GameManager.Instance.hintGlossary.GetHintForComponent(g.component.type, out success);
-            Debug.Log(g.component.type + ": " + success);
             if (success == false)
             {
                 SpriteRenderer s = g.GetComponent<SpriteRenderer>();
@@ -1060,7 +1066,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             else
             {
                 g.SetHighlight(fadeNonInteractables);
-                Debug.Log("Keeping Active: " + g.component.type);
             }
         }
 

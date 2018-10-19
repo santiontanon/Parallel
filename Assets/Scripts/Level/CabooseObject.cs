@@ -68,7 +68,6 @@ public class CabooseObject : MonoBehaviour {
 
 	public void Disconnect()
 	{
-        Debug.Log("Disconnecting caboose: " + packageOriginID);
 		followObject = null;
 		followDistance = 0;
 	}
