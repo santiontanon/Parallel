@@ -117,19 +117,19 @@ public class GraphManager {
         initSorts();
         this.initBoard(false);
         this.addComponentsForVisualEval(); // a smaller version of addDirections() is folded inside
-        GameState gs = new GameState(board, components, new UnitState());
+        GameState gs = new GameState(board, components, new UnitState(), new ArrayList<String>());
         gs.initComponents();
         return gs;
     }
 
-    public GameState graphToGameState() {
+    public GameState graphToGameState(List<String> skills) {
         initSorts();
         this.initBoard(true);
         this.addDirections();
         this.addGoalMetadata();
         this.addComponents();
         UnitState units = GameStateParser.extractUnitsFromComponents(components);
-        return new GameState(board, components, units);
+        return new GameState(board, components, units, skills);
     }
 
     public void initBoard(boolean allow_transpose_when_necessary) {

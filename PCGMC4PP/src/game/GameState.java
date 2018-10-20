@@ -807,10 +807,11 @@ public class GameState {
         return true;
     }
 
-    public GameState(BoardState board, ComponentState components, UnitState units) {
+    public GameState(BoardState board, ComponentState components, UnitState units, List<String> a_skills) {
         this.bs = board;
         this.cs = components;
         this.us = units;
+        this.skills = a_skills;
     }
 
     public GameState(GameState parent, BoardState board, ComponentState components, UnitState units, int steps, int time, int state_type, int result_type, Map<Pair<Integer,Integer>,Integer> goals_delivery) {
@@ -990,7 +991,8 @@ public class GameState {
         GameState gs = new GameState(
                 bs_,
                 cs.clone(),
-                us.clone());
+                us.clone(),
+                skills);
         return gs;
     }
 
