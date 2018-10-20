@@ -115,6 +115,7 @@ public class GameStateParser {
 
         BoardState board = null;
         ComponentState components = null;
+        List<String> skills = null;
         UnitState units = null;
         List<String> data = new ArrayList();
 
@@ -173,10 +174,7 @@ public class GameStateParser {
                         }
                         break;
                     } else if ("SKILLS".equals(current_section)) {
-                        if (verbose) {
-                            System.out.println("SKILLS Section ignored when parsing file.");
-                        }
-                        break;
+                        skills = parseSkills(data);
                     } else if (verbose) {
                         System.out.println("Unknown section ignored when parsing file.");
                     }
@@ -197,7 +195,7 @@ public class GameStateParser {
             throw new ParseException("Units is null", 0);
         }
 
-        GameState gs = new GameState(board, components, units);
+        GameState gs = new GameState(board, components, units, skills);
         gs.init();
         return gs;
     }
@@ -388,6 +386,13 @@ public class GameStateParser {
             }
         }
 
+    }
+    
+    public static List<String> parseSkills(List<String> data) throws Exception
+    {
+        List<String> skills = new ArrayList<>();
+        skills.addAll(data);
+        return skills;
     }
 
     public static ComponentState parseFileComponents(List<String> data, int offset, BoardState board) throws Exception {

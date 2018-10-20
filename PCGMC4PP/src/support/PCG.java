@@ -113,8 +113,7 @@ public class PCG {
     public static GameState generateGameState(long randomSeedGraph, long randomSeedEmbedding, int size, boolean keep_solution, LinkedHashMap<String, Double> playerModel, boolean debug) throws Exception {
         List<String> skills = new ArrayList<>();    // the set of skills required by this level
         LGraph graph = generateGraph(randomSeedGraph, size, keep_solution, playerModel, skills, false);
-        GameState gs = embeddGraph(graph, randomSeedEmbedding, debug);
-        gs.skills = skills;
+        GameState gs = embeddGraph(graph, randomSeedEmbedding, debug, skills);
         return gs;
     }
     
@@ -296,10 +295,10 @@ public class PCG {
         return graph;
     }
 
-    public static GameState embeddGraph(LGraph graph, long randomSeed, boolean debug) throws Exception {
-        return embeddGraph(graph,randomSeed,debug,10);
+    public static GameState embeddGraph(LGraph graph, long randomSeed, boolean debug, List<String> skills) throws Exception {
+        return embeddGraph(graph,randomSeed,debug,10, skills);
     }
-    public static GameState embeddGraph(LGraph graph, long randomSeed, boolean debug, int optimizationAttempts) throws Exception {
+    public static GameState embeddGraph(LGraph graph, long randomSeed, boolean debug, int optimizationAttempts, List<String> skills) throws Exception {
         // calculate the embedding:
         List<Sort> noi = new LinkedList<Sort>();
         List<Sort> eoi = new LinkedList<Sort>();
@@ -376,7 +375,7 @@ public class PCG {
         OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);        
         
         // "Parallel"-specifiy optimizations
-        GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState();
+        GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState(skills);
         //gs = LevelOptimizer.optimize(gs);
 
         return gs;
