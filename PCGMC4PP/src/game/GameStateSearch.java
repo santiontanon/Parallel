@@ -194,6 +194,8 @@ public class GameStateSearch {
         this.search_millis_end = System.currentTimeMillis()+this.search_millis;
         // TODO Q what is the right threshold for unfair schedulers?
         this.unfair_scheduler_threshold = this.start.getComponentState().getComponents().size();
+        if (this.unfair_scheduler_threshold < 20) this.unfair_scheduler_threshold = 20;
+        if(!this.verbose) System.out.println("unfair threshold: " + this.unfair_scheduler_threshold);
         
         if(!this.verbose) GameState.verbose = false;
         
@@ -280,8 +282,11 @@ public class GameStateSearch {
                         && !current.isStateComplete()) {
                     this.open.add(successor);
                     open_hashes.add(successor_hash);
+                } else {
+                    if (this.verbose) System.out.println("ignored for unfair");
                 }
             }
+            if (this.verbose) System.out.println("open: " + this.open.size());
         }
         this.result_last_current=current;
         this.search_space_exhausted = this.open.isEmpty();
