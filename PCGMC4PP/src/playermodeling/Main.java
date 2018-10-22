@@ -20,6 +20,7 @@ public class Main {
     public static void main(String [] args) throws Exception {
         Options cliOptions = new Options();
         cliOptions.addOption("mepath",true,"Model Engine Execution Filepath");
+        cliOptions.addOption("pmdir",true,"Player Modeling Files Directory");
         cliOptions.addOption("telemetrypath",true,"Telemetry Filepath");
         cliOptions.addOption("parameterpath",true,"Parameter Filepath");
         cliOptions.addOption("level", true, "Level of Game");
@@ -31,6 +32,7 @@ public class Main {
         String meExecutionFilepath = "";
         String telemetryFilepath = "";
         String parameterFilepath = "";
+        String pmdir = "";
         String level = "";
         String user = "";
         String hostname = "129.25.141.236";
@@ -43,6 +45,9 @@ public class Main {
             CommandLine line = parser.parse( cliOptions, args );
             if ( line.hasOption("mepath") ) {
                 meExecutionFilepath = line.getOptionValue("mepath");
+            }
+            if ( line.hasOption("pmdir") ) {
+                pmdir = line.getOptionValue("pmdir");
             }
             if ( line.hasOption("telemetrypath") ) {
                 telemetryFilepath = line.getOptionValue("telemetrypath");
@@ -80,6 +85,7 @@ public class Main {
             System.out.println("Model Engine Execution Filepath: " + meExecutionFilepath);
             System.out.println("Telemetry File Path: " + telemetryFilepath);
             System.out.println("Path to parameter file: " + parameterFilepath);
+            System.out.println("Path to player modeling directory: " + pmdir);
             System.out.println("Current level: " + level);
             System.out.println("Hostname: " + hostname);
             System.out.println("Port: " + port);
@@ -87,10 +93,10 @@ public class Main {
             System.out.println("-------------------------------------------------");
         }
 
-        PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, level, user);
-        pmEngine.readTrainingModel(TRAINING_MODEL_FILEPATH);
+        PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, pmdir, level, user, debug);
+        pmEngine.readTrainingModel(pmdir, TRAINING_MODEL_FILEPATH);
         pmEngine.executePM(telemetryFilepath, meExecutionFilepath);
-        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, debug);
+        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, debug, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath);
         serverInterface.saveSkillVectorToServer(level, user);
     }
 }

@@ -33,6 +33,31 @@ public class ServerInterface {
     private int port;
     private boolean debug;
 
+
+    private String startTimestamp;
+    private String endTimestamp;
+    private String meFileName;
+
+
+    public ServerInterface(String paramFilepath_, String serverHost_, int port_, boolean debug_,
+                           String startTime_, String endTime_, String meFileName_) {
+        RequestConfig defaultRequestConfig = RequestConfig.custom()
+                .setSocketTimeout(5000)
+                .setConnectTimeout(5000)
+                .setConnectionRequestTimeout(5000)
+                .build();
+        client = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
+        paramFilepath = paramFilepath_;
+        serverHost = serverHost_;
+        port = port_;
+        debug = debug_;
+
+        startTimestamp = startTime_;
+        endTimestamp = endTime_;
+        meFileName = meFileName_;
+    }
+
+
     public ServerInterface(String paramFilepath_, String serverHost_, int port_, boolean debug_) {
         RequestConfig defaultRequestConfig = RequestConfig.custom()
                 .setSocketTimeout(5000)
@@ -44,6 +69,10 @@ public class ServerInterface {
         serverHost = serverHost_;
         port = port_;
         debug = debug_;
+
+        startTimestamp = "";
+        endTimestamp = "";
+        meFileName = "";
     }
 
     public void saveSkillVectorToServer(String level, String user) {
@@ -62,10 +91,20 @@ public class ServerInterface {
         }
         jsonObject.addProperty("current", skillVector);
         if ( jsonObject.has(level) ) {
-            jsonObject.getAsJsonArray(level).add(skillVector);
+            JsonObject skillVectorStructure = new JsonObject();
+            skillVectorStructure.addProperty("start", startTimestamp);
+            skillVectorStructure.addProperty("end", endTimestamp);
+            skillVectorStructure.addProperty("meout", meFileName);
+            skillVectorStructure.addProperty("sv", skillVector);
+            jsonObject.getAsJsonArray(level).add(skillVectorStructure);
         } else {
             JsonArray jsonArray = new JsonArray();
-            jsonArray.add(skillVector);
+            JsonObject skillVectorStructure = new JsonObject();
+            skillVectorStructure.addProperty("start", startTimestamp);
+            skillVectorStructure.addProperty("end", endTimestamp);
+            skillVectorStructure.addProperty("meout", meFileName);
+            skillVectorStructure.addProperty("sv", skillVector);
+            jsonArray.add(skillVectorStructure);
             jsonObject.add(level, jsonArray);
         }
         String updatedJsonString = jsonObject.toString();

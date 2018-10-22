@@ -11,12 +11,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/* TODO: Pls implement proper logging */
+
 public class PlayerModelingEngine extends PlayerModeler {
 
-    public static final String CRITICAL_SECTION_PATH = PLAYER_MODELING_DATA_DIR + "critical_sections/";
-//    public static String SKILL_VECTOR_FILE = "currentParameters.txt";
+    public static boolean debug;
 
     public String skillVectorFilepath;
+    public String playerModelingDirectory;
     public String user;
     public String level;
 
@@ -25,30 +27,48 @@ public class PlayerModelingEngine extends PlayerModeler {
     public FeatureExtraction featureExtraction;
     public MEExecutionAnalyzer meExecutionAnalyzer;
 
+    /* NOTE: These are passed into the Server Interface for bookkeeping of the generated skill vectors */
+    public String logStartTimeStamp;
+    public String logEndTimeStamp;
+
     public PlayerModelingEngine() {
         super(new BayesNet(), 10, 1);
-        skillVectorFilepath = "";
-        training_dataset = new Instances("Training_dataset", attributes, 10);
-        training_dataset.setClassIndex(attributes.size() - 1);
+        debug = false;
         user = "";
         level = "";
-        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath);
-        telemetryUtils = new TelemetryUtils();
-        featureExtraction = new FeatureExtraction(skillAnalyzer);
-        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, CRITICAL_SECTION_PATH);
-    }
+        skillVectorFilepath = "";
+        playerModelingDirectory = PLAYER_MODELING_DATA_DIR;
 
-    public PlayerModelingEngine(Classifier cls, double interval_, int u_technique_flag, String skillVectorFilepath_, String level_, String user_) {
-        super(cls, interval_, u_technique_flag);
         training_dataset = new Instances("Training_dataset", attributes, 10);
         training_dataset.setClassIndex(attributes.size() - 1);
+
+        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory, debug);
+        telemetryUtils = new TelemetryUtils();
+        featureExtraction = new FeatureExtraction(skillAnalyzer);
+        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, "", debug);
+    }
+
+    public PlayerModelingEngine(Classifier cls, double interval_, int u_technique_flag, String skillVectorFilepath_, String playerModelingDirectory_,
+                                String level_, String user_, boolean debug_) {
+        super(cls, interval_, u_technique_flag);
+        debug = debug_;
         user = user_;
         level = level_;
         skillVectorFilepath = skillVectorFilepath_;
-        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath);
+        playerModelingDirectory = playerModelingDirectory_ + File.separator + PLAYER_MODELING_DATA_DIR;
+
+        training_dataset = new Instances("Training_dataset", attributes, 10);
+        training_dataset.setClassIndex(attributes.size() - 1);
+
+        skillAnalyzer = new SkillAnalyzer(skillVectorFilepath, playerModelingDirectory, debug);
         telemetryUtils = new TelemetryUtils();
         featureExtraction = new FeatureExtraction(skillAnalyzer);
-        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, CRITICAL_SECTION_PATH);
+        String criticalSectionPath =  playerModelingDirectory + "critical_sections" + File.separator;
+        if (debug) {
+            System.out.println("Setting player modeling directory path to: " + playerModelingDirectory);
+            System.out.println("Setting critical section path to: " + criticalSectionPath);
+        }
+        meExecutionAnalyzer = new MEExecutionAnalyzer(skillAnalyzer, criticalSectionPath, debug);
     }
 
     @Override
@@ -60,11 +80,16 @@ public class PlayerModelingEngine extends PlayerModeler {
             meExecutionFilename - Model Engine Execution file
          */
 
+        if (debug) {
+            System.out.println("--------------------- Executing Player Modeling! ---------------------");
+        }
+
         ArrayList<String> telemetryData = telemetryUtils.readTelemetryFile(telemetryFilename);
         PersistentData persistentData = meExecutionAnalyzer.analyzeMEExecution(meExecutionFilenames);
 
         String firstLineInLog = telemetryData.get(0);
         double startTime = Double.parseDouble(firstLineInLog.split("\t")[3]);
+        logStartTimeStamp = firstLineInLog.split("\t")[0];
 
         String date_ = firstLineInLog.split("\t")[0];
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yy-HH-mm-ss");
@@ -73,21 +98,38 @@ public class PlayerModelingEngine extends PlayerModeler {
 
         String lastLineInLog = telemetryData.get(telemetryData.size() - 1);
         double endTime = Double.parseDouble(lastLineInLog.split("\t")[3]);
+        logEndTimeStamp = lastLineInLog.split("\t")[0];
 
         double t1 = startTime;
         double t2 = startTime + interval;
 
-        if (DEBUG > 0) {
+        if (debug) {
             System.out.println("Start time: " + startTime + ", end time: " + endTime);
         }
 
-        if (!skillAnalyzer.readSkillsForLevel(persistentData)) {
-            if (!skillAnalyzer.readSkillsForLevel(PLAYER_MODELING_DATA_DIR + "/level_skills/", level)) {
-                return;
-            }
+        if(debug) {
+            System.out.println("Reading in skills for level...");
         }
+        if (!skillAnalyzer.readSkillsForLevel(persistentData)) {
+            if (debug) {
+                System.out.println(String.format("Level %s does not have any skills associated with it. Player Modeling Complete!", level));
+            }
+            return;
+        }
+//            if (debug) {
+//                System.out.println("Level is not generated by a PCG...getting skills for non-PCG level.");
+//            }
+//        if (!skillAnalyzer.readSkillsForLevel(playerModelingDirectory + File.separator + "level_skills" + File.separator, level)) {
+//                return;
+//        }
+
 
         while (t1 < endTime) {
+
+            if (debug) {
+                System.out.println(String.format("Start of time interval: %f, End of time interval: %f", t1, t2));
+            }
+
             ArrayList<String> telemetryDataInInterval = telemetryUtils.getTelemetryInInterval(telemetryData, t1, t2);
             HashMap<String, Double> featureVector = featureExtraction.extractFeatureVectorPM(telemetryDataInInterval, persistentData);
 
@@ -99,6 +141,9 @@ public class PlayerModelingEngine extends PlayerModeler {
                 continue;
             }
 
+            if(debug) {
+                System.out.println("Updating skill vector using classification from machine learning!");
+            }
             switch (skill_vector_update_technique_flag) {
                 case 0:
                     /* Both Machine Learning and Rules */
@@ -115,6 +160,10 @@ public class PlayerModelingEngine extends PlayerModeler {
             }
         }
 
+        if(debug) {
+            System.out.println("Updating skill vector using evidence from rules!");
+        }
+
         /* Update from rule_evidence after completing the level */
         switch (skill_vector_update_technique_flag) {
             case 0:
@@ -128,5 +177,8 @@ public class PlayerModelingEngine extends PlayerModeler {
                 break;
         }
         skillAnalyzer.writeSkillVectorToFile(skillVectorFilepath);
+        if (debug) {
+            System.out.println("--------------------- Player Modeling Complete! ---------------------");
+        }
     }
 }

@@ -42,6 +42,26 @@ public abstract class PlayerModeler {
         attributes.add(new Attribute("annotations", annotation_values));
     }
 
+
+    protected void saveTrainingModel(String playerModelingDirectory) {
+        try {
+            String directory_name = playerModelingDirectory + File.separator + "saved_models" + File.separator;
+            new File(directory_name).mkdir();
+            weka.core.SerializationHelper.write( directory_name + String.format("%s.%d.model", classifier.getClass().getName(), (int)interval), classifier);
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void readTrainingModel(String playerModelingDirectory, String filename) {
+        try {
+            classifier = (Classifier) weka.core.SerializationHelper.read(playerModelingDirectory + File.separator + filename);
+            System.out.println("Successfully read in trained model!");
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
     protected void saveTrainingModel() {
         try {
             String directory_name = PLAYER_MODELING_DATA_DIR + "saved_models/";
