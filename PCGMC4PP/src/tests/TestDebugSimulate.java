@@ -55,7 +55,6 @@ public class TestDebugSimulate {
         GameState gs = GameStateParser.parseFile(filename, false);
         
         // add solution 1:
-        /*
         ComponentSemaphore semaphore1 = new ComponentSemaphore(0, 5, 20000 ,0, Component.OWNER_PLAYER, false);
         semaphore1.value = ComponentSemaphore.RED;
         ComponentSemaphore semaphore2 = new ComponentSemaphore(8, 5, 20001 ,0, Component.OWNER_PLAYER, false);
@@ -71,14 +70,15 @@ public class TestDebugSimulate {
         gs.cs.addComponent(signal1);
         gs.cs.addComponent(signal2);
         gs.cs.addComponent(signal3);
-        */
         // add solution 2:
+        /*
         ComponentSignal signal1 = new ComponentSignal(3, 0, 20002, 0, Component.OWNER_PLAYER, false);
         signal1.link = 5001;
         ComponentSignal signal2 = new ComponentSignal(5, 0, 20003, 0, Component.OWNER_PLAYER, false);
         signal2.link = 5001;
         gs.cs.addComponent(signal1);
         gs.cs.addComponent(signal2);
+        */
         gs.updateGameStateDescriptionLength();
         gs.init();
         BoardGameStateJFrame f = new BoardGameStateJFrame("level (before simulation)", 800, 600, gs);                

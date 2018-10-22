@@ -24,10 +24,12 @@
 package tests;
 
 import game.GameState;
+import game.GameStateSearch;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
 import java.util.LinkedHashMap;
+import java.util.List;
 import support.PCG;
 import support.PCGPlayerModelUtils;
 import support.Play;
@@ -46,7 +48,7 @@ to do:
  *
  * @author Josep Valls-Vargas <josep@valls.name>
  */
-public class TestPCGPlayable {
+public class TestPCGNeedsSolution {
     
     public static int WINDOW_WIDTH = 800;
     public static int WINDOW_HEIGHT = 400;
@@ -60,43 +62,68 @@ public class TestPCGPlayable {
         
         int accumWidth = 0;
         boolean debug = false;
+        int numFails = 0;
+        int numAttempts = 0;
         for(int size=1;size<=1;size++){        
-            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 800; {
+            for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
+//            int randomSeed = 3200; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
-                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, false, playerModel, debug);
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, false, true, playerModel, debug);
                 System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
 //                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
-                if (!solvable(gs)) {
+                if (!notSolvable(gs)) {
                     BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
-                    System.err.println("Level is not solvable! randomSeed: " + randomSeed);
-                    break;
+                    System.err.println("Level is solvable without a solution! randomSeed: " + randomSeed);
+                    numFails++;
                 } else {
-                    System.out.println("Level worked!");
-                }                
+                    System.out.println("Level cannot be solved without a solution!");
+                }    
+                numAttempts++;
                 accumWidth+=gs.bs.getWidth();
             }
         }
         System.out.println("accumWidth = " + accumWidth);
+        System.out.println("fails: " + numFails + "/" + numAttempts);
     }
     
     
-    public static boolean solvable(GameState gs)
+    public static boolean notSolvable(GameState gs) throws Exception
     {
+        gs.init();
+/*
         int executionRandomSeed = 1;
         int how_many = 1000;
         int number_of_loops_before_breaking = 5;
         boolean break_when_complete = true;
-        gs.init();
         ExecutionPlan ep = Play.PlayLevel(gs, executionRandomSeed, how_many, number_of_loops_before_breaking, break_when_complete);
         System.out.println("Simulation generated " + ep.getStates().size() + " states");
 //        for(GameState gs2:ep.getStates()) {
 //            System.out.println("  " + gs2.getTime());
 //        }
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
+*/
+
+/*
+        {
+            GameState next = gs;
+            for(int step = 1;step<7;step++) {
+                List<GameState> succ = next.getSuccessors();
+                next = succ.get(succ.size()-1);
+                BoardGameStateJFrame f = new BoardGameStateJFrame("level (step "+step+")", WINDOW_WIDTH, WINDOW_HEIGHT, next);
+            }
+        }
+*/
+
+        GameStateSearch gss = new GameStateSearch(gs);
+        gss.setSearchBudget(60000);
+        gss.setSearchOptions(false, true, true, true);
+        gss.search();        
+        GameState gs2 = gss.getWorstResult();
+        
+
         System.out.println("goal_struct.size() = " + gs2.getBoardState().goal_struct.size());
         if (gs2.getBoardState().goal_struct.size() == 0) {
                 BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
@@ -106,13 +133,15 @@ public class TestPCGPlayable {
         for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
             GoalCondition goal = gs2.getBoardState().goal_struct.get(i);
             if(goal.goal_type==GoalCondition.GOAL_REQUIRED && !gs2.testGoal(goal)){
-                BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
-                System.err.println("Goal not achieved: " + goal.toString());
-                return false;
+                System.out.println("Goal not achieved: " + goal.toString());
+                return true;
             } else {
                 System.out.println("Goal achieved: " + goal.toString());
             }
+                  
         }
-        return true;
+        BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
+        System.err.println("All goals achieved without specifying a solution!!");
+        return false;
     }
 }

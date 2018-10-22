@@ -10,6 +10,7 @@
     <sort name="situation_critical_thread_lost" super="situation_critical"/>
     <sort name="situation_critical_no_delivery_due_to_diverter" super="situation_critical"/>
     <sort name="situation_deadlock" super="situation_inst"/>
+    <sort name="situation_race_condition" super="situation_inst"/>
     <sort name="situation_deadlock_two_thread_semaphore" super="situation_deadlock"/>
     <sort name="situation_deadlock_two_pickup_delivery" super="situation_critical_thread_lost,situation_deadlock"/>
     <sort name="situation_syncro" super="situation_inst"/>

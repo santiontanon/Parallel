@@ -19,7 +19,7 @@ import static support.PCG.generateGraph;
 public class TestPCGOptimization {
 
     public static void main(String args[]) throws Exception {
-         LGraph graph = generateGraph(0, 8, true, null, null, false);
+         LGraph graph = generateGraph(0, 8, true, false, null, null, false);
          for(int i=0;i<1;i++){
              System.out.println("USING SEED "+Integer.toString(i));
              GameState gs = embeddGraph(graph, i, true, 100, new ArrayList<String>());

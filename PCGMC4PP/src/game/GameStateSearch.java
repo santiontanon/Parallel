@@ -263,6 +263,7 @@ public class GameStateSearch {
             for (GameState successor : current.getSuccessors()) {
                 // Check for unfair schedules
                 boolean is_unfair = false;
+//                System.out.println("unfair: " + successor.getMostUnfairScheduledUnit().consecutive_unscheduled);
                 if(successor.getMostUnfairScheduledUnit().consecutive_unscheduled>this.unfair_scheduler_threshold){
                     this.nodes_ignored_unfair_scheduler++;
                     is_unfair = true;
@@ -287,6 +288,7 @@ public class GameStateSearch {
                 }
             }
             if (this.verbose) System.out.println("open: " + this.open.size());
+//            System.out.println("closed: " + this.closed_hashes.size());
         }
         this.result_last_current=current;
         this.search_space_exhausted = this.open.isEmpty();
