@@ -309,7 +309,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
             externalProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingServerRoutine(callback));
@@ -332,7 +332,6 @@ public class LinkJava : MonoBehaviour
 
     public string StartPlayerModelingProcess(string executionPath, string logPath, string username, string levelname, string hostname, Action callback = null)
     {
-        UnityEngine.Debug.Log("START PLAYER MODELING PROCESS");
         // prevent concurrent calls
         if (externalProcess != null)
         {
@@ -354,7 +353,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -level " + levelname;
             externalProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
             externalProcess.StartInfo.Arguments += " -pmdir " + "\"" + externalPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingRoutine(callback));
