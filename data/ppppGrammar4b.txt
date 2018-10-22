@@ -1,21 +1,23 @@
+RULE JUST_CONNECT 0.5 0.9 -1 none
+    PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
+    REPLACEMENT B:track(to:C),C:track()
 RULE DELIVERY_TRIVIAL 0.9 0.9 -1 deliver_packages
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA)
-RULE JUST_CONNECT 0.5 0.9 -1 none
-    PATTERN A:situation_abst(),B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
-    REPLACEMENT B:track(to:C),C:track()
-RULE MAKE_DELIVERY_CRITICAL 1.0 0.5 -1 critical_sections,race_conditions,semaphores,deliver_packages
-    PATTERN A:situation_trivial(),AA:subproblem(),\
-    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
-    D:track(),E:track(to:B),\
-    F:{start_point}(partOf:AA)
-    REPLACEMENT A:situation_critical_misdelivery_due_to_race_condition(),AA:subproblem(),\
-    B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:N),\
-    D:track(),E:track(to:M),\
-    M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
+RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,deliver_packages,synchronize,semaphores
+    PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),F:{start_point}(partOf:AA)
+    REPLACEMENT A:situation_race_condition(),AA:subproblem(),\
+    B:{track}(is:B_,partOf:A,partOf:AA,to:BB,has:SEM1),B_:out(),SEM1:semaphore_green(),\
+    BB:{track,pickup}(partOf:A,partOf:AA,to:BBB),\
+    BBB:{track}(partOf:A,partOf:AA,to:X,has:BUTTON1),BUTTON1:button(link:COND),\
+    X:fork(toStarting:IA,to:IB,has:COND),COND:conditional(),\
+    IA:{track,delivery}(partOf:A,partOf:AA,to:Y),\
+    IB:{track,delivery}(partOf:A,partOf:AA,to:Y),\
+    Y:merge(to:C),\
+    C:{track}(is:C_,partOf:A,partOf:AA,has:BUTTON2),C_:in(),BUTTON2:button(link:SEM1),\
     F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
-RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliver_packages
+RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliver_packages,race_conditions
     PATTERN A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
     D:track(),E:track(to:B),\

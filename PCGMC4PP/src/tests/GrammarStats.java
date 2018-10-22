@@ -510,7 +510,7 @@ public class GrammarStats {
         if(out_file.exists()) return;
         
         Map<String, Integer> rule_applications = new LinkedHashMap();
-        LGraph graph = PCG.generateGraph(seed, size, true, null, null, true, null);
+        LGraph graph = PCG.generateGraph(seed, size, true, false, null, null, true, null);
         GameState gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         
         Gson gson = new GsonBuilder().create();
@@ -525,7 +525,7 @@ public class GrammarStats {
         // Generate
         System.out.println("USING SEED " + Integer.toString(seed));
         Map<String, Integer> rule_applications = new LinkedHashMap();
-        LGraph graph = PCG.generateGraph(seed, size, true, null, null, true, null);
+        LGraph graph = PCG.generateGraph(seed, size, true, false, null, null, true, null);
         GameState gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         String out = GameStateExporter.export(gs);
         PrintWriter writer = new PrintWriter(out_file_ws);
@@ -534,7 +534,7 @@ public class GrammarStats {
         // Remove solution
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
-        graph = PCG.generateGraph(seed, size, false, null, null, true, rule_applications);
+        graph = PCG.generateGraph(seed, size, false, false, null, null, true, rule_applications);
         gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         out = GameStateExporter.export(gs);
         writer = new PrintWriter(out_file_ns);

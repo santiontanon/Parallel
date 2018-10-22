@@ -37,6 +37,7 @@ public class PCGPlayerModelUtils {
         skills.put("Testing before submitting", "test_submit");
         
         skills.put("Understand that events happen in different orders", "nondeterminism");
+//        skills.put("Prevent race conditions", "race_conditions");
         skills.put("Prevent starvation", "starvation");
         skills.put("Block critical sections", "critical_sections");
         skills.put("Synchronize multiple arrows", "synchronize");

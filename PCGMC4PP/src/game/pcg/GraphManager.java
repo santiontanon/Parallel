@@ -339,7 +339,7 @@ public class GraphManager {
             Tile tile = board.getTile(x, y);
             tile.type = Tile.TILE_TRACK;
             if (oe.nodeIndexes[i] >= 0) {
-                System.out.println("adding component: " + map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
+                // System.out.println("adding component: " + map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
                 addComponent(tile, x, y, idx++, map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
             } else {
                 // Shoulders get a -1
@@ -393,7 +393,7 @@ public class GraphManager {
                 }
                 components.addComponent(cu);
                 n_components++;
-                System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
+//                System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
             } else if (hasComponent.end.subsumedBy(sortPickup)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
                 ComponentPickup cp = new ComponentPickup(x, y, idx, color, Component.OWNER_SYSTEM, true);
