@@ -26,7 +26,7 @@ public class Tracker : MonoBehaviour {
     }
 	public string url_logs
     {
-        get { return url + "/logs"; }
+        get { return url + "/log"; }
     }
     public string url_data
     {
@@ -194,6 +194,7 @@ public class Tracker : MonoBehaviour {
 
     IEnumerator SaveLogs()
     {
+        Debug.Log("SaveLogs");
         if (remote_tracking_enabled)
         {
             yield return StartCoroutine(UploadLogsWWW());
@@ -254,6 +255,7 @@ public class Tracker : MonoBehaviour {
         {
             CreateEvent("UploadRequest", "OK");
             Debug.Log("UploadLogsWWW OK");
+            Debug.Log(www.text);
         }
         else
         {
@@ -421,13 +423,16 @@ public class Tracker : MonoBehaviour {
 	}
 
 	public void OnApplicationQuit () {
+        Debug.Log("OnApplicationQuit");
 		if(allowQuitting){
+            Debug.Log("AllowQuit");
 			Application.Quit();
 		} else {
+            Debug.Log("CancelQuit");
 			Application.CancelQuit();
 			allowQuittingRequested = true;
 			CreateEvent("End","Quit");
-            SaveLogs();
+            StartCoroutine(SaveLogs());
 		}
 	}
 

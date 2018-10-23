@@ -12,6 +12,7 @@ public class Level {
 	public List<string> directionList;
 	public List<string> componentList;
 	public List<string> executionList;
+    public List<string> skillList;
 
 	public List<GridComponent> components;
 	public List<GridTrack> tracks;
