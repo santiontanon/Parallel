@@ -96,6 +96,7 @@ def get_file_data(fname, me_execution_files):
 
     data = {'levels': 0, 'me': 0, 'uploaded': 0, 'seq': list()}
     last_line = ""
+    start_time = None
     with open(fname) as f:
         for line in f:
             try:
