@@ -28,7 +28,7 @@ def get_largest_id(ROOT_DATA_PATH):
         data = get_file_data(root_path + '/log/' + file_, dict())
         if 'id' in data and data['id'].isdigit():
             data['id'] = int(data['id'])
-            if data['id'] > largest_id:
+            if data['id'] > highest_id_value:
                 highest_id_value = data['id']
     return highest_id_value
 
