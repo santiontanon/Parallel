@@ -287,6 +287,7 @@ public class DataManager : MonoBehaviour {
 		returnLevel.directionList = GetSectionData("DIRECTIONS", bindata_split);
 		returnLevel.componentList = GetSectionData("COMPONENTS", bindata_split);
 		returnLevel.executionList = GetSectionData("EXECUTION", bindata_split);
+        returnLevel.skillList = GetSectionData("SKILLS", bindata_split);
 
 		returnLevel.metadata = ParseMetadata( returnLevel.metadataList );
 		returnLevel.components = ParseComponents( returnLevel.componentList );
@@ -583,11 +584,11 @@ public class DataManager : MonoBehaviour {
 
 	}
 
-	public string GetLevelJson()
-	{
-		string levelDataString = "";
+    public string GetLevelJson()
+    {
+        string levelDataString = "";
 
-		/*
+        /*
 METADATA
 level_id	3
 level_title	Introduction (3) - Prototype
@@ -603,56 +604,62 @@ time_exchange_max	0
 board_width	19
 board_height	15
 		*/
-		string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
-		metadataFormat = 
-			"level_id\t{0}"+
-			"\nlevel_title\t{1}"+
-			"\ngoal_string\t{2}"+
-			"\ngoal_struct\t{3}"+
-			"\nplayer_palette\t{4}"+
-			"\ntime_pickup_min\t{5}"+
-			"\ntime_delivery_min\t{6}"+
-			"\ntime_exchange_min\t{7}"+
-			"\ntime_pickup_max\t{8}"+
-			"\ntime_delivery_max\t{9}"+
-			"\ntime_exchange_max\t{10}"+
-			"\nboard_width\t{11}"+
-			"\nboard_height\t{12}";
+        string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
+        metadataFormat =
+            "level_id\t{0}" +
+            "\nlevel_title\t{1}" +
+            "\ngoal_string\t{2}" +
+            "\ngoal_struct\t{3}" +
+            "\nplayer_palette\t{4}" +
+            "\ntime_pickup_min\t{5}" +
+            "\ntime_delivery_min\t{6}" +
+            "\ntime_exchange_min\t{7}" +
+            "\ntime_pickup_max\t{8}" +
+            "\ntime_delivery_max\t{9}" +
+            "\ntime_exchange_max\t{10}" +
+            "\nboard_width\t{11}" +
+            "\nboard_height\t{12}";
 
-		string metadataJson = string.Format(metadataFormat, 
-			currentLevelData.metadata.level_id, 
-			currentLevelData.metadata.level_title,
-			currentLevelData.metadata.goal_string,
-			JsonUtility.ToJson (currentLevelData.metadata.goal_struct),
-			JsonUtility.ToJson (currentLevelData.metadata.player_palette),
-			currentLevelData.metadata.time_pickup_min,
-			currentLevelData.metadata.time_delivery_min,
-			currentLevelData.metadata.time_exchange_min,
-			currentLevelData.metadata.time_pickup_max,
-			currentLevelData.metadata.time_delivery_max,
-			currentLevelData.metadata.time_exchange_max,
-			currentLevelData.metadata.board_width,
-			currentLevelData.metadata.board_height
-		);
+        string metadataJson = string.Format(metadataFormat,
+            currentLevelData.metadata.level_id,
+            currentLevelData.metadata.level_title,
+            currentLevelData.metadata.goal_string,
+            JsonUtility.ToJson(currentLevelData.metadata.goal_struct),
+            JsonUtility.ToJson(currentLevelData.metadata.player_palette),
+            currentLevelData.metadata.time_pickup_min,
+            currentLevelData.metadata.time_delivery_min,
+            currentLevelData.metadata.time_exchange_min,
+            currentLevelData.metadata.time_pickup_max,
+            currentLevelData.metadata.time_delivery_max,
+            currentLevelData.metadata.time_exchange_max,
+            currentLevelData.metadata.board_width,
+            currentLevelData.metadata.board_height
+        );
 
-		string layoutJson = "";
-		foreach(string s in currentLevelData.layoutList)
-		{
-			layoutJson+=s;
-			layoutJson+='\n';
-		}
+        string layoutJson = "";
+        foreach (string s in currentLevelData.layoutList)
+        {
+            layoutJson += s;
+            layoutJson += '\n';
+        }
 
-		string colorJson = "";
-		foreach(string s in currentLevelData.colorList)
-		{
-			colorJson+= s + '\n';
-		}
+        string colorJson = "";
+        foreach (string s in currentLevelData.colorList)
+        {
+            colorJson += s + '\n';
+        }
 
-		string directionJson = "";
-		foreach(string s in currentLevelData.directionList)
-		{
-			directionJson+= s + '\n';
-		}
+        string directionJson = "";
+        foreach (string s in currentLevelData.directionList)
+        {
+            directionJson += s + '\n';
+        }
+
+        string skillJson = "";
+        foreach (string s in currentLevelData.skillList)
+        {
+            skillJson += s + '\n';
+        }
 
 		/*
 9	14	S	L	{"directions":["North","West","North","East","North","North"],"passed":0}
@@ -684,12 +691,14 @@ board_height	15
 		}
 
 
-		levelDataString = 
-			"METADATA\n" + metadataJson
-			+ "\n\nLAYOUT\n" + layoutJson
-			+ "\nCOLORS\n" + colorJson
-			+ "\nDIRECTIONS\n" + directionJson
-			+ "\nCOMPONENTS\n" + componentString + "\nEXECUTION\n\nPLAYER\n";
+        levelDataString =
+            "METADATA\n" + metadataJson
+            + "\n\nLAYOUT\n" + layoutJson
+            + "\nCOLORS\n" + colorJson
+            + "\nDIRECTIONS\n" + directionJson
+            + "\nCOMPONENTS\n" + componentString 
+            + "\nEXECUTION\n\nPLAYER\n"
+            + "\nSKILLS\n" + skillJson;
 
 		return levelDataString;
 	}
