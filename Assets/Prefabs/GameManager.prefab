@@ -904,7 +904,7 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 1
-    popupDescription: When you think you have the correct solution press "Submit"
+    popupDescription: When you think you have the correct solution, press "Submit"
       to turn it in.
     pause: 0
     pauseDuration: 0
