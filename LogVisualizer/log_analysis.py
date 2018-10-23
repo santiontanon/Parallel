@@ -8,8 +8,9 @@ import collections
 import util
 import math
 import ast
+import datetime
 
-counter_ForkingMixIn = 3100
+epoch = datetime.datetime.utcfromtimestamp(0)
 
 def get_largest_id(ROOT_DATA_PATH):
     highest_id_value = 0
