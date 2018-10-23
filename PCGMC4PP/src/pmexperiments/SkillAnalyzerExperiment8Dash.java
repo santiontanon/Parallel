@@ -1,9 +1,10 @@
 package pmexperiments;
 
-import playermodeling.PlayerModeler;
+import playermodeling.AbstractPlayerModeler;
 import playermodeling.SkillAnalyzer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +23,34 @@ public class SkillAnalyzerExperiment8Dash extends SkillAnalyzer {
         super();
         ground_truth = new LinkedHashMap<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PlayerModeler.PLAYER_MODELING_DATA_DIR  + ground_truth_file));
+            BufferedReader br = new BufferedReader(new FileReader(AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR  + ground_truth_file));
+            String line = br.readLine();
+            String [] skill_list = line.split(",");
+            while ((line = br.readLine()) != null) {
+                String [] line_split = line.split(",");
+                LinkedHashMap< String, Double > tmp = new LinkedHashMap<String, Double>();
+                for ( int i = 2; i < skill_list.length; i++ ) {
+                    double val;
+                    if ( line_split[i].equals("X") || line_split[i].equals("Y") ) {
+                        val = -1;
+                    } else {
+                        val = Double.parseDouble(line_split[i].trim());
+                    }
+                    tmp.put(skill_list[i].trim(),val);
+                }
+                ground_truth.put(line_split[0].trim() + "," + line_split[1].trim(), tmp);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public SkillAnalyzerExperiment8Dash(String playerModelingDirectory, String ground_truth_file) {
+        super(playerModelingDirectory);
+        ground_truth = new LinkedHashMap<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader( playerModelingDirectory + File.separator + ground_truth_file));
             String line = br.readLine();
             String [] skill_list = line.split(",");
             while ((line = br.readLine()) != null) {

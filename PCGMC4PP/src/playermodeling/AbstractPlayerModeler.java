@@ -6,10 +6,10 @@ import weka.core.*;
 import java.io.File;
 import java.util.*;
 
-public abstract class PlayerModeler {
+public abstract class AbstractPlayerModeler {
 
     public static final int DEBUG = 0;
-    public static final String PLAYER_MODELING_DATA_DIR = "pmfiles/";
+    public static final String PLAYER_MODELING_DATA_DIR = "pmfiles/"; /* TODO: This needs to be replaceable */
 
     /* Player-modeling specific variables */
     protected double interval;
@@ -21,9 +21,9 @@ public abstract class PlayerModeler {
     protected ArrayList<Attribute> attributes;
     protected ArrayList<String> annotation_values;
 
-    public PlayerModeler() {}
+    public AbstractPlayerModeler() {}
 
-    public PlayerModeler(Classifier cls, double interval_, int u_technique_flag) {
+    public AbstractPlayerModeler(Classifier cls, double interval_, int u_technique_flag) {
         interval = interval_;
 
         classifier = cls;
@@ -34,7 +34,6 @@ public abstract class PlayerModeler {
         for (int i = 0; i < FeatureExtraction.features.length; i++) {
             attributes.add(new Attribute(FeatureExtraction.features[i]));
         }
-        System.out.println(attributes);
         annotation_values = new ArrayList<String>();
         annotation_values.add("A");
         annotation_values.add("B");

@@ -24,7 +24,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class SimulationLOO extends PlayerModeler {
+public class SimulationLOO extends AbstractPlayerModeler {
 
     public static final String CRITICAL_SECTION_PATH = PLAYER_MODELING_DATA_DIR + "critical_section_annotations_35_dash/";
     public static final String SLICE_FILE = PLAYER_MODELING_DATA_DIR + "slices.tsv";
