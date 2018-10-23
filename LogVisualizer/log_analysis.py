@@ -131,7 +131,9 @@ def get_file_data(fname, me_execution_files):
 
                 last_line = line
             except:
-                continue
+                print(sys.exc_info()[0])
+                raise
+                #continue
     if last_line:
         data['end'] = last_line.split('\t')[0]
         try:
