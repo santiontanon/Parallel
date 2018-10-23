@@ -100,6 +100,8 @@ def get_file_data(fname, me_execution_files):
     with open(fname) as f:
         for line in f:
             try:
+                if len(line) != 6:
+                    continue
                 t_, e_, d_, s__, x_, y_ = line.split('\t')
                 s_ = datetime.datetime.strptime(t_,'%m-%d-%y-%H-%M-%S')
                 s_ = (s_ - epoch).total_seconds()
