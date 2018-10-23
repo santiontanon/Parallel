@@ -113,7 +113,10 @@ public class Tracker : MonoBehaviour {
         {
             FetchConfig();
         }
-        SetupTracking();
+        else
+        {
+            SetupTracking();
+        }
     }
 
     public void ChangeRemoteAddress(string ipAndPort, System.Action callback = null)
@@ -153,6 +156,7 @@ public class Tracker : MonoBehaviour {
                 tracking_session_id = ob.GetField("id").ToString();
                 PlayerModelingServerCall();
                 level_data = www.text;
+                SetupTracking();
             }
             catch (System.Exception e)
             {
