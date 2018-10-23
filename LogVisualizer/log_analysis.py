@@ -106,30 +106,31 @@ def get_file_data(fname, me_execution_files):
                     s_ = 0.0
                 else:
                     s_ = s_ - start_time
+
+                if 'start' not in data:
+                    data['start'] = t_
+                if e_=='SessionID' and 'id' not in data:
+                    data['id'] = d_
+                if e_=='SessionUser' and 'user' not in data:
+                    data['user'] = d_
+                if e_=='TriggerLoadLevel':
+                    if d_:
+                        if d_.startswith('l'):
+                            data['levels'] += 1
+                        else:
+                            data['me'] += 1
+                            if d_ in me_execution_files:
+                                data['uploaded'] += 1
+                    else:
+                        data['seq'].append('R')
+                elif e_=='SubmitCurrentLevelPlay':
+                    data['seq'].append('T')
+                elif e_=='SubmitCurrentLevelME':
+                    data['seq'].append('S')
+
+                last_line = line
             except:
                 continue
-            if 'start' not in data:
-                data['start'] = t_
-            if e_=='SessionID' and 'id' not in data:
-                data['id'] = d_
-            if e_=='SessionUser' and 'user' not in data:
-                data['user'] = d_
-            if e_=='TriggerLoadLevel':
-                if d_:
-                    if d_.startswith('l'):
-                        data['levels'] += 1
-                    else:
-                        data['me'] += 1
-                        if d_ in me_execution_files:
-                            data['uploaded'] += 1
-                else:
-                    data['seq'].append('R')
-            elif e_=='SubmitCurrentLevelPlay':
-                data['seq'].append('T')
-            elif e_=='SubmitCurrentLevelME':
-                data['seq'].append('S')
-
-            last_line = line
     if last_line:
         data['end'] = last_line.split('\t')[0]
         try:
