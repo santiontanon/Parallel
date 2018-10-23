@@ -26,7 +26,7 @@ def get_largest_id(ROOT_DATA_PATH):
             continue
     for file_ in os.listdir(root_path + '/log'):
         data = get_file_data(root_path + '/log/' + file_, dict())
-        if 'id' in data and data['id'].isdigit():
+        if 'id' in data and isinstance(data['id'], int):
             data['id'] = int(data['id'])
             if data['id'] > highest_id_value:
                 highest_id_value = data['id']
@@ -100,7 +100,7 @@ def get_file_data(fname, me_execution_files):
     with open(fname) as f:
         for line in f:
             try:
-                if len(line) != 6:
+                if len(line.split("\t")) != 6:
                     continue
                 t_, e_, d_, s__, x_, y_ = line.split('\t')
                 s_ = datetime.datetime.strptime(t_,'%m-%d-%y-%H-%M-%S')
@@ -114,7 +114,10 @@ def get_file_data(fname, me_execution_files):
                 if 'start' not in data:
                     data['start'] = t_
                 if e_=='SessionID' and 'id' not in data:
-                    data['id'] = d_
+                    try:
+                        data['id'] = int(d_)
+                    except:
+                        continue
                 if e_=='SessionUser' and 'user' not in data:
                     data['user'] = d_
                 if e_=='TriggerLoadLevel':
