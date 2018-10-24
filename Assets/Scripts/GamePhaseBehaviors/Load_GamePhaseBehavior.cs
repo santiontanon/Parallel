@@ -14,10 +14,11 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
         public RectTransform requiredLevelContainer, requiredTransform;
         public RectTransform optionalLevelContainer, optionalTransform;
-        public RectTransform previousContainer, previousTransform;
-        public RectTransform generateContainer, generateTransform;
+        public RectTransform previousLevelContainer, previousTransform;
+        public RectTransform generateLevelContainer, generateTransform;
 
         public GameObject levelButtonPrefab;
+
         public Button exitLevelSelectionButton;
         [SerializeField] public UIOverlay levelLoadingOverlay;
         public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton, generateLevelButton, pcgButton;
@@ -28,6 +29,15 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	public override void BeginPhase()
 	{
         GameManager.Instance.GetDataManager().GetLevels();
+        ClearOldButtons();
+        SetupButtonFunctions();
+        SetupContainers();
+        loadUI.levelLoadingOverlay.ClosePanel(true);
+        loadUI.loadPhaseUI.SetActive(true);
+    }
+
+    void ClearOldButtons()
+    {
         foreach (Transform child in loadUI.requiredLevelContainer)
         {
             GameObject.Destroy(child.gameObject);
@@ -36,18 +46,41 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (Transform child in loadUI.previousContainer)
+        foreach (Transform child in loadUI.previousLevelContainer)
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (Transform child in loadUI.generateContainer)
+        foreach (Transform child in loadUI.generateLevelContainer)
         {
-            if(loadUI.generateContainer.GetChild(0) != child)
+            if (loadUI.generateLevelContainer.GetChild(0) != child)
             {
                 Destroy(child.gameObject);
             }
         }
+    }
 
+    void SetupContainers()
+    {
+        if(GameManager.Instance.currentGameMode == GameManager.GameMode.Study_9)
+        {
+            loadUI.optionalLevelContainer.gameObject.SetActive(false);
+            loadUI.previousLevelContainer.gameObject.SetActive(false);
+            loadUI.requiredLevelsButton.gameObject.SetActive(false);
+            loadUI.previousLevelsButton.gameObject.SetActive(false);
+            loadUI.generateLevelButton.gameObject.SetActive(false);
+            loadUI.optionalLevelsButton.gameObject.SetActive(false);
+
+            loadUI.requiredTransform.gameObject.SetActive(true);
+            loadUI.generateTransform.gameObject.SetActive(true);
+        }
+        else
+        {
+            TriggerPanelSwap(true, false, false, false);
+        }
+    }
+
+    void SetupButtonFunctions()
+    {
         foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.required)
         {
             SetupLevelButton(lr, loadUI.requiredLevelContainer, false);
@@ -60,30 +93,21 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.previous)
             {
-                SetupLevelButton(lr, loadUI.previousContainer, false);
+                SetupLevelButton(lr, loadUI.previousLevelContainer, false);
             }
         }
-        if(GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
+        if (GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.pcg)
             {
-                SetupLevelButton(lr, loadUI.generateContainer, true);
+                SetupLevelButton(lr, loadUI.generateLevelContainer, true);
             }
         }
-
-        if (!GameManager.Instance.hideTestsForBuild)
-        {
-            //AddPCGButton();
-        }
-
-        loadUI.levelLoadingOverlay.ClosePanel(true);
-
-        loadUI.loadPhaseUI.SetActive(true);
 
         loadUI.exitLevelSelectionButton.onClick.AddListener(() => GameManager.Instance.SetGamePhase(GameManager.GamePhases.StartScreen));
 
         loadUI.requiredLevelsButton.onClick.RemoveAllListeners();
-        loadUI.requiredLevelsButton.onClick.AddListener(() => 
+        loadUI.requiredLevelsButton.onClick.AddListener(() =>
         {
             TriggerPanelSwap(true, false, false, false);
         });
@@ -101,15 +125,13 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         });
 
         loadUI.generateLevelButton.onClick.RemoveAllListeners();
-        loadUI.generateLevelButton.onClick.AddListener(() => 
+        loadUI.generateLevelButton.onClick.AddListener(() =>
         {
             TriggerPanelSwap(false, false, false, true);
         });
 
         loadUI.pcgButton.onClick.RemoveAllListeners();
         loadUI.pcgButton.onClick.AddListener(() => LoadPCGBehavior());
-
-        TriggerPanelSwap(true, false, false, false);
     }
 
     void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel, bool generatePanel )
@@ -147,7 +169,7 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         LevelButtonBehavior buttonInstance = g.GetComponent<LevelButtonBehavior>();
         if (buttonInstance != null)
         {
-            buttonInstance.SetLevelSprite(false, lr.completionRank > 0);
+            buttonInstance.SetLevelSprite(pcg, lr.completionRank > 0);
             buttonInstance.SetLevelRank(lr.GetLevelCompletionRank());
         }
 
@@ -157,9 +179,13 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         Text gText = g.GetComponentInChildren<Text>();
         gText.text = levelName.TrimStart(trimArray);
         if (!pcg)
+        {
             gButton.onClick.AddListener(() => LoadButtonBehavior(levelName));
+        }
         else
+        {
             gButton.onClick.AddListener(() => LoadPCGButtonBehavior(lr.data));
+        }
     }
 
     public void AddPCGButton(){

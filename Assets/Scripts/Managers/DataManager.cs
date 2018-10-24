@@ -44,7 +44,7 @@ public class DataManager : MonoBehaviour {
                 text = lr_text.text;
             }
         }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study_8)
         {
             TextAsset lr_text = null;
             lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
@@ -120,7 +120,7 @@ public class DataManager : MonoBehaviour {
                     lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
                     break;
 
-                case GameManager.GameMode.Study:
+                case GameManager.GameMode.Study_8:
                     lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                     break;
             }
@@ -139,8 +139,8 @@ public class DataManager : MonoBehaviour {
                 if (levels[i] != "")
                 {
                     LevelReferenceObject lro = new LevelReferenceObject();
-                    lro.file = "levelP" + i;
-                    lro.title = "P" + i;
+                    lro.file = "levelX" + i;
+                    lro.title = "X" + i;
                     lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
                     lro.levelId = i;
                     lro.completionRank = 0;
@@ -696,9 +696,9 @@ board_height	15
             + "\n\nLAYOUT\n" + layoutJson
             + "\nCOLORS\n" + colorJson
             + "\nDIRECTIONS\n" + directionJson
-            + "\nCOMPONENTS\n" + componentString 
-            + "\nEXECUTION\n\nPLAYER\n"
-            + "\nSKILLS\n" + skillJson;
+            + "\nSKILLS\n" + skillJson
+            + "\nCOMPONENTS\n" + componentString
+            + "\nEXECUTION\n\nPLAYER\n";
 
 		return levelDataString;
 	}
