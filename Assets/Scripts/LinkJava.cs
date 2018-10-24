@@ -245,7 +245,8 @@ public class LinkJava : MonoBehaviour
         UnityEngine.Debug.Log("It's now time to load " + filename);
         StreamReader reader = new StreamReader(filename);
 
-        GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
+        if(simulationMode == SimulationTypes.PCG)
+            GameManager.Instance.GetSaveManager().currentSave.AddNewPCGLevel(reader.ReadToEnd());
         _lastPCGLevelGenerated = reader.ReadToEnd();
 
         GameManager.Instance.GetSaveManager().UpdateSave();
@@ -309,7 +310,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
             externalProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingServerRoutine(callback));
@@ -353,7 +354,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -level " + levelname;
             externalProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
             externalProcess.StartInfo.Arguments += " -pmdir " + "\"" + externalPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingRoutine(callback));
