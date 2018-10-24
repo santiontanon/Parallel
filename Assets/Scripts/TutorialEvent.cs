@@ -18,6 +18,8 @@ public class TutorialEvent
 
     public string popupDescription;
 
+    public bool nextTutorial;
+
     [Header("Simulation Pausing")]
     [Tooltip("Should this event pause the simulation?")]
     public bool pause;
