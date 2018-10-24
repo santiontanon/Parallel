@@ -313,6 +313,7 @@ MonoBehaviour:
     directionList: []
     componentList: []
     executionList: []
+    skillList: []
     components: []
     tracks: []
     execution: []
