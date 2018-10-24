@@ -309,7 +309,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
             externalProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingServerRoutine(callback));
@@ -353,7 +353,7 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.Arguments += " -level " + levelname;
             externalProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
             externalProcess.StartInfo.Arguments += " -pmdir " + "\"" + externalPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
-            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8789";
+            externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
             StartCoroutine(PlayerModelingRoutine(callback));
