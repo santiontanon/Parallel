@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour {
     public void CreateTutorialPopup(TutorialEvent t, GridObjectBehavior gridObject)
     {
         //two versions, depending on if we want to set the position at the same time as setting the pop up to open
-        tutorialManager.tutorialOverlay.SetTooltip(t.popupDescription, gridObject.gameObject);
+        tutorialManager.tutorialOverlay.SetTooltip(t.popupDescription, gridObject.gameObject, t.nextTutorial);
         tutorialManager.tutorialOverlay.tutorialCloseButton.onClick.AddListener(() => tutorialManager.tutorialOverlay.ClosePanel() );
         tutorialManager.tutorialOverlay.OpenPanel();
     }

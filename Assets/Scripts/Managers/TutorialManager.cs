@@ -14,11 +14,12 @@ public class TutorialManager : MonoBehaviour {
     public class Tutorial_UIOverlay : ParallelProg.UI.UIOverlay
     {
         public Text tutorialDescription;
-        public Button tutorialCloseButton;
         public Canvas canvas;
         public CanvasScaler scaler;
         public RectTransform tutorialArrow;
+        public Button tutorialCloseButton;
         public Button skipTutorialsButton;
+        public Image nextTutorialButton;
 
         public override void OpenPanel()
         {
@@ -38,7 +39,7 @@ public class TutorialManager : MonoBehaviour {
             base.OpenPanel();
         }
 
-        public void SetTooltip(string inDescription, Button button)
+        public void SetTooltip(string inDescription, Button button, bool nextTutorial = false)
         {
             if (button != null)
             {
@@ -61,10 +62,14 @@ public class TutorialManager : MonoBehaviour {
                 Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
                 PositionTutorialPanel(nextPanelPosition, nextPanelPosition, inDescription.Length);
             }
+            if (nextTutorial)
+                nextTutorialButton.gameObject.SetActive(true);
+            else
+                nextTutorialButton.gameObject.SetActive(false);
             tutorialDescription.text = inDescription;
         }
 
-        public void SetTooltip(string inDescription, GameObject element)
+        public void SetTooltip(string inDescription, GameObject element, bool nextTutorial = false)
         {
             SpriteRenderer sprite = element.GetComponent<SpriteRenderer>();
             panelContainer.position = element.transform.position;
@@ -82,7 +87,11 @@ public class TutorialManager : MonoBehaviour {
             Vector3 end_tooltipFocusPoint = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
             PositionTutorialPanel(start_tooltipCenter, end_tooltipFocusPoint, inDescription.Length);
-            
+
+            if (nextTutorial)
+                nextTutorialButton.gameObject.SetActive(true);
+            else
+                nextTutorialButton.gameObject.SetActive(false);
             tutorialDescription.text = inDescription;
         }
 
@@ -291,7 +300,7 @@ public class TutorialManager : MonoBehaviour {
                 case TutorialEvent.TutorialCompletionTriggers.placeSignal:
                 case TutorialEvent.TutorialCompletionTriggers.placeSemaphore:
                     GameManager.Instance.tracker.CreateEventExt("PerformTutorial",t.popupDescription);
-                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
                     break;
@@ -301,14 +310,14 @@ public class TutorialManager : MonoBehaviour {
                     if (t.targetComponentType.Length > 0)
                     {
                         List<GridObjectBehavior> objectsOfType = GameManager.Instance.GetGridManager().GetGridComponentsOfType("signal");
-                        if(objectsOfType.Count>0) tutorialOverlay.SetTooltip(t.popupDescription, objectsOfType[0].gameObject);
-                        else tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                        if(objectsOfType.Count>0) tutorialOverlay.SetTooltip(t.popupDescription, objectsOfType[0].gameObject, t.nextTutorial);
+                        else tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
                     }
                     else
                     {
-                        tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                        tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
                     }
-                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
 
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
