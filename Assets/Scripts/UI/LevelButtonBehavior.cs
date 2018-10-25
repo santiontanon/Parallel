@@ -24,27 +24,38 @@ public class LevelButtonBehavior : MonoBehaviour {
 
     [SerializeField] public ButtonImageSpriteReference buttonImageSpriteReference;
 
-    public void SetLevelSprite(bool isRequired, bool isComplete)
+    public void SetLevelSprite(bool isPCG, bool isComplete)
     {
-        /*
-        if (isRequired && isComplete) buttonImage.sprite = buttonImageSpriteReference.requiredComplete;
-        if (isRequired && !isComplete) buttonImage.sprite = buttonImageSpriteReference.requiredIncomplete;
-        if (!isRequired && isComplete) buttonImage.sprite = buttonImageSpriteReference.optionalComplete;
-        if (!isRequired && !isComplete) buttonImage.sprite = buttonImageSpriteReference.optionalIncomplete;
-        */
-        if ((isRequired && !isComplete) || (!isRequired && !isComplete))
+        if (isPCG)
         {
-            fill.color = new Color(51f / 255f, 59f / 255f, 65f / 255f, 1f);
-            outline.effectColor = new Color(204f / 255f, 88f / 255f, 39f / 255f);
-            levelName.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            if (isComplete)
+            {
+                fill.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+                outline.effectColor = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+                levelName.color = new Color(205f / 255f, 89f / 255f, 40f / 255f, 1f);
+            }
+            else
+            {
+                fill.color = new Color(61f / 255f, 81f / 255f, 85f / 255f, 1f);
+                outline.effectColor = new Color(205f / 255f, 89f / 255f, 40f / 255f, 1f);
+                levelName.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            }
         }
-        if ((isRequired && isComplete) || (!isRequired && isComplete)) 
+        else
         {
-            fill.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
-            outline.effectColor = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
-            levelName.color = new Color(204f / 255f, 88f / 255f, 39f / 255f);
+            if (isComplete)
+            {
+                fill.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+                outline.effectColor = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+                levelName.color = new Color(138f / 255f, 209f / 255f, 217f / 255f, 1f);
+            }
+            else
+            {
+                fill.color = new Color(61f / 255f, 81f / 255f, 85f / 255f, 1f);
+                outline.effectColor = new Color(138f / 255f, 209f / 255f, 217f / 255f, 1f);
+                levelName.color = new Color(255f / 255f, 255f / 255f, 255f / 255f, 1f);
+            }
         }
-
     }
 
     public void SetLevelRank(int rank)

@@ -145,7 +145,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		{
 			PlayerInteractionListener();
 		}
-        playerInteraction_UI.Timer();
+        if(GameManager.Instance.currentGameMode == GameManager.GameMode.Study_8)
+            playerInteraction_UI.Timer();
 	}
 
 	public override void EndPhase()
