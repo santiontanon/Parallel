@@ -1,7 +1,7 @@
 package pmexperiments;
 
 import playermodeling.Pair;
-import playermodeling.PlayerModeler;
+import playermodeling.AbstractPlayerModeler;
 import playermodeling.TelemetryUtils;
 
 import java.io.BufferedReader;
@@ -28,7 +28,45 @@ public class TelemetryUtils8Dash extends TelemetryUtils {
         week_to_levels.put("Week 1", new ArrayList<String>());
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PlayerModeler.PLAYER_MODELING_DATA_DIR + "week_to_levels.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "week_to_levels.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] tmp = line.split(",");
+                ArrayList<String> levels = week_to_levels.get(tmp[0]);
+                for (int i = 1; i < tmp.length; i++) {
+                    levels.add(tmp[i].trim());
+                }
+                //System.out.println(String.join(",",levels));
+                week_to_levels.replace(tmp[0], levels);
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        /*
+            Week 1: April 10- April 17 ( 04-10-18 - 04-17-18 )
+            Week 2: April 19- April 27 ( 04-19-18 - 04-27-18 )
+            Week 3: April 26- May 1 ( 04-26-18 - 05-01-18 )
+            Week 4: May 17-May 25 ( 05-17-18 - 05-25-18 )
+        */
+        week_to_time_interval_str = new LinkedHashMap<String, Pair<String,String> >();
+        week_to_time_interval_str.put("Week 1", new Pair<String,String>("04-10-18-00-00-00","04-17-18-23-59-59"));
+        week_to_time_interval_str.put("Week 2", new Pair<String,String>("04-19-18-00-00-00","04-27-18-23-59-59"));
+        week_to_time_interval_str.put("Week 3", new Pair<String,String>("04-26-18-00-00-00","05-01-18-23-59-59"));
+        week_to_time_interval_str.put("Week 4", new Pair<String,String>("05-17-18-00-00-00","05-25-18-23-59-59"));
+    }
+
+    public TelemetryUtils8Dash(String playerModelingDirectory) {
+
+        /* NOTE: For now, this is hard-coded ( 8 dash data is structured differently ). I will remove this once we get more data */
+        week_to_levels = new LinkedHashMap<String, ArrayList<String> >();
+        week_to_levels.put("Week 4", new ArrayList<String>());
+        week_to_levels.put("Week 3", new ArrayList<String>());
+        week_to_levels.put("Week 2", new ArrayList<String>());
+        week_to_levels.put("Week 1", new ArrayList<String>());
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader( playerModelingDirectory + "week_to_levels.txt"));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] tmp = line.split(",");

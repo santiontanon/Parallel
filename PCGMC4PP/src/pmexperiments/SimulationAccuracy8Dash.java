@@ -23,7 +23,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class SimulationAccuracy8Dash extends PlayerModeler {
+public class SimulationAccuracy8Dash extends AbstractPlayerModeler {
 
     /* Used for data analysis */
     public static String CRITICAL_SECTION_PATH = PLAYER_MODELING_DATA_DIR + "critical_section_annotations_8_dash/";

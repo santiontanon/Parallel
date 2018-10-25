@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 /* TODO: Pls implement proper logging */
 
-public class PlayerModelingEngine extends PlayerModeler {
+public class PlayerModelingEngine extends AbstractPlayerModeler {
 
     public static boolean debug;
 

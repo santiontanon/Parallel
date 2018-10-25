@@ -183,13 +183,29 @@ public class MEExecutionAnalyzer {
                         String criticalSectionFileLine;
                         int criticalSectionFileNumLines = 0;
                         int boardHeightLocal = 0;
-
+                        ArrayList<ArrayList<String>> directionBoard = new ArrayList<>();
                         while ((criticalSectionFileLine = criticalSectionFileBufferedReader.readLine()) != null) {
 
                             if (criticalSectionFileLine.startsWith("board_height")) {
                                 boardHeightLocal = Integer.parseInt(criticalSectionFileLine.split("\t")[1]);
                                 if (debug) {
                                     System.out.println("Board height: " + boardHeightLocal);
+                                }
+                            }
+
+                            if (criticalSectionFileLine.startsWith("DIRECTIONS")) {
+                                for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeightLocal + 1; i++) {
+                                    String tmp = criticalSectionFileBufferedReader.readLine();
+                                    ArrayList<String> row = new ArrayList<String>();
+                                    for (int m = 0; m < tmp.length(); m++) {
+                                        row.add(String.valueOf(tmp.charAt(m)));
+                                    }
+                                    directionBoard.add(row);
+                                }
+                                if (debug) {
+                                    System.out.println("----- Printing out direction board! -----");
+                                    printBoard(directionBoard);
+                                    System.out.println("-----------------------------------------");
                                 }
                             }
 
@@ -209,12 +225,11 @@ public class MEExecutionAnalyzer {
                                     System.out.println("------------------------------------------------");
                                 }
                                 persistentData.persistent_data.replace("critical_section", criticalSection);
-                                break;
                             }
+
                             criticalSectionFileNumLines++;
                         }
                         ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("critical_section");
-                        ArrayList<ArrayList<String>> directionBoard = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("direction_layout");
 
                         for (int i = 0; i < criticalSection.size(); i++) {
                             for (int j = 0; j < criticalSection.get(0).size(); j++) {

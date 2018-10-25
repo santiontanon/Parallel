@@ -1,7 +1,6 @@
 package pmexperiments;
 
-import playermodeling.Pair;
-import playermodeling.PlayerModeler;
+import playermodeling.AbstractPlayerModeler;
 import playermodeling.SkillAnalyzer;
 
 import java.io.BufferedReader;
@@ -21,7 +20,7 @@ public class SkillAnalyzerExperiment extends SkillAnalyzer {
         super();
         ground_truth = new LinkedHashMap<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PlayerModeler.PLAYER_MODELING_DATA_DIR + ground_truth_file));
+            BufferedReader br = new BufferedReader(new FileReader(AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + ground_truth_file));
             String line = br.readLine();
             String[] skill_list = line.split(",");
             while ((line = br.readLine()) != null) {

@@ -150,13 +150,17 @@ public class TelemetryUtils {
             String data_ = data[2];
             runTelemetry.add(tel);
 
-            if ( name_.equals("SubmitCurrentLevelME") ) {
-                if ( telemetryByRun.containsKey(data_) ) {
-                    System.err.println("Same ME Execution File maps to different runs.");
-                    System.exit(1);
-                } else {
-                    telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
-                    runTelemetry = new ArrayList<>();
+            if ( name_.equals("TriggerLoadLevel") ) {
+                if (data_.length() != 0) {
+                    if (!data_.startsWith("l")) {
+                        if ( telemetryByRun.containsKey(data_) ) {
+                            System.err.println("Same ME Execution File maps to different runs.");
+                            System.exit(1);
+                        } else {
+                            telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
+                            runTelemetry = new ArrayList<>();
+                        }
+                    }
                 }
             }
         }
@@ -212,5 +216,18 @@ public class TelemetryUtils {
         }
 
         return telemetry_by_level;
+    }
+
+    public String getUsername(ArrayList<String> data) {
+        String session_id = "";
+        for ( String d : data ) {
+            String [] tmp = d.split("\t");
+            if ( tmp[1].equals("SessionUser") ) {
+                return tmp[2];
+            }
+        }
+        System.err.println("Execution should never be here.");
+        System.exit(-1);
+        return "";
     }
 }

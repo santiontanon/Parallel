@@ -97,13 +97,14 @@ public class SkillAnalyzer {
         }
     }
 
-    public SkillAnalyzer() {
+    public SkillAnalyzer(String playerModelingDirectory) {
         skill_vector = new LinkedHashMap< String, Pair<Integer,Double> >();
         skills_specific_to_level = new ArrayList<String>();
         skills = new ArrayList<>();
+        debug = false;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(playerModelingDirectory + "skills.txt"));
             String line;
             while ((line = br.readLine()) != null) {
                 String skill = line.trim();
@@ -116,7 +117,31 @@ public class SkillAnalyzer {
                 rule_evidence.put(s,0.0);
             }
         } catch (IOException e) {
-            System.err.println("There is an error with reading in " + PlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
+            System.err.println("There is an error with reading in " + AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
+            e.printStackTrace();
+        }
+    }
+
+    public SkillAnalyzer() {
+        skill_vector = new LinkedHashMap< String, Pair<Integer,Double> >();
+        skills_specific_to_level = new ArrayList<String>();
+        skills = new ArrayList<>();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String skill = line.trim();
+                skills.add(skill);
+                skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
+            }
+            br.close();
+            rule_evidence = new LinkedHashMap<String,Double>();
+            for ( String s : skill_vector.keySet() ) {
+                rule_evidence.put(s,0.0);
+            }
+        } catch (IOException e) {
+            System.err.println("There is an error with reading in " + AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
             e.printStackTrace();
         }
     }

@@ -8,8 +8,9 @@ import collections
 import util
 import math
 import ast
+import datetime
 
-counter_ForkingMixIn = 3100
+epoch = datetime.datetime.utcfromtimestamp(0)
 
 def get_largest_id(ROOT_DATA_PATH):
     highest_id_value = 0
@@ -25,9 +26,9 @@ def get_largest_id(ROOT_DATA_PATH):
             continue
     for file_ in os.listdir(root_path + '/log'):
         data = get_file_data(root_path + '/log/' + file_, dict())
-        if 'id' in data and data['id'].isdigit():
+        if 'id' in data and isinstance(data['id'], int):
             data['id'] = int(data['id'])
-            if data['id'] > largest_id:
+            if data['id'] > highest_id_value:
                 highest_id_value = data['id']
     return highest_id_value
 
@@ -95,9 +96,12 @@ def get_file_data(fname, me_execution_files):
 
     data = {'levels': 0, 'me': 0, 'uploaded': 0, 'seq': list()}
     last_line = ""
+    start_time = None
     with open(fname) as f:
         for line in f:
             try:
+                if len(line.split("\t")) != 6:
+                    continue
                 t_, e_, d_, s__, x_, y_ = line.split('\t')
                 s_ = datetime.datetime.strptime(t_,'%m-%d-%y-%H-%M-%S')
                 s_ = (s_ - epoch).total_seconds()
@@ -106,30 +110,36 @@ def get_file_data(fname, me_execution_files):
                     s_ = 0.0
                 else:
                     s_ = s_ - start_time
-            except:
-                continue
-            if 'start' not in data:
-                data['start'] = t_
-            if e_=='SessionID' and 'id' not in data:
-                data['id'] = d_
-            if e_=='SessionUser' and 'user' not in data:
-                data['user'] = d_
-            if e_=='TriggerLoadLevel':
-                if d_:
-                    if d_.startswith('l'):
-                        data['levels'] += 1
-                    else:
-                        data['me'] += 1
-                        if d_ in me_execution_files:
-                            data['uploaded'] += 1
-                else:
-                    data['seq'].append('R')
-            elif e_=='SubmitCurrentLevelPlay':
-                data['seq'].append('T')
-            elif e_=='SubmitCurrentLevelME':
-                data['seq'].append('S')
 
-            last_line = line
+                if 'start' not in data:
+                    data['start'] = t_
+                if e_=='SessionID' and 'id' not in data:
+                    try:
+                        data['id'] = int(d_)
+                    except:
+                        continue
+                if e_=='SessionUser' and 'user' not in data:
+                    data['user'] = d_
+                if e_=='TriggerLoadLevel':
+                    if d_:
+                        if d_.startswith('l'):
+                            data['levels'] += 1
+                        else:
+                            data['me'] += 1
+                            if d_ in me_execution_files:
+                                data['uploaded'] += 1
+                    else:
+                        data['seq'].append('R')
+                elif e_=='SubmitCurrentLevelPlay':
+                    data['seq'].append('T')
+                elif e_=='SubmitCurrentLevelME':
+                    data['seq'].append('S')
+
+                last_line = line
+            except:
+                print(sys.exc_info()[0])
+                raise
+                #continue
     if last_line:
         data['end'] = last_line.split('\t')[0]
         try:
