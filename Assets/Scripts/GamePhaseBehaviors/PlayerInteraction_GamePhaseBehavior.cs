@@ -902,7 +902,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     else if (current_object)
                     {
                         string obj_name = current_object.component.type;
-                        if (obj_name == "delivery")
+                        if (obj_name == "delivery" || obj_name == "pickup")
                             obj_name = current_object.name;
                         TriggerHint(obj_name);
                     }

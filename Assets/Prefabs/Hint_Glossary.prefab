@@ -112,19 +112,19 @@ MonoBehaviour:
       can travel on.
     hintImage: {fileID: 21300000, guid: ec7598f38049e3c4c96c125719e9736b, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: package
+  - hint_component_type: conditional_pickup
     hintTitle: Unlimited Conditional Packages
     hintDescription: This type of package will regenerate as soon as it has been delivered
       to a delivery point. It can only be picked up by one arrow at a time.
     hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: limited
+  - hint_component_type: pickup
     hintTitle: Limited Conditional Packages
     hintDescription: This type of package can only be picked up once and will not
       respawn after it is delivered. It can only be picked up by one arrow.
     hintImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
     hintButtonImage: {fileID: 21300000, guid: 76a075bdd604cfd4184f88df2f782f37, type: 3}
-  - hint_component_type: pickup
+  - hint_component_type: unconditional_pickup
     hintTitle: Unlimited Unconditional Packages
     hintDescription: This type of package will regenerate as soon as it is picked
       up by an arrow. Multiple arrows can carry this package, but it can still only
