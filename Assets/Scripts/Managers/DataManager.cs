@@ -31,7 +31,7 @@ public class DataManager : MonoBehaviour {
             lr_text = Resources.Load("DemoSelection") as TextAsset;
             text = lr_text.text;
         }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study_9)
         {
             if(GameManager.Instance.tracker.level_data != "")
             {

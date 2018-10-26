@@ -250,7 +250,7 @@ MonoBehaviour:
   gradeReportBehavior: {fileID: 11467800}
   endScreenBehavior: {fileID: 11409168}
   exitGameBehavior: {fileID: 0}
-  currentGameMode: 2
+  currentGameMode: 4
   hideTestsForBuild: 0
   currentLevelReferenceObject:
     file: level01
@@ -987,8 +987,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 0
     popupDescription: Click the help toggle again to return to play mode when you
-      are done. (click to close)
-    nextTutorial: 0
+      are done.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1135,9 +1135,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: Use signals to allow the package to be delivered twice. (click
-      to close)
-    nextTutorial: 0
+    popupDescription: Use signals to allow the package to be delivered twice.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1286,8 +1285,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 1
     popupDescription: Arrows move at random speeds, and can start and stop at any
-      time. Multiple arrows can't deliver packages at once. (click to close)
-    nextTutorial: 0
+      time. Multiple arrows can't deliver packages at once.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1324,8 +1323,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 1
     popupDescription: Test shows one possible outcome of the different arrow movments.
-      Submit checks all outcomes to see if any ever fail. (click to close)
-    nextTutorial: 0
+      Submit checks all outcomes to see if any ever fail.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1362,8 +1361,7 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 1
     popupDescription: To proceed through levels, your solution must succeed on submit.
-      (click to close)
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1437,8 +1435,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 1
     popupDescription: You can right click on a semaphore you placed to change it's
-      default state. (click to close)
-    nextTutorial: 0
+      default state.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1475,8 +1473,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 1
     popupDescription: Your turn! Use semaphores and signals to allow both arrows to
-      deliver packages. (click to close)
-    nextTutorial: 0
+      deliver packages.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1738,8 +1736,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 0
     popupDescription: Arrows can only move on their predefined path. Use the Flow
-      Arrows on the right to view which paths arrows can take. (click to close)
-    nextTutorial: 0
+      Arrows on the right to view which paths arrows can take.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1776,8 +1774,8 @@ MonoBehaviour:
     complete_trigger: 4
     sequenceId: 0
     popupDescription: Use direction switches, signals, and semaphores wisely, and
-      pay attention to which paths arrows can follow. (click to close)
-    nextTutorial: 0
+      pay attention to which paths arrows can follow.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1962,11 +1960,12 @@ MonoBehaviour:
     panelContainer: {fileID: 0}
     isOpen: 0
     tutorialDescription: {fileID: 0}
-    tutorialCloseButton: {fileID: 0}
     canvas: {fileID: 0}
     scaler: {fileID: 0}
     tutorialArrow: {fileID: 0}
+    tutorialCloseButton: {fileID: 0}
     skipTutorialsButton: {fileID: 0}
+    nextTutorialButton: {fileID: 0}
   tutorialScreens:
   - tutorialLevelId: 0
     tutorialLevelImage: {fileID: 21300000, guid: 1c9a712a663a6eb429432fdba7f1dc96,

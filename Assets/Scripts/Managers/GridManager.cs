@@ -303,18 +303,26 @@ public class GridManager : MonoBehaviour {
                     }
                 }
 			}
+            else if(type == "pickup")
+            {
+                if(gridComponent.configuration.type == "Conditional")
+                {
+
+                    gridElementInstance.name = "conditional_pickup";
+                }
+                else if (gridComponent.configuration.type == "Unconditional")
+                {
+                    gridElementInstance.name = "unconditional_pickup";
+                }
+            }
 
 			gridElementInstance.transform.SetParent(gridContainer);
 
-            if(type != "delivery")
+            if(type != "delivery" && type != "pickup")
 			    gridElementInstance.name = type;
 
 			behavior.behaviorType = GridObjectBehavior.BehaviorTypes.component;
 			behavior.component = gridComponent;
-            if(type == "delivery")
-            {
-                
-            }
 
             instanceSpriteRenderer.sprite = GetSprite(gridComponent);
 
