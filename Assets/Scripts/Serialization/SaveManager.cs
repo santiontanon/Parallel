@@ -54,9 +54,13 @@ public class SaveManager : MonoBehaviour{
                 List<LevelScore> pcgScores = new List<LevelScore>();
                 List<string> pcgLevels = new List<string>();
                 currentSave = NewSave(s, scores, pcgScores, pcgLevels);
+                saves.Add(currentSave);
                 GameManager.Instance.GetScoreManager().LoadScores();
+                Debug.Log("Done loading scores");
                 GameManager.Instance.GetDataManager().GetLevels();
+                Debug.Log("Done loading levels");
                 GameManager.Instance.GetDataManager().GetPCGLevels(currentSave.pcgLevels);
+                Debug.Log("Done loading pcg levels");
             }
         }
     }
@@ -124,15 +128,16 @@ public class SaveManager : MonoBehaviour{
 
     public ParallelSave NewSave(string s, LevelScore[] scores, List<LevelScore> pcgScores, List<string> levels)
     {
-        Debug.Log("NewSave");
         if(s != "")
         {
             ParallelSave save = new ParallelSave();
+            Debug.Log("Created new save");
             save.name = s;
             save.scores = scores;
             save.pcgScores = pcgScores;
             save.pcgLevels = levels;
             Serializer.SerializeData(save);
+            Debug.Log("Done Creating Save");
             return save;
         }
         else
