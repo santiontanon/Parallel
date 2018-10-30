@@ -52,7 +52,6 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
     public override void ReturnToStep(TimeStepData timeStep)
     {
-        Debug.Log("ReturnToSte");
         //thread
         iTween.Stop(gameObject);
         this.timeStep = timeStep;

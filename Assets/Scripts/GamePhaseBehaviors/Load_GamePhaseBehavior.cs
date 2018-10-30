@@ -189,14 +189,14 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
     }
 
     public void AddPCGButton(){
-			GameObject g = Instantiate(loadUI.levelButtonPrefab) as GameObject;
-			Button gButton = g.GetComponent<Button>();
-			g.transform.SetParent( loadUI.requiredLevelContainer );
-			g.transform.localScale = Vector3.one;
-			Text gText = g.GetComponentInChildren<Text>();
-			gText.text = "PCG";
-			gButton.onClick.AddListener( ()=> LoadPCGBehavior() );
-	}
+        GameObject g = Instantiate(loadUI.levelButtonPrefab) as GameObject;
+        Button gButton = g.GetComponent<Button>();
+        g.transform.SetParent(loadUI.requiredLevelContainer);
+        g.transform.localScale = Vector3.one;
+        Text gText = g.GetComponentInChildren<Text>();
+        gText.text = "PCG";
+        gButton.onClick.AddListener(() => LoadPCGBehavior());
+    }
 
 	public override void UpdatePhase()
 	{

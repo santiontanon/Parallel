@@ -164,12 +164,14 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 			case "signal":
 				if( inputStep.eventType == "E" )
 				{
+                    int passed = component.configuration.passed;
 					if( inputStep.componentStatus != null ) 
 					{
 						if( inputStep.componentStatus.passed != null )
 						{
 							if (inputStep.componentStatus.passed >= 1)
 							{
+                                passed = inputStep.componentStatus.passed - component.configuration.passed;
 								component.configuration.passed = inputStep.componentStatus.passed;
 								GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite( component );
 								iTween.ScaleFrom( gameObject, iTween.Hash( 
@@ -177,7 +179,6 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 									"time",0.5f,
 									"oncomplete", "ResetSprite"
 								));
-								component.configuration.passed = 0;
 							}
 						}
 					}
@@ -185,9 +186,9 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 					GridObjectBehavior linkedObject = GameManager.Instance.GetGridManager().GetGridObjectByID( component.configuration.link );
 					if( linkedObject !=null && linkedObject.component != null && linkedObject.component.type == "conditional" )
 					{
-						linkedObject.BeginInteraction();
+                        for(int i = 0; i < passed; i++)
+						    linkedObject.BeginInteraction();
 					}
-
 				}
 				break;
 			}

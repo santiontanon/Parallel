@@ -105,6 +105,13 @@ public class LinkJava : MonoBehaviour
 		return ExitCode;
 	}
 
+    public void StopExternalProcess()
+    {
+        externalProcess.Close();
+        externalProcess.Dispose();
+        externalProcess.Kill();
+    }
+
     IEnumerator ExternalProcessFailure()
     {
         UnityEngine.Debug.LogError(externalProcess.StartInfo.Arguments);

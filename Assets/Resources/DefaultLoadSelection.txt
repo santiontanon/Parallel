@@ -78,6 +78,10 @@
       {
         "file":"level19",
         "title":"Level 19"
+      },
+	  {
+        "file":"level60",
+        "title":"Level 60"
       }
     ],
     "optional":[

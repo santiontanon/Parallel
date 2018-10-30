@@ -1,0 +1,54 @@
+METADATA
+level_id	60
+level_title	PCG Level
+goal_string	Deliver all packages indicated in each delivery point.
+goal_struct	{"required":[{"id":2020,"type":"delivery","property":"delivered","value":2,"condition":"gt","thread_id":0},{"id":2024,"type":"delivery","property":"delivered","value":2,"condition":"gt","thread_id":0}],"desired":[]}
+player_palette	{"semaphore":{"count":0},"signal":{"count":0},"painter":{"count":0},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	3
+time_exchange_min	1
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	1
+board_width	19
+board_height	5
+
+LAYOUT
+FEEEEEEEEEEEEEEEGEC
+J---------------J-J
+J-FEEEEEEEEEEEEEI-J
+J-J---------------J
+LEMEEEEEEEEEEEEEEEI
+
+COLORS
+                   
+ --------------- - 
+ -               - 
+ - --------------- 
+                   
+
+DIRECTIONS
+V<<<<<<<<<<<<<<<X>V
+V               A V
+V >>>>>>>>>>>>>>A V
+V A               V
+>>A<<<<<<<<<<<<<<<<
+
+SKILLS
+Deliver packages
+Synchronize multiple arrows
+Understand the use of semaphores
+Be able to link semaphores to buttons
+Be able to link buttons to direction switches
+
+COMPONENTS
+12	thread	8	2	S	L	{"color":1,"initial_direction":"East","capacity":1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+2024	delivery	18	4	S	L	{"color":1,"accepted_types":[],"accepted_colors":[],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":3,"missed":0}
+2020	delivery	0	4	S	L	{"color":1,"accepted_types":[],"accepted_colors":[],"consumer":-1,"strict":0,"passed":0,"delivered":0,"denominator":3,"missed":0}
+1015	conditional	16	0	S	L	{"directions":["West","East"],"current":0,"passed":0}
+2021	pickup	14	2	S	L	{"type":"Conditional","color":1,"passed":0,"picked":0}
+1	thread	6	2	S	L	{"color":1,"initial_direction":"East","capacity":1,"delay":0,"time_pickup_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"picked":0,"delivered":0,"missed":0}
+
+EXECUTION
+
+PLAYER
