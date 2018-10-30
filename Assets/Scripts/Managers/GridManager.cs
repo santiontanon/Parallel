@@ -314,6 +314,10 @@ public class GridManager : MonoBehaviour {
                 {
                     gridElementInstance.name = "unconditional_pickup";
                 }
+                else if(gridComponent.configuration.type == "Limited")
+                {
+                    gridElementInstance.name = "limited_pickup";
+                }
             }
 
 			gridElementInstance.transform.SetParent(gridContainer);

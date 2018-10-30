@@ -19,7 +19,7 @@ public class TutorialManager : MonoBehaviour {
         public RectTransform tutorialArrow;
         public Button tutorialCloseButton;
         public Button skipTutorialsButton;
-        public Image nextTutorialButton;
+        public Button nextTutorialButton;
 
         public override void OpenPanel()
         {
@@ -63,9 +63,15 @@ public class TutorialManager : MonoBehaviour {
                 PositionTutorialPanel(nextPanelPosition, nextPanelPosition, inDescription.Length);
             }
             if (nextTutorial)
+            {
                 nextTutorialButton.gameObject.SetActive(true);
+                nextTutorialButton.onClick.RemoveAllListeners();
+                nextTutorialButton.onClick.AddListener(() => GameManager.Instance.TriggerLevelTutorialSkip(false));
+            }
             else
+            {
                 nextTutorialButton.gameObject.SetActive(false);
+            }
             tutorialDescription.text = inDescription;
         }
 
@@ -378,7 +384,7 @@ public class TutorialManager : MonoBehaviour {
     {
         CloseTutorial(t);
         tutorialEventIndex++;
-        if (tutorialIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
+        if (tutorialEventIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
         else { 
 			//Debug.Log("No more tutorials."); 
 			GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventComplete","NoMore");
@@ -389,15 +395,27 @@ public class TutorialManager : MonoBehaviour {
     {
 
         GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventSkip", "AllSubsequent="+allSubsequentForLevel.ToString());
-        if (tutorialIndex < currentTutorialEventQueue.Length) CloseTutorial(currentTutorialEventQueue[tutorialIndex]);
-        foreach (TutorialEvent t in currentTutorialEventQueue)
+        
+        if (allSubsequentForLevel)
         {
-            t.hasCompleted = true;
-        }
-        tutorialIndex = currentTutorialEventQueue.Length;
+            if (tutorialEventIndex < currentTutorialEventQueue.Length) CloseTutorial(currentTutorialEventQueue[tutorialEventIndex]);
+            foreach (TutorialEvent t in currentTutorialEventQueue)
+            {
+                t.hasCompleted = true;
+            }
+            tutorialEventIndex = currentTutorialEventQueue.Length;
 
-        int levelIndex = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
-        ForceTutorialSeriesCompletion(levelIndex);
+            int levelIndex = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
+            ForceTutorialSeriesCompletion(levelIndex);
+        }
+        else
+        {
+            if (tutorialEventIndex < currentTutorialEventQueue.Length)
+            { 
+                TutorialEvent targetTutorial = currentTutorialEventQueue[tutorialEventIndex];
+                ReportTutorialEventComplete(targetTutorial);
+            }
+        }
     }
 
     void ForceTutorialSeriesCompletion(int levelIndex)

@@ -67,7 +67,7 @@ public class DataManager : MonoBehaviour {
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
 
         //Load pre-existing scores
-        GameManager.Instance.GetScoreManager().LoadScores();
+        //GameManager.Instance.GetScoreManager().LoadScores();
 
         try{
             //link level int ids to each level reference object
@@ -265,14 +265,7 @@ public class DataManager : MonoBehaviour {
 
     public void UpdateLevelRank(string inputLevelFile, int inputNewRank)
     {
-        bool isLevelFound = false;
         GetLevelByFile(inputLevelFile).completionRank = inputNewRank;
-
-        if (isLevelFound) {
-            Debug.Log("Located file " + inputLevelFile);
-            return;
-        }
-        Debug.Log("Could not locate level " + inputLevelFile + " in level references of Data Manager.");
     }
 
     Level LoadLevel(string[] levelDataArray)

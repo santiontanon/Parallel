@@ -118,7 +118,7 @@ MonoBehaviour:
       to a delivery point. It can only be picked up by one arrow at a time.
     hintImage: {fileID: 21300000, guid: 703239f806b48f4458edf1db745b584c, type: 3}
     hintButtonImage: {fileID: 0}
-  - hint_component_type: pickup
+  - hint_component_type: limited_pickup
     hintTitle: Limited Conditional Packages
     hintDescription: This type of package can only be picked up once and will not
       respawn after it is delivered. It can only be picked up by one arrow.
@@ -227,5 +227,10 @@ MonoBehaviour:
   - hint_component_type: toggle_goal_button
     hintTitle: Goal
     hintDescription: This button views or hides the goal of the level.
+    hintImage: {fileID: 21300000, guid: 34fb8c23029c2d849b9d5a2097b8b713, type: 3}
+    hintButtonImage: {fileID: 0}
+  - hint_component_type: pickup
+    hintTitle: Pickup
+    hintDescription: This is just so the pickup appears.
     hintImage: {fileID: 21300000, guid: 34fb8c23029c2d849b9d5a2097b8b713, type: 3}
     hintButtonImage: {fileID: 0}
