@@ -296,7 +296,9 @@ public class PlayerInteraction_UI
 
             saveLevel.onClick.RemoveAllListeners();
             saveLevel.onClick.AddListener(() => GameManager.Instance.TriggerPCGLevelSave() );
-            saveLevel.gameObject.SetActive( GameManager.Instance.IsInPCG() );
+            saveLevel.gameObject.SetActive(false);
+            //saveLevel.gameObject.SetActive( GameManager.Instance.IsInPCG() );
+            //just for november 2018 study
         }
 
         void ToggleGoalVisibility()
