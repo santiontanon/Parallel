@@ -32,7 +32,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
     public void ClearScores()
     {
-        foreach(LevelScore score in scores)
+        foreach (LevelScore score in scores)
         {
             score.completed = false;
             score.attemptCount = -1;
@@ -89,7 +89,7 @@ public class ScoreManager : MonoBehaviour {
     /// <param name="index">index of the target level</param>
     public LevelScore GetScore(int index)
     {
-        if(scores.Length > index)
+        if (scores.Length > index)
         {
             return scores[index];
         }
@@ -180,7 +180,7 @@ public class ScoreManager : MonoBehaviour {
     /// <param name="score">LevelScore object that holds data for scoring</param>
     public void ScoreLevel(LevelScore score)
     {
-        if(solutions.Length > score.index && score.index >= 0)
+        if (solutions.Length > score.index && score.index >= 0)
         {
             int _score = GetCalculatedScore(score);
             if(scores.Length <= score.index)
@@ -219,7 +219,6 @@ public class ScoreManager : MonoBehaviour {
                 scores[i] = new LevelScore();
             }
         }
-        SaveScores();
     }
 
     [ContextMenu("Setup Solution Default Values")]

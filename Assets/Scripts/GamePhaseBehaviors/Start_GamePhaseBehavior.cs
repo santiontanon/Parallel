@@ -85,6 +85,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
     void PlayerFieldChangedEvent()
     {
+        Debug.Log("PlayerFieldChangedEvent");
         if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
             if (playerIdField.text.Length > 0)

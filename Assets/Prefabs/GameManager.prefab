@@ -799,7 +799,7 @@ MonoBehaviour:
     complete_trigger: 0
     sequenceId: 0
     popupDescription: Drag a signal to the track.
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 1
     pauseDuration: 2
     overrideSimulation: 0
@@ -837,7 +837,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: After dragging to track, right click a signal and right click
       again on a semaphore to link them. Then press "Test" again.
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -912,7 +912,7 @@ MonoBehaviour:
     sequenceId: 1
     popupDescription: When you think you have the correct solution, press "Submit"
       to turn it in.
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -950,7 +950,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: 'Toggle on help mode, then click on a highlighted element to
       learn more about it. '
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1398,7 +1398,7 @@ MonoBehaviour:
     complete_trigger: 1
     sequenceId: 1
     popupDescription: Drag a semaphore to the track. ---->
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1624,7 +1624,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: You can also connect signals to direction switches like you
       would semaphores. Try that now.
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1661,7 +1661,7 @@ MonoBehaviour:
     complete_trigger: 2
     sequenceId: 0
     popupDescription: Press "Test"
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -1812,7 +1812,7 @@ MonoBehaviour:
     complete_trigger: 2
     sequenceId: 0
     popupDescription: Press "Submit".
-    nextTutorial: 0
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
