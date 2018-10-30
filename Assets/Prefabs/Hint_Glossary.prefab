@@ -76,13 +76,13 @@ MonoBehaviour:
     hintButtonImage: {fileID: 0}
   - hint_component_type: semaphore
     hintTitle: Semaphore
-    hintDescription: Semaphores can be used to block or release an arrow. Semaphores
-      can be dragged from the toolbar and placed on the track. Multiple signals can
-      connect to one semaphore. When closed, the top image arrows cannot pass through
-      the semaphore. When open, the bottom image, arrows can pass through. You can
-      right click on an unlocked semaphore to switch its default state. A connected
-      signal can only open a semaphore, it will not close it. Semaphores can only
-      be closed when an arrow passes over the semaphore.
+    hintDescription: Semaphores can be used to block or release an arrow. Drag them
+      from the toolbar to place on the track. When closed (the top image) arrows cannot
+      pass through the semaphore. When open (the bottom image) arrows can pass through.
+      You can right click on an unlocked semaphore to switch its default state. A
+      connected signal can only open a semaphore, it will not close it, but multiple
+      signals can be connected to a semaphore. Semaphores can only be closed when
+      an arrow passes over it.
     hintImage: {fileID: 21300000, guid: 3babf36dea491e74c88bc2494b0ab992, type: 3}
     hintButtonImage: {fileID: 21300000, guid: fe7265002b887e843882fb18a0c895b8, type: 3}
   - hint_component_type: Link_Button
