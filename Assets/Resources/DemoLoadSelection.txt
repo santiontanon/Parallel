@@ -53,6 +53,10 @@
       {  
         "file":"level13",
         "title":"Level 13"
+      },
+	  {
+        "file":"level60",
+        "title":"Level 60"
       }
     ],
     "optional":[

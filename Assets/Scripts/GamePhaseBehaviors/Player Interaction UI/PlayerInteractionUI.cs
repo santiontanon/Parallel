@@ -128,7 +128,6 @@ public class PlayerInteraction_UI
 
 	public void SetDraggableElement ( Sprite inputTexture )
 	{
-		Debug.Log("Setting texture to " + inputTexture.name);
 		draggableElement.sprite = inputTexture;
 		draggableElement.gameObject.SetActive(true);
 	}
@@ -140,8 +139,6 @@ public class PlayerInteraction_UI
 
 	public void ReleaseDraggableElement ()
 	{
-        Debug.Log(draggableElement);
-        Debug.Log("Release Draggable Element");
 		draggableElement.gameObject.SetActive(false);
 	}
 
