@@ -167,10 +167,10 @@ public class LinkJava : MonoBehaviour
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
-                int rSize = UnityEngine.Random.Range(0, 3);
-                UnityEngine.Debug.Log("RSize: " + rSize);
-                string size = " " + "\"" + rSize.ToString() + "\"";
-                externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + size;
+                //int rSize = UnityEngine.Random.Range(0, 3);
+                //UnityEngine.Debug.Log("RSize: " + rSize);
+                //string size = " " + "\"" + rSize.ToString() + "\"";
+                externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
             }
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.EnableRaisingEvents = true;
