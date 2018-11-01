@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import javax.swing.JFrame;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
 import lgraphs.ontology.Ontology;
@@ -49,7 +48,6 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
-import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
@@ -57,6 +55,7 @@ import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
+import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -70,42 +69,44 @@ public class PCG {
     public static boolean correct = true;
     public static void main(String args[]) throws FileNotFoundException, IOException, Exception {
         if (args.length < 2) {
-            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [keep_solution]");
+            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [path-to-put-the-generated-level]");
             System.exit(4);
         }
         boolean keep_solution = false;
-        if (args.length >= 4) keep_solution = true;
-
-        String filename = args[0];
-        // TODO Get parameters from filename and sample GG with parameters from filename
-        boolean debug = false;
+        String parameterFile = args[0];
         long randomSeed = Long.parseLong(args[1]);
         String sizeStr = args[2];
+        String outputPath = null;
+        boolean debug = false;
+        if (args.length >= 4) {
+            outputPath = args[3];
+        }
         LinkedHashMap<String, Double> playerModel = null;
-        if("debug".equals(filename)) {
+        if("debug".equals(parameterFile)) {
             randomSeed = 0;
             debug = true;
         } else {
-            playerModel = loadPlayerModel(filename);
+            playerModel = loadPlayerModel(parameterFile);
         }
         GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, true, playerModel, debug);
-        if(!("debug".equals(filename))){
-            // Export
-            export(gs, getNewFileFromFilename(filename, false));
-        } else {
+        if("debug".equals(parameterFile)){
             System.out.println(GameStateExporter.export(gs));
+        } else {
+            // Export
+            export(gs, getNewFileFromFilename(parameterFile, false, outputPath));
         }
         System.exit(0);
     }
     
-    public static File getNewFileFromFilename(String filename, boolean overwrite) throws IOException{
+    public static File getNewFileFromFilename(String filename, boolean overwrite, String outputPath) throws IOException{
         File file = new File(filename);
-        String path = file.getAbsolutePath();
         File out_file;
+        File folder = file.getParentFile();
+        if (outputPath != null) folder = new File(outputPath);
         if (overwrite) {
-            out_file = new File(file.getParentFile(), "pcg_out.txt");
+            out_file = new File(folder, "pcg_out.txt");
         } else {
-            out_file = File.createTempFile("pcg_out_", ".txt", file.getParentFile());
+            out_file = File.createTempFile("pcg_out_", ".txt", folder);
         }
         return out_file;
     }
@@ -358,9 +359,13 @@ public class PCG {
                     continue;
                 }
 
-                g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe0-"+attempt+".png", g_oe, 32, 32, true);
+//                g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe1-"+attempt+".png", g_oe, 32, 32, true);
                 g_oe = OrthographicEmbeddingPathOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe2-"+attempt+".png", g_oe, 32, 32, true);
                 g_oe = OrthographicEmbeddingBoardSizeOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe3-"+attempt+".png", g_oe, 32, 32, true);
 
                 if (best_g_oe==null) {
                     best_g_oe = g_oe;
@@ -387,8 +392,9 @@ public class PCG {
             }
                         
             disconnectedEmbeddings.add(best_g_oe);
+//            SavePNG.savePNG("PCG-best_g_oe.png", best_g_oe, 32, 32, true);
         }
-        OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);        
+        OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);
         
         // "Parallel"-specifiy optimizations
         GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState(skills);

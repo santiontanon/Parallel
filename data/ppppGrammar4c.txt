@@ -6,9 +6,12 @@ RULE ADD_THREAD 1.0 0.5 -1 none
     PATTERN A:{track,thread}()
     NEGATEDPATTERN A:{track,thread}(has:B),B:thread()
     REPLACEMENT A:track(has:B),B:thread()
-RULE ADD_MULTITHREAD 1.0 0.5 -1 none
-    PATTERN A:track(to:B,has:C),B:track(),C:multithread()
+RULE ADD_MULTITHREAD2 1.0 0.5 -1 none
+    PATTERN A:track(to:B,has:C),B:track(),C:double_thread()
     REPLACEMENT A:track(to:A2),A2:track(has:A2_,to:B),B:track(),A2_:thread()
+RULE ADD_MULTITHREAD3 1.0 0.5 -1 none
+    PATTERN A:track(to:B,has:C),B:track(),C:triple_thread()
+    REPLACEMENT A:track(to:A2),A2:track(has:A2_,to:A3),A3:track(has:A3_,to:B),B:track(),A2_:thread(),A3_:thread()
 RULE ADD_PICKUP 1.0 0.5 -1 none
     PATTERN A:{track,pickup}(partOf:X),X:situation_critical_misdelivery_due_to_race_condition()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()

@@ -171,6 +171,7 @@ public class LinkJava : MonoBehaviour
                 //UnityEngine.Debug.Log("RSize: " + rSize);
                 //string size = " " + "\"" + rSize.ToString() + "\"";
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
+                externalProcess.StartInfo.Arguments += " \"" + Application.dataPath + "/../data" + "\"";
             }
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.EnableRaisingEvents = true;

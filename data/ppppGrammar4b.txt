@@ -16,7 +16,7 @@ RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,deliver_package
     IB:{track,delivery}(partOf:A,partOf:AA,to:Y),\
     Y:merge(to:C),\
     C:{track}(is:C_,partOf:A,partOf:AA,has:BUTTON2),C_:in(),BUTTON2:button(link:SEM1),\
-    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+    F:{start_point}(partOf:AA,has:F_),F_:{double_thread}()
 RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliver_packages,race_conditions
     PATTERN A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
@@ -27,14 +27,14 @@ RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliv
     X:{track,diverter}(partOf:A,to:Y,to:C),Y:{dead_end}(is:Y_),Y_:trash(),\
     D:track(),E:track(to:M),\
     M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
-    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+    F:{start_point}(partOf:AA,has:F_),F_:{double_thread}()
 RULE SIMPLE_DEADLOCK 0.7 0.1 -1 deadlock,synchronize,semaphores,link_direction_switches
     PATTERN A:situation_abst(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
     F:{start_point}(partOf:AA)
     REPLACEMENT A:two_thread_semaphore(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
-    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+    F:{start_point}(partOf:AA,has:F_),F_:{double_thread}()
 RULE EXPAND_DEADLOCK 1.0 1.0 -1 none
     PATTERN A:two_thread_semaphore(),\
     B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
@@ -55,7 +55,7 @@ RULE JESS_DEADLOCK1 0.7 0.1 -1 deadlock,synchronize,semaphores,exchange_points,s
     F:{start_point}(partOf:AA)
     REPLACEMENT A:three_path_exchange_deadlock(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
-    F:{start_point}(partOf:AA,has:F_),F_:{multithread}()
+    F:{start_point}(partOf:AA,has:F_),F_:{triple_thread}()
 RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 none
     PATTERN A:three_path_exchange_deadlock(),\
     B:track(is:B_,partOf:A),B_:out(),\
@@ -73,7 +73,7 @@ RULE EXPAND_JESS_DEADLOCK1 1.0 1.0 -1 none
     PATH1C:track(to:PATH1D,has:SEM1,partOf:A),SEM1:semaphore_red(partOf:CHALLENGE),\
     PATH1D:{track,exchange}(to:MERGE,has:EXCHANGE1,partOf:A),EXCHANGE1:exchange(partOf:EXCHANGE3),\
     PATH3A:{track}(to:PATH3B,partOf:A,has:SOLB4),\
-    PATH3B:{track,thread}(to:PATH3C,partOf:A),\
+    PATH3B:{track}(to:PATH3C,partOf:A),\
     PATH3C:track(to:MERGE,has:EXCHANGE3),EXCHANGE3:exchange(partOf:EXCHANGE1),\
     PATH2B:track(to:PATH2C,has:BUTTON2,partOf:A),BUTTON2:button(partOf:CHALLENGE,link:SEM1),\
     PATH2C:track(to:MERGE,has:SEM2,partOf:A),SEM2:semaphore_red(partOf:CHALLENGE),\

@@ -7,6 +7,7 @@ package support;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Random;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
 
@@ -81,6 +82,11 @@ public class PCGPlayerModelUtils {
             count++;
         }
         average/=count;
+        
+        if (count == 0) {
+            Random r = new Random();
+            r.nextInt(2);
+        }
 
         if (average <= 0.38) {  // 0.38 is the "mean - stddev" of the average skill vectors in our 3-, 4- and 9- expeirments
             return 0;
