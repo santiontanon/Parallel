@@ -70,42 +70,44 @@ public class PCG {
     public static boolean correct = true;
     public static void main(String args[]) throws FileNotFoundException, IOException, Exception {
         if (args.length < 2) {
-            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [keep_solution]");
+            System.out.println("Usage: support.PCG parameter_file|debug random_seed size [path-to-put-the-generated-level]");
             System.exit(4);
         }
         boolean keep_solution = false;
-        if (args.length >= 4) keep_solution = true;
-
-        String filename = args[0];
-        // TODO Get parameters from filename and sample GG with parameters from filename
-        boolean debug = false;
+        String parameterFile = args[0];
         long randomSeed = Long.parseLong(args[1]);
         String sizeStr = args[2];
+        String outputPath = null;
+        boolean debug = false;
+        if (args.length >= 4) {
+            outputPath = args[3];
+        }
         LinkedHashMap<String, Double> playerModel = null;
-        if("debug".equals(filename)) {
+        if("debug".equals(parameterFile)) {
             randomSeed = 0;
             debug = true;
         } else {
-            playerModel = loadPlayerModel(filename);
+            playerModel = loadPlayerModel(parameterFile);
         }
         GameState gs = generateGameState(randomSeed, sizeStr, keep_solution, true, playerModel, debug);
-        if(!("debug".equals(filename))){
-            // Export
-            export(gs, getNewFileFromFilename(filename, false));
-        } else {
+        if("debug".equals(parameterFile)){
             System.out.println(GameStateExporter.export(gs));
+        } else {
+            // Export
+            export(gs, getNewFileFromFilename(parameterFile, false, outputPath));
         }
         System.exit(0);
     }
     
-    public static File getNewFileFromFilename(String filename, boolean overwrite) throws IOException{
+    public static File getNewFileFromFilename(String filename, boolean overwrite, String outputPath) throws IOException{
         File file = new File(filename);
-        String path = file.getAbsolutePath();
         File out_file;
+        File folder = file.getParentFile();
+        if (outputPath != null) folder = new File(outputPath);
         if (overwrite) {
-            out_file = new File(file.getParentFile(), "pcg_out.txt");
+            out_file = new File(folder, "pcg_out.txt");
         } else {
-            out_file = File.createTempFile("pcg_out_", ".txt", file.getParentFile());
+            out_file = File.createTempFile("pcg_out_", ".txt", folder);
         }
         return out_file;
     }
