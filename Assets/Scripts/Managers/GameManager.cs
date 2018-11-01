@@ -230,7 +230,7 @@ public class GameManager : MonoBehaviour {
 		linkJava.filename = filename;
 		//LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
 		linkJava.simulationMode = LinkJava.SimulationTypes.PCG;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 		//SetGamePhase(GameManager.GamePhases.GenerateTrack);
 	}
 
@@ -330,7 +330,7 @@ public class GameManager : MonoBehaviour {
 		GameManager.Instance.tracker.CreateEventExt("SubmitCurrentLevel"+inputSimulationType.ToString(),filename);
 
 		LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 	}
 
     public void TriggerAdvanceToNextLevel()

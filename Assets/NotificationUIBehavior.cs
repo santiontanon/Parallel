@@ -25,7 +25,7 @@ public class NotificationUIBehavior : MonoBehaviour
     private Text title;
     private Text description;
 
-    private void Start()
+    private void Awake()
     {
         instance = this;
 
