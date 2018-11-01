@@ -56,6 +56,8 @@
     <sort name="component" super="any"/>
     <sort name="thread" super="component"/>
     <sort name="multithread" super="pcg_hint"/>
+    <sort name="double_thread" super="multithread"/>
+    <sort name="triple_thread" super="multithread"/>
     <sort name="pickup" super="component"/>
     <sort name="pickup_unconditional" super="pickup"/> <!-- this is the default in Java -->
     <sort name="pickup_conditional" super="pickup"/> <!-- this is the default overwritten by rules -->

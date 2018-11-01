@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import javax.swing.JFrame;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
 import lgraphs.ontology.Ontology;
@@ -49,7 +48,6 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
-import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
@@ -57,6 +55,7 @@ import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
+import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -360,9 +359,13 @@ public class PCG {
                     continue;
                 }
 
-                g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe0-"+attempt+".png", g_oe, 32, 32, true);
+//                g_oe = OrthographicEmbeddingOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe1-"+attempt+".png", g_oe, 32, 32, true);
                 g_oe = OrthographicEmbeddingPathOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe2-"+attempt+".png", g_oe, 32, 32, true);
                 g_oe = OrthographicEmbeddingBoardSizeOptimizer.optimize(g_oe, g, pec);
+//                SavePNG.savePNG("PCG-g_oe3-"+attempt+".png", g_oe, 32, 32, true);
 
                 if (best_g_oe==null) {
                     best_g_oe = g_oe;
@@ -389,8 +392,9 @@ public class PCG {
             }
                         
             disconnectedEmbeddings.add(best_g_oe);
+//            SavePNG.savePNG("PCG-best_g_oe.png", best_g_oe, 32, 32, true);
         }
-        OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);        
+        OrthographicEmbeddingResult oe = DisconnectedGraphs.mergeDisconnectedEmbeddingsSideBySide(disconnectedEmbeddings, disconnectedGraphs, 1.0);
         
         // "Parallel"-specifiy optimizations
         GameState gs = new GraphManager(oe, graph, layoutGraph, map_inverse).graphToGameState(skills);
