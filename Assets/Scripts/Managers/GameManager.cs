@@ -224,7 +224,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
-		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";
+		string filename = linkJava.localPath + linkJava.pathSeparator +  "currentParameters.txt";
 		System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
 		linkJava.filename = filename;
@@ -300,8 +300,7 @@ public class GameManager : MonoBehaviour {
         string levelToString = SerializeCurrentLevel();
         //Debug.Log(levelToString);
         string filename =
-            Application.persistentDataPath
-            + linkJava.pathSeparator
+            linkJava.localPath
             + Constants.FilePrefixes.inputLevelFile + "_PLAY_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         linkJava.simulationMode = LinkJava.SimulationTypes.Play;
@@ -319,8 +318,7 @@ public class GameManager : MonoBehaviour {
 	{        
 		string levelToString = SerializeCurrentLevel();
 		string filename = 
-            Application.persistentDataPath 
-            + linkJava.pathSeparator 
+            linkJava.localPath
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         //Debug.Log(filename);

@@ -6,7 +6,9 @@ using System.IO;
 
 public class LinkJava : MonoBehaviour 
 {
-	public string externalPath;
+	public string pcgPath;
+    public string dataPath;
+    public string localPath;
 	private string pathCPSeparator = ":";
 	public string pathSeparator = "/";
 
@@ -37,9 +39,13 @@ public class LinkJava : MonoBehaviour
             UnityEngine.Debug.Log("Running as 32 Bit process");
         }
     	if(Application.isEditor){
-        	externalPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
+        	pcgPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
+            dataPath = Application.dataPath + "/../data/".Replace("/", pathSeparator);
+            localPath = Application.dataPath + "/../test/".Replace("/", pathSeparator);
         } else {
-        	externalPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
+        	pcgPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
+            dataPath = Application.dataPath + "/data/".Replace("/", pathSeparator);
+            localPath = Application.dataPath + "/test/".Replace("/", pathSeparator);
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;
@@ -145,12 +151,12 @@ public class LinkJava : MonoBehaviour
 			externalProcess.StartInfo.Arguments = "";
             externalProcess.StartInfo.Arguments += Constants.JVMSettings.MemoryAllocation[GameManager.Instance.JVMMemorySelection] + " ";
             externalProcess.StartInfo.Arguments += "-cp \"";
-			externalProcess.StartInfo.Arguments +=externalPath+"PCGMC4PP.jar";
-			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"gson-2.6.2.jar";
-			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"jdom.jar";
-			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"prefuse.jar";
-			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"OGE.jar";
-			externalProcess.StartInfo.Arguments +=pathCPSeparator+externalPath+"lib"+pathSeparator+"JGGS.jar";
+			externalProcess.StartInfo.Arguments +=pcgPath+"PCGMC4PP.jar";
+			externalProcess.StartInfo.Arguments +=pathCPSeparator+pcgPath+"lib"+pathSeparator+"gson-2.6.2.jar";
+			externalProcess.StartInfo.Arguments +=pathCPSeparator+pcgPath+"lib"+pathSeparator+"jdom.jar";
+			externalProcess.StartInfo.Arguments +=pathCPSeparator+pcgPath+"lib"+pathSeparator+"prefuse.jar";
+			externalProcess.StartInfo.Arguments +=pathCPSeparator+pcgPath+"lib"+pathSeparator+"OGE.jar";
+			externalProcess.StartInfo.Arguments +=pathCPSeparator+pcgPath+"lib"+pathSeparator+"JGGS.jar";
             externalProcess.StartInfo.Arguments += "\" support." + simulationMode.ToString();
             if (simulationMode == SimulationTypes.ME) //submit
             {
@@ -171,12 +177,12 @@ public class LinkJava : MonoBehaviour
                 //UnityEngine.Debug.Log("RSize: " + rSize);
                 //string size = " " + "\"" + rSize.ToString() + "\"";
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
-                externalProcess.StartInfo.Arguments += " \"" + Application.dataPath + "/../data" + "\"";
+                externalProcess.StartInfo.Arguments += " \"" + dataPath + "\"";
             }
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.EnableRaisingEvents = true;
-            UnityEngine.Debug.Log(externalPath + "PCGMC4PP.jar");
-            UnityEngine.Debug.Log(pathCPSeparator + externalPath + "lib" + pathSeparator + "gson-2.6.2.jar");
+            UnityEngine.Debug.Log(pcgPath + "PCGMC4PP.jar");
+            UnityEngine.Debug.Log(pathCPSeparator + pcgPath + "lib" + pathSeparator + "gson-2.6.2.jar");
             externalProcess.Start ();
 			StartCoroutine (SimulationRoutine ());
 			return "External Async";
@@ -314,10 +320,10 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.RedirectStandardOutput = true;
             externalProcess.StartInfo.RedirectStandardError = true;
             externalProcess.StartInfo.FileName = "java";
-            externalProcess.StartInfo.Arguments = " -jar " + "\"" + externalPath + "ServerInterface.jar" + "\"";
+            externalProcess.StartInfo.Arguments = " -jar " + "\"" + pcgPath + "ServerInterface.jar" + "\"";
             externalProcess.StartInfo.Arguments += " -mode read";
             externalProcess.StartInfo.Arguments += " -user " + username;
-            externalProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
+            externalProcess.StartInfo.Arguments += " -path " + "\"" + localPath + "currentParameters.txt" + "\"";
             externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
@@ -355,13 +361,13 @@ public class LinkJava : MonoBehaviour
             externalProcess.StartInfo.RedirectStandardOutput = true;
             externalProcess.StartInfo.RedirectStandardError = true;
             externalProcess.StartInfo.FileName = "java";
-            externalProcess.StartInfo.Arguments = " -jar " + "\"" + externalPath + "PlayerModel.jar" + "\"";
+            externalProcess.StartInfo.Arguments = " -jar " + "\"" + pcgPath + "PlayerModel.jar" + "\"";
             externalProcess.StartInfo.Arguments += " -mepath " + "\"" + executionPath + "\"";
             externalProcess.StartInfo.Arguments += " -telemetrypath " + "\"" + logPath + "\"";
             externalProcess.StartInfo.Arguments += " -user " + username;
             externalProcess.StartInfo.Arguments += " -level " + levelname;
-            externalProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
-            externalProcess.StartInfo.Arguments += " -pmdir " + "\"" + externalPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
+            externalProcess.StartInfo.Arguments += " -parameterpath " + "\"" + localPath + "currentParameters.txt" + "\"";
+            externalProcess.StartInfo.Arguments += " -pmdir " + "\"" + pcgPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
             externalProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(externalProcess.StartInfo.Arguments);
             externalProcess.Start();
