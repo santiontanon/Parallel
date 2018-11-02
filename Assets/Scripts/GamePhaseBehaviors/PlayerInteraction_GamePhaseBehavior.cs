@@ -766,14 +766,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			{
 				if( currentGridObject != null )
 				{
-                        Debug.Log("Conintue Dragging");
 					currentGridObject.ContinueDrag();
 					if(trashHover) { }
 					else { }
 				}
 				else 
 				{
-                        Debug.Log("END DRAGGING");
                         interactionPhase = InteractionPhases.ingame_default;
 				}
 			}

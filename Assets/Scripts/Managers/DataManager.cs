@@ -286,7 +286,6 @@ public class DataManager : MonoBehaviour {
 		returnLevel.components = ParseComponents( returnLevel.componentList );
 		returnLevel.tracks = ParseTracks( returnLevel.layoutList, returnLevel.colorList, returnLevel.directionList );
 		returnLevel.execution = ParseExecution( returnLevel.executionList );
-		//Debug.Log( returnLevel.metadata.goal_struct.desired[0].id );
 
 		return returnLevel;
 	}
@@ -349,56 +348,53 @@ public class DataManager : MonoBehaviour {
 
 			switch(sLine[0])
 			{
-			case "level_id":
-				returnMetadata.level_id = int.Parse(sLine[1]);
-				break;
-			case "level_title":
-				returnMetadata.level_title = sLine[1];
-                if(returnMetadata.level_title == "PCG Level")
-                {
-                    returnMetadata.level_id = -1;
-                }
-				break;
-			case "goal_string":
-				returnMetadata.goal_string = sLine[1];
-				break;
-			case "goal_struct":
-				//Debug.Log( sLine[1] );
-				returnMetadata.goal_struct = JsonUtility.FromJson<GoalCondition>(sLine[1]);
-				//Debug.Log(sLine[1] + "\n" + returnMetadata.goal_struct.desired.Length + "\n" + returnMetadata.goal_struct.required.Length);
-				break;
-			case "player_palette":
-				//returnMetadata.player_palette = sLine[1];
-				returnMetadata.player_palette = JsonUtility.FromJson<PlayerPalette>(sLine[1]);
-				break;
-			case "time_delivery_min":
-				returnMetadata.time_delivery_min = int.Parse(sLine[1]);
-				break;
-			case "time_delivery_max":
-				returnMetadata.time_exchange_max = int.Parse(sLine[1]);
-				break;
-			case "time_pickup_min":
-				returnMetadata.time_pickup_min = int.Parse(sLine[1]);
-				break;
-			case "time_pickup_max":
-				returnMetadata.time_pickup_max = int.Parse(sLine[1]);
-				break;
-			case "time_exchange_min":
-				returnMetadata.time_exchange_min = int.Parse(sLine[1]);
-				break;
-			case "time_exchange_max":
-				returnMetadata.time_exchange_max = int.Parse(sLine[1]);
-				break;
-			case "board_width":
-				returnMetadata.board_width = int.Parse(sLine[1]);
-				break;
-			case "board_height":
-				returnMetadata.board_height = int.Parse(sLine[1]);
-				break;
-            case "time_efficiency":
-                returnMetadata.time_efficiency = float.Parse(sLine[1]);
-                break;
-			}
+                case "level_id":
+                    returnMetadata.level_id = int.Parse(sLine[1]);
+                    break;
+                case "level_title":
+                    returnMetadata.level_title = sLine[1];
+                    if (returnMetadata.level_title == "PCG Level")
+                    {
+                        returnMetadata.level_id = -1;
+                    }
+                    break;
+                case "goal_string":
+                    returnMetadata.goal_string = sLine[1];
+                    break;
+                case "goal_struct":
+                    returnMetadata.goal_struct = JsonUtility.FromJson<GoalCondition>(sLine[1]);
+                    break;
+                case "player_palette":
+                    returnMetadata.player_palette = JsonUtility.FromJson<PlayerPalette>(sLine[1]);
+                    break;
+                case "time_delivery_min":
+                    returnMetadata.time_delivery_min = int.Parse(sLine[1]);
+                    break;
+                case "time_delivery_max":
+                    returnMetadata.time_exchange_max = int.Parse(sLine[1]);
+                    break;
+                case "time_pickup_min":
+                    returnMetadata.time_pickup_min = int.Parse(sLine[1]);
+                    break;
+                case "time_pickup_max":
+                    returnMetadata.time_pickup_max = int.Parse(sLine[1]);
+                    break;
+                case "time_exchange_min":
+                    returnMetadata.time_exchange_min = int.Parse(sLine[1]);
+                    break;
+                case "time_exchange_max":
+                    returnMetadata.time_exchange_max = int.Parse(sLine[1]);
+                    break;
+                case "board_width":
+                    returnMetadata.board_width = int.Parse(sLine[1]);
+                    break;
+                case "board_height":
+                    returnMetadata.board_height = int.Parse(sLine[1]);
+                    break;
+                case "time_efficiency":
+                    returnMetadata.time_efficiency = float.Parse(sLine[1]);
+                    break;
+            }
 		}
 
 		return returnMetadata;

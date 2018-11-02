@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour {
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
-    public int JVMMemorySelection = 2;
+    public int JVMMemorySelection = 0;
 
     public bool preSurveyComplete, postSurveyComplete = false;
 
@@ -369,6 +369,17 @@ public class GameManager : MonoBehaviour {
 		levelJSON = dataManager.GetLevelJson();
 		return levelJSON;
 	}
+
+    public void AbortLinkJavaProcess()
+    {
+        GetLinkJava().StopExternalProcess();
+        if(gamePhase == GamePhases.PlayerInteraction)
+        {
+            PlayerInteraction_GamePhaseBehavior playPhase = (PlayerInteraction_GamePhaseBehavior)playerInteractionBehavior;
+            playPhase.TriggerPlayPhaseEnd();
+        }
+        SetGamePhase(GamePhases.LoadScreen);
+    }
 		
 	public int GetLevelHeight() { return GetDataManager().currentLevelData.metadata.board_height; }
 	public int GetLevelWidth() { return GetDataManager().currentLevelData.metadata.board_width; }

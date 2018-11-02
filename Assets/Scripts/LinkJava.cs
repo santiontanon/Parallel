@@ -45,10 +45,13 @@ public class LinkJava : MonoBehaviour
 		gameManager = GameManager.Instance;
     }
 
-    void DisplayError(string title, string description)
+    void DisplayError(string title, string description, string button = "", Action action = null)
     {
         UnityEngine.Debug.Log("Display error " + title);
         UINotifications.Notification error_message = new UINotifications.Notification(title, description);
+        if (button != "" && action != null)
+            error_message.AddButton(button, new UINotifications.ButtonMethod(() => { action(); }));
+        error_message.AddButton("Close", new UINotifications.ButtonMethod(() => { UINotifications.Close(); }));
         error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
         UINotifications.Notify(error_message);
     }
@@ -115,9 +118,10 @@ public class LinkJava : MonoBehaviour
 
     public void StopExternalProcess()
     {
-        externalProcess.Close();
-        externalProcess.Dispose();
-        externalProcess.Kill();
+        if(externalProcess != null)
+        {
+            externalProcess.Dispose();
+        }
     }
 
     IEnumerator ExternalProcessFailure()
@@ -137,7 +141,7 @@ public class LinkJava : MonoBehaviour
 		// prevent concurrent calls
 		if (externalProcess != null) 
 		{
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.");
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
             return "Process may not have finished";
 		} 
 		else 
@@ -231,7 +235,16 @@ public class LinkJava : MonoBehaviour
             while ((line = externalProcess.StandardError.ReadLine()) != null)
             {
                 UnityEngine.Debug.Log("ERROR " + line);
+                if (line.Contains("OutOfMemoryError"))
+                {
+                    DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                }
+                else if(line.Contains("Unsupported major.minor"))
+                {
+                    DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                }
             }
+            UnityEngine.Debug.Log(ExitCode);
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
             if (ExitCode == 0)
             {
@@ -301,7 +314,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.");
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else
@@ -343,7 +356,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.");
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else
