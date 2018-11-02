@@ -211,24 +211,66 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	public void LoadButtonBehavior( string levelName ) 
 	{
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, levelName );
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, levelName);
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
 	}
 
     public void LoadPCGButtonBehavior(string level)
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.STRING, level);
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.STRING, level);
+        }
+        catch (System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
     }
 
     public void LoadButtonBehavior(LevelReferenceObject levelReference)
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel(levelReference);
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(levelReference);
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
     }
 
     public void LoadPCGBehavior()
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerPCG();
+        try
+        {
+            GameManager.Instance.TriggerPCG();
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+        }
+    }
+
+    public void DisplayError(string title, string description, string button = "", System.Action action = null)
+    {
+        UnityEngine.Debug.Log("Display error " + title);
+        UINotifications.Notification error_message = new UINotifications.Notification(title, description);
+        if (button != "" && action != null)
+            error_message.AddButton(button, new UINotifications.ButtonMethod(() => { action(); }));
+        error_message.AddButton("Close", new UINotifications.ButtonMethod(() => { UINotifications.Close(); }));
+        error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
+        UINotifications.Notify(error_message);
     }
 }

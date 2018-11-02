@@ -546,7 +546,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
-	}	
+        playerInteraction_UI.simulationErrorOverlay.ClosePanel();
+    }	
 
     public enum MouseInput
     {
@@ -803,7 +804,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                     currentGridObject = null;
                         
-                    Debug.Log("END REPOSITION");
 					interactionPhase = InteractionPhases.ingame_default;
                 }
 
