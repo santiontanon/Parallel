@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour {
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
-    public int JVMMemorySelection = 2;
+    public int JVMMemorySelection = 0;
 
     public bool preSurveyComplete, postSurveyComplete = false;
 
@@ -225,12 +225,13 @@ public class GameManager : MonoBehaviour {
 	{
 		tutorialManager.tutorialIndex = -1;
 		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";
-		System.IO.File.WriteAllText(filename, "");
+        if(!System.IO.File.Exists(filename))
+		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
 		linkJava.filename = filename;
 		//LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
 		linkJava.simulationMode = LinkJava.SimulationTypes.PCG;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 		//SetGamePhase(GameManager.GamePhases.GenerateTrack);
 	}
 
@@ -330,7 +331,7 @@ public class GameManager : MonoBehaviour {
 		GameManager.Instance.tracker.CreateEventExt("SubmitCurrentLevel"+inputSimulationType.ToString(),filename);
 
 		LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 	}
 
     public void TriggerAdvanceToNextLevel()
@@ -358,6 +359,8 @@ public class GameManager : MonoBehaviour {
 		else if(feedback == LinkJava.SimulationFeedback.failure) 
 		{
             castBehavior.playerInteraction_UI.loadingOverlay.ClosePanel();
+            PlayerInteraction_GamePhaseBehavior playerInteraction = playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+            playerInteraction.EndSimulation();
 			castBehavior.playerInteraction_UI.simulationErrorOverlay.OpenPanel();
 		}
 	}
@@ -369,6 +372,17 @@ public class GameManager : MonoBehaviour {
 		levelJSON = dataManager.GetLevelJson();
 		return levelJSON;
 	}
+
+    public void AbortLinkJavaProcess()
+    {
+        GetLinkJava().StopExternalProcess();
+        if(gamePhase == GamePhases.PlayerInteraction)
+        {
+            PlayerInteraction_GamePhaseBehavior playPhase = (PlayerInteraction_GamePhaseBehavior)playerInteractionBehavior;
+            playPhase.TriggerPlayPhaseEnd();
+        }
+        SetGamePhase(GamePhases.LoadScreen);
+    }
 		
 	public int GetLevelHeight() { return GetDataManager().currentLevelData.metadata.board_height; }
 	public int GetLevelWidth() { return GetDataManager().currentLevelData.metadata.board_width; }
