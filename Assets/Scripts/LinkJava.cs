@@ -246,6 +246,16 @@ public class LinkJava : MonoBehaviour
                     DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     externalProcess.StandardError.ReadToEnd();
                 }
+                else if (line.Contains("Could not find or load main class support.PCG"))
+                {
+                    DisplayError("PCG System Files Missing", "Unable to locate PCG system files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
+                else if (line.Contains("java.io.FileNotFoundException") && line.Contains("ppppOntology4.xml"))
+                {
+                    DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
                 else
                 {
                     DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
