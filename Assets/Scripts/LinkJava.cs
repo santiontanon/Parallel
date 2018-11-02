@@ -45,13 +45,14 @@ public class LinkJava : MonoBehaviour
 		gameManager = GameManager.Instance;
     }
 
-    void DisplayError(string title, string description, string button = "", Action action = null)
+    void DisplayError(string title, string description, string buttonA = "", Action actionA = null, string buttonB = "", Action actionB = null)
     {
         UnityEngine.Debug.Log("Display error " + title);
         UINotifications.Notification error_message = new UINotifications.Notification(title, description);
-        if (button != "" && action != null)
-            error_message.AddButton(button, new UINotifications.ButtonMethod(() => { action(); }));
-        error_message.AddButton("Close", new UINotifications.ButtonMethod(() => { UINotifications.Close(); }));
+        if (buttonA != "" && actionA != null)
+            error_message.AddButton(buttonA, new UINotifications.ButtonMethod(() => { actionA(); }));
+        if(buttonB != "" && actionB != null)
+            error_message.AddButton(buttonB, new UINotifications.ButtonMethod(() => { actionB(); }));
         error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
         UINotifications.Notify(error_message);
     }
@@ -79,7 +80,7 @@ public class LinkJava : MonoBehaviour
                 pathSeparator = "/";
                 break;
             default:
-                DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.");
+                DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.", "Close", UINotifications.Close);
                 return 1;
         }
 		return 0;
@@ -141,7 +142,7 @@ public class LinkJava : MonoBehaviour
 		// prevent concurrent calls
 		if (externalProcess != null) 
 		{
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
             return "Process may not have finished";
 		} 
 		else 
@@ -212,7 +213,7 @@ public class LinkJava : MonoBehaviour
 
 		if (externalProcess == null) 
 		{
-            DisplayError("Process is NULL", "An uknown error has occurred when starting the simulation. Please try again, if the issue persists contact the research team.");
+            DisplayError("Process is NULL", "An uknown error has occurred when starting the simulation. Please try again, if the issue persists contact the research team.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
 		} 
 		else 
 		{
@@ -319,7 +320,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else
@@ -361,7 +362,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else
