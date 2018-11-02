@@ -238,10 +238,16 @@ public class LinkJava : MonoBehaviour
                 if (line.Contains("OutOfMemoryError"))
                 {
                     DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.Close();
                 }
                 else if(line.Contains("Unsupported major.minor"))
                 {
                     DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.Close();
+                }
+                else
+                {
+                    DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                 }
             }
             UnityEngine.Debug.Log(ExitCode);
