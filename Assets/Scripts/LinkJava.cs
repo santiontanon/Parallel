@@ -40,11 +40,11 @@ public class LinkJava : MonoBehaviour
         }
     	if(Application.isEditor){
         	pcgPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
-            dataPath = Application.dataPath + "/../data/".Replace("/", pathSeparator);
+            dataPath = Application.dataPath + "/../data".Replace("/", pathSeparator);
             localPath = Application.dataPath + "/../Parallel/".Replace("/", pathSeparator);
         } else {
         	pcgPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
-            dataPath = Application.dataPath + "/data/".Replace("/", pathSeparator);
+            dataPath = Application.dataPath + "/data".Replace("/", pathSeparator);
             localPath = Application.dataPath + "/Parallel/".Replace("/", pathSeparator);
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
