@@ -225,7 +225,8 @@ public class GameManager : MonoBehaviour {
 	{
 		tutorialManager.tutorialIndex = -1;
 		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";
-		System.IO.File.WriteAllText(filename, "");
+        if(!System.IO.File.Exists(filename))
+		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
 		linkJava.filename = filename;
 		//LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
