@@ -27,7 +27,7 @@ public class LinkJava : MonoBehaviour
 
     private string _lastPCGLevelGenerated;
 
-    void Start()
+    public void Init()
     {
     	CheckEnvironment();
         if (IntPtr.Size == 8)
@@ -41,11 +41,11 @@ public class LinkJava : MonoBehaviour
     	if(Application.isEditor){
         	pcgPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
             dataPath = Application.dataPath + "/../data/".Replace("/", pathSeparator);
-            localPath = Application.dataPath + "/../test/".Replace("/", pathSeparator);
+            localPath = Application.dataPath + "/../Parallel/".Replace("/", pathSeparator);
         } else {
         	pcgPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
             dataPath = Application.dataPath + "/data/".Replace("/", pathSeparator);
-            localPath = Application.dataPath + "/test/".Replace("/", pathSeparator);
+            localPath = Application.dataPath + "/Parallel/".Replace("/", pathSeparator);
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;

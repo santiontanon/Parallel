@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviour {
         saveManager = GetComponent<SaveManager>();
 		linkJava = GetComponent<LinkJava>();
 		tracker = GetComponent<Tracker>();
-        
+
+        linkJava.Init();
         saveManager.Init();
         scoreManager.Init();
 	}
@@ -224,7 +225,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
-		string filename = linkJava.localPath + linkJava.pathSeparator + "currentParameters.txt";
+		string filename = linkJava.localPath + "currentParameters.txt";
         if(!System.IO.File.Exists(filename))
 		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
