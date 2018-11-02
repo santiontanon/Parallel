@@ -21,6 +21,12 @@ public class UINotifications : MonoBehaviour
         NotificationUIBehavior.Display(notification);
     }
 
+    // Hide the notification ui
+    public static void Close()
+    {
+        NotificationUIBehavior.Close();
+    }
+
     ///
     /// Notification Class
     /// 

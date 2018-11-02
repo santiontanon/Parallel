@@ -151,13 +151,10 @@ public class GridObjectBehavior : MonoBehaviour
 	}
 	public void EndDrag()
 	{
-		Debug.Log("Ending the drag");
-
 		if( GameManager.Instance.GetGridManager().IsValidLocation( Input.mousePosition ) 
 			&& !GameManager.Instance.GetGridManager().IsOccupied( Input.mousePosition )
 		) 
 		{
-			Debug.Log("It's a good spot!");
 			Vector3 dragToPosition = levelCamera.ScreenToWorldPoint(Input.mousePosition);
 			Vector3 previousPosition = new Vector3( component.posX, GameManager.Instance.GetLevelHeight() - component.posY, 0 );
 			dragToPosition = new Vector3( Mathf.RoundToInt(dragToPosition.x), Mathf.RoundToInt(dragToPosition.y), 0);

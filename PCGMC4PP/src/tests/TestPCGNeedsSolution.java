@@ -28,6 +28,7 @@ import game.GameStateSearch;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import support.PCG;
@@ -66,7 +67,7 @@ public class TestPCGNeedsSolution {
         int numAttempts = 0;
         for(int size=1;size<=1;size++){        
             for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
-//            int randomSeed = 3200; {
+//            int randomSeed = 806; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
@@ -74,6 +75,7 @@ public class TestPCGNeedsSolution {
                 System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
 //                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+//                PCG.export(gs, new File("pcg-example1.txt"));
                 if (!notSolvable(gs)) {
                     BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                     System.err.println("Level is solvable without a solution! randomSeed: " + randomSeed);
@@ -118,7 +120,7 @@ public class TestPCGNeedsSolution {
 */
 
         GameStateSearch gss = new GameStateSearch(gs);
-        gss.setSearchBudget(60000);
+        gss.setSearchBudget(600000);
         gss.setSearchOptions(false, true, true, true);
         gss.search();        
         GameState gs2 = gss.getWorstResult();

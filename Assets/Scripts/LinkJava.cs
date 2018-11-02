@@ -27,7 +27,7 @@ public class LinkJava : MonoBehaviour
 
     private string _lastPCGLevelGenerated;
 
-    void Awake()
+    void Start()
     {
     	CheckEnvironment();
         if (IntPtr.Size == 8)
@@ -51,6 +51,18 @@ public class LinkJava : MonoBehaviour
 		gameManager = GameManager.Instance;
     }
 
+    void DisplayError(string title, string description, string buttonA = "", Action actionA = null, string buttonB = "", Action actionB = null)
+    {
+        UnityEngine.Debug.Log("Display error " + title);
+        UINotifications.Notification error_message = new UINotifications.Notification(title, description);
+        if (buttonA != "" && actionA != null)
+            error_message.AddButton(buttonA, new UINotifications.ButtonMethod(() => { actionA(); }));
+        if(buttonB != "" && actionB != null)
+            error_message.AddButton(buttonB, new UINotifications.ButtonMethod(() => { actionB(); }));
+        error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
+        UINotifications.Notify(error_message);
+    }
+
     /// <summary>
     /// Checks the OS to determine how to format file paths
     /// </summary>
@@ -59,24 +71,24 @@ public class LinkJava : MonoBehaviour
 	{
 		switch (Application.platform) 
 		{
-		case RuntimePlatform.WindowsPlayer:
-		case RuntimePlatform.WindowsEditor:
-            pathCPSeparator = ";";
-			pathSeparator = "\\";
-			break;
-		case RuntimePlatform.OSXEditor:
-		case RuntimePlatform.OSXPlayer:
-			pathCPSeparator = ":";
-			pathSeparator = "/";
-			break;
-        case RuntimePlatform.LinuxPlayer:
-            pathCPSeparator = ":";
-            pathSeparator = "/";
-            break;
-        default:
-			UnityEngine.Debug.Log ("Environment Error");
-			return 1;
-		}
+            case RuntimePlatform.WindowsPlayer:
+            case RuntimePlatform.WindowsEditor:
+                pathCPSeparator = ";";
+                pathSeparator = "\\";
+                break;
+            case RuntimePlatform.OSXEditor:
+            case RuntimePlatform.OSXPlayer:
+                pathCPSeparator = ":";
+                pathSeparator = "/";
+                break;
+            case RuntimePlatform.LinuxPlayer:
+                pathCPSeparator = ":";
+                pathSeparator = "/";
+                break;
+            default:
+                DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.", "Close", UINotifications.Close);
+                return 1;
+        }
 		return 0;
 	}
 
@@ -90,9 +102,9 @@ public class LinkJava : MonoBehaviour
     public int CheckJava()
 	{
 		int ExitCode = -1;
-		try 
+        Process myProcess = new Process();
+        try 
 		{
-			Process myProcess = new Process();
 			myProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			myProcess.StartInfo.CreateNoWindow = true;
 			myProcess.StartInfo.UseShellExecute = false;
@@ -102,20 +114,21 @@ public class LinkJava : MonoBehaviour
 			myProcess.Start();
 			myProcess.WaitForExit();
 			ExitCode = myProcess.ExitCode;
-			//while ((line = myProcess.StandardOutput.ReadLine()) != null) { mpout += line + "\n";}
 		} 
 		catch (Exception e)
 		{
 			UnityEngine.Debug.Log(e);
+            UnityEngine.Debug.Log(myProcess.StartInfo.Arguments);
 		}
 		return ExitCode;
 	}
 
     public void StopExternalProcess()
     {
-        externalProcess.Close();
-        externalProcess.Dispose();
-        externalProcess.Kill();
+        if(externalProcess != null)
+        {
+            externalProcess.Dispose();
+        }
     }
 
     IEnumerator ExternalProcessFailure()
@@ -135,7 +148,8 @@ public class LinkJava : MonoBehaviour
 		// prevent concurrent calls
 		if (externalProcess != null) 
 		{
-			return "Process may not have finished";
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
+            return "Process may not have finished";
 		} 
 		else 
 		{
@@ -163,7 +177,7 @@ public class LinkJava : MonoBehaviour
                 int budget = 600000;
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + budget;
             }
-            else if (simulationMode == SimulationTypes.Play) //testing
+            else if (simulationMode == SimulationTypes.Play) //test
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
@@ -173,9 +187,6 @@ public class LinkJava : MonoBehaviour
             {
                 int rSeed = UnityEngine.Random.Range(-100000, -1);
                 UnityEngine.Debug.Log(rSeed);
-                //int rSize = UnityEngine.Random.Range(0, 3);
-                //UnityEngine.Debug.Log("RSize: " + rSize);
-                //string size = " " + "\"" + rSize.ToString() + "\"";
                 externalProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
                 externalProcess.StartInfo.Arguments += " \"" + dataPath + "\"";
             }
@@ -208,7 +219,7 @@ public class LinkJava : MonoBehaviour
 
 		if (externalProcess == null) 
 		{
-			UnityEngine.Debug.Log ("Process is null");
+            DisplayError("Process is NULL", "An uknown error has occurred when starting the simulation. Please try again, if the issue persists contact the research team.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
 		} 
 		else 
 		{
@@ -230,7 +241,31 @@ public class LinkJava : MonoBehaviour
             }
             while ((line = externalProcess.StandardError.ReadLine()) != null)
             {
-                UnityEngine.Debug.Log(line);
+                UnityEngine.Debug.Log("ERROR " + line);
+                if (line.Contains("OutOfMemoryError"))
+                {
+                    DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
+                else if(line.Contains("Unsupported major.minor"))
+                {
+                    DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
+                else if (line.Contains("Could not find or load main class support.PCG"))
+                {
+                    DisplayError("PCG System Files Missing", "Unable to locate PCG system files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
+                else if (line.Contains("java.io.FileNotFoundException") && line.Contains("ppppOntology4.xml"))
+                {
+                    DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    externalProcess.StandardError.ReadToEnd();
+                }
+                else
+                {
+                    DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                }
             }
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
             if (ExitCode == 0)
@@ -274,15 +309,12 @@ public class LinkJava : MonoBehaviour
     public string GetLastPCGGeneratedLevel() { return _lastPCGLevelGenerated; }
     public void ClearLastPCGGeneratedLevel() { _lastPCGLevelGenerated = ""; }
 
-    public void SendToME () 
+    public void SendToJava() 
 	{
 		bool java_found = false;
 		if (CheckEnvironment () != 0) 
 		{
-            UINotifications.Notification error_message = new UINotifications.Notification("Environment Error", "An error with Java has been encountered.");
-            error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
-            UINotifications.Notify(error_message);
-			//UnityEngine.Debug.Log ("Cannot work here, give some feedback to the user...");
+            DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.");
 		} 
 		else 
 		{
@@ -290,15 +322,10 @@ public class LinkJava : MonoBehaviour
 		}
 		if (!java_found) 
 		{
-            UINotifications.Notification error_message = new UINotifications.Notification("Java Error", "An error with Java has been encountered.");
-            error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
-            UINotifications.Notify(error_message);
-            //UnityEngine.Debug.LogError ("Java is not found, give some feedback to the user...");
+            DisplayError("Java Not Found", "Parallel could not confirm that the Java Development Kit is installed. Ensure JDK version 8, updated 171 or higher is installed.");
         }
 		else {
-		//UnityEngine.Debug.Log ("Calling Java...");
-		UnityEngine.Debug.Log(StartSimulationProcess ()); //this is what calls the ME simulation
-		//UnityEngine.Debug.Log ("Finished calling Java...");
+		    UnityEngine.Debug.Log(StartSimulationProcess()); //this is what calls the ME/PCG processes
 		}
 	}
     #endregion
@@ -309,6 +336,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else
@@ -350,6 +378,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (externalProcess != null)
         {
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
             return "Process may not have finished";
         }
         else

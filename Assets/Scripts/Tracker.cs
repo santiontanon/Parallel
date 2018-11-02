@@ -335,16 +335,13 @@ public class Tracker : MonoBehaviour {
 
     public void ResetModelLog()
     {
-        Debug.Log(modelLogPath);
         if (modelLog != null)
         {
-            Debug.Log("MODEL LOG IS NOT NULL");
             modelLog.Close();
             modelLog = null;
         }
         modelLogPath = GameManager.Instance.GetLinkJava().localPath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
         modelLog = File.CreateText(modelLogPath);
-        Debug.Log(modelLogPath);
     }
 
     public void SendModelLog(string executionPath)

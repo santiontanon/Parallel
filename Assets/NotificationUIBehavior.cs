@@ -25,7 +25,7 @@ public class NotificationUIBehavior : MonoBehaviour
     private Text title;
     private Text description;
 
-    private void Start()
+    private void Awake()
     {
         instance = this;
 
@@ -63,6 +63,12 @@ public class NotificationUIBehavior : MonoBehaviour
         }
     }
 
+    // Hide the notification
+    public static void Close()
+    {
+        instance.canvas.SetActive(false);
+    }
+
     // Update Notification UI based on Notification object
     private void UpdateUI(UINotifications.Notification notification)
     {
@@ -93,6 +99,7 @@ public class NotificationUIBehavior : MonoBehaviour
             // Attach this button method for onclick functionality
             int index = i;
             button.onClick.AddListener(delegate { notification.GetButtonMethod(index)(); });
+            button.onClick.AddListener(() => { Close(); });
 
             // Update this button label
             GameObject obj_text = obj_button.transform.GetChild(0).gameObject;
