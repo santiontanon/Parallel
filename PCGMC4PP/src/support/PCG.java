@@ -32,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -67,6 +68,8 @@ public class PCG {
 
     public static boolean simplify = true;
     public static boolean correct = true;
+    public static String dataFolderPath = "data";
+    
     public static void main(String args[]) throws FileNotFoundException, IOException, Exception {
         if (args.length < 2) {
             System.out.println("Usage: support.PCG parameter_file|debug random_seed size [path-to-put-the-generated-level]");
@@ -80,6 +83,7 @@ public class PCG {
         boolean debug = false;
         if (args.length >= 4) {
             outputPath = args[3];
+            dataFolderPath = args[3];
         }
         LinkedHashMap<String, Double> playerModel = null;
         if("debug".equals(parameterFile)) {
@@ -252,20 +256,20 @@ public class PCG {
             tags_to_be_ensured.add("deliver_packages");
 
             Sort.clearSorts();
-            Ontology ontology = new Ontology("data/ppppOntology4.xml");
+            Ontology ontology = new Ontology(dataFolderPath + "/ppppOntology4.xml");
             graph = LGraph.fromString("N0:problem()");
 
             // Create structure for problems and subproblems        
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel, skills);
+            graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4a.txt", r, debug, rule_applications, size_application_limits, null, playerModel, skills);
     //	LGraphVisualizer.newWindow("after ppppGrammar4a", 800, 600, graph);
 
             // Instanciate situations
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel, skills);
-    //        graph = applyGrammar(ontology, graph, "data/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
+            graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel, skills);
+    //        graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
     //	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
 
             // Refine components
-            graph = applyGrammar(ontology, graph, "data/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel, skills);
+            graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel, skills);
 
             // find additional skills that might not have been tagged by the grammar:
             /*
@@ -296,7 +300,7 @@ public class PCG {
             }
 
             // Remove solution
-            LGraph graph2 = applyGrammar(ontology, graph, "data/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel, skills);
+            LGraph graph2 = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4d.txt", r, debug, rule_applications, null, null, playerModel, skills);
     //	LGraphVisualizer.newWindow("after ppppGrammar4d", 800, 600, graph);
             if (graph2 == graph) {
                 System.out.println("There is no solution required!!!!");                    
@@ -415,11 +419,13 @@ public class PCG {
     public static LinkedHashMap<String, Double> loadPlayerModel(String filename) throws Exception
     {
         LinkedHashMap<String, Double> playerModel = new LinkedHashMap<>();
-        
+//        FileWriter fw = new FileWriter(new File("/Users/santi/my-research/Parallel/PCG-debug.txt"));
+//        fw.write("This is the content of the player model file:\n");
         BufferedReader br = new BufferedReader(new FileReader(filename));
         while(true) {
             String line = br.readLine();
             if (line == null) break;
+//            fw.write(line + "\n");
             String tokens[] = line.split(",");
             if (tokens.length < 2) {
                 System.out.println("ERROR: parameters file has the wrong format, line: " + line);
@@ -427,6 +433,8 @@ public class PCG {
                 playerModel.put(tokens[0].trim(), Double.parseDouble(tokens[1].trim()));
             }
         }
+//        fw.flush();
+//        fw.close();
         
         return playerModel;
     }
