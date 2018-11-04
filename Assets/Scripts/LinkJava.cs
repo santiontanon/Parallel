@@ -262,9 +262,9 @@ public class LinkJava : MonoBehaviour
                     DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     externalProcess.StandardError.ReadToEnd();
                 }
-                else
+                else if (!line.Contains("tile"))
                 {
-                    DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Close", UINotifications.Close, "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                 }
             }
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", externalProcess.ExitCode.ToString());
