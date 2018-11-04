@@ -203,7 +203,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void UpdatePhase()
 	{
-        if (Input.GetKeyDown(KeyCode.BackQuote) && Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Escape) && Input.GetKey(KeyCode.LeftShift))
         {
             debugOverlay.ToggleDebugUI();
         }
