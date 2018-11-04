@@ -96,14 +96,14 @@ public class DataManager : MonoBehaviour {
                 lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
 
-            Object[] loadedObjects = Resources.LoadAll("Levels");
+            /*Object[] loadedObjects = Resources.LoadAll("Levels");
             foreach (Object o in loadedObjects)
             {
                 //TextAsset t = o as TextAsset;
                 allLevels.Add(o);
                 allLevelNames.Add(o.name);
 
-            }
+            }*/
             GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
         }
         catch (System.Exception e)
