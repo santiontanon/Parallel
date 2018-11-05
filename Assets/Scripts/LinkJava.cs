@@ -122,7 +122,7 @@ public class LinkJava : MonoBehaviour
     {
         if(javaProcess != null)
         {
-            javaProcess.Dispose();
+            javaProcess.Kill();
         }
     }
 
@@ -237,29 +237,31 @@ public class LinkJava : MonoBehaviour
             while ((line = javaProcess.StandardError.ReadLine()) != null)
             {
                 UnityEngine.Debug.Log("ERROR " + line);
-                if (line.Contains("OutOfMemoryError"))
+                string errorText = "";
+                if (line.IndexOf("out of memory exception", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     javaProcess.StandardError.ReadToEnd();
                 }
-                else if(line.Contains("Unsupported major.minor"))
+                else if (line.IndexOf("unsupported major.minor", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     javaProcess.StandardError.ReadToEnd();
                 }
-                else if (line.Contains("Could not find or load main class support.PCG"))
+                else if (line.IndexOf("Could not find or load main class support.PCG", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     DisplayError("PCG System Files Missing", "Unable to locate PCG system files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     javaProcess.StandardError.ReadToEnd();
                 }
-                else if (line.Contains("java.io.FileNotFoundException") && line.Contains("ppppOntology4.xml"))
+                else if (line.IndexOf("java.io.FileNotFoundException", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                     javaProcess.StandardError.ReadToEnd();
                 }
                 else if (!line.Contains("tile"))
                 {
-                    DisplayError("Unknown Error", "And unkown or unhandeled error has occured with the simulation. Please try again, and contact the research team if the issue persists.", "Close", UINotifications.Close, "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    errorText += line;
+                    DisplayError("Unknown Error", line, "Close", UINotifications.Close, "Level Select", GameManager.Instance.AbortLinkJavaProcess);
                 }
             }
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", javaProcess.ExitCode.ToString());
