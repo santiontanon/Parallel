@@ -20,6 +20,9 @@ public class LinkJava : MonoBehaviour
     private Process javaProcess = null;
     private Process modelingProcess = null;
 
+    [SerializeField]
+    private GameObject[] processIndicators;
+
     public delegate void ME_Simulation(SimulationFeedback feedback);
 	public static event ME_Simulation OnSimulationCompleted;
 	public enum SimulationFeedback {none, success, failure}
@@ -44,6 +47,24 @@ public class LinkJava : MonoBehaviour
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
 		gameManager = GameManager.Instance;
+    }
+
+    void Update()
+    {
+        if (javaProcess != null)
+        {
+            if (processIndicators[0] != null && processIndicators[0].activeInHierarchy != true)
+                processIndicators[0].SetActive(true);
+        }
+        else if (processIndicators[0] != null && processIndicators[0].activeInHierarchy != false)
+            processIndicators[0].SetActive(false);
+        if(modelingProcess != null)
+        {
+            if (processIndicators[1] != null && processIndicators[1].activeInHierarchy != true)
+                processIndicators[1].SetActive(true);
+        }
+        else if (processIndicators[1] != null && processIndicators[1].activeInHierarchy != false)
+            processIndicators[1].SetActive(false);
     }
 
     void DisplayError(string title, string description, string buttonA = "", Action actionA = null, string buttonB = "", Action actionB = null)
