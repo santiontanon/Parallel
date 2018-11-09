@@ -102,7 +102,7 @@ public class LinkJava : MonoBehaviour
                 pathSeparator = "/";
                 break;
             default:
-                DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.", "Close", UINotifications.Close);
+                DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.", "Close", GameManager.Instance.AbortLinkJavaProcess);
                 return 1;
         }
 		return 0;
@@ -164,7 +164,7 @@ public class LinkJava : MonoBehaviour
 		// prevent concurrent calls
 		if (javaProcess != null) 
 		{
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", GameManager.Instance.AbortLinkJavaProcess, "Terminate", GameManager.Instance.AbortLinkJavaProcess);
             return "Process may not have finished";
 		} 
 		else 
@@ -235,7 +235,7 @@ public class LinkJava : MonoBehaviour
 
 		if (javaProcess == null) 
 		{
-            DisplayError("Process is NULL", "An uknown error has occurred when starting the simulation. Please try again, if the issue persists contact the research team.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
+            DisplayError("Process is NULL", "An uknown error has occurred when starting the simulation. Please try again, if the issue persists contact the research team.", "Close", GameManager.Instance.AbortLinkJavaProcess, "Terminate", GameManager.Instance.AbortLinkJavaProcess);
 		} 
 		else 
 		{
@@ -261,28 +261,28 @@ public class LinkJava : MonoBehaviour
                 string errorText = "";
                 if (line.IndexOf("out of memory exception", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("Out of Memory Exception", "Java has run out of memory. Return to level select, and contact the research team if the issue persists.", "Level Select", GameManager.Instance.ResetToLevelSelect);
                     javaProcess.StandardError.ReadToEnd();
                 }
                 else if (line.IndexOf("unsupported major.minor", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("Unsupported Major.Minor Version", "Java appears to be outdated, make sure you have the latest version of Java 8, and that environment variables are set correctly. If you have to update Java, don't forget to restart afterwards.", "Level Select", GameManager.Instance.ResetToLevelSelect);
                     javaProcess.StandardError.ReadToEnd();
                 }
                 else if (line.IndexOf("Could not find or load main class support.PCG", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    DisplayError("PCG System Files Missing", "Unable to locate PCG system files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("PCG System Files Missing", "Unable to locate PCG system files, please contact the research team.", "Level Select", GameManager.Instance.ResetToLevelSelect);
                     javaProcess.StandardError.ReadToEnd();
                 }
                 else if (line.IndexOf("java.io.FileNotFoundException", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("Data Files Missing", "Unable to locate data files, please contact the research team.", "Level Select", GameManager.Instance.ResetToLevelSelect);
                     javaProcess.StandardError.ReadToEnd();
                 }
                 else if (!line.Contains("tile"))
                 {
                     errorText += line;
-                    DisplayError("Unknown Error", line, "Close", UINotifications.Close, "Level Select", GameManager.Instance.AbortLinkJavaProcess);
+                    DisplayError("Unknown Error", line, "Close", GameManager.Instance.AbortLinkJavaProcess, "Level Select", GameManager.Instance.ResetToLevelSelect);
                 }
             }
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", javaProcess.ExitCode.ToString());
@@ -354,7 +354,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (modelingProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", GameManager.Instance.AbortLinkJavaProcess, "Terminate", GameManager.Instance.AbortLinkJavaProcess);
             return "Process may not have finished";
         }
         else
@@ -396,7 +396,7 @@ public class LinkJava : MonoBehaviour
         // prevent concurrent calls
         if (modelingProcess != null)
         {
-            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", UINotifications.Close, "Terminate", StopExternalProcess);
+            DisplayError("Blocked Process", "Another external process is already running. Please close this and wait for it to complete, or click close to end the process early.", "Close", GameManager.Instance.AbortLinkJavaProcess, "Terminate", GameManager.Instance.AbortLinkJavaProcess);
             return "Process may not have finished";
         }
         else

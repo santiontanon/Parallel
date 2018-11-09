@@ -376,7 +376,17 @@ public class GameManager : MonoBehaviour {
     public void AbortLinkJavaProcess()
     {
         GetLinkJava().StopExternalProcess();
-        if(gamePhase == GamePhases.PlayerInteraction)
+        Load_GamePhaseBehavior levelSelect = loadScreenBehavior as Load_GamePhaseBehavior;
+        levelSelect.loadUI.levelLoadingOverlay.ClosePanel();
+        PlayerInteraction_GamePhaseBehavior playerInteraction = playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+        playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+        playerInteraction.playerInteraction_UI.simulationErrorOverlay.ClosePanel();
+    }
+
+    public void ResetToLevelSelect()
+    {
+        AbortLinkJavaProcess();
+        if (gamePhase == GamePhases.PlayerInteraction)
         {
             PlayerInteraction_GamePhaseBehavior playPhase = (PlayerInteraction_GamePhaseBehavior)playerInteractionBehavior;
             playPhase.TriggerPlayPhaseEnd();
