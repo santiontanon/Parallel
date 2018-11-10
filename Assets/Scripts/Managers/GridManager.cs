@@ -232,7 +232,7 @@ public class GridManager : MonoBehaviour {
 		} else {
 			levelheight +=1;
 		}
-		worldCamera.orthographicSize = (levelheight/2.0f)/0.78f; // To make room for the bottom banner
+		worldCamera.orthographicSize = ((levelheight/2.0f)/0.78f); // To make room for the bottom banner
         
 		foreach(GridComponent gridComponent in gridComponents)
 		{
