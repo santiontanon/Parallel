@@ -210,7 +210,8 @@ public class ScoreManager : MonoBehaviour {
         scores = new LevelScore[index + 1];
         for (int i = 0; i < oldScores.Length; i++)
         {
-            scores[oldScores[i].index] = oldScores[i];
+            if(oldScores[i].index >= 0)
+                scores[oldScores[i].index] = oldScores[i];
         }
         for (int i = 0; i < scores.Length; i++)
         {

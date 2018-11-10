@@ -154,9 +154,9 @@ public class Tracker : MonoBehaviour {
                 Debug.Log(www.text);
                 JSONObject ob = new JSONObject(www.text.Trim());
                 tracking_session_id = ob.GetField("id").ToString();
-                PlayerModelingServerCall();
                 level_data = www.text;
                 SetupTracking();
+                PlayerModelingServerCall();
             }
             catch (System.Exception e)
             {
@@ -194,6 +194,7 @@ public class Tracker : MonoBehaviour {
         CreateEvent("Calibration", Screen.width.ToString() + "x" + Screen.height.ToString());
         ready = true;
         DebugInfoLabel = "TRACKING " + tracking_session_id;
+        GameManager.Instance.trackerIntialized = true;
     }
 
     IEnumerator SaveLogs()
@@ -330,7 +331,12 @@ public class Tracker : MonoBehaviour {
     [ContextMenu("Test Player Modeling Server")]
     public void PlayerModelingServerCall()
     {
-        GameManager.Instance.GetLinkJava().StartPlayerModelingServerCall(tracking_session_user, hostname);
+        GameManager.Instance.GetLinkJava().StartPlayerModelingServerCall(tracking_session_user, hostname, HandlePlayerModelingInitSuccess);
+    }
+
+    public void HandlePlayerModelingInitSuccess()
+    {
+        GameManager.Instance.playerModelingIntialized = true;
     }
 
     public void ResetModelLog()
