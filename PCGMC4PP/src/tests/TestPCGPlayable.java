@@ -60,9 +60,9 @@ public class TestPCGPlayable {
         
         int accumWidth = 0;
         boolean debug = false;
-        for(int size=1;size<=1;size++){        
+        for(int size=0;size<=0;size++){        
             for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 806; {
+//            int randomSeed = 500; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;

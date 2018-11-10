@@ -5,7 +5,7 @@ RULE DELIVERY_TRIVIAL 0.9 0.9 -1 deliver_packages
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA)
-RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,deliver_packages,synchronize,semaphores
+RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,synchronize,semaphores,mutual_exclusion,link_direction_switches,link_semaphores,critical_sections
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),F:{start_point}(partOf:AA)
     REPLACEMENT A:situation_race_condition(),AA:subproblem(),\
     B:{track}(is:B_,partOf:A,partOf:AA,to:BB,has:SEM1),B_:out(),SEM1:semaphore_green(),\
@@ -17,7 +17,7 @@ RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,deliver_package
     Y:merge(to:C),\
     C:{track}(is:C_,partOf:A,partOf:AA,has:BUTTON2),C_:in(),BUTTON2:button(link:SEM1),\
     F:{start_point}(partOf:AA,has:F_),F_:{double_thread}()
-RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliver_packages,race_conditions
+RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliver_packages,race_conditions,mutual_exclusion,link_semaphores,critical_sections
     PATTERN A:situation_trivial(),AA:subproblem(),\
     B:{track,pickup}(partOf:A,partOf:AA,to:C),C:{track,delivery}(partOf:A,partOf:AA,to:D),\
     D:track(),E:track(to:B),\
@@ -26,9 +26,10 @@ RULE MAKE_DELIVERY_PRE_DEADLOCK 0.7 0.5 -1 deadlock,synchronize,semaphores,deliv
     B:{track,pickup}(partOf:A,partOf:AA,to:X),C:{track,delivery}(partOf:A,partOf:AA,to:N),\
     X:{track,diverter}(partOf:A,to:Y,to:C),Y:{dead_end}(is:Y_),Y_:trash(),\
     D:track(),E:track(to:M),\
-    M:{track,semaphore,solution}(to:B,partOf:A),N:{track,button,solution}(to:D,partOf:A),\
+    M:{track,solution}(to:B,partOf:A,has:SEM),N:{track,solution}(to:D,partOf:A,has:BUTTON),\
+    BUTTON:button(link:SEM),SEM:semaphore(),\
     F:{start_point}(partOf:AA,has:F_),F_:{double_thread}()
-RULE SIMPLE_DEADLOCK 0.7 0.1 -1 deadlock,synchronize,semaphores,link_direction_switches
+RULE SIMPLE_DEADLOCK 0.7 0.1 -1 deadlock,synchronize,semaphores,link_direction_switches,link_semaphores,critical_sections,mutual_exclusion
     PATTERN A:situation_abst(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\
     F:{start_point}(partOf:AA)
@@ -39,16 +40,20 @@ RULE EXPAND_DEADLOCK 1.0 1.0 -1 none
     PATTERN A:two_thread_semaphore(),\
     B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
     REPLACEMENT A:situation_deadlock_two_thread_semaphore(),\
-    B:{track}(partOf:A,to:X,has:BUTTON),BUTTON:button(link:COND),LLC:{track}(to:LB),\
-    X:fork(toStarting:IA,to:IB,has:COND),Y:merge(to:LLC),COND:conditional()\
-    IA:{track}(has:IA_,to:JA),IA_:button(link:JB_,partOf:K),\
-    IB:{track}(has:IB_,to:JB),IB_:button(link:JA_,partOf:K),\
-    JA:{track}(has:JA_,to:Y),JA_:semaphore_red(partOf:K),\
-    JB:{track}(has:JB_,to:Y),JB_:semaphore_red(partOf:K),\
-    K:challenge(),\
-    C:{track}(),\
-    LA:situation_abst(),LAA:subproblem(),LB:track(is:LB_,partOf:LA,partOf:LAA),\
-    LC:{track}(is:LC_,partOf:LA,partOf:LAA,to:C),LB_:out(),LC_:in()
+    B:{track}(partOf:A,to:LB,has:SEM1),SEM1:semaphore_green(),\
+    LB:track(partOf:A,to:X,has:BUTTON1),BUTTON1:button(link:COND),\
+    X:fork(toStarting:IA,to:IB,has:COND),COND:conditional(),\
+    IA:{track}(has:IA_,to:JA),IA_:button(link:SEM1),\
+    IB:{track}(has:IB_,to:JB),IB_:button(link:SEM1),\
+    JA:{track}(has:JA_,to:KA),JA_:button(link:KB_,partOf:K),\
+    JB:{track}(has:JB_,to:KB),JB_:button(link:KA_,partOf:K),\
+    KA:{track}(has:KA_,to:Y),KA_:semaphore_red(partOf:K),\
+    KB:{track}(has:KB_,to:Y),KB_:semaphore_red(partOf:K),\
+    Y:merge(to:NPO),\
+    K:challenge(),LA:situation_abst(),LAA:subproblem(),\
+    NPO:track(is:LB_,partOf:LA,partOf:LAA),LB_:out(),\
+    NPI:track(is:LC_,partOf:LA,partOf:LAA,to:C),LC_:in(),\
+    C:{track}(is:C_)
 RULE JESS_DEADLOCK1 0.7 0.1 -1 deadlock,synchronize,semaphores,exchange_points,synchronized_delivery,mutual_exclusion,deliver_packages,link_direction_switches
     PATTERN A:situation_abst(),AA:subproblem(),\
     B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),\

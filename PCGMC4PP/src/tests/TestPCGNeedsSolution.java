@@ -65,9 +65,9 @@ public class TestPCGNeedsSolution {
         boolean debug = false;
         int numFails = 0;
         int numAttempts = 0;
-        for(int size=1;size<=1;size++){        
+        for(int size=2;size<=2;size++){        
             for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
-//            int randomSeed = 806; {
+//            int randomSeed = 3200; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
@@ -127,7 +127,7 @@ public class TestPCGNeedsSolution {
         
 
         System.out.println("goal_struct.size() = " + gs2.getBoardState().goal_struct.size());
-        if (gs2.getBoardState().goal_struct.size() == 0) {
+        if (gs2.getBoardState().goal_struct.isEmpty()) {
                 BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
                 System.err.println("There are no goals!");
                 return false;

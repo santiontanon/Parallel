@@ -82,6 +82,8 @@ public class GameState {
     private Map<Integer, Integer> time_elapsed_per_unit_moved = new LinkedHashMap();
     public List<IntermediateUnitPosition> intermediate_unit_positions = new ArrayList();
     private int steps = 0;
+    boolean endlessloop[][] = null; // an array that marks which positions are part of an endless loop
+
     // Note, without state compression, time and steps should be the same
     public List<String> skills = null;
     
@@ -554,7 +556,7 @@ public class GameState {
                 allowed_to_continue = false;
                 // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
                 // TODO have a check that looks for ALL the threads in a LOOPY state, then break
-                // this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;                
+                if (endlessloop[unit.x][unit.y]) this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;                
             }
             unit_hashes.add(unit_hash);
             if(time>this.bs.getWidth() * this.bs.getHeight()){
@@ -824,6 +826,7 @@ public class GameState {
         this.state_type = state_type;
         this.result_type = result_type;
         this.goals_delivery = goals_delivery;
+        if (parent != null) this.endlessloop = parent.endlessloop;
     }
 
     public void expand() {
@@ -845,6 +848,7 @@ public class GameState {
         this.bs.initTileNeighbors();
         this.initIntersections();
         this.initUnitsNextTile();
+        this.findEndlessLoops();
         this.updateGameStateDescriptionLength();
     }
 
@@ -1015,4 +1019,46 @@ public class GameState {
         }
         return this.result_type;
     }
+    
+    public void findEndlessLoops()
+    {
+        int w = getBoardState().getWidth();
+        int h = getBoardState().getHeight();
+        boolean considered[][] = new boolean[w][h];
+        endlessloop = new boolean[w][h];
+        
+        for(int i = 0;i<h;i++) {
+            for(int j = 0;j<w;j++) {
+                Tile t = getBoardState().getTile(j, i);
+                if (t != null && t.type == Tile.TILE_TRACK && !considered[j][i]) {
+//                    System.out.println("nbs of " + j + "," + i + " ("+t.type+"): " + t.getNeighborsBitmask());
+//                    System.out.println("    traveled_to: " + t.traveled_to);
+                    List<Tile> pathForward = new ArrayList<>();
+                    
+                    // follow it forward until a fork, component, or we loop back:
+                    Tile current = t;
+                    while(true) {
+                        considered[current.x][current.y] = true;
+                        if (!current.component_index.isEmpty()) break;
+                        if (pathForward.contains(current)) {
+                            // loop!!!
+//                            System.out.println("Loop!!! " + pathForward);
+                            for(Tile t2:pathForward) {
+                                endlessloop[t2.x][t2.y] = true;
+                            }
+                            break;
+                        }
+                        pathForward.add(current);
+                        if (current.traveled_to.size()==1) {
+                            current = current.traveled_to.iterator().next();
+                        } else {
+                            break;
+                        }
+                    }
+//                    System.out.println("    pathForward: " + pathForward.size());
+                }
+            }
+        }
+    }    
+    
 }

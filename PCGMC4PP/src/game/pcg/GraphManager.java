@@ -449,7 +449,7 @@ public class GraphManager {
                 for (LGraphNode child : node.getChildNodes(sortTo, sortTrack)) {
                     Tile t_ = node_to_node_by_tile.get(new Pair(node, child));
                     LGraphEdge edge = node.getEdge(child);
-                    System.out.println("conditional out edge: " + edge.labelSet);
+//                    System.out.println("conditional out edge: " + edge.labelSet);
                     if (edge.labelSet.subsumedBy(sortToStarting)) {
                         // we don't add it yet, we will add it later (also, we assume there is only one)
                         directions.add(t.getDirectionTo(t_));
