@@ -179,6 +179,12 @@ public class GameManager : MonoBehaviour {
 		UpdateGamePhaseBehavior();
 	}
 
+    public void ResetInitStatus()
+    {
+        playerModelingIntialized = false;
+        trackerIntialized = false;
+    }
+
 	public void UpdatePlayerField(string inputPlayerId)
 	{
 		Debug.Log("Player ID is now:" + inputPlayerId);
@@ -188,7 +194,6 @@ public class GameManager : MonoBehaviour {
             GetSaveManager().LoadSave(inputPlayerId);
         }
     }
-
 
 	public void TriggerLoadLevel(bool restartPhase = false, DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
