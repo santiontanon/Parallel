@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
     public LevelReferenceObject currentLevelReferenceObject;
     public int JVMMemorySelection = 0;
 
-    public bool preSurveyComplete, postSurveyComplete = false;
+    public bool preSurveyComplete, postSurveyComplete, trackerIntialized, playerModelingIntialized = false;
 
     //FOR DEBUG, REMOVE THIS LATER
     string lastPhase = "";

@@ -282,7 +282,7 @@ public class LinkJava : MonoBehaviour
                 else if (!line.Contains("tile"))
                 {
                     errorText += line;
-                    DisplayError("Unknown Error", line, "Close", GameManager.Instance.AbortLinkJavaProcess, "Level Select", GameManager.Instance.ResetToLevelSelect);
+                    DisplayError("Unhandled Exception", errorText, "Close", GameManager.Instance.AbortLinkJavaProcess, "Level Select", GameManager.Instance.ResetToLevelSelect);
                 }
             }
             GameManager.Instance.tracker.CreateEventExt("SimulationFeedback", javaProcess.ExitCode.ToString());
@@ -384,10 +384,19 @@ public class LinkJava : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
         }
-        modelingProcess = null;
-        UnityEngine.Debug.Log("Player Modeling Server Routine Complete");
-        if (callback != null)
-            callback();
+        string line = null;
+        if((line = modelingProcess.StandardError.ReadLine()) != null)
+        {
+            UnityEngine.Debug.LogError(line);
+            DisplayError("Unhandled Exception", line, "Close", GameManager.Instance.AbortLinkJavaProcess);
+        }
+        else
+        {
+            modelingProcess = null;
+            UnityEngine.Debug.Log("Player Modeling Intialization Routine Complete");
+            if (callback != null)
+                callback();
+        }
         yield return null;
     }
 
@@ -429,10 +438,19 @@ public class LinkJava : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
         }
-        modelingProcess = null;
-        UnityEngine.Debug.Log("Player Modeling Routine Complete");
-        if (callback != null)
-            callback();
+        string line = null;
+        if((line = modelingProcess.StandardError.ReadLine()) != null)
+        {
+            UnityEngine.Debug.LogError(line);
+            DisplayError("Unhandled Exception", line, "Close", GameManager.Instance.AbortLinkJavaProcess, "Level Select", GameManager.Instance.ResetToLevelSelect);
+        }
+        else
+        {
+            modelingProcess = null;
+            UnityEngine.Debug.Log("Player Modeling Routine Complete");
+            if (callback != null)
+                callback();
+        }
         yield return null;
     }
     #endregion
