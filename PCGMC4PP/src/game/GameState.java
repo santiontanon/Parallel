@@ -556,7 +556,9 @@ public class GameState {
                 allowed_to_continue = false;
                 // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
                 // TODO have a check that looks for ALL the threads in a LOOPY state, then break
-                if (endlessloop[unit.x][unit.y]) this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;                
+                if (endlessloop[unit.x][unit.y]) {
+                    this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
+                }                
             }
             unit_hashes.add(unit_hash);
             if(time>this.bs.getWidth() * this.bs.getHeight()){
@@ -997,6 +999,7 @@ public class GameState {
                 cs.clone(),
                 us.clone(),
                 skills);
+        gs.endlessloop = this.endlessloop;
         return gs;
     }
 

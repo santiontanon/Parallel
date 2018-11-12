@@ -88,6 +88,7 @@ public class ME {
                 }
             } catch (FileNotFoundException ex) {
                 System.out.println("Exception: " + ex.getMessage());
+                ex.printStackTrace();
                 System.exit(6);
             }
         } else {

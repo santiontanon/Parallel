@@ -37,6 +37,7 @@ public class communication {
                 Thread.sleep(Integer.parseInt(args[1]));
             } catch (Exception ex) {
                 System.out.println("Exception: " + ex.getMessage());
+                ex.printStackTrace();
             }
         } else {
             System.out.println("No arguments to Java");
