@@ -258,7 +258,8 @@ public class DataManager : MonoBehaviour {
 
     public void UpdateLevelRank(string inputLevelFile, int inputNewRank)
     {
-        GetLevelByFile(inputLevelFile).completionRank = inputNewRank;
+        if(GetLevelByFile(inputLevelFile) != null)
+            GetLevelByFile(inputLevelFile).completionRank = inputNewRank;
     }
 
     Level LoadLevel(string[] levelDataArray)
