@@ -474,23 +474,23 @@ public class GraphManager {
                 for (LGraphEdge e : node.getOutgoingEdges(sortTo)) {
                     if (e.end.subsumedBy(sortTrack)) {
                         int direction = t.getDirectionTo(node_to_tile.get(e.end));
-                        System.out.println("e.end position: " + node_to_tile.get(e.end).x + ", " + node_to_tile.get(e.end).y);
+                        //System.out.println("e.end position: " + node_to_tile.get(e.end).x + ", " + node_to_tile.get(e.end).y);
                         if (e.labelSet.subsumedBy(sortToWithPackage)) {
                             cc.directions_colors[direction] = new int[]{1, 2, 3, 4, 5, 6};
                             cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL, ComponentPickup.UNCONDITIONAL, ComponentPickup.LIMITED};
-                            System.out.println("Diverter -> toWithPackage -> " + direction);
+                            //System.out.println("Diverter -> toWithPackage -> " + direction);
                         } else if (e.labelSet.subsumedBy(sortToWithoutPackage)) {
                             cc.directions_colors[direction] = new int[]{-1};
                             cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};
-                            System.out.println("Diverter -> sortToWithoutPackage -> " + direction);
+                            //System.out.println("Diverter -> sortToWithoutPackage -> " + direction);
                         } else if (e.end.getFirstChildNode(sortIs, sortTrash) != null) {
                             cc.directions_colors[direction] = new int[]{-1};
                             cc.directions_types[direction] = new int[]{ComponentPickup.EMPTY};
-                            System.out.println("Diverter -> trash -> " + direction);
+                            //System.out.println("Diverter -> trash -> " + direction);
                         } else {
                             cc.directions_colors[direction] = new int[]{1, 2, 3, 4, 5, 6};
                             cc.directions_types[direction] = new int[]{ComponentPickup.CONDITIONAL, ComponentPickup.UNCONDITIONAL, ComponentPickup.LIMITED};
-                            System.out.println("Diverter -> - -> " + direction);
+                            //System.out.println("Diverter -> - -> " + direction);
                         }
                     }
                 }

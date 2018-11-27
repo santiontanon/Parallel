@@ -31,6 +31,7 @@ import gui.BoardGameStateJFrame;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
+import optimization.OrthographicEmbeddingPathOptimizer;
 import support.PCG;
 import support.PCGPlayerModelUtils;
 import support.Play;
@@ -67,10 +68,11 @@ public class TestPCGNeedsSolution {
         int numAttempts = 0;
         for(int size=2;size<=2;size++){        
             for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
-//            int randomSeed = 3200; {
+//            int randomSeed = 6000; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
+//                OrthographicEmbeddingPathOptimizer.DEBUG = 1;
                 GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, false, true, playerModel, debug);
                 System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
@@ -107,18 +109,16 @@ public class TestPCGNeedsSolution {
 //        }
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
 */
-
 /*
         {
             GameState next = gs;
-            for(int step = 1;step<7;step++) {
+            for(int step = 1;step<4;step++) {
                 List<GameState> succ = next.getSuccessors();
                 next = succ.get(succ.size()-1);
                 BoardGameStateJFrame f = new BoardGameStateJFrame("level (step "+step+")", WINDOW_WIDTH, WINDOW_HEIGHT, next);
             }
         }
 */
-
         GameStateSearch gss = new GameStateSearch(gs);
         gss.setSearchBudget(600000);
         gss.setSearchOptions(false, true, true, true);

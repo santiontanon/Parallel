@@ -15,7 +15,7 @@ RULE ADD_MULTITHREAD3 1.0 0.5 -1 none
 RULE ADD_PICKUP 1.0 0.5 -1 none
     PATTERN A:{track,pickup}(partOf:X),X:situation_critical_misdelivery_due_to_race_condition()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()
-    REPLACEMENT A:track(has:B),B:pickup_unconditional()
+    REPLACEMENT A:track(has:B),B:pickup_conditional()
 RULE ADD_PICKUP 1.0 0.5 -1 none
     PATTERN A:{track,pickup}(partOf:X),X:situation_critical_thread_lost()
     NEGATEDPATTERN A:{track,pickup}(has:B),B:pickup()
