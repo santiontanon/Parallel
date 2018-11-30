@@ -66,7 +66,7 @@ public class TestPCGNeedsSolution {
         boolean debug = false;
         int numFails = 0;
         int numAttempts = 0;
-        for(int size=2;size<=2;size++){        
+        for(int size=1;size<=1;size++){        
             for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
 //            int randomSeed = 6000; {
                 System.out.println("randomSeed: " + randomSeed);

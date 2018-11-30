@@ -40,6 +40,7 @@ import game.component.ComponentSemaphore;
 import game.component.ComponentSignal;
 import game.component.ComponentUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,7 @@ public class GraphManager {
     static Sort sortDiverter = null;
     static Sort sortExchange = null;
     static Sort sortLink = null;
+    static Sort sortDeliverTo = null;
 
     public GraphManager(OrthographicEmbeddingResult oe, LGraph graph, LGraph layoutGraph, Map<LGraphNode, LGraphNode> map) {
         this.oe = oe;
@@ -226,6 +228,7 @@ public class GraphManager {
             sortExchange = Sort.getSort("exchange");
             sortPreventor = Sort.getSort("preventor");
             sortLink = Sort.getSort("link");
+            sortDeliverTo = Sort.getSort("deliverTo");
         } catch (Exception ex) {
             Logger.getLogger(GraphManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -331,6 +334,36 @@ public class GraphManager {
 
     private void addComponents() {
         components = new ComponentState();
+        
+        // Search all pickups to see if we need specific packages:
+        int nextPackageColor = 2;
+        HashMap<LGraphNode, Integer> packageColors = new HashMap<>();
+        for (int i = 0; i < oe.nodeIndexes.length; i++) {
+            if (oe.nodeIndexes[i] >= 0) {
+                LGraphNode node = map.get(layoutGraph.getNode(oe.nodeIndexes[i]));
+                for(LGraphEdge hasComponent : node.getOutgoingEdges(sortHas)) {
+                    if (hasComponent.end.subsumedBy(sortPickup)) {
+                        for(LGraphEdge deliverTo:node.getOutgoingEdges(sortDeliverTo)) {
+                            for(LGraphEdge hasComponent2 : deliverTo.end.getOutgoingEdges(sortHas)) {
+                                if (hasComponent2.end.subsumedBy(sortDelivery)) {
+                                    // System.out.println("deliverTo: " + hasComponent2);
+                                    if (packageColors.containsKey(hasComponent.end)) {
+                                        packageColors.put(hasComponent2.end, packageColors.get(hasComponent.end));
+                                    } else if (packageColors.containsKey(hasComponent2.end)) {
+                                        packageColors.put(hasComponent.end, packageColors.get(hasComponent2.end));
+                                    } else {
+                                        packageColors.put(hasComponent.end, nextPackageColor);
+                                        packageColors.put(hasComponent2.end, nextPackageColor);
+                                        nextPackageColor++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         int idx = 1;
         for (int i = 0; i < oe.nodeIndexes.length; i++) {
             // Node or Shoulder
@@ -340,7 +373,7 @@ public class GraphManager {
             tile.type = Tile.TILE_TRACK;
             if (oe.nodeIndexes[i] >= 0) {
                 // System.out.println("adding component: " + map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
-                addComponent(tile, x, y, idx++, map.get(layoutGraph.getNode(oe.nodeIndexes[i])));
+                addComponent(tile, x, y, idx++, map.get(layoutGraph.getNode(oe.nodeIndexes[i])), packageColors);
             } else {
                 // Shoulders get a -1
             }
@@ -348,9 +381,10 @@ public class GraphManager {
     }
     static final int DENOMINATOR_PER_LOOP = 3;
 
-    private void addComponent(Tile tile, int x, int y, int idx, LGraphNode node) {
+    private void addComponent(Tile tile, int x, int y, int idx, LGraphNode node, HashMap<LGraphNode, Integer> packageColors) {
         int n_components = 0;
         int color = 1;
+        /*
         if (false && node.subsumedBy(sortMerge)) {
             // add arrow in merges
             ComponentArrow ca = new ComponentArrow(x, y, idx, color, Component.OWNER_SYSTEM, true);
@@ -371,6 +405,7 @@ public class GraphManager {
             components.addComponent(ca);
             n_components++;
         }
+        */
         for (LGraphEdge hasComponent : node.getOutgoingEdges(sortHas)) {
             /*
             boolean skipTileComponents = false;
@@ -396,7 +431,9 @@ public class GraphManager {
 //                System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
             } else if (hasComponent.end.subsumedBy(sortPickup)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
-                ComponentPickup cp = new ComponentPickup(x, y, idx, color, Component.OWNER_SYSTEM, true);
+                int packageColor = color;
+                if (packageColors.containsKey(hasComponent.end)) packageColor = packageColors.get(hasComponent.end);
+                ComponentPickup cp = new ComponentPickup(x, y, idx, packageColor, Component.OWNER_SYSTEM, true);
                 if (hasComponent.end.subsumedBy(sortPickupConditional)) {
                     cp.type = ComponentPickup.CONDITIONAL;
                 } else if (hasComponent.end.subsumedBy(sortPickupUnconditional)) {
@@ -408,8 +445,11 @@ public class GraphManager {
                 n_components++;
             } else if (hasComponent.end.subsumes(sortDelivery)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
-                ComponentDelivery cd = new ComponentDelivery(x, y, idx, color, Component.OWNER_SYSTEM, true);
+                int packageColor = color;
+                if (packageColors.containsKey(hasComponent.end)) packageColor = packageColors.get(hasComponent.end);
+                ComponentDelivery cd = new ComponentDelivery(x, y, idx, packageColor, Component.OWNER_SYSTEM, true);                
                 cd.denominator = 1;
+                cd.accepted_colors = new int[]{packageColor};
                 for (LGraphNode partOf : node.getChildNodes(sortPartOf, sortSubproblem)) {
                     if (partOf.subsumedBy(sortLoop)) {
                         cd.denominator = DENOMINATOR_PER_LOOP;

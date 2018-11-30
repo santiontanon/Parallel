@@ -9,7 +9,7 @@ RULE DOUBLE_DELIVERY 0.9 0.9 -1 deliver_packages,race_conditions,synchronize,sem
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in(),F:{start_point}(partOf:AA)
     REPLACEMENT A:situation_race_condition(),AA:subproblem(),\
     B:{track}(is:B_,partOf:A,partOf:AA,to:BB,has:SEM1),B_:out(),SEM1:semaphore_green(),\
-    BB:{track,pickup}(partOf:A,partOf:AA,to:BBB),\
+    BB:{track,pickup}(partOf:A,partOf:AA,to:BBB,deliverTo:IA,deliverTo:IB),\
     BBB:{track}(partOf:A,partOf:AA,to:X,has:BUTTON1),BUTTON1:button(link:COND),\
     X:fork(toStarting:IA,to:IB,has:COND),COND:conditional(),\
     IA:{track,delivery}(partOf:A,partOf:AA,to:Y),\
@@ -89,4 +89,4 @@ RULE SIMPLE_EXCHANGE 0.75 0.25 -1 exchange_points,deliver_packages
     PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,exchange}(partOf:A,partOf:AA,to:C,has:EX1),EX1:exchange(partOf:EX2),C:{track,delivery}(partOf:A,partOf:AA),\
-    Z1:{track,thread}(to:Z2),Z2:{track,pickup}(to:Z3),Z3:{track,exchange}(to:Z1,has:EX2),EX2:exchange(partOf:EX1)
+    Z1:{track,thread}(to:Z2),Z2:{track,pickup}(to:Z3,deliverTo:C),Z3:{track,exchange}(to:Z1,has:EX2),EX2:exchange(partOf:EX1)
