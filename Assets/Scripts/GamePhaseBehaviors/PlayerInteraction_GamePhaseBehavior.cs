@@ -141,7 +141,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		if(interactionPhase == InteractionPhases.simulation)
 		{
 			GameManager.Instance.TriggerTrackUpdate();
-		}
+            PlayerInteractionListener();
+        }
 		else 
 		{
 			PlayerInteractionListener();
@@ -516,10 +517,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
 
-        //reset zoom stuff
-        ResetZoom();
-
-
 		playerInteraction_UI.goalOverlay.userInput = PlayerInteraction_UI.Goal_UIOverlay.UserInputs.none;
         playbackBehavior.StartPhase();
 	}
@@ -608,6 +605,37 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             mouseInput = MouseInput.None;
         }
 
+        if (interactionPhase != InteractionPhases.ingame_connecting || interactionPhase != InteractionPhases.ingame_dragging || interactionPhase != InteractionPhases.ingame_placing)
+        {
+            if (mouseInput == MouseInput.LeftMouse)
+            {
+                GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+                PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                uiRaycastData.position = Input.mousePosition;
+                List<RaycastResult> uiResults = new List<RaycastResult>();
+                uiRaycast.Raycast(uiRaycastData, uiResults);
+                if (uiResults.Count == 0)
+                {
+                    if (!GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
+                    {
+                        if (dragging == false)
+                        {
+                            UpdatePan();
+                        }
+                    }
+                }
+            }
+            else if (mouseInput == MouseInput.MiddleMouse)
+            {
+                ResetZoom();
+            }
+            else
+            {
+                float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+                if (scrollAxis != 0)
+                    UpdateZoom(scrollAxis * -1); //invert so the scrolling works in the expected direction
+            }
+        }
         // Interaction Phases
         switch (interactionPhase)
 		{
@@ -637,7 +665,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         if(dragging == false)
                         {
-                            UpdatePan();
+                            //UpdatePan();
                         }
                     }
                     if (hoverObject)
@@ -687,7 +715,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 }
                 else if (mouseInput == MouseInput.MiddleMouse)
                 {
-                    ResetZoom();
+                    //ResetZoom();
                 }
                 /*
                  * if a player isn't clicking the mouse, we should check for hover behaviors AND zoom behaviors
@@ -718,9 +746,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                             }
                         }
 
-                        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-                        if (scrollAxis != 0)
-                            UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
+                        //float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+                        //if (scrollAxis != 0)
+                            //UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
                     }
                     else //if mouse has moved since last frame 
                     {

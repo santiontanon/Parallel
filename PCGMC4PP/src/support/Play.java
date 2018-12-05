@@ -81,6 +81,7 @@ public class Play {
                 System.exit(0);
             } catch (Exception ex) {
                 System.out.println("Exception: " + ex.getMessage());
+                ex.printStackTrace();
                 System.exit(6);
             }
         } else {

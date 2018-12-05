@@ -82,6 +82,9 @@ public class GameState {
     private Map<Integer, Integer> time_elapsed_per_unit_moved = new LinkedHashMap();
     public List<IntermediateUnitPosition> intermediate_unit_positions = new ArrayList();
     private int steps = 0;
+    boolean endlessloop[][] = null; // an array that marks which positions are part of an endless loop
+    boolean endlessloopIfNoPayload[][] = null;
+    
     // Note, without state compression, time and steps should be the same
     public List<String> skills = null;
     
@@ -485,7 +488,9 @@ public class GameState {
                 successor.getUnitState().getUnit(i).consecutive_unscheduled = 0;
                 if (this.canMoveUnit(cu)) {
                     successor.getUnitState().getUnit(i).consecutive_blocked = 0;
+                    //System.out.println("    "+this.steps+" - Before moveUnit "+i+": " + Arrays.toString(us.getUnit(i).payload));
                     successor.moveUnit(i);
+                    //System.out.println("    "+this.steps+" - After moveUnit "+i+": " + Arrays.toString(us.getUnit(i).payload));
 //                    System.out.println("move unit (all units/components): " + cu.id);
                     nUnitsUpdated++;
                 } else if (this.canUpdateComponent(cu)) {
@@ -495,13 +500,17 @@ public class GameState {
                     nComponentsUpdated++;
                 } else {
                     successor.getUnitState().getUnit(i).consecutive_blocked++;
-                    // TODO this may be sufficient to identify starvation but may need to be updated also in all successors when moving a single unit for all "other" units
+                    // TODO this may be sufficient to identify starvation but may 
+                    // need to be updated also in all successors when moving a single 
+                    // unit for all "other" units
                 }
             }
             // unless we updated both units and components, this is covered already with the previous moves!
             if ((nUnitsUpdated != 0 &&
                  nComponentsUpdated != 0) || 
-                 nUnitsUpdated > 1) successors.add(successor);
+                 nUnitsUpdated > 1) {
+                successors.add(successor);
+            }
         } // END Move all units at once
         return successors;
     }
@@ -552,10 +561,18 @@ public class GameState {
             Integer unit_hash = this.stateUnitDescriptionHash(unit);
             if(unit_hashes.contains(unit_hash)){
                 allowed_to_continue = false;
-                // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
-                // TODO have a check that looks for ALL the threads in a LOOPY state, then break
-                // this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;                
             }
+            // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
+            // TODO have a check that looks for ALL the threads in a LOOPY state, then break
+            if (endlessloop[unit.x][unit.y]) {
+                this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
+                allowed_to_continue = false;
+            }          
+            if (endlessloopIfNoPayload[unit.x][unit.y] && (unit.payload == null || unit.payload.length == 0)) {
+                this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
+                allowed_to_continue = false;
+            }
+
             unit_hashes.add(unit_hash);
             if(time>this.bs.getWidth() * this.bs.getHeight()){
                 allowed_to_continue = false;
@@ -824,6 +841,8 @@ public class GameState {
         this.state_type = state_type;
         this.result_type = result_type;
         this.goals_delivery = goals_delivery;
+        if (parent != null) this.endlessloop = parent.endlessloop;
+        if (parent != null) this.endlessloopIfNoPayload = parent.endlessloopIfNoPayload;
     }
 
     public void expand() {
@@ -845,6 +864,7 @@ public class GameState {
         this.bs.initTileNeighbors();
         this.initIntersections();
         this.initUnitsNextTile();
+        this.findEndlessLoops();
         this.updateGameStateDescriptionLength();
     }
 
@@ -993,6 +1013,8 @@ public class GameState {
                 cs.clone(),
                 us.clone(),
                 skills);
+        gs.endlessloop = this.endlessloop;
+        gs.endlessloopIfNoPayload = this.endlessloopIfNoPayload;
         return gs;
     }
 
@@ -1015,4 +1037,76 @@ public class GameState {
         }
         return this.result_type;
     }
+    
+    public void findEndlessLoops()
+    {
+        int w = getBoardState().getWidth();
+        int h = getBoardState().getHeight();
+        boolean considered[][] = new boolean[w][h];
+        endlessloop = new boolean[w][h];
+        endlessloopIfNoPayload = new boolean[w][h];
+        System.out.println("findEndlessLoops start");
+        
+        for(int i = 0;i<h;i++) {
+            for(int j = 0;j<w;j++) {
+                Tile t = getBoardState().getTile(j, i);
+                if (t != null && t.type == Tile.TILE_TRACK && !considered[j][i]) {
+//                    System.out.println("nbs of " + j + "," + i + " ("+t.type+"): " + t.getNeighborsBitmask());
+//                    System.out.println("    traveled_to: " + t.traveled_to);
+                    List<Tile> pathForward = new ArrayList<>();
+                    
+                    // follow it forward until a fork, component, or we loop back:
+                    Tile current = t;
+                    Tile pathIncludesDiverter = null;
+                    while(true) {
+                        considered[current.x][current.y] = true;
+                        Tile nextTileThroughEmptyPayloadDiverter = null;
+                        if (current.component_index.size() == 1) {
+                            Component c = this.cs.getComponent(current.component_index.get(0));
+                            if (c instanceof ComponentDiverter) {
+                                ComponentDiverter diverter = (ComponentDiverter)c;
+                                
+                                int emptyDirection = diverter.getDirectionForEmptyPayload();
+//                                System.out.println("   diverter.empty payload direction: " + emptyDirection);
+                                Tile tile_emptyPayload = this.bs.getTile(current.x + Component.DIRECTION_OFFSET_DICT_X[emptyDirection], current.y + Component.DIRECTION_OFFSET_DICT_Y[emptyDirection]);
+//                                System.out.println("   diverter tile at emptyDirection: " + tile_emptyPayload);
+                                if (current.traveled_to.contains(tile_emptyPayload)) {
+//                                    System.out.println("    good, tile is within traveled_to");
+                                    nextTileThroughEmptyPayloadDiverter = tile_emptyPayload;
+                                }
+                            }
+                        }
+                        if (!current.component_index.isEmpty() &&
+                            nextTileThroughEmptyPayloadDiverter == null) break;
+                        if (pathForward.contains(current)) {
+                            // loop!!!
+                            if (pathIncludesDiverter != null) {
+//                                System.out.println("Endless Loop if no payload!!! " + pathForward);
+                                for(Tile t2:pathForward) {
+                                    endlessloopIfNoPayload[t2.x][t2.y] = true;
+                                }
+                            } else {
+//                                System.out.println("Endless Loop!!! " + pathForward);
+                                for(Tile t2:pathForward) {
+                                    endlessloop[t2.x][t2.y] = true;
+                                }
+                            }
+                            break;
+                        }
+                        pathForward.add(current);
+                        if (current.traveled_to.size()==1) {
+                            current = current.traveled_to.iterator().next();
+                        } else if (nextTileThroughEmptyPayloadDiverter != null) {
+                            current = nextTileThroughEmptyPayloadDiverter;
+                            pathIncludesDiverter = nextTileThroughEmptyPayloadDiverter;
+                        } else {
+                            break;
+                        }
+                    }
+//                    System.out.println("    pathForward: " + pathForward.size());
+                }
+            }
+        }
+    }    
+    
 }

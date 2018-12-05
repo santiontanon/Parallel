@@ -62,9 +62,7 @@
     <sort name="pickup_unconditional" super="pickup"/> <!-- this is the default in Java -->
     <sort name="pickup_conditional" super="pickup"/> <!-- this is the default overwritten by rules -->
     <sort name="pickup_limited" super="pickup"/>
-    <sort name="pickup_preventor" super="pickup,preventor"/> <!-- since I cannot remove labels from a node, I add this node to prevent instantiation -->
     <sort name="delivery" super="component"/>
-    <sort name="delivery_preventor" super="delivery,preventor"/>
     <sort name="button" super="component"/>
     <sort name="semaphore" super="component"/>
     <sort name="semaphore_red" super="semaphore"/>
@@ -82,6 +80,7 @@
     <sort name="has" super="relation"/>
     <sort name="partOf" super="relation"/>
     <sort name="link" super="relation"/>
+    <sort name="deliverTo" super="relation"/>
 
 <!-- THESE ARE INTENDED TO SELECT THE TOPICS ANNOTATED IN THE GRAMMAR RULES -->
     <sort name="TOPIC" super="any"/>

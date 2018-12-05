@@ -62,7 +62,7 @@ public class TestPCGPlayable {
         boolean debug = false;
         for(int size=1;size<=1;size++){        
             for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 806; {
+//            int randomSeed = 100; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
@@ -99,9 +99,9 @@ public class TestPCGPlayable {
         GameState gs2 = ep.getStates().get(ep.getStates().size()-1);
         System.out.println("goal_struct.size() = " + gs2.getBoardState().goal_struct.size());
         if (gs2.getBoardState().goal_struct.size() == 0) {
-                BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
-                System.err.println("There are no goals!");
-                return false;
+            BoardGameStateJFrame f = new BoardGameStateJFrame("level (after simulation)", WINDOW_WIDTH, WINDOW_HEIGHT, gs2);                
+            System.err.println("There are no goals!");
+            return false;
         }
         for (int i = 0; i < gs2.getBoardState().goal_struct.size(); i++) {
             GoalCondition goal = gs2.getBoardState().goal_struct.get(i);

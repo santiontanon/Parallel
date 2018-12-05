@@ -60,8 +60,9 @@ public class CabooseObject : MonoBehaviour {
                 timeStep = timeStep.nextStep;
         }
         Vector3 targetPos = new Vector3(timeStep.GetThread(followObject.component.id).pos.x, GameManager.Instance.GetLevelHeight() - timeStep.GetThread(followObject.component.id).pos.y, 0);
+
         if (instant == false)
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, 0.065f);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, 4 * Time.deltaTime);
         else
             transform.position = targetPos;
 	}
