@@ -25,8 +25,9 @@ public class PostBuild : MonoBehaviour {
                 break;
 
             case BuildTarget.StandaloneOSX:
+                path += "Parallel.app/";
                 dataPath = path + "/data";
-                PCGMC4PPPath = path + "/Contents/PCGMC4PP";
+                PCGMC4PPPath = path + "Contents/PCGMC4PP";
                 break;
 
             case BuildTarget.StandaloneWindows:
