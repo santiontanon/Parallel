@@ -178,7 +178,7 @@ public class Tracker : MonoBehaviour {
 
     void SetupTracking()
     {
-        string fileName = GameManager.Instance.GetLinkJava().localPath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
+        string fileName = GameManager.Instance.GetLinkJava().savePath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
         log = File.CreateText(fileName);
         if (log == null)
         {
@@ -268,7 +268,7 @@ public class Tracker : MonoBehaviour {
             Debug.Log(www.error);
             CreateEvent("UploadRequest", "Error");
             Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
-            string path = GameManager.Instance.GetLinkJava().localPath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
+            string path = GameManager.Instance.GetLinkJava().savePath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
             System.Diagnostics.Process.Start(path);
             if (allowQuittingRequested)
             {
@@ -346,7 +346,7 @@ public class Tracker : MonoBehaviour {
             modelLog.Close();
             modelLog = null;
         }
-        modelLogPath = GameManager.Instance.GetLinkJava().localPath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
+        modelLogPath = GameManager.Instance.GetLinkJava().savePath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
         modelLog = File.CreateText(modelLogPath);
     }
 

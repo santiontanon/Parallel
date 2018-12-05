@@ -8,7 +8,7 @@ public class LinkJava : MonoBehaviour
 {
 	public string pcgPath;
     public string dataPath;
-    public string localPath;
+    public string savePath;
 	private string pathCPSeparator = ":";
 	public string pathSeparator = "/";
 
@@ -16,8 +16,6 @@ public class LinkJava : MonoBehaviour
 	public SimulationTypes simulationMode = SimulationTypes.ME;
 
 	public string filename;
-
-	GameManager gameManager;
 
     private Process javaProcess = null;
     private Process modelingProcess = null;
@@ -45,14 +43,19 @@ public class LinkJava : MonoBehaviour
     	if(Application.isEditor){
         	pcgPath = Application.dataPath + "/../PCGMC4PP/dist/".Replace("/",pathSeparator);
             dataPath = Application.dataPath + "/../data".Replace("/", pathSeparator);
-            localPath = Application.dataPath + "/../Parallel/".Replace("/", pathSeparator);
+            if (GameManager.Instance.currentSaveMode == GameManager.SaveMode.Relative)
+                savePath = Application.dataPath + "/../Parallel/".Replace("/", pathSeparator);
+            else
+                savePath = Application.persistentDataPath;
         } else {
         	pcgPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
             dataPath = Application.dataPath + "/data".Replace("/", pathSeparator);
-            localPath = Application.dataPath + "/Parallel/".Replace("/", pathSeparator);
+            if (GameManager.Instance.currentSaveMode == GameManager.SaveMode.Relative)
+                savePath = Application.dataPath + "/Parallel/".Replace("/", pathSeparator);
+            else
+                savePath = Application.persistentDataPath;
         }
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
-		gameManager = GameManager.Instance;
     }
 
     void Update()

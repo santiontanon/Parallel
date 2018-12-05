@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour {
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
     public enum GameMode { Test, Demo, Class, Study_8, Study_9 }
     public GameMode currentGameMode;
+    public enum SaveMode { Relative, Default }
+    public SaveMode currentSaveMode;
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
@@ -231,7 +233,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
-		string filename = linkJava.localPath + "currentParameters.txt";
+		string filename = linkJava.savePath + "currentParameters.txt";
         if(!System.IO.File.Exists(filename))
 		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
@@ -308,7 +310,7 @@ public class GameManager : MonoBehaviour {
         string levelToString = SerializeCurrentLevel();
         //Debug.Log(levelToString);
         string filename =
-            linkJava.localPath
+            linkJava.savePath
             + Constants.FilePrefixes.inputLevelFile + "_PLAY_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         linkJava.simulationMode = LinkJava.SimulationTypes.Play;
@@ -326,7 +328,7 @@ public class GameManager : MonoBehaviour {
 	{        
 		string levelToString = SerializeCurrentLevel();
 		string filename = 
-            linkJava.localPath
+            linkJava.savePath
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         //Debug.Log(filename);
