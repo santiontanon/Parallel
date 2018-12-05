@@ -178,7 +178,7 @@ public class Tracker : MonoBehaviour {
 
     void SetupTracking()
     {
-        string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
+        string fileName = GameManager.Instance.GetLinkJava().localPath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
         log = File.CreateText(fileName);
         if (log == null)
         {
@@ -268,7 +268,7 @@ public class Tracker : MonoBehaviour {
             Debug.Log(www.error);
             CreateEvent("UploadRequest", "Error");
             Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
-            string path = Application.persistentDataPath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
+            string path = GameManager.Instance.GetLinkJava().localPath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
             System.Diagnostics.Process.Start(path);
             if (allowQuittingRequested)
             {
@@ -346,16 +346,12 @@ public class Tracker : MonoBehaviour {
             modelLog.Close();
             modelLog = null;
         }
-        modelLogPath = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
+        modelLogPath = GameManager.Instance.GetLinkJava().localPath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
         modelLog = File.CreateText(modelLogPath);
     }
 
     public void SendModelLog(string executionPath)
     {
-        //Debug.Log("SendModelLog");
-        //Debug.Log("Sending execution path: " + executionPath);
-        //Debug.Log("Sending model log path: " + modelLogPath);
-        //Debug.Log("Sending currentparameters.txt path: " + "currentparameters.txt");
         modelLog.Close();
         modelLog = null;
         GameManager.Instance.GetLinkJava().StartPlayerModelingProcess(executionPath, modelLogPath, tracking_session_user, "level"+GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString(), hostname);

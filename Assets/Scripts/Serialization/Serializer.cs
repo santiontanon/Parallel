@@ -9,12 +9,12 @@ public static class Serializer
 
     public static List<ParallelSave> LoadSaves()
     {
-        if(Directory.Exists(Application.persistentDataPath + "/Saves")){
+        if(Directory.Exists(GameManager.Instance.GetLinkJava().localPath + "Saves")){
             return LoadDirectory();
         }
         else
         {
-            Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
+            Directory.CreateDirectory(GameManager.Instance.GetLinkJava().localPath + "Saves");
             return LoadDirectory();
         }
     }
@@ -22,7 +22,7 @@ public static class Serializer
     static List<ParallelSave> LoadDirectory()
     {
         // Process the list of files found in the directory.
-        string[] fileEntries = Directory.GetFiles(Application.persistentDataPath + "/Saves");
+        string[] fileEntries = Directory.GetFiles(GameManager.Instance.GetLinkJava().localPath + "Saves");
         List<ParallelSave> saves = new List<ParallelSave>();
         for(int i = 0; i < fileEntries.Length; i++)
         {
@@ -54,7 +54,7 @@ public static class Serializer
     public static void SerializeData(ParallelSave save)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/Saves/" + save.name + ".prl");
+        FileStream file = File.Create(GameManager.Instance.GetLinkJava().localPath + "Saves/" + save.name + ".prl");
         bf.Serialize(file, save);
         file.Close();
     }

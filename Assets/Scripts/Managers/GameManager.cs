@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviour {
         saveManager = GetComponent<SaveManager>();
 		linkJava = GetComponent<LinkJava>();
 		tracker = GetComponent<Tracker>();
-        
+
+        linkJava.Init();
         saveManager.Init();
         scoreManager.Init();
 	}
@@ -229,7 +230,7 @@ public class GameManager : MonoBehaviour {
     public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
-		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";
+		string filename = linkJava.localPath + "currentParameters.txt";
         if(!System.IO.File.Exists(filename))
 		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
@@ -306,8 +307,7 @@ public class GameManager : MonoBehaviour {
         string levelToString = SerializeCurrentLevel();
         //Debug.Log(levelToString);
         string filename =
-            Application.persistentDataPath
-            + linkJava.pathSeparator
+            linkJava.localPath
             + Constants.FilePrefixes.inputLevelFile + "_PLAY_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         linkJava.simulationMode = LinkJava.SimulationTypes.Play;
@@ -325,8 +325,7 @@ public class GameManager : MonoBehaviour {
 	{        
 		string levelToString = SerializeCurrentLevel();
 		string filename = 
-            Application.persistentDataPath 
-            + linkJava.pathSeparator 
+            linkJava.localPath
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         //Debug.Log(filename);
