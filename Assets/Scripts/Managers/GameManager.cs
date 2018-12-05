@@ -220,11 +220,12 @@ public class GameManager : MonoBehaviour {
         TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
     }
 
-    public void TriggerLoadTutorialLevel(string path)
+    public void TriggerLoadTutorialLevel(string levelName)
     {
-        tracker.CreateEventExt("TriggerLoadLevel", path);
-        if (path.Length == 0) path = dataManager.levelname;
-        dataManager.InitializeLoadLevel(path, DataManager.LoadType.RESOURCES);
+        tracker.CreateEventExt("TriggerLoadLevel", levelName);
+        TextAsset text = Resources.Load("Levels/" + levelName) as TextAsset;
+        if (levelName.Length == 0) levelName = dataManager.levelname;
+        dataManager.InitializeLoadLevel(text.text, DataManager.LoadType.STRING);
     }
 
     public void TriggerPCG()

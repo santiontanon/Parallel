@@ -393,7 +393,6 @@ public class TutorialManager : MonoBehaviour {
 
     public void ReportTutorialEventSkip (bool allSubsequentForLevel)
     {
-
         GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventSkip", "AllSubsequent="+allSubsequentForLevel.ToString());
         
         if (allSubsequentForLevel)
