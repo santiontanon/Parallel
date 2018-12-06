@@ -40,18 +40,17 @@ RULE EXPAND_DEADLOCK 1.0 1.0 -1 none
     PATTERN A:two_thread_semaphore(),\
     B:track(is:B_,partOf:A),C:{track}(is:C_,partOf:A),B_:out(),C_:in()
     REPLACEMENT A:situation_deadlock_two_thread_semaphore(),\
-    B:{track}(partOf:A,to:LB,has:SEM1),SEM1:semaphore_green(),\
+    B:{track,solution}(partOf:A,to:LB,has:SEM1,is:LB_),SEM1:semaphore_green(),LB_:out(),\
     LB:track(partOf:A,to:X,has:BUTTON1),BUTTON1:button(link:COND),\
     X:fork(toStarting:IA,to:IB,has:COND),COND:conditional(),\
-    IA:{track}(has:IA_,to:JA),IA_:button(link:SEM1),\
-    IB:{track}(has:IB_,to:JB),IB_:button(link:SEM1),\
+    IA:{track,solution}(has:IA_,to:JA),IA_:button(link:SEM1),\
+    IB:{track,solution}(has:IB_,to:JB),IB_:button(link:SEM1),\
     JA:{track}(has:JA_,to:KA),JA_:button(link:KB_,partOf:K),\
     JB:{track}(has:JB_,to:KB),JB_:button(link:KA_,partOf:K),\
     KA:{track}(has:KA_,to:Y),KA_:semaphore_red(partOf:K),\
     KB:{track}(has:KB_,to:Y),KB_:semaphore_red(partOf:K),\
-    Y:merge(to:NPO),\
+    Y:merge(to:NPI),\
     K:challenge(),LA:situation_abst(),LAA:subproblem(),\
-    NPO:track(is:LB_,partOf:LA,partOf:LAA),LB_:out(),\
     NPI:track(is:LC_,partOf:LA,partOf:LAA,to:C),LC_:in(),\
     C:{track}(is:C_)
 RULE JESS_DEADLOCK1 0.7 0.1 -1 deadlock,synchronize,semaphores,exchange_points,synchronized_delivery,mutual_exclusion,deliver_packages,link_direction_switches
@@ -90,3 +89,19 @@ RULE SIMPLE_EXCHANGE 0.75 0.25 -1 exchange_points,deliver_packages
     REPLACEMENT A:situation_trivial(),AA:subproblem(),\
     B:{track,exchange}(partOf:A,partOf:AA,to:C,has:EX1),EX1:exchange(partOf:EX2),C:{track,delivery}(partOf:A,partOf:AA),\
     Z1:{track,thread}(to:Z2),Z2:{track,pickup}(to:Z3,deliverTo:C),Z3:{track,exchange}(to:Z1,has:EX2),EX2:exchange(partOf:EX1)
+RULE SYNCHRONIZER_THREAD 0.75 0.25 -1 synchronize,semaphores,deliver_packages,race_conditions,link_semaphores,critical_sections
+    PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
+    REPLACEMENT A:situation_trivial(),AA:subproblem(),\
+    B:track(to:B2),\
+    B2:{track,solution}(to:Y,has:SEM1),SEM1:semaphore_green(),\
+    Y:fork(has:COND,toStarting:PATH1,to:PATH2),COND:conditional(),\
+    PATH1:{track,solution}(to:PATH1B,has:BUTTON1),BUTTON1:button(link:SEM2),\
+    PATH1B:{track,pickup}(partOf:A,partOf:AA,to:B),\
+    PATH2:{track,solution}(to:X,has:BUTTON2),BUTTON2:button(link:SEM2),\
+    X:{track,diverter}(partOf:A,to:DE,to:PATH2A),DE:{dead_end}(is:Y_),Y_:trash(),\
+    PATH2A:{track,delivery}(partOf:A,partOf:AA,to:C),\
+    C:{track}(is:C_,partOf:A,partOf:AA),C_:in(),\
+    Z1:{track,thread}(to:Z2),\
+    Z2:{track,solution}(to:Z3,has:SEM2),SEM2:semaphore_red(),\
+    Z3:track(to:Z4,has:BUTTON3),BUTTON3:button(link:COND),\
+    Z4:{track,solution}(to:Z1,has:BUTTON4),BUTTON4:button(link:SEM1)

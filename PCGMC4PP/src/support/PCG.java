@@ -185,6 +185,7 @@ public class PCG {
                 for(String tag:tags_to_be_ensured) {
                     if (!generator.ruleWithTagWasTriggered(tag)) {
                         found = false;
+                        System.out.println("tag_to_be_ensured  not found!: " + tag);
                         break;
                     }
                 }

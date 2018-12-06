@@ -68,7 +68,7 @@ public class TestPCGNeedsSolution {
         int numAttempts = 0;
         for(int size=1;size<=1;size++){        
             for(int randomSeed=100;randomSeed<=20000;randomSeed+=100){
-//            int randomSeed = 6000; {
+//            int randomSeed = 100; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
