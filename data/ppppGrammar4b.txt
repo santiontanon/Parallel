@@ -105,3 +105,19 @@ RULE SYNCHRONIZER_THREAD 0.75 0.25 -1 synchronize,semaphores,deliver_packages,ra
     Z2:{track,solution}(to:Z3,has:SEM2),SEM2:semaphore_red(),\
     Z3:track(to:Z4,has:BUTTON3),BUTTON3:button(link:COND),\
     Z4:{track,solution}(to:Z1,has:BUTTON4),BUTTON4:button(link:SEM1)
+RULE DOUBLE_DELIVERY2 0.75 0.25 -1 synchronize,semaphores,deliver_packages,link_semaphores,critical_sections
+    PATTERN A:situation_abst(),AA:subproblem(),B:track(is:B_,partOf:A,partOf:AA),C:{track}(is:C_,partOf:A,partOf:AA),B_:out(),C_:in()
+    REPLACEMENT A:situation_trivial(),AA:subproblem(),\
+    B:{track,solution}(to:B2,has:SEM1),SEM1:semaphore_green(),\
+    B2:{track,solution}(to:X,has:BUTTON1),BUTTON1:button(link:COND),\
+    X:fork(toStarting:PATH1,to:PATH2,has:COND),COND:conditional(),\
+    PATH1:{track,pickup}(partOf:A,partOf:AA,to:Y,deliverTo:C1),\
+    PATH2:{track,pickup}(partOf:A,partOf:AA,to:PATH2B,deliverTo:C2),\
+    PATH2B:{track,solution}(to:Y,has:BUTTON2:),BUTTON2:button(link:COND2),\
+    Y:merge(to:X2),\
+    X2:fork(toStarting:PATH3,to:C1,has:COND2),COND2:conditional(),\
+    PATH3:{track,solution}(to:B2,has:BUTTON3),BUTTON3:button(link:COND2),\
+    C1:{track,delivery}(partOf:A,partOf:AA,to:C2),\
+    C2:{track,delivery}(partOf:A,partOf:AA,to:C3),\
+    C3:{track,solution}(to:C,has:BUTTON4),BUTTON4:button(link:SEM1),\
+    C:{track}(partOf:A,partOf:AA)

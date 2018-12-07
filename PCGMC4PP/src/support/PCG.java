@@ -49,6 +49,7 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
+import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
 import optimization.OrthographicEmbeddingOptimizer;
@@ -174,6 +175,7 @@ public class PCG {
                     lastGraph = graph;
                 }
             } while (graph != null);
+//            generator.printRuleApplicationCounts();
             if (debug) {
                 generator.printRuleApplicationCounts();
 //                System.out.println("Current graph (after):");
@@ -267,7 +269,7 @@ public class PCG {
             // Instanciate situations
             graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4b.txt", r, debug, rule_applications, null, tags_to_be_ensured, playerModel, skills);
     //        graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4b-santi.txt", r, debug, rule_applications, null);
-    //	LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
+            // LGraphVisualizer.newWindow("after ppppGrammar4b", 800, 600, graph);
 
             // Refine components
             graph = applyGrammar(ontology, graph, dataFolderPath + "/ppppGrammar4c.txt", r, debug, rule_applications, null, null, playerModel, skills);

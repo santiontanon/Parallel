@@ -421,14 +421,15 @@ public class GraphManager {
                 // Preventor prevents a component from being instantiated
                 continue;
             }
-            if (hasComponent.end.subsumes(sortThread)) {
+            if (hasComponent.end.subsumedBy(sortThread)) {
+//            if (hasComponent.end.subsumes(sortThread)) {
                 ComponentUnit cu = new ComponentUnit(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 for (Tile neighbor : tile.traveled_to) {
                     cu.initial_direction = tile.getDirectionTo(neighbor);
                 }
                 components.addComponent(cu);
                 n_components++;
-//                System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
+                //System.out.println("added thread at " + x + ", " + y + " (" + idx + ")");
             } else if (hasComponent.end.subsumedBy(sortPickup)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
                 int packageColor = color;
@@ -443,7 +444,8 @@ public class GraphManager {
                 }
                 components.addComponent(cp);
                 n_components++;
-            } else if (hasComponent.end.subsumes(sortDelivery)) {
+            } else if (hasComponent.end.subsumedBy(sortDelivery)) {
+//            } else if (hasComponent.end.subsumes(sortDelivery)) {
                 idx = 2000 + node_list.indexOf(hasComponent.end);
                 int packageColor = color;
                 if (packageColors.containsKey(hasComponent.end)) packageColor = packageColors.get(hasComponent.end);
@@ -457,7 +459,8 @@ public class GraphManager {
                 }
                 components.addComponent(cd);
                 n_components++;
-            } else if (hasComponent.end.subsumes(sortButton)) {
+//            } else if (hasComponent.end.subsumes(sortButton)) {
+            } else if (hasComponent.end.subsumedBy(sortButton)) {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentSignal cb = new ComponentSignal(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode cs = null;
@@ -482,7 +485,8 @@ public class GraphManager {
                 }
                 components.addComponent(cs);
                 n_components++;
-            } else if (hasComponent.end.subsumes(sortConditional)) {
+//            } else if (hasComponent.end.subsumes(sortConditional)) {
+            } else if (hasComponent.end.subsumedBy(sortConditional)) {
                 List<Integer> directions = new ArrayList<Integer>();
                 Tile t = node_to_tile.get(node);
                 int current = 0;
@@ -507,7 +511,8 @@ public class GraphManager {
                 cc.current = current;
                 components.addComponent(cc);
                 n_components++;
-            } else if (hasComponent.end.subsumes(sortDiverter)) {
+//            } else if (hasComponent.end.subsumes(sortDiverter)) {
+            } else if (hasComponent.end.subsumedBy(sortDiverter)) {
                 idx = 1000 + node_list.indexOf(hasComponent.end);
                 ComponentDiverter cc = new ComponentDiverter(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 Tile t = node_to_tile.get(node);
@@ -559,7 +564,8 @@ public class GraphManager {
                 components.addComponent(cc);
                 n_components++;
 
-            } else if (hasComponent.end.subsumes(sortExchange)) {
+//            } else if (hasComponent.end.subsumes(sortExchange)) {
+            } else if (hasComponent.end.subsumedBy(sortExchange)) {
                 idx = 4000 + node_list.indexOf(hasComponent.end);
                 ComponentExchange cu = new ComponentExchange(x, y, idx, color, Component.OWNER_SYSTEM, true);
                 LGraphNode other = hasComponent.end.getFirstChildNode(sortPartOf, sortExchange);
@@ -673,6 +679,7 @@ public class GraphManager {
             }
             if (hasComponent.end.subsumes(sortThread)) {
                 ComponentUnit cu = new ComponentUnit(x, y, idx, color, Component.OWNER_SYSTEM, true);
+                // System.out.println("added thread (vor visual eval) at " + x + ", " + y + " (" + idx + ")");
                 for (Tile neighbor : tile.traveled_to) {
                     cu.initial_direction = tile.getDirectionTo(neighbor);
                 }
