@@ -1,4 +1,4 @@
-package playermodeling;
+package pmutils;
 
 /**
  * Created by pavankantharaju on 3/1/18.
