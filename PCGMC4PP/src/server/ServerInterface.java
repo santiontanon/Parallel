@@ -428,7 +428,7 @@ public class ServerInterface {
     public static void main(String [] args) {
 
         Options cliOptions = new Options();
-        cliOptions.addOption("mode",true,"Mode of operation (read or write)");
+        cliOptions.addOption("mode",true,"Mode of operation (sync or save)");
         cliOptions.addOption("user",true,"Name of player");
         cliOptions.addOption("level",true,"Current level");
         cliOptions.addOption("path",true,"Path to currentparameters.txt");
@@ -483,15 +483,20 @@ public class ServerInterface {
         logger.info("Debugging: " + debug);
         logger.info("-------------------------------------------------");
 
-        if (mode.equals("")) {
-            System.out.println("Please enter arguments.");
-            System.exit(1);
-        }
+
         ServerInterface serverInterface = new ServerInterface(paramFilePath, hostname, port);
-        if ( mode.equals("read") ) {
-            serverInterface.synchronizePMData(user);
-        } else {
-            serverInterface.saveSkillVector(level, user);
+        switch (mode) {
+            case "sync":
+                serverInterface.synchronizePMData(user);
+                break;
+            case "save":
+                serverInterface.saveSkillVector(level, user);
+                break;
+            default:
+                System.err.println("Please specify mode of execution (sync or save). Exiting..");
+                System.exit(1);
+                break;
+
         }
         serverInterface.closeClient();
     }
