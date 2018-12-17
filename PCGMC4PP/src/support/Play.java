@@ -66,7 +66,7 @@ public class Play {
                     how_many = Integer.parseInt(args[2]);
                 }
                 ExecutionPlan ep = PlayLevel(gs, deterministic, how_many, number_of_loops_before_breaking, break_when_complete);
-                String out = GameStateExporter.export(gs, ep, null);
+                String out = GameStateExporter.export(gs, ep, null, null);
                 if (debug) {
                     System.out.println(out);
                 } else {

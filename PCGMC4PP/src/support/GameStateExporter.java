@@ -66,20 +66,24 @@ public class GameStateExporter {
 
     public static char color_base = ' ';
 
-    public static String export(GameStateSearch gss, PlayerData pd) throws Exception {
-        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, false);
+    public static String export(GameStateSearch gss, PlayerData pd, String desiredID) throws Exception {
+        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, desiredID, false);
     }
 
-    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd) {
-        return GameStateExporter.export(null, gs, ep, pd, false);
+    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID) {
+        return GameStateExporter.export(null, gs, ep, pd, desiredID, false);
     }
 
-    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, boolean verbose) {
+    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID, boolean verbose) {
         StringBuilder sb = new StringBuilder();
         BoardState board = gs.getBoardState();
         sb.append("METADATA\n");
         sb.append("level_id\t");
-        sb.append(board.level_id);
+        if (desiredID != null) {
+            sb.append(desiredID);
+        } else {
+            sb.append(board.level_id);
+        }
         sb.append('\n');
         sb.append("level_title\t");
         sb.append(board.level_title);
@@ -154,11 +158,11 @@ public class GameStateExporter {
     }
 
     public static String export(GameState gs) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), false);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, false);
     }
 
     public static String export(GameState gs, boolean verbose) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), verbose);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, verbose);
     }
 
     private static String exportBoardTtoTextHelper(BoardState board, boolean colors, boolean verbose) {
