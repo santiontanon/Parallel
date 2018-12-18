@@ -79,12 +79,13 @@ public class GameStateExporter {
         BoardState board = gs.getBoardState();
         sb.append("METADATA\n");
         sb.append("level_id\t");
-        if (desiredID != null) {
-            sb.append(desiredID);
-        } else {
-            sb.append(board.level_id);
-        }
+        sb.append(board.level_id);
         sb.append('\n');
+        if (desiredID != null) {
+            sb.append("pcg_id\t");
+            sb.append(desiredID);
+            sb.append('\n');
+        }
         sb.append("level_title\t");
         sb.append(board.level_title);
         sb.append('\n');
@@ -159,6 +160,10 @@ public class GameStateExporter {
 
     public static String export(GameState gs) {
         return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, false);
+    }
+
+    public static String export(GameState gs, String desiredLEvelID) {
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), desiredLEvelID, false);
     }
 
     public static String export(GameState gs, boolean verbose) {

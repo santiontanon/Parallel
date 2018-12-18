@@ -416,7 +416,7 @@ public class PCG {
     }
 
     public static void export(GameState gs, File out_file, String desiredLevelID) throws IOException {
-        String out = GameStateExporter.export(gs);
+        String out = GameStateExporter.export(gs, desiredLevelID);
         PrintWriter writer = new PrintWriter(out_file);
         writer.print(out);
         writer.close();
