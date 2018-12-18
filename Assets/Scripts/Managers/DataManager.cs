@@ -345,6 +345,9 @@ public class DataManager : MonoBehaviour {
                 case "level_id":
                     returnMetadata.level_id = int.Parse(sLine[1]);
                     break;
+                case "pcg_id":
+                    returnMetadata.pcg_id = sLine[1];
+                    break;
                 case "level_title":
                     returnMetadata.level_title = sLine[1];
                     if (returnMetadata.level_title == "PCG Level")

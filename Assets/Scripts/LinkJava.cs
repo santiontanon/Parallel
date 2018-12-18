@@ -215,7 +215,11 @@ public class LinkJava : MonoBehaviour
                 javaProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
                 javaProcess.StartInfo.Arguments += " \"" + Application.dataPath + "/../data" + "\"";
                 Start_GamePhaseBehavior start = GameManager.Instance.startScreenBehavior as Start_GamePhaseBehavior;
-                javaProcess.StartInfo.Arguments += " -pcgid " + start.currentPlayerID + "_X" + GameManager.Instance.GetDataManager().levRef.levels.pcg.Count + 1;
+                string pcgNum = "_X";
+                if (GameManager.Instance.GetDataManager().levRef.levels.pcg.Count < 10)
+                    pcgNum += 0;
+                pcgNum += GameManager.Instance.GetDataManager().levRef.levels.pcg.Count;
+                javaProcess.StartInfo.Arguments += " -pcgid " + start.currentPlayerID + pcgNum;
             }
             UnityEngine.Debug.Log(javaProcess.StartInfo.Arguments);
             javaProcess.EnableRaisingEvents = true;

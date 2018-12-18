@@ -166,15 +166,23 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         {
             debugOverlay.ToggleDebugUI();
         }
-        if(GameManager.Instance.playerModelingIntialized && GameManager.Instance.trackerIntialized)
+        if(GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
         {
-            gameStart.interactable = true;
-            gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+            if (GameManager.Instance.playerModelingIntialized && GameManager.Instance.trackerIntialized)
+            {
+                gameStart.interactable = true;
+                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
+            }
+            else
+            {
+                gameStart.interactable = false;
+                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, .25f);
+            }
         }
         else
         {
-            gameStart.interactable = false;
-            gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, .25f);
+            gameStart.interactable = true;
+            gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
         }
 	}
 
