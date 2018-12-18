@@ -608,6 +608,7 @@ board_height	15
 
         string metadataJson = string.Format(metadataFormat,
             currentLevelData.metadata.level_id,
+            currentLevelData.metadata.pcg_id,
             currentLevelData.metadata.level_title,
             currentLevelData.metadata.goal_string,
             JsonUtility.ToJson(currentLevelData.metadata.goal_struct),

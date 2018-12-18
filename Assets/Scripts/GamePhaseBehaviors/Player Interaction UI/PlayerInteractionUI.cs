@@ -147,10 +147,18 @@ public class PlayerInteraction_UI
 
 	public void SetText(Level inputLevel)
 	{
-		levelNameText.text = inputLevel.metadata.level_title;
+        if (inputLevel.metadata.pcg_id != "")
+        {
+            levelNameText.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Number.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Title.text = inputLevel.metadata.pcg_id.ToUpper();
+        }
+        else{
+            levelNameText.text = inputLevel.metadata.level_title;
+            goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
+            goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
+        }
 		goalDescriptionText.text = inputLevel.metadata.goal_string;
-        goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
-        goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
         goalDescriptionOverlay.SetFeedbackScore(GameManager.Instance.GetScoreManager().GetCalculatedScore(inputLevel.metadata.level_id));
     }
 
