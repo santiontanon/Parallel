@@ -132,8 +132,15 @@ public class DataManager : MonoBehaviour {
                 if (levels[i] != "")
                 {
                     LevelReferenceObject lro = new LevelReferenceObject();
-                    lro.file = "levelX" + i;
-                    lro.title = "X" + i;
+                    lro.file = "levelX";
+                    lro.title = "X";
+                    if (i < 10)
+                    {
+                        lro.file += 0;
+                        lro.title += 0;
+                    }
+                    lro.file += i;
+                    lro.title += i;
                     lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
                     lro.levelId = i;
                     lro.completionRank = 0;
