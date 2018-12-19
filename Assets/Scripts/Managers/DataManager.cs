@@ -593,18 +593,19 @@ board_height	15
         string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
         metadataFormat =
             "level_id\t{0}" +
-            "\nlevel_title\t{1}" +
-            "\ngoal_string\t{2}" +
-            "\ngoal_struct\t{3}" +
-            "\nplayer_palette\t{4}" +
-            "\ntime_pickup_min\t{5}" +
-            "\ntime_delivery_min\t{6}" +
-            "\ntime_exchange_min\t{7}" +
-            "\ntime_pickup_max\t{8}" +
-            "\ntime_delivery_max\t{9}" +
-            "\ntime_exchange_max\t{10}" +
-            "\nboard_width\t{11}" +
-            "\nboard_height\t{12}";
+            "\npcg_id\t{1}" +
+            "\nlevel_title\t{2}" +
+            "\ngoal_string\t{3}" +
+            "\ngoal_struct\t{4}" +
+            "\nplayer_palette\t{5}" +
+            "\ntime_pickup_min\t{6}" +
+            "\ntime_delivery_min\t{7}" +
+            "\ntime_exchange_min\t{8}" +
+            "\ntime_pickup_max\t{9}" +
+            "\ntime_delivery_max\t{10}" +
+            "\ntime_exchange_max\t{11}" +
+            "\nboard_width\t{12}" +
+            "\nboard_height\t{13}";
 
         string metadataJson = string.Format(metadataFormat,
             currentLevelData.metadata.level_id,

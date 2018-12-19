@@ -25,7 +25,7 @@ public class Metadata {
 	public Metadata()
 	{
 		level_id = 0;
-        pcg_id = "";
+        pcg_id = "N/A";
 		level_title = "level title";
 		goal_string = "goal string";
 		goal_struct = new GoalCondition();

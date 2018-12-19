@@ -75,7 +75,7 @@ public class PlayerInteraction_UI
 		goalOverlay.ClosePanel(true);
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
-        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != null && GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != "")
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != null && GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != "N/A")
             levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Substring(GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Length - 3);
         else
             levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
@@ -147,7 +147,7 @@ public class PlayerInteraction_UI
 
 	public void SetText(Level inputLevel)
 	{
-        if (inputLevel.metadata.pcg_id != "")
+        if (inputLevel.metadata.pcg_id != "N/A")
         {
             levelNameText.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
             goalDescription_Number.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
