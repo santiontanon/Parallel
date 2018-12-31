@@ -607,7 +607,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         if (interactionPhase != InteractionPhases.ingame_connecting || interactionPhase != InteractionPhases.ingame_dragging || interactionPhase != InteractionPhases.ingame_placing)
         {
-            if (mouseInput == MouseInput.LeftMouse)
+            /*if (mouseInput == MouseInput.LeftMouse)
             {
                 GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
                 PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
@@ -620,12 +620,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         if (dragging == false)
                         {
-                            UpdatePan();
+                            //UpdatePan();
                         }
                     }
                 }
             }
-            else if (mouseInput == MouseInput.MiddleMouse)
+            else */if (mouseInput == MouseInput.MiddleMouse)
             {
                 ResetZoom();
             }
@@ -665,7 +665,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         if(dragging == false)
                         {
-                            //UpdatePan();
+                            UpdatePan();
                         }
                     }
                     if (hoverObject)
@@ -1159,37 +1159,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
             }
         }
-    }
-
-    IEnumerator ZoomRoutine(float zoom)
-    {
-        if (zoomLevel < 0.01) //round small enough values off to 0
-            zoomLevel = 0;
-        if ((zoomLevel != 0f || zoom > 0) && (zoomLevel != 1f || zoom < 0))
-        {
-            float newZoom = zoomLevel + zoom;
-            newZoom = Mathf.Clamp(newZoom, 0f, 1f);
-            Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
-            float targetOrtho = ((maxOrtho - minOrtho) * newZoom) + minOrtho;
-
-            Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
-            newTargetPosition = new Vector3(Mathf.Clamp(newTargetPosition.x, 0 + (xMax / 2 * zoomLevel), xMax - (xMax / 2 * zoomLevel)),
-                                            Mathf.Clamp(newTargetPosition.y, 0 + (yMax / 2 * zoomLevel), yMax - (yMax / 2 * zoomLevel)), 
-                                            orthoCam.transform.position.z);
-
-            float timeToZoom = 0.5f;
-            while (timeToZoom > 0f)
-            {
-                timeToZoom -= Time.deltaTime;
-                float mult = (timeToZoom / 0.5f);
-                zoomLevel = newZoom + (zoomLevel - newZoom) * mult;
-                orthoCam.orthographicSize = targetOrtho + (orthoCam.orthographicSize - targetOrtho) * mult;
-                orthoCam.transform.position = newTargetPosition + (orthoCam.transform.position - newTargetPosition) * mult;
-                playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
-                yield return null;
-            }
-        }
-        yield return null;
     }
 
     void UpdatePan()
