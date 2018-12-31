@@ -6,6 +6,10 @@
 package tests;
 
 import game.GameState;
+import game.GameStateSearch;
+import java.io.File;
+import java.io.PrintWriter;
+import support.GameStateExporter;
 import support.GameStateParser;
 
 /**
@@ -15,10 +19,29 @@ import support.GameStateParser;
 public class TestME {
     public static void main(String args[]) throws Exception
     {
-        String filename = "/Users/santi/Library/Application Support/GAIMS/Parallel/MEInput_ME_20181030231609.txt";
-//        String filename = "pcg-example1.txt";
+        String filename = "data/pcg_out_8283680835011563931.txt";
+        String filename_me = "data/pcg_out_8283680835011563931_ME.txt";
         GameState gs = GameStateParser.parseFile(filename, false);
-        boolean res = TestPCGNeedsSolution.notSolvable(gs);
-        System.out.println(res);
+
+                GameStateSearch gss = new GameStateSearch(gs);
+                gss.setSearchBudget(60000);
+                gss.setSearchOptions(false, true, true, true);
+                gss.search();
+                GameState result = gss.getWorstResult();
+                if(result==null){
+                    System.out.println("Search space exhausted without solutions");
+                    System.exit(4);                    
+                } else {
+                    String out = GameStateExporter.export(gss, null, null);
+                    File out_file = new File(filename_me);
+                    PrintWriter writer = new PrintWriter(out_file);
+                    writer.print(out);
+                    writer.close();
+                    System.out.println(out_file.getAbsolutePath());
+                    System.exit(0);
+                }
+        
+        
+        
     }
 }

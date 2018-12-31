@@ -677,6 +677,7 @@ public class GameStateExporter {
         export_map.put("final_condition", gs.updateAndGetResultType());
         export_map.put("goal_state", gs.updateAndGetAchievedGoals());
         export_map.put("goal_descriptions", reasons);
+        export_map.put("race_condition_detected", "" + gs.race_condition_detected);
         
         return export_map;
     }

@@ -91,6 +91,7 @@ public class GameState {
     private GameState parent = null;
     private boolean[] achieved_goals = null;
 
+    public boolean race_condition_detected = false;
     public int state_type = STATE_UNKNOWN;
     public int result_type = RESULT_INCOMPLETE;
     // Note, result_type holds ancestry information so it can find a previously partial solution
@@ -249,9 +250,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e12 An arrow didn't deliver the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e13 An arrow delivered more packages than it was supposed.";
+                return "e13 An arrow delivered more packages than it was supposed to.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e14 An arrow did not deliver all the packages it was supposed.";
+                return "e14 An arrow did not deliver all the packages it was supposed to.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e15 An arrow delivered the wrong number of packages.";
             }
@@ -259,9 +260,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e22 A delivery point didn't get the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e23 A delivery point got more packages than it was supposed.";
+                return "e23 A delivery point got more packages than it was supposed to.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e24 A delivery point did not get all the packages it was supposed.";
+                return "e24 A delivery point did not get all the packages it was supposed to.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e25 A delivery point got the wrong number of packages.";
             }
@@ -557,13 +558,11 @@ public class GameState {
                 // TODO move this to the export section to save on memory
                 this.intermediate_unit_positions.add(new IntermediateUnitPosition(unit.id, unit.tile_current.id, time));
             }
-            // TODO detect cycles here, find a better way to handle this
+            // detect cycles here:
             Integer unit_hash = this.stateUnitDescriptionHash(unit);
             if(unit_hashes.contains(unit_hash)){
                 allowed_to_continue = false;
             }
-            // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
-            // TODO have a check that looks for ALL the threads in a LOOPY state, then break
             if (endlessloop[unit.x][unit.y]) {
                 this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
                 allowed_to_continue = false;
@@ -838,6 +837,7 @@ public class GameState {
         this.parent = parent;
         this.steps = steps;
         this.time_elapsed_total = time;
+        if (parent != null) this.race_condition_detected = parent.race_condition_detected;
         this.state_type = state_type;
         this.result_type = result_type;
         this.goals_delivery = goals_delivery;
