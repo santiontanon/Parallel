@@ -64,18 +64,38 @@ To run the Server Interface, execute the following command:
 java -classpath PCGPM4PP.jar -Dlog4j.configurationFile=pmfiles/log4j2.xml server.ServerInterface -mode sync -user username -level levelname -path testing/ -hostname hostname -port 8787
 ```
 
-### Model Engine
+### ME
 
-TODO: Add a brief description of the ME.
+The ME (the Model Checker, called the "ME" as a reference to the "Malevolence Engine" in the Manufactoria game) is in charge of testing the solutions provided by the user. It can run in two modes: "test" and "submit". In "test", it will just generate one execution of the solution, and in "submit", it will search throught the space of all possible schedules trying to find one that fails. To run "test", use the support.Play file, and to run "submit" use the support.ME file.
 
-#### Command Line Arguments
+#### Command Line Arguments for support.Play
 
-#### Running the system
+
+1. **REQURIED** `level` - the path to the level file, including the player solution, to be simulated. The output of the execution will be saved in the same folder as this level file.
+2. **REQURIED** `selection_strategy` - if a negative value is specified, this is taken as a random seed to be used for random selection of speeds of the arrows. If a positive value is specified (e.g., 0), the execution will not use random number generation, but always select the "selection_strategy"-th possible arrow speed at each time interval (this is only useful for debugging)
+3. **OPTIONAL** `max_steps` - maximum number of steps to simulate (by default it's 1000).
+
+#### Running the support.Play system
 
 To run the Model Engine, execute the following command:
 
 ```
-java -classpath PCGPM4PP.jar -Dlog4j.configurationFile=pmfiles/log4j2.xml
+java -classpath PCGPM4PP.jar -Dlog4j.configurationFile=pmfiles/log4j2.xml support.Play -1000
+```
+
+#### Command Line Arguments for support.ME
+
+
+1. **REQURIED** `level` - the path to the level file, including the player solution, to be simulated. The output of the execution will be saved in the same folder as this level file.
+2. **REQURIED** `budget` - the amount of search to be done byt he ME when searching for a schedule that fails before giving up. The recommended value is 60000 
+3. **OPTIONAL** `time` - Timeout in milliseconds (if the search takes longer than this, it will be abandoned).
+
+#### Running the support.ME system
+
+To run the Model Engine, execute the following command:
+
+```
+java -classpath PCGPM4PP.jar -Dlog4j.configurationFile=pmfiles/log4j2.xml support.ME my-level.txt 60000
 ```
 
 ## Procedural Content Generator (PCG) System
