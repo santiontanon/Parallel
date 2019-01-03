@@ -326,7 +326,8 @@ public class MEExecutionAnalyzer {
                             startExecutionParsing = false;
                             logger.debug("-----------------------------------------------------------");
                         } else {
-                            if (meExecutionFileLine.split("\t")[0].equals("D")) {
+                            String [] splitLine = meExecutionFileLine.split("\t");
+                            if (splitLine[0].equals("D")) {
                                 /* Execution denotes a package was delivered */
                                 HashMap<String, Object> deliveryExecution = gson.fromJson(meExecutionFileLine.split("\t")[5], HashMap.class);
                                 /* Structure example:
@@ -352,6 +353,15 @@ public class MEExecutionAnalyzer {
                                     if (componentIDToNumMissed.containsKey(id)) {
                                         componentIDToNumMissed.replace(id, componentIDToNumMissed.get(id) + missed.size());
                                         componentIDToNumDelivered.replace(id, componentIDToNumDelivered.get(id) + delivered.size());
+                                    }
+                                }
+                            } else {
+                                if ( splitLine[0].equals("E") ) {
+                                    HashMap<String, Object> parsedInfo = Utils.parseComponentInformation(splitLine[5]);
+                                    if ( parsedInfo.containsKey("race_condition_detected") ) {
+                                        if ( parsedInfo.get("race_condition_detected").equals("true") ) {
+                                            skillAnalyzer.updateRuleEvidence("Avoid race conditions");
+                                        }
                                     }
                                 }
                             }

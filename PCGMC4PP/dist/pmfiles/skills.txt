@@ -19,3 +19,4 @@ Testing before submitting
 Understand specific delivery points
 Understand exchange points
 Deliver packages with multiple synchronized arrows
+Avoid race conditions
