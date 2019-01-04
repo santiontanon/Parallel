@@ -107,7 +107,8 @@ The PCG system is designed to generate new levels for Parallel. It can generate 
 1. **REQURIED** `player_model` (the path to the player model to be used as input, alternatively this can just be the string `debug`, for running the PCG component in debug mode)
 2. **REQURIED** `random_seed` - specify a negative random seed to run the PCG component in deterministic mode (generating the same level eery time for the same random seed, given the same player_model), or a positive one for running in non-deterministic mode (in this case, the random seed still affects generation, but it is not guaranteed that the same level will be generated every time)
 3. **REQUIRED** `size` - Level size: 0 for the smallest levels. 1, 2 or 3 for larger levels. Values larger than 2 or 3 are not recommended, as levels will be too large for the ME.
-4. **OPTIONAL** `path` - optional parameter specifying the path where to write the generate level. If it is not specified, it will be generated in the same path as the player_model file was found
+4. **OPTIONAL** `datapath` - optional parameter specifying the path where to load the data files and write the generate level. If it is not specified, it will be generated in the same path as the player_model file was found
+5. **OPTIONAL** `outputpath` - optional parameter specifying the path where to write the generate level if different from the datapath. If it is not specified, it will be generated in the 'datapath', and if no datapath is specified, then in the same path as the player_model file was found
 
 #### Running the system
 
