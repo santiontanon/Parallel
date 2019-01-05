@@ -1,0 +1,144 @@
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - ------------------- Arguments -------------------
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Username of Player: dyob
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Current level: 
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Mode: sync
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Path to parameter file: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\currentParameters.txt
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Hostname: 129.25.141.236
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Port: 8787
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Debugging: false
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - -------------------------------------------------
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Synchronizing local and remote player modeling data!
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Retrieving remote player modeling data
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Sending HTTP GET request for user: dyob
+2019-01-05 10:39:26 [main] DEBUG server.ServerInterface - HTTP GET to server 129.25.141.236 at port 8787
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - New user! Creating empty local files!
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Saving Player Modeling data locally at: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\localPMData.json
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Writing skill vector: 
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Writing skill vector to: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\currentParameters.txt
+2019-01-05 10:39:26 [main] INFO  server.ServerInterface - Synchronization complete!!
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - ------------------- Arguments -------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Username of Player: dyob
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Model Engine Execution Filepath: C:\Users\Boyd\AppData\LocalLow\GAIMS\me_out_5724994924142406052.txt
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Telemetry File Path: C:/Users/Boyd/AppData/LocalLow/GAIMS/ParallelSession-5124-01-05-19-10-39-28model.log
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Path to parameter file: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\currentParameters.txt
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Path to player modeling directory: C:/Users/Boyd/Git/ParallelNew/Assets\..\PCGMC4PP\dist
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Current level: level-1
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Hostname: 129.25.141.236
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Port: 8787
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - Debugging: false
+2019-01-05 10:39:30 [main] INFO  playermodeling.Main - -------------------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Setting player modeling directory path to: C:/Users/Boyd/Git/ParallelNew/Assets\..\PCGMC4PP\dist\pmfiles/
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Setting critical section path to: C:/Users/Boyd/Git/ParallelNew/Assets\..\PCGMC4PP\dist\pmfiles/critical_sections\
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Reading training model from: C:/Users/Boyd/Git/ParallelNew/Assets\..\PCGMC4PP\dist\pmfiles/classifier-model.model
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Training model successfully read from: C:/Users/Boyd/Git/ParallelNew/Assets\..\PCGMC4PP\dist\pmfiles/classifier-model.model
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - --------------------- Executing Player Modeling! ---------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.TelemetryAnalyzer - Reading telemetry file: C:/Users/Boyd/AppData/LocalLow/GAIMS/ParallelSession-5124-01-05-19-10-39-28model.log
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - ---------------------------------- Analyzing Model Execution Output! ----------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading critical section data: level0-1.txt
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Analyzing goal struct in ME Execution file
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading colors map!
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - ----- Printing out color board! -----
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -                                                          
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -   - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -   - - - - -                                              
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -   - - - - -   - - - - - - - - - - - - - - - - - - - - -  
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -                                                          
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -   - - - - -   - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -               - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -       - - - - - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -   -   - - - - - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -       - - - - - - - - - - - - - - - - - - - - - - - - - -
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - -----------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading direction map!
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - ----- Printing out direction board! -----
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V < < < < < < < < < < < < < < < < < < < < < < < < < < < <
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V                                                       A
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V           > > > > > > > > > > > > > > > > > > > > > > X
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V           A                                           V
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - X > > > > > A < < < < < < < < < < < < < < < < < < < < < <
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V           A                                            
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - > > > > > > A                                            
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer -                                                          
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V < <                                                    
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - V   A                                                    
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - > > A                                                    
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - -----------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading skill list!
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Synchronize multiple arrows
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Understand the use of semaphores
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Understand exchange points
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Deliver packages with multiple synchronized arrows
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Alternating access with semaphores and buttons (ensure mutual exclusion)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Deliver packages
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Be able to link buttons to direction switches
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Use diverters
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Skill: Be able to link semaphores to buttons
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - -----------------------------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading component information!
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - exchange (ID=4014): (2,8)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - pickup (ID=2047): (2,10)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - thread (ID=25): (0,10)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - thread (ID=24): (16,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - thread (ID=23): (14,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - semaphore (ID=1035): (4,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Track of semaphore 0, (x,y): (4,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - exchange (ID=4040): (6,6)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - exchange (ID=4039): (8,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - semaphore (ID=1037): (10,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Track of semaphore 0, (x,y): (10,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - signal (ID=1033): (12,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - signal (ID=1045): (2,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - conditional (ID=1029): (0,4)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - delivery (ID=2054): (6,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - diverter (ID=1052): (28,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - pickup (ID=2055): (24,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - delivery (ID=2053): (22,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - exchange (ID=4013): (20,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - thread (ID=1): (12,2)
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - -----------------------------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Reading execution data!
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Understand exchange points
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Delivery execution: {missed_items=[], delivered_items=[2047.0], delivered_to=2053.0}
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Understand exchange points
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Delivery execution: {missed_items=[], delivered_items=[2047.0], delivered_to=2053.0}
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Understand exchange points
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Delivery execution: {missed_items=[], delivered_items=[2047.0], delivered_to=2053.0}
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Understand exchange points
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Delivery execution: {missed_items=[], delivered_items=[2047.0], delivered_to=2053.0}
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - -----------------------------------------------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skill "Understand that arrows move at unpredictable rates"
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skills "Be able to link semaphores to buttons"
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Be able to link semaphores to buttons
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Be able to link semaphores to buttons
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skills "Understand that arrows move at unpredictable rates"
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skill "Block critical sections"
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skill "Synchronize multiple arrows"
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Button 1 color: 0, Semaphore 2 color: 0
+2019-01-05 10:39:30 [main] DEBUG playermodeling.MEExecutionAnalyzer - Button 1 color: 0, Semaphore 2 color: 0
+2019-01-05 10:39:30 [main] INFO  playermodeling.MEExecutionAnalyzer - Checking whether player understood the skills "Deliver packages" and "Understand specific delivery points"
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Adding evidence for skill: Understand specific delivery points
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Start time: 3.25904, end time: 4.870972
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Reading in skills for level...
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Reading in skills specific to level
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Updating skill vector....
+2019-01-05 10:39:30 [main] INFO  playermodeling.TelemetryAnalyzer - Getting telemetry data in interval (3.259040,8.259040)
+2019-01-05 10:39:30 [main] INFO  playermodeling.FeatureExtractor - Constructing feature vector!
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - -------------------Create and classifying instance-------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Classifying instance!
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Instance classified instance!
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Updating skill vector with classification: C
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - -------------------Create and classifying instance-------------------
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Classifying instance!
+2019-01-05 10:39:30 [main] INFO  playermodeling.AbstractPlayerModeler - Instance classified instance!
+2019-01-05 10:39:30 [main] INFO  playermodeling.SkillAnalyzer - Updating skill vector with classification: C
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - Completed update of skill vector.
+2019-01-05 10:39:30 [main] INFO  playermodeling.PlayerModelingEngine - --------------------- Player Modeling Complete! ---------------------
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Reading Player Modeling data locally from: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\localPMData.json
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Local JSON data for user dyob: 
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Reading skill vector from: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\currentParameters.txt
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Read skill vector: Hover over objects to see what they do,0.500000,0:Use help bar,0.500000,0:Drag objects,0.500000,0:Place objects on the track,0.500000,0:Hover over side arrows to see different colored tracks,0.500000,0:Remove unnecessary elements,0.500000,0:Deliver packages,1.000000,2:Be able to link buttons to direction switches,1.000000,2:Understand the use of semaphores,1.000000,2:Understand that arrows move at unpredictable rates,0.500000,0:Be able to link semaphores to buttons,1.000000,4:Understand that events happen in different orders,0.500000,0:Use diverters,1.000000,2:Prevent starvation,0.500000,0:Block critical sections,0.500000,0:Synchronize multiple arrows,1.000000,2:Alternating access with semaphores and buttons (ensure mutual exclusion),1.000000,2:Testing before submitting,0.500000,0:Understand specific delivery points,0.500000,0:Understand exchange points,1.000000,6:Deliver packages with multiple synchronized arrows,1.000000,2:Avoid race conditions,0.500000,0
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Updating player modeling with new data: {"user":"dyob","current":"Hover over objects to see what they do,0.500000,0:Use help bar,0.500000,0:Drag objects,0.500000,0:Place objects on the track,0.500000,0:Hover over side arrows to see different colored tracks,0.500000,0:Remove unnecessary elements,0.500000,0:Deliver packages,1.000000,2:Be able to link buttons to direction switches,1.000000,2:Understand the use of semaphores,1.000000,2:Understand that arrows move at unpredictable rates,0.500000,0:Be able to link semaphores to buttons,1.000000,4:Understand that events happen in different orders,0.500000,0:Use diverters,1.000000,2:Prevent starvation,0.500000,0:Block critical sections,0.500000,0:Synchronize multiple arrows,1.000000,2:Alternating access with semaphores and buttons (ensure mutual exclusion),1.000000,2:Testing before submitting,0.500000,0:Understand specific delivery points,0.500000,0:Understand exchange points,1.000000,6:Deliver packages with multiple synchronized arrows,1.000000,2:Avoid race conditions,0.500000,0","last-updated":"2019-01-05T10:39:31.177","level-1":[{"start":"01-05-19-10-39-28","end":"01-05-19-10-39-30","meout":"C:\\Users\\Boyd\\AppData\\LocalLow\\GAIMS\\me_out_5724994924142406052.txt","sv":"Hover over objects to see what they do,0.500000,0:Use help bar,0.500000,0:Drag objects,0.500000,0:Place objects on the track,0.500000,0:Hover over side arrows to see different colored tracks,0.500000,0:Remove unnecessary elements,0.500000,0:Deliver packages,1.000000,2:Be able to link buttons to direction switches,1.000000,2:Understand the use of semaphores,1.000000,2:Understand that arrows move at unpredictable rates,0.500000,0:Be able to link semaphores to buttons,1.000000,4:Understand that events happen in different orders,0.500000,0:Use diverters,1.000000,2:Prevent starvation,0.500000,0:Block critical sections,0.500000,0:Synchronize multiple arrows,1.000000,2:Alternating access with semaphores and buttons (ensure mutual exclusion),1.000000,2:Testing before submitting,0.500000,0:Understand specific delivery points,0.500000,0:Understand exchange points,1.000000,6:Deliver packages with multiple synchronized arrows,1.000000,2:Avoid race conditions,0.500000,0"}]}
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Saving Player Modeling data locally at: C:/Users/Boyd/AppData/LocalLow/GAIMS/Parallel\localPMData.json
+2019-01-05 10:39:31 [main] INFO  server.ServerInterface - Sending HTTP POST request for user: dyob
+2019-01-05 10:39:31 [main] DEBUG server.ServerInterface - HTTP POST to server 129.25.141.236 at port 8787
