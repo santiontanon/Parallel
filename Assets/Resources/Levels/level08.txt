@@ -66,3 +66,4 @@ Be able to link buttons to direction switches
 Understand specific delivery points
 Alternating access with semaphores and buttons (ensure mutual exclusion)
 Testing before submitting
+Avoid race conditions
