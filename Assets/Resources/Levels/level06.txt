@@ -69,3 +69,4 @@ Block critical sections
 Alternating access with semaphores and buttons (ensure mutual exclusion)
 Testing before submitting
 Understand specific delivery points
+Avoid race conditions
