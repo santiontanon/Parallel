@@ -83,8 +83,7 @@ public class PlayerInteraction_UI
         {
             levelText.text = 0 + levelText.text;
         }
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Study_8)
-            levelTimer.gameObject.SetActive(false);
+        levelTimer.gameObject.SetActive(false);
 		zoomMeter.OpenMeter();
 	}
 
