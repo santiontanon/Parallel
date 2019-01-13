@@ -28,10 +28,10 @@ public class DataManager : MonoBehaviour {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
             TextAsset lr_text = null;
-            lr_text = Resources.Load("DemoSelection") as TextAsset;
+            lr_text = Resources.Load("TestLoadSelection") as TextAsset;
             text = lr_text.text;
         }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study_9)
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
         {
             if(GameManager.Instance.tracker.level_data != "")
             {
@@ -40,15 +40,12 @@ public class DataManager : MonoBehaviour {
             else
             {
                 TextAsset lr_text = null;
-                lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                else
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                 text = lr_text.text;
             }
-        }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study_8)
-        {
-            TextAsset lr_text = null;
-            lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
-            text = lr_text.text;
         }
         else
         {
@@ -57,7 +54,6 @@ public class DataManager : MonoBehaviour {
             text = lr_text.text;
         }
 
-        // Change Loading
         GetLevels(text);
 	}
 
@@ -105,15 +101,15 @@ public class DataManager : MonoBehaviour {
             switch (GameManager.Instance.currentGameMode)
             {
                 case GameManager.GameMode.Class:
-                    lr_text = Resources.Load("DefaultLoadSelection") as TextAsset;
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
                     break;
                 case GameManager.GameMode.Demo:
-                case GameManager.GameMode.Test:
                     lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
                     break;
-
-                case GameManager.GameMode.Study_8:
-                case GameManager.GameMode.Study_9:
+                case GameManager.GameMode.Test:
+                    lr_text = Resources.Load("TestLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Study:
                     lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                     break;
             }
