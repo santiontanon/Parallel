@@ -604,9 +604,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             mouseInput = MouseInput.None;
         }
 
-        if (interactionPhase != InteractionPhases.ingame_connecting || interactionPhase != InteractionPhases.ingame_dragging || interactionPhase != InteractionPhases.ingame_placing)
+        if (interactionPhase != InteractionPhases.ingame_connecting && interactionPhase != InteractionPhases.ingame_dragging && interactionPhase != InteractionPhases.ingame_placing)
         {
-            /*if (mouseInput == MouseInput.LeftMouse)
+            if (mouseInput == MouseInput.LeftMouse)
             {
                 GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
                 PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
@@ -619,12 +619,12 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                     {
                         if (dragging == false)
                         {
-                            //UpdatePan();
+                            UpdatePan();
                         }
                     }
                 }
             }
-            else */if (mouseInput == MouseInput.MiddleMouse)
+            else if (mouseInput == MouseInput.MiddleMouse)
             {
                 ResetZoom();
             }
