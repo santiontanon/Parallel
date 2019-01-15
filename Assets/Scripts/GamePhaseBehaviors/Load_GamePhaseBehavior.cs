@@ -177,7 +177,6 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         g.transform.SetParent(container);
         g.transform.localScale = Vector3.one;
         Text gText = g.GetComponentInChildren<Text>();
-        Debug.Log(levelName);
         gText.text = levelName.TrimStart(trimArray);
         if (!pcg)
         {

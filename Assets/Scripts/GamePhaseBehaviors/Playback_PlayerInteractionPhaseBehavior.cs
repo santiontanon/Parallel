@@ -135,7 +135,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
                         Vector2 nextPos = prevPos;
                         bool end = false;
-                        for (int k = i + 1; k < maxStep; k++)
+                        for (int k = i + 1; k < maxStep+1; k++)
                         {
                             if (stepDictionary.ContainsKey(k))
                             {
