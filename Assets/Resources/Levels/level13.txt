@@ -1,77 +1,113 @@
 METADATA
-level_id	1
-pcg_id	LabMacTest_X08
-level_title	PCG Level
-goal_string	Deliver all packages indicated in each delivery point.
-goal_struct	{"required":[{"id":2029,"type":"delivery","property":"delivered","value":2,"condition":"gt","thread_id":0},{"id":2034,"type":"delivery","property":"delivered","value":2,"condition":"gt","thread_id":0},{"id":2035,"type":"delivery","property":"delivered","value":2,"condition":"gt","thread_id":0}],"desired":[]}
-player_palette	{"colors":{"count":1}}
+level_id	13
+level_title	Intro to Parallel
+goal_string	Each Delivery Point Receives 2 Packages
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3003,"type":"delivery","value":1}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":3}}
 time_pickup_min	0
-time_delivery_min	3
-time_exchange_min	1
+time_delivery_min	1
+time_exchange_min	0
 time_pickup_max	0
 time_delivery_max	3
-time_exchange_max	1
-board_width	21
-board_height	9
-time_efficiency	0.0
+time_exchange_max	0
+board_width	15
+board_height	17
+time_efficiency	159.33333
 
 LAYOUT
-FEEEEEEEEEEEEEEEEEEEC
-J-------------------J
-J-------FEGEEEEEEEEEI
-J-------J-J----------
-LEEEEEEEMEI----------
----------------------
-FEC------------------
-J-J------------------
-LEI------------------
+-----FEEEEGEEEC
+-----J----J---J
+-----J----J---J
+--FEEMEEEEI---J
+--J-----------J
+--J-----------J
+--LEEEEEEEEEEEI
+---------------
+FEEC-FEEC------
+J--J-J--J------
+J--J-J--J------
+J--J-LEEOEEEEEC
+J--J----J-----J
+LEEI----J-----J
+--------NEEC--J
+--------J--J--J
+--------LEEMEEI
 
 COLORS
-                     
- ------------------- 
- -------             
- ------- - ----------
-           ----------
----------------------
-   ------------------
- - ------------------
-   ------------------
+-----$$$$$$$$$$
+-----$----$---$
+-----$----$---$
+--$$$$$$$$$---$
+--$-----------$
+--$-----------$
+--$$$$$$$$$$$$$
+---------------
+!!!!-""""------
+!--!-"--"------
+!--!-"--"------
+!--!-""""""""""
+!--!----"-----"
+!!!!----"-----"
+--------""""--"
+--------"--"--"
+--------"""""""
 
 DIRECTIONS
-V<<<<<<<<<<<<<<<<<<<<
-V                   A
-V       >>>>>>>>>>>>A
-V       A A          
->>>>>>>>X>A          
-                     
-V<<                  
-V A                  
->>A                  
+     V<<<<<<<<<
+     V    A   A
+     V    A   A
+  V<<X>>>>A   A
+  V           A
+  V           A
+  >>>>>>>>>>>>A
+               
+V<<< >>>V      
+V  A A  V      
+V  A A  V      
+V  A A<<X>>>>>V
+V  A    A     V
+>>>A    A     V
+        A<<<  V
+        A  A  V
+        A<<X<<<
 
-SKILLS
-Understand exchange points
-Deliver packages
-Synchronize multiple arrows
-Understand the use of semaphores
-Alternating access with semaphores and buttons (ensure mutual exclusion)
-Be able to link buttons to direction switches
-Be able to link semaphores to buttons
-Block critical sections
+CRITICALSECTIONS
+     ----------
+     -    -   -
+     -    -   -
+  ---------   -
+  -           -
+  -           -
+  -------------
+               
+---- ----      
+-  - -  -      
+-  - -  -      
+-  - ----------
+-  -    -     -
+----    -     -
+        ----  -
+        -  -  -
+        -------
 
 COMPONENTS
-1	thread	16	2	S	L	{"color":1,"picked":0,"delivered":0,"missed":0,"passed":0,"delay":0,"initial_direction":"East","time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"capacity":1,"direction":"East"}
-4023	exchange	20	0	S	L	{"color":1,"passed":0,"exchanged":0,"delay":0,"link":4024,"value":0,"strict":0,"stop":0}
-2029	delivery	0	4	S	L	{"color":3,"delivered":0,"missed":0,"passed":0,"consumer":-1,"strict":0,"accepted_types":[],"accepted_colors":[3],"denominator":3}
-2030	pickup	4	4	S	L	{"color":2,"picked":0,"passed":0,"type":"Conditional"}
-2034	delivery	8	2	S	L	{"color":2,"delivered":0,"missed":0,"passed":0,"consumer":-1,"strict":0,"accepted_types":[],"accepted_colors":[2],"denominator":3}
-2035	delivery	10	4	S	L	{"color":2,"delivered":0,"missed":0,"passed":0,"consumer":-1,"strict":0,"accepted_types":[],"accepted_colors":[2],"denominator":3}
-1020	conditional	8	4	S	L	{"color":1,"passed":0,"directions":["North","East"],"current":0}
-14	thread	18	2	S	L	{"color":1,"picked":0,"delivered":0,"missed":0,"passed":0,"delay":0,"initial_direction":"East","time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"capacity":1,"direction":"East"}
-15	thread	0	8	S	L	{"color":1,"picked":0,"delivered":0,"missed":0,"passed":0,"delay":0,"initial_direction":"East","time_pickup_min":-1,"time_delivery_min":-1,"time_exchange_min":-1,"time_pickup_max":-1,"time_delivery_max":-1,"time_exchange_max":-1,"capacity":1,"direction":"East"}
-2033	pickup	2	8	S	L	{"color":3,"picked":0,"passed":0,"type":"Conditional"}
-4024	exchange	2	6	S	L	{"color":1,"passed":0,"exchanged":0,"delay":0,"link":4023,"value":0,"strict":0,"stop":0}
+1001	thread	3	10	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+1002	thread	11	0	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+1003	thread	14	12	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+2001	pickup	0	8	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2002	pickup	5	0	S	L	{"color":2,"picked":0,"passed":0,"type":"Unconditional"}
+2003	pickup	8	16	S	L	{"color":3,"picked":0,"passed":0,"type":"Unconditional"}
+3001	delivery	10	3	S	L	{"accepted_types":["Unconditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2,3],"strict":0,"consumer":-1,"denominator":2}
+3002	delivery	14	6	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":2}
+3003	delivery	14	11	S	L	{"accepted_types":["Unconditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2,3],"strict":0,"consumer":-1,"denominator":2}
+4001	exchange	5	6	S	L	{"delay":0,"color":0,"stop":1,"link":4002,"exchanged":0,"passed":0,"strict":1,"value":0}
+4002	exchange	5	8	S	L	{"delay":0,"color":0,"stop":1,"link":4001,"exchanged":0,"passed":0,"strict":1,"value":0}
+4003	exchange	3	11	S	L	{"delay":0,"color":0,"stop":1,"link":4004,"exchanged":0,"passed":0,"strict":1,"value":0}
+4004	exchange	5	11	S	L	{"delay":0,"color":0,"stop":1,"link":4003,"exchanged":0,"passed":0,"strict":1,"value":0}
+5001	conditional	5	3	S	L	{"current":0,"color":0,"directions":["East","West"],"passed":0}
+5002	conditional	11	16	S	L	{"current":0,"color":0,"directions":["West","North"],"passed":0}
+5003	diverter	8	11	S	L	{"color":0,"direction_condition":"West","directions_colors":[[],[],[],[]],"passed":0,"directions_types":[["Empty"],[],["Unconditional"],[]],"direction_default":"West"}
 
 EXECUTION
 
 PLAYER
-
