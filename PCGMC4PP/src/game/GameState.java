@@ -435,6 +435,7 @@ public class GameState {
         */
         // Move or update a single unit
         for (int i = 0; i < this.us.getUnits().size(); i++) {
+            //if (true) break;
             ComponentUnit cu = us.getUnit(i);
             if (this.canMoveUnit(cu)) {
                 successor = this.newSuccessor(GameState.STATE_MOVE);
@@ -501,6 +502,7 @@ public class GameState {
                     nComponentsUpdated++;
                 } else {
                     successor.getUnitState().getUnit(i).consecutive_blocked++;
+                    //System.out.println("blocked");
                     // TODO this may be sufficient to identify starvation but may 
                     // need to be updated also in all successors when moving a single 
                     // unit for all "other" units
@@ -708,6 +710,7 @@ public class GameState {
         // Needs to be updated between calls of different levels in the GameStateSearch, otherwise could be static
         GameState.description_length = this.us.getUnits().size()
                 + this.cs.getComponentsByType(ComponentPickup.class).size() // what is available to pickup
+                + this.cs.getComponentsByType(ComponentDelivery.class).size() // what is available to pickup
                 + this.cs.getComponentsByType(ComponentSemaphore.class).size()
                 + this.cs.getComponentsByType(ComponentConditional.class).size();
 
@@ -770,6 +773,9 @@ public class GameState {
         }
         for (Component c : this.cs.getComponentsByType(ComponentPickup.class)) {
             description[offset++] = ((ComponentPickup) c).available;
+        }
+        for (Component c : this.cs.getComponentsByType(ComponentDelivery.class)) {
+            description[offset++] = ((ComponentDelivery) c).delivered;
         }
 
         for (Component c : this.cs.getComponentsByType(ComponentSemaphore.class)) {
