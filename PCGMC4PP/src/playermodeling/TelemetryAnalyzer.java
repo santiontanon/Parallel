@@ -4,29 +4,27 @@ package playermodeling;
  * Created by pavankantharaju on 2/26/18.
  */
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import pmutils.Pair;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class TelemetryAnalyzer {
+public class TelemetryUtils {
 
-    private static final Logger logger = LogManager.getLogger(TelemetryAnalyzer.class);
+    public static int DEBUG = 0;
 
-    public TelemetryAnalyzer() {}
+    public TelemetryUtils() {}
 
-    public HashMap< String, ArrayList<String> > getPlayers(String logDirectory) {
-        logger.info("Getting players from log data!");
+    public HashMap< String, ArrayList<String> > getPlayers(String log_dir) {
         HashMap< String, ArrayList<String> > players = new HashMap< String, ArrayList<String> >();
-        File directory = new File(logDirectory);
-        File [] filesInLogDirectory = directory.listFiles();
-        for ( File f : filesInLogDirectory ) {
+        File directory = new File(log_dir);
+        File [] dir_list = directory.listFiles();
+        for ( File f : dir_list ) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
                 String line;
@@ -50,57 +48,43 @@ public class TelemetryAnalyzer {
                 }
 
             } catch ( IOException o ) {
-                logger.fatal("Unable to read logging data to get list of players");
-                logger.catching(Level.FATAL, o);
-                logger.catching(o);
-            } catch ( Exception e ) {
-                logger.fatal("Error in getting list of players");
-                logger.catching(Level.FATAL, e);
+                o.printStackTrace();
             }
         }
-        logger.debug("-------------Players-------------");
-        for (String p : players.keySet()) {
-            logger.debug("Player: " + p);
-        }
-        logger.debug("---------------------------------");
         return players;
     }
 
     public ArrayList<String> readTelemetryFile(String filename) {
-        ArrayList<String> telemetry = new ArrayList<>();
-        logger.info("Reading telemetry file: " + filename);
+        ArrayList<String> telemetry = new ArrayList<String>();
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
             while ((line = br.readLine()) != null) {
                 telemetry.add(line);
             }
-            return telemetry;
         } catch ( IOException e ) {
-            logger.fatal("Unable to read in logging data from: " + filename);
-            logger.catching(Level.FATAL, e);
+            e.printStackTrace();
         }
-        return null;
+        return telemetry;
     }
 
-    @Deprecated
-    public Pair< ArrayList<String> , ArrayList<Integer> > getTelemetryInInterval(ArrayList<String> data, double t1, double t2, ArrayList<Integer> bitVector) {
+    public Pair< ArrayList<String> , ArrayList<Integer> > getTelemetryInInterval(ArrayList<String> data, double t1, double t2, ArrayList<Integer> bit_vector) {
         ArrayList<String> ret = new ArrayList<String>();
-        ArrayList<Integer> bitVectorInInterval = new ArrayList<Integer>();
+        ArrayList<Integer> bit_vector_in_interval = new ArrayList<Integer>();
 
         for ( int i = 0; i < data.size(); i++ ) {
             String [] tmp = data.get(i).split("\t");
             double time_ = Double.parseDouble(tmp[3]);
             if ( ( t1 < time_ ) && ( t2 > time_ ) ) {
                 ret.add(data.get(i));
-                bitVectorInInterval.add(bitVector.get(i));
+                bit_vector_in_interval.add(bit_vector.get(i));
             }
         }
-        return new Pair<>(ret, bitVectorInInterval);
+        return new Pair<>(ret, bit_vector_in_interval);
     }
 
     public ArrayList<String> getTelemetryInInterval(ArrayList<String> data, double t1, double t2) {
-        logger.info(String.format("Getting telemetry data in interval (%f,%f)", t1, t2));
         ArrayList<String> ret = new ArrayList<String>();
         for ( int i = 0; i < data.size(); i++ ) {
             String [] tmp = data.get(i).split("\t");
@@ -115,58 +99,94 @@ public class TelemetryAnalyzer {
         return ret;
     }
 
-//    public LinkedHashMap<String, ArrayList<String>> splitTelemetryByRun(ArrayList<String> telemetry) {
-//        LinkedHashMap<String, ArrayList<String>> telemetryByRun = new LinkedHashMap<>();
-//        ArrayList<String> runTelemetry = new ArrayList<>();
-//
-//        for ( String tel : telemetry ) {
-//            String [] data = tel.split("\t");
-//
-//            if ( data.length != 6 ) {
-//                if ( DEBUG > 0 ) {
-//                    System.out.println("======================================================");
-//                    for ( String s : data ) {
-//                        System.out.println("Data: " + s);
-//                    }
-//                }
-//                continue;
-//            }
-//            String name_ = data[1];
-//            String data_ = data[2];
-//            runTelemetry.add(tel);
-//
-//            if ( name_.equals("TriggerLoadLevel") ) {
-//                if (data_.length() != 0) {
-//                    if (!data_.startsWith("l")) {
-//                        if ( telemetryByRun.containsKey(data_) ) {
-//                            System.err.println("Same ME Execution File maps to different runs.");
-//                            System.exit(1);
-//                        } else {
-//                            telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
-//                            runTelemetry = new ArrayList<>();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return telemetryByRun;
-//    }
+    public LinkedHashMap<String, ArrayList<String> > getLevelData(String data_path) {
+        /* NOTE: Should this be here? */
 
-    public LinkedHashMap<String, ArrayList<String> > splitTelemetryByLevels(ArrayList<String> telemetry) {
-        LinkedHashMap<String, ArrayList<String> > telemetryByLevel = new LinkedHashMap<String, ArrayList<String> >();
-        /*
-        *  If user plays multiple levels, telemetry from multiple plays are aggregated
-        * */
-        logger.info("Splitting telemetry by level!");
-        boolean startParse = false;
+        LinkedHashMap<String, ArrayList<String> > ret = new  LinkedHashMap<String, ArrayList<String> >();
 
-        String currentLevel = "";
+        File directory = new File(data_path);
+        File [] dir_list = directory.listFiles();
+        for ( File f : dir_list ) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(f.getAbsolutePath()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith("filename")) {
+                        String filename = line.split("\t")[1];
+                        if ( !ret.containsKey(filename) ) {
+                            ArrayList<String> tmp = new ArrayList<String>();
+                            tmp.add(f.getName());
+                            ret.put(filename, tmp);
+                        } else {
+                            ret.get(filename).add(f.getName());
+                        }
+                    }
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return ret;
+    }
+
+    public LinkedHashMap<String, ArrayList<String>> splitTelemetryByRun(ArrayList<String> telemetry) {
+        LinkedHashMap<String, ArrayList<String>> telemetryByRun = new LinkedHashMap<>();
+        ArrayList<String> runTelemetry = new ArrayList<>();
+
         for ( String tel : telemetry ) {
             String [] data = tel.split("\t");
 
             if ( data.length != 6 ) {
-                logger.warn("Incorrectly formatted telemetry log line: " + tel);
+                if ( DEBUG > 0 ) {
+                    System.out.println("======================================================");
+                    for ( String s : data ) {
+                        System.out.println("Data: " + s);
+                    }
+                }
+                continue;
+            }
+            String name_ = data[1];
+            String data_ = data[2];
+            runTelemetry.add(tel);
+
+            if ( name_.equals("TriggerLoadLevel") ) {
+                if (data_.length() != 0) {
+                    if (!data_.startsWith("l")) {
+                        if ( telemetryByRun.containsKey(data_) ) {
+                            System.err.println("Same ME Execution File maps to different runs.");
+                            System.exit(1);
+                        } else {
+                            telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
+                            runTelemetry = new ArrayList<>();
+                        }
+                    }
+                }
+            }
+        }
+
+        return telemetryByRun;
+    }
+
+    public LinkedHashMap<String, ArrayList<String> > splitTelemetryByLevels(ArrayList<String> telemetry) {
+        LinkedHashMap<String, ArrayList<String> > telemetry_by_level = new LinkedHashMap<String, ArrayList<String> >();
+        /* TODO: What if a user plays a level multiple times?
+        *   Telemetry from multiple plays are aggregated
+        * */
+
+        boolean start_parse = false;
+
+        String current_level = "";
+        for ( String tel : telemetry ) {
+            String [] data = tel.split("\t");
+
+            if ( data.length != 6 ) {
+                if ( DEBUG > 0 ) {
+                    System.out.println("======================================================");
+                    for ( String s : data ) {
+                        System.out.println("Data: " + s);
+                    }
+                }
                 continue;
             }
 
@@ -176,37 +196,38 @@ public class TelemetryAnalyzer {
             if ( name_.equals("TriggerLoadLevel") ) {
                 if (data_.length() != 0) {
                     if (data_.startsWith("l")) {
-                        startParse = true;
-                        currentLevel = data_;
+                        start_parse = true;
+                        current_level = data_;
                     }
                 }
             }
 
-            if ( startParse ) {
-                if ( !telemetryByLevel.containsKey(currentLevel) ) {
+            if ( start_parse ) {
+                if ( !telemetry_by_level.containsKey(current_level) ) {
                     ArrayList<String> tmp = new ArrayList<String>();
                     tmp.add(tel);
-                    telemetryByLevel.put(currentLevel, tmp);
+                    telemetry_by_level.put(current_level, tmp);
                 } else {
-                    ArrayList<String> tmp = telemetryByLevel.get(currentLevel);
+                    ArrayList<String> tmp = telemetry_by_level.get(current_level);
                     tmp.add(tel);
-                    telemetryByLevel.replace(currentLevel, tmp);
+                    telemetry_by_level.replace(current_level, tmp);
                 }
             }
         }
 
-        return telemetryByLevel;
+        return telemetry_by_level;
     }
 
     public String getUsername(ArrayList<String> data) {
+        String session_id = "";
         for ( String d : data ) {
             String [] tmp = d.split("\t");
             if ( tmp[1].equals("SessionUser") ) {
                 return tmp[2];
             }
         }
-        logger.fatal("Log data does not have a \"SessionUser\"");
-        System.exit(1);
-        return "username_not_found";
+        System.err.println("Execution should never be here.");
+        System.exit(-1);
+        return "";
     }
 }

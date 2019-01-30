@@ -132,9 +132,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                 }
                             }
                         }
+
                         Vector2 nextPos = prevPos;
                         bool end = false;
-                        for (int k = i + 1; k < maxStep+1; k++)
+                        for (int k = i + 1; k < maxStep; k++)
                         {
                             if (stepDictionary.ContainsKey(k))
                             {
@@ -228,9 +229,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                     prevPos = stepDictionary[i - 1][k].componentPos;
                                 }
                             }
+
                             Vector2 nextPos = prevPos;
                             bool end = false;
-                            for (int k = i + 1; k < maxStep+1; k++)
+                            for (int k = i + 1; k < stepDictionary.Count; k++)
                             {
                                 if (stepDictionary.ContainsKey(k))
                                 {

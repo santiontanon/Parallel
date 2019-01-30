@@ -76,7 +76,7 @@ public class ComponentDelivery extends Component {
                 (this.accepted_colors.length==0 || intInIntArray(this.accepted_colors, cp.color)));
     }
     
-    private void consume(ComponentUnit unit, GameState gs, boolean fail_to_deliver){
+    private void consume(ComponentUnit unit,GameState gs,boolean fail_to_deliver){
         if (this.consumer==0){
             // Consume nothing
         } else {            
@@ -88,7 +88,6 @@ public class ComponentDelivery extends Component {
                     if(canConsume(cp)){
                         cp.updateDelivery(this,unit,gs);
                         if(fail_to_deliver){
-                            gs.race_condition_detected = true;
                             this.missed++;
                             unit.missed++;                        
                         } else {

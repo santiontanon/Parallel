@@ -106,15 +106,6 @@ public class ComponentPickup extends Component {
                         this.available--;
                         has_picked = true;
                     }
-                } else {
-                    // Santi: since the following condition is not 100% sure, 
-                    // I am commenting it out for now. The other arrow might just be there by chance...
-                    // if (!gs.getUnitState().getUnitsByPosition(this.x, this.y, unit).isEmpty()) {
-                        // Here, an arrow is going through a pickup point, unable to pick up a package, and
-                        // there is another arrow in the same spot. So, it's likely that the other arrow is
-                        // the one that took the package, and thus it's a race condition.
-                        // gs.race_condition_detected = true;
-                    // }                    
                 }
                 break;
         }

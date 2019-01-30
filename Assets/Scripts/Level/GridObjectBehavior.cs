@@ -70,10 +70,7 @@ public class GridObjectBehavior : MonoBehaviour
 				SpriteRenderer instanceSpriteRenderer = GetComponent<SpriteRenderer>();
 				instanceSpriteRenderer.enabled = false;
 			}
-			    break;
-            case "semaphore":
-                component.configuration.value_original = component.configuration.value;
-                break;
+			break;
 			case "conditional":
 			{
 				component.configuration.current_original = component.configuration.current;
@@ -379,12 +376,11 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 		else if(component.type == "semaphore")
 		{
-            component.configuration.value = component.configuration.value_original;
 			GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite( component );
 		}
 		else if(component.type == "conditional")
 		{
-			component.configuration.current = component.configuration.current_original;
+			if(component.configuration.current_original != null) component.configuration.current = component.configuration.current_original;
 			int index = 0;
 			foreach(GameObject g in conditionalDirections)
 			{

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Generate_GamePhaseBehavior : GamePhaseBehavior {
 	public override void BeginPhase()
 	{
-		GameManager.Instance.InitiateTrackGeneration(true);
+		GameManager.Instance.InitiateTrackGeneration();
 		GameManager.Instance.SetGamePhase(GameManager.GamePhases.PlayerInteraction);
 	}
 

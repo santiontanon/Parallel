@@ -85,8 +85,36 @@
       }
     ],
     "optional":[
+      {
+        "file":"level20",
+        "title":"Level 20"
+      },
+      {
+        "file":"level22",
+        "title":"Level 22"
+      },
+      {
+        "file":"level23",
+        "title":"Level 23"
+      }
     ],
     "previous":[
+      {
+        "file":"level24",
+        "title":"Level 24"
+      },
+      {
+        "file":"level25",
+        "title":"Level 25"
+      },
+      {
+        "file":"level27",
+        "title":"Level 27"
+      },
+      {
+        "file":"level28",
+        "title":"Level 28"
+      }
     ]
   }
 }

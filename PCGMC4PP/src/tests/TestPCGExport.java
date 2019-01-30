@@ -84,7 +84,7 @@ public class TestPCGExport {
                 GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, false, null, true);
                 String filename = "level-PCG-"+batchId+"-"+size+"-"+randomSeed+".txt";
                 BoardGameStateJFrame f = new BoardGameStateJFrame(filename, 1280, 640, gs);                
-                PCG.export(gs, new File(filename), null);
+                PCG.export(gs, new File(filename));
                 accumWidth+=gs.bs.getWidth();
             }
         }

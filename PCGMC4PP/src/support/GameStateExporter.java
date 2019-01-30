@@ -66,26 +66,21 @@ public class GameStateExporter {
 
     public static char color_base = ' ';
 
-    public static String export(GameStateSearch gss, PlayerData pd, String desiredID) throws Exception {
-        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, desiredID, false);
+    public static String export(GameStateSearch gss, PlayerData pd) throws Exception {
+        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, false);
     }
 
-    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID) {
-        return GameStateExporter.export(null, gs, ep, pd, desiredID, false);
+    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd) {
+        return GameStateExporter.export(null, gs, ep, pd, false);
     }
 
-    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID, boolean verbose) {
+    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, boolean verbose) {
         StringBuilder sb = new StringBuilder();
         BoardState board = gs.getBoardState();
         sb.append("METADATA\n");
         sb.append("level_id\t");
         sb.append(board.level_id);
         sb.append('\n');
-        if (desiredID != null) {
-            sb.append("pcg_id\t");
-            sb.append(desiredID);
-            sb.append('\n');
-        }
         sb.append("level_title\t");
         sb.append(board.level_title);
         sb.append('\n');
@@ -159,15 +154,11 @@ public class GameStateExporter {
     }
 
     public static String export(GameState gs) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, false);
-    }
-
-    public static String export(GameState gs, String desiredLEvelID) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), desiredLEvelID, false);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), false);
     }
 
     public static String export(GameState gs, boolean verbose) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, verbose);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), verbose);
     }
 
     private static String exportBoardTtoTextHelper(BoardState board, boolean colors, boolean verbose) {
@@ -677,7 +668,6 @@ public class GameStateExporter {
         export_map.put("final_condition", gs.updateAndGetResultType());
         export_map.put("goal_state", gs.updateAndGetAchievedGoals());
         export_map.put("goal_descriptions", reasons);
-        export_map.put("race_condition_detected", "" + gs.race_condition_detected);
         
         return export_map;
     }

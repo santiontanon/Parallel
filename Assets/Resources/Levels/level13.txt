@@ -71,25 +71,6 @@ V  A    A     V
         A  A  V
         A<<X<<<
 
-CRITICALSECTIONS
-     ----------
-     -    -   -
-     -    -   -
-  ---------   -
-  -           -
-  -           -
-  -------------
-               
----- ----      
--  - -  -      
--  - -  -      
--  - ----------
--  -    -     -
-----    -     -
-        ----  -
-        -  -  -
-        -------
-
 COMPONENTS
 1001	thread	3	10	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
 1002	thread	11	0	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
@@ -111,3 +92,17 @@ COMPONENTS
 EXECUTION
 
 PLAYER
+
+SKILLS
+Hover over objects to see what they do
+Use help bar
+Hover over side arrows to see different colored tracks
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Be able to link semaphores to buttons
+Be able to link buttons to direction switches
+Prevent starvation
+Understand exchange points 
+Use diverters
+Testing before submitting

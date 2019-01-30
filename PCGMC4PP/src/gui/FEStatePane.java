@@ -352,7 +352,7 @@ public class FEStatePane extends JPanel {
                             File file = fileChooser.getSelectedFile();
                             try {
                                 FileWriter fw = new FileWriter(file);
-                                fw.write(GameStateExporter.export(initialGameState, current_plan, null, null));
+                                fw.write(GameStateExporter.export(initialGameState, current_plan, null));
                                 fw.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();

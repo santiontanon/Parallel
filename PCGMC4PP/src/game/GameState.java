@@ -91,7 +91,6 @@ public class GameState {
     private GameState parent = null;
     private boolean[] achieved_goals = null;
 
-    public boolean race_condition_detected = false;
     public int state_type = STATE_UNKNOWN;
     public int result_type = RESULT_INCOMPLETE;
     // Note, result_type holds ancestry information so it can find a previously partial solution
@@ -250,9 +249,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e12 An arrow didn't deliver the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e13 An arrow delivered more packages than it was supposed to.";
+                return "e13 An arrow delivered more packages than it was supposed.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e14 An arrow did not deliver all the packages it was supposed to.";
+                return "e14 An arrow did not deliver all the packages it was supposed.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e15 An arrow delivered the wrong number of packages.";
             }
@@ -260,9 +259,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e22 A delivery point didn't get the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e23 A delivery point got more packages than it was supposed to.";
+                return "e23 A delivery point got more packages than it was supposed.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e24 A delivery point did not get all the packages it was supposed to.";
+                return "e24 A delivery point did not get all the packages it was supposed.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e25 A delivery point got the wrong number of packages.";
             }
@@ -435,7 +434,6 @@ public class GameState {
         */
         // Move or update a single unit
         for (int i = 0; i < this.us.getUnits().size(); i++) {
-            //if (true) break;
             ComponentUnit cu = us.getUnit(i);
             if (this.canMoveUnit(cu)) {
                 successor = this.newSuccessor(GameState.STATE_MOVE);
@@ -502,7 +500,6 @@ public class GameState {
                     nComponentsUpdated++;
                 } else {
                     successor.getUnitState().getUnit(i).consecutive_blocked++;
-                    //System.out.println("blocked");
                     // TODO this may be sufficient to identify starvation but may 
                     // need to be updated also in all successors when moving a single 
                     // unit for all "other" units
@@ -560,11 +557,13 @@ public class GameState {
                 // TODO move this to the export section to save on memory
                 this.intermediate_unit_positions.add(new IntermediateUnitPosition(unit.id, unit.tile_current.id, time));
             }
-            // detect cycles here:
+            // TODO detect cycles here, find a better way to handle this
             Integer unit_hash = this.stateUnitDescriptionHash(unit);
             if(unit_hashes.contains(unit_hash)){
                 allowed_to_continue = false;
             }
+            // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
+            // TODO have a check that looks for ALL the threads in a LOOPY state, then break
             if (endlessloop[unit.x][unit.y]) {
                 this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
                 allowed_to_continue = false;
@@ -710,7 +709,6 @@ public class GameState {
         // Needs to be updated between calls of different levels in the GameStateSearch, otherwise could be static
         GameState.description_length = this.us.getUnits().size()
                 + this.cs.getComponentsByType(ComponentPickup.class).size() // what is available to pickup
-                + this.cs.getComponentsByType(ComponentDelivery.class).size() // what is available to pickup
                 + this.cs.getComponentsByType(ComponentSemaphore.class).size()
                 + this.cs.getComponentsByType(ComponentConditional.class).size();
 
@@ -773,9 +771,6 @@ public class GameState {
         }
         for (Component c : this.cs.getComponentsByType(ComponentPickup.class)) {
             description[offset++] = ((ComponentPickup) c).available;
-        }
-        for (Component c : this.cs.getComponentsByType(ComponentDelivery.class)) {
-            description[offset++] = ((ComponentDelivery) c).delivered;
         }
 
         for (Component c : this.cs.getComponentsByType(ComponentSemaphore.class)) {
@@ -843,7 +838,6 @@ public class GameState {
         this.parent = parent;
         this.steps = steps;
         this.time_elapsed_total = time;
-        if (parent != null) this.race_condition_detected = parent.race_condition_detected;
         this.state_type = state_type;
         this.result_type = result_type;
         this.goals_delivery = goals_delivery;

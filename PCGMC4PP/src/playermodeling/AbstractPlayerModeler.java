@@ -1,8 +1,5 @@
 package playermodeling;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import weka.classifiers.Classifier;
 import weka.core.*;
 
@@ -11,130 +8,105 @@ import java.util.*;
 
 public abstract class AbstractPlayerModeler {
 
-    public static final String PLAYER_MODELING_DATA_DIR = "pmfiles/"; /* TODO: This needs to be replaceable.  */
-    private static final Logger logger = LogManager.getLogger(AbstractPlayerModeler.class);
+    public static final int DEBUG = 0;
+    public static final String PLAYER_MODELING_DATA_DIR = "pmfiles/"; /* TODO: This needs to be replaceable */
 
     /* Player-modeling specific variables */
     protected double interval;
-    protected int skillVectorUpdateTechniqueFlag;
+    protected int skill_vector_update_technique_flag;
 
     /* Machine Learning-specific variables */
     protected Classifier classifier;
-    protected Instances trainingDataset;
+    protected Instances training_dataset;
     protected ArrayList<Attribute> attributes;
-    protected ArrayList<String> annotationValues;
+    protected ArrayList<String> annotation_values;
 
     public AbstractPlayerModeler() {}
 
-    public AbstractPlayerModeler(Classifier cls, double interval_, int uTechniqueFlag) {
+    public AbstractPlayerModeler(Classifier cls, double interval_, int u_technique_flag) {
         interval = interval_;
 
         classifier = cls;
-        skillVectorUpdateTechniqueFlag = uTechniqueFlag;
+        skill_vector_update_technique_flag = u_technique_flag;
 
         /* Setup attributes */
         attributes = new ArrayList<Attribute>();
-        for (int i = 0; i < FeatureExtractor.features.length; i++) {
-            attributes.add(new Attribute(FeatureExtractor.features[i]));
+        for (int i = 0; i < FeatureExtraction.features.length; i++) {
+            attributes.add(new Attribute(FeatureExtraction.features[i]));
         }
-
-        annotationValues = new ArrayList<String>();
-        annotationValues.add("A");
-        annotationValues.add("B");
-        annotationValues.add("C");
-        attributes.add(new Attribute("annotations", annotationValues));
+        annotation_values = new ArrayList<String>();
+        annotation_values.add("A");
+        annotation_values.add("B");
+        annotation_values.add("C");
+        attributes.add(new Attribute("annotations", annotation_values));
     }
+
 
     protected void saveTrainingModel(String playerModelingDirectory) {
-        String directoryName = playerModelingDirectory + File.separator + "saved_models" + File.separator;
-        String modelFileName = String.format("%s.%d.model", classifier.getClass().getName(), (int)interval);
-        logger.info("Saving training model to: " + directoryName + modelFileName);
         try {
-            new File(directoryName).mkdir();
-            weka.core.SerializationHelper.write( directoryName + modelFileName, classifier);
-            logger.info("Training model successfully saved to: " + directoryName + modelFileName);
+            String directory_name = playerModelingDirectory + File.separator + "saved_models" + File.separator;
+            new File(directory_name).mkdir();
+            weka.core.SerializationHelper.write( directory_name + String.format("%s.%d.model", classifier.getClass().getName(), (int)interval), classifier);
         } catch ( Exception e ) {
-            logger.error("Unable to save training model (either file format error or permission issue with saving)");
-            logger.catching(e);
-        }
-
-    }
-
-    protected void saveTrainingModel() {
-        String directoryName = PLAYER_MODELING_DATA_DIR + "saved_models" + File.separator;
-        String modelFileName = String.format("%s.%d.model", classifier.getClass().getName(), (int)interval);
-
-        logger.info("Saving training model to: " + directoryName + modelFileName);
-        try {
-            new File(directoryName).mkdir();
-            weka.core.SerializationHelper.write( directoryName + modelFileName, classifier);
-            logger.info("Training model successfully saved to: " + directoryName + modelFileName);
-        } catch (Exception e) {
-            logger.error("Unable to save training model (either file format error or permission issue with saving)");
-            logger.catching(e);
+            e.printStackTrace();
         }
     }
 
     protected void readTrainingModel(String playerModelingDirectory, String filename) {
-        String modelFilepath = playerModelingDirectory + File.separator + filename;
-        logger.info("Reading training model from: " + modelFilepath);
-
         try {
-            classifier = (Classifier) weka.core.SerializationHelper.read(modelFilepath);
-            logger.info("Training model successfully read from: " + modelFilepath);
+            classifier = (Classifier) weka.core.SerializationHelper.read(playerModelingDirectory + File.separator + filename);
+            System.out.println("Successfully read in trained model!");
         } catch ( Exception e ) {
-            logger.fatal("Unable to read training model (either file format error or permission issue with reading)");
-            logger.catching(Level.FATAL, e);
-            System.exit(1);
+            e.printStackTrace();
+        }
+    }
+
+    protected void saveTrainingModel() {
+        try {
+            String directory_name = PLAYER_MODELING_DATA_DIR + "saved_models/";
+            new File(directory_name).mkdir();
+            weka.core.SerializationHelper.write( directory_name + String.format("%s.%d.model", classifier.getClass().getName(), (int)interval), classifier);
+        } catch ( Exception e ) {
+            e.printStackTrace();
         }
     }
 
     protected void readTrainingModel(String filename) {
-        logger.info("Reading training model from: " + filename);
         try {
             classifier = (Classifier) weka.core.SerializationHelper.read(filename);
-            logger.info("Training model successfully read from: " + filename);
+            System.out.println("Successfully read in trained model!");
         } catch ( Exception e ) {
-            logger.fatal("Unable to read training model (either file format error or permission issue with reading)");
-            logger.catching(Level.FATAL, e);
-            System.exit(1);
+            e.printStackTrace();
         }
     }
 
     protected void trainModel() {
-        logger.info("Training machine learning model");
-
         try {
-            classifier.buildClassifier(trainingDataset);
-            logger.info("Machine learning model successfully trained!");
+            classifier.buildClassifier(training_dataset);
         } catch (Exception e) {
-            logger.fatal("Unable to train machine learning model.");
-            logger.catching(Level.FATAL, e);
-            System.exit(1);
+            e.printStackTrace();
         }
     }
 
     protected double classifyInstance(HashMap<String, Double> feature_vector) {
-        logger.info("-------------------Create and classifying instance-------------------");
-
-        Instance new_instance = new DenseInstance(FeatureExtractor.features.length + 1);
+        if ( DEBUG > 0 ) {
+            System.out.println("-------------------Create and classifying instance-------------------");
+        }
+        Instance new_instance = new DenseInstance(FeatureExtraction.features.length + 1);
         for (Attribute a : attributes) {
             if (!a.name().equals("annotations")) {
                 new_instance.setValue(a, feature_vector.get(a.name()));
             }
         }
-        new_instance.setDataset(trainingDataset);
-        logger.info("Classifying instance!");
+        new_instance.setDataset(training_dataset);
+
         try {
             double classification = classifier.classifyInstance(new_instance);
-            logger.info("Instance classified instance!");
             return classification;
         } catch (Exception e) {
-            logger.fatal("Unable to classify instance due to error. Returning classification value of 0.0");
-            logger.catching(Level.FATAL, e);
-            System.exit(1);
-            return 0.0;
+            e.printStackTrace();
         }
+        return 0.0;
     }
 
     public abstract void execute();

@@ -140,7 +140,7 @@ public class TestSearch {
                 //System.out.println(GameStateExporter.export(gss.getStart(), GameStateSearch.toExecutionPlan(gss.getAllResults().get(0)), null));
             }
             System.out.println("WORST RESULTS");
-            System.out.println(GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, null, false));
+            System.out.println(GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, false));
             //System.out.println(GameStateExporter.exportFinalCondition(gss.getWorstResult()));
             // export(gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null));
             System.out.println(GameStateExporter.exportFinalConditionAndStats(gss,gss.getWorstResult()));

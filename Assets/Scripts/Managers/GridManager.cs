@@ -101,7 +101,7 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public void GenerateGrid(List<GridTrack>gridTracks, List<GridComponent> gridComponents, bool resetCamera)
+    public void GenerateGrid(List<GridTrack>gridTracks, List<GridComponent> gridComponents)
 	{
         ClearGrid(true);
 
@@ -221,8 +221,7 @@ public class GridManager : MonoBehaviour {
 		}
 
 		averagePosition = averagePosition / gridTracks.Count;
-        if(resetCamera)
-		    worldCamera.transform.position = new Vector3( averagePosition.x, averagePosition.y, -15);
+		worldCamera.transform.position = new Vector3( averagePosition.x, averagePosition.y, -15);
 		float levelheight = GameManager.Instance.GetLevelHeight ();
 		float levelRatio = GameManager.Instance.GetLevelWidth () / GameManager.Instance.GetLevelHeight ();
 		if (levelRatio > 1.78f) { // 16:9
@@ -233,8 +232,7 @@ public class GridManager : MonoBehaviour {
 		} else {
 			levelheight +=1;
 		}
-        if(resetCamera)
-		    worldCamera.orthographicSize = ((levelheight/2.0f)/0.78f); // To make room for the bottom banner
+		worldCamera.orthographicSize = ((levelheight/2.0f)/0.78f); // To make room for the bottom banner
         
 		foreach(GridComponent gridComponent in gridComponents)
 		{
