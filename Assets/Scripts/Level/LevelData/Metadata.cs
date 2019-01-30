@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Metadata {
 	public int level_id;
+    public string pcg_id;
     public int level_type; //0 for tutorial, 1 for advanced, 2 for pcg
 	public string level_title;
 	public string goal_string;
@@ -24,6 +25,7 @@ public class Metadata {
 	public Metadata()
 	{
 		level_id = 0;
+        pcg_id = "N/A";
 		level_title = "level title";
 		goal_string = "goal string";
 		goal_struct = new GoalCondition();

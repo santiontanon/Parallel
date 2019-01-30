@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 	public enum GamePhases {StartScreen, LoadScreen, GenerateTrack, PlayerInteraction, GradeSubmission, GradeReport, EndScreen, CloseGame}
 	public GamePhases gamePhase = GamePhases.StartScreen;
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
-    public enum GameMode { Test, Demo, Class, Study_8, Study_9 }
+    public enum GameMode { Test, Demo, Class, Study }
     public GameMode currentGameMode;
     public enum SaveMode { Relative, Default }
     public SaveMode currentSaveMode;
@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviour {
         LevelReferenceObject levRef = dataManager.GetLevelByFile(inputLevelName);
         if (levRef != null)
             currentLevelReferenceObject = levRef;
-        InitiateTrackGeneration();
+        InitiateTrackGeneration(restartPhase);
         if (restartPhase)
             SetGamePhase(GamePhases.PlayerInteraction);
         if (loadType == DataManager.LoadType.STRING)
@@ -264,9 +264,9 @@ public class GameManager : MonoBehaviour {
     }
 
 
-	public void InitiateTrackGeneration()
+	public void InitiateTrackGeneration(bool resetCamera)
 	{
-		gridManager.GenerateGrid(/*dataManager.currentLevelData.layoutList,*/ dataManager.currentLevelData.tracks, dataManager.currentLevelData.components);
+		gridManager.GenerateGrid(/*dataManager.currentLevelData.layoutList,*/ dataManager.currentLevelData.tracks, dataManager.currentLevelData.components, resetCamera);
 	}
 
 

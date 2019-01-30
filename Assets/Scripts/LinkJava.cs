@@ -214,6 +214,13 @@ public class LinkJava : MonoBehaviour
                 UnityEngine.Debug.Log(rSeed);
                 javaProcess.StartInfo.Arguments += " \"" + filename + "\" " + rSeed + " -1";
                 javaProcess.StartInfo.Arguments += " \"" + Application.dataPath + "/../data" + "\"";
+                javaProcess.StartInfo.Arguments += " \"" + Application.persistentDataPath + "\"";
+                Start_GamePhaseBehavior start = GameManager.Instance.startScreenBehavior as Start_GamePhaseBehavior;
+                string pcgNum = "_X";
+                if (GameManager.Instance.GetDataManager().levRef.levels.pcg.Count < 10)
+                    pcgNum += 0;
+                pcgNum += GameManager.Instance.GetDataManager().levRef.levels.pcg.Count;
+                javaProcess.StartInfo.Arguments += " -pcgid " + start.currentPlayerID + pcgNum;
             }
             UnityEngine.Debug.Log(javaProcess.StartInfo.Arguments);
             javaProcess.EnableRaisingEvents = true;
@@ -375,8 +382,9 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.RedirectStandardOutput = true;
             modelingProcess.StartInfo.RedirectStandardError = true;
             modelingProcess.StartInfo.FileName = "java";
-            modelingProcess.StartInfo.Arguments = " -jar " + "\"" + pcgPath + "ServerInterface.jar" + "\"";
-            modelingProcess.StartInfo.Arguments += " -mode read";
+            modelingProcess.StartInfo.Arguments = " -classpath " + "\"" + pcgPath + "PCGMC4PP.jar" + "\"";
+            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles/log4j2.xml" + " server.ServerInterface";
+            modelingProcess.StartInfo.Arguments += " -mode sync";
             modelingProcess.StartInfo.Arguments += " -user " + username;
             modelingProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
             modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
@@ -426,7 +434,8 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.RedirectStandardOutput = true;
             modelingProcess.StartInfo.RedirectStandardError = true;
             modelingProcess.StartInfo.FileName = "java";
-            modelingProcess.StartInfo.Arguments = " -jar " + "\"" + pcgPath + "PlayerModel.jar" + "\"";
+            modelingProcess.StartInfo.Arguments = " -classpath " + "\"" + pcgPath + "PCGMC4PP.jar" + "\"";
+            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles/log4j2.xml" + " playermodeling.Main";
             modelingProcess.StartInfo.Arguments += " -mepath " + "\"" + executionPath + "\"";
             modelingProcess.StartInfo.Arguments += " -telemetrypath " + "\"" + logPath + "\"";
             modelingProcess.StartInfo.Arguments += " -user " + username;

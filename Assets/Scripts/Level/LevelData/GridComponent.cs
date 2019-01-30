@@ -203,6 +203,7 @@ public class Configuration
 	public int missed;
 	public int link;
 	public int value;
+    public int value_original;
 	public int passed;
 	public int strict;
 	public int current;

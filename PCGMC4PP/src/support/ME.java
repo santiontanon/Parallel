@@ -75,7 +75,7 @@ public class ME {
                     System.out.println("Search space exhausted without solutions");
                     System.exit(4);                    
                 } else {
-                    String out = GameStateExporter.export(gss,null);
+                    String out = GameStateExporter.export(gss, null, null);
                     File file = new File(filename);
                     String path = file.getAbsolutePath();
                     File out_file = File.createTempFile("me_out_",".txt",file.getParentFile());

@@ -39,7 +39,7 @@ public class ComponentUnit extends Component {
     // Initialization properties
     public int initial_direction = Component.EAST;
     public int direction = Component.EAST;
-    public int capacity = 1;
+    public int capacity = -1;
     public int delay = 0;
     
     // Assert properties

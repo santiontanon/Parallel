@@ -61,7 +61,11 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
     void SetupContainers()
     {
-        if(GameManager.Instance.currentGameMode == GameManager.GameMode.Study_9)
+        if(GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+        {
+            TriggerPanelSwap(true, false, false, false); //this system of panel swapping is broken atm, needs to coexist with the system below
+        }
+        else
         {
             loadUI.optionalLevelContainer.gameObject.SetActive(false);
             loadUI.previousLevelContainer.gameObject.SetActive(false);
@@ -72,10 +76,6 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
             loadUI.requiredTransform.gameObject.SetActive(true);
             loadUI.generateTransform.gameObject.SetActive(true);
-        }
-        else
-        {
-            TriggerPanelSwap(true, false, false, false);
         }
     }
 

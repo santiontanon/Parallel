@@ -27,6 +27,7 @@ import game.GameState;
 import game.GoalCondition;
 import game.execution.ExecutionPlan;
 import gui.BoardGameStateJFrame;
+import java.io.File;
 import java.util.LinkedHashMap;
 import support.PCG;
 import support.PCGPlayerModelUtils;
@@ -60,20 +61,23 @@ public class TestPCGPlayable {
         
         int accumWidth = 0;
         boolean debug = false;
-        for(int size=0;size<=0;size++){        
-            for(int randomSeed=100;randomSeed<20000;randomSeed+=100){
-//            int randomSeed = 100; {
+        for(int size=1;size<=1;size++){        
+//            for(int randomSeed=0;randomSeed<20000;randomSeed+=500){
+            for(int randomSeed=1140;randomSeed<1300;randomSeed+=10){
+//            int randomSeed = 1140; {
                 System.out.println("randomSeed: " + randomSeed);
 //                LGraphGrammarSampler.DEBUG = 1;
                 //OrthographicEmbeddingBoardSizeOptimizer.DEBUG = 1;
-                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, false, playerModel, debug);
+                //GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, true, false, playerModel, debug);
+                GameState gs = PCG.generateGameState(-randomSeed,-randomSeed, size, false, false, playerModel, debug);
                 System.out.println(gs.skills);
 //                GameState gs = PCG.generateGameState(randomSeed,randomSeed, size, false, true);
-//                new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+//                new BoardGameStateJFrame("level " + randomSeed, WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
+                //PCG.export(gs, new File("PCG-test-level.txt"), null);
                 if (!solvable(gs)) {
                     BoardGameStateJFrame f = new BoardGameStateJFrame("level", WINDOW_WIDTH, WINDOW_HEIGHT, gs);                
                     System.err.println("Level is not solvable! randomSeed: " + randomSeed);
-                    break;
+                    //break;
                 } else {
                     System.out.println("Level worked!");
                 }                

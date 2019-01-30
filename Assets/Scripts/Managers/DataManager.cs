@@ -28,10 +28,10 @@ public class DataManager : MonoBehaviour {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
             TextAsset lr_text = null;
-            lr_text = Resources.Load("DemoSelection") as TextAsset;
+            lr_text = Resources.Load("TestLoadSelection") as TextAsset;
             text = lr_text.text;
         }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study_9)
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
         {
             if(GameManager.Instance.tracker.level_data != "")
             {
@@ -40,15 +40,12 @@ public class DataManager : MonoBehaviour {
             else
             {
                 TextAsset lr_text = null;
-                lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                else
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                 text = lr_text.text;
             }
-        }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study_8)
-        {
-            TextAsset lr_text = null;
-            lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
-            text = lr_text.text;
         }
         else
         {
@@ -57,7 +54,6 @@ public class DataManager : MonoBehaviour {
             text = lr_text.text;
         }
 
-        // Change Loading
         GetLevels(text);
 	}
 
@@ -105,15 +101,15 @@ public class DataManager : MonoBehaviour {
             switch (GameManager.Instance.currentGameMode)
             {
                 case GameManager.GameMode.Class:
-                    lr_text = Resources.Load("DefaultLoadSelection") as TextAsset;
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
                     break;
                 case GameManager.GameMode.Demo:
-                case GameManager.GameMode.Test:
                     lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
                     break;
-
-                case GameManager.GameMode.Study_8:
-                case GameManager.GameMode.Study_9:
+                case GameManager.GameMode.Test:
+                    lr_text = Resources.Load("TestLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Study:
                     lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                     break;
             }
@@ -132,8 +128,15 @@ public class DataManager : MonoBehaviour {
                 if (levels[i] != "")
                 {
                     LevelReferenceObject lro = new LevelReferenceObject();
-                    lro.file = "levelX" + i;
-                    lro.title = "X" + i;
+                    lro.file = "levelX";
+                    lro.title = "X";
+                    if (i < 10)
+                    {
+                        lro.file += 0;
+                        lro.title += 0;
+                    }
+                    lro.file += i;
+                    lro.title += i;
                     lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
                     lro.levelId = i;
                     lro.completionRank = 0;
@@ -344,6 +347,9 @@ public class DataManager : MonoBehaviour {
 			{
                 case "level_id":
                     returnMetadata.level_id = int.Parse(sLine[1]);
+                    break;
+                case "pcg_id":
+                    returnMetadata.pcg_id = sLine[1];
                     break;
                 case "level_title":
                     returnMetadata.level_title = sLine[1];
@@ -590,21 +596,23 @@ board_height	15
         string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
         metadataFormat =
             "level_id\t{0}" +
-            "\nlevel_title\t{1}" +
-            "\ngoal_string\t{2}" +
-            "\ngoal_struct\t{3}" +
-            "\nplayer_palette\t{4}" +
-            "\ntime_pickup_min\t{5}" +
-            "\ntime_delivery_min\t{6}" +
-            "\ntime_exchange_min\t{7}" +
-            "\ntime_pickup_max\t{8}" +
-            "\ntime_delivery_max\t{9}" +
-            "\ntime_exchange_max\t{10}" +
-            "\nboard_width\t{11}" +
-            "\nboard_height\t{12}";
+            "\npcg_id\t{1}" +
+            "\nlevel_title\t{2}" +
+            "\ngoal_string\t{3}" +
+            "\ngoal_struct\t{4}" +
+            "\nplayer_palette\t{5}" +
+            "\ntime_pickup_min\t{6}" +
+            "\ntime_delivery_min\t{7}" +
+            "\ntime_exchange_min\t{8}" +
+            "\ntime_pickup_max\t{9}" +
+            "\ntime_delivery_max\t{10}" +
+            "\ntime_exchange_max\t{11}" +
+            "\nboard_width\t{12}" +
+            "\nboard_height\t{13}";
 
         string metadataJson = string.Format(metadataFormat,
             currentLevelData.metadata.level_id,
+            currentLevelData.metadata.pcg_id,
             currentLevelData.metadata.level_title,
             currentLevelData.metadata.goal_string,
             JsonUtility.ToJson(currentLevelData.metadata.goal_struct),
