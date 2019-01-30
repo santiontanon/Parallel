@@ -1,5 +1,10 @@
 package playermodeling;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pmutils.Pair;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,16 +15,15 @@ import java.util.LinkedHashMap;
 public class SkillAnalyzer {
 
     protected ArrayList<String> skills;
-    public ArrayList<String> skills_specific_to_level;
-    public LinkedHashMap< String, Pair<Integer, Double> > skill_vector;
-    public LinkedHashMap<String, Double> rule_evidence;
-    public boolean debug;
+    public ArrayList<String> skillsSpecificToLevel;
+    public LinkedHashMap< String, Pair<Integer, Double>> skillVector;
+    public LinkedHashMap<String, Double> ruleEvidence;
+    private static final Logger logger = LogManager.getLogger(SkillAnalyzer.class);
 
     public SkillAnalyzer(String skillVectorFilename, String playerModelingDirectory) {
-        skill_vector = new LinkedHashMap<>();
-        skills_specific_to_level = new ArrayList<>();
+        skillVector = new LinkedHashMap<>();
+        skillsSpecificToLevel = new ArrayList<>();
         skills = new ArrayList<>();
-        debug = false;
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(playerModelingDirectory + "skills.txt"));
@@ -27,12 +31,12 @@ public class SkillAnalyzer {
             while ((line = br.readLine()) != null) {
                 String skill = line.trim();
                 skills.add(skill);
-                skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
+                skillVector.put(skill, new Pair< Integer, Double >(0,-1.0));
             }
             br.close();
-            rule_evidence = new LinkedHashMap<String, Double>();
-            for ( String s : skill_vector.keySet() ) {
-                rule_evidence.put(s,0.0);
+            ruleEvidence = new LinkedHashMap<String, Double>();
+            for ( String s : skillVector.keySet() ) {
+                ruleEvidence.put(s,0.0);
             }
             br = new BufferedReader(new FileReader(skillVectorFilename));
             while ((line = br.readLine()) != null) {
@@ -45,50 +49,9 @@ public class SkillAnalyzer {
                 double skillValue = Double.parseDouble(skillValuePairSplit[1]);
                 int evidenceValue = Integer.parseInt(skillValuePairSplit[2]);
                 if ( evidenceValue == 0 ) {
-                    skill_vector.put(skill, new Pair< Integer, Double >(0, skillValue));
+                    skillVector.put(skill, new Pair< Integer, Double >(0, skillValue));
                 } else {
-                    skill_vector.put(skill, new Pair< Integer, Double >(evidenceValue, skillValue));
-                }
-            }
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public SkillAnalyzer(String skillVectorFilename, String playerModelingDirectory, boolean debug_) {
-        skill_vector = new LinkedHashMap<>();
-        skills_specific_to_level = new ArrayList<>();
-        skills = new ArrayList<>();
-        debug = debug_;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(playerModelingDirectory + "skills.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String skill = line.trim();
-                skills.add(skill);
-                skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
-            }
-            br.close();
-            rule_evidence = new LinkedHashMap<String, Double>();
-            for ( String s : skill_vector.keySet() ) {
-                rule_evidence.put(s,0.0);
-            }
-            br = new BufferedReader(new FileReader(skillVectorFilename));
-            while ((line = br.readLine()) != null) {
-                if (line.length() == 0) {
-                    continue;
-                }
-                String skillValuePair = line.trim();
-                String [] skillValuePairSplit = skillValuePair.split(",");
-                String skill = skillValuePairSplit[0];
-                double skillValue = Double.parseDouble(skillValuePairSplit[1]);
-                int evidenceValue = Integer.parseInt(skillValuePairSplit[2]);
-                if ( evidenceValue == 0 ) {
-                    skill_vector.put(skill, new Pair< Integer, Double >(0, skillValue));
-                } else {
-                    skill_vector.put(skill, new Pair< Integer, Double >(evidenceValue, skillValue));
+                    skillVector.put(skill, new Pair< Integer, Double >(evidenceValue, skillValue));
                 }
             }
             br.close();
@@ -98,10 +61,9 @@ public class SkillAnalyzer {
     }
 
     public SkillAnalyzer(String playerModelingDirectory) {
-        skill_vector = new LinkedHashMap< String, Pair<Integer,Double> >();
-        skills_specific_to_level = new ArrayList<String>();
+        skillVector = new LinkedHashMap< String, Pair<Integer,Double> >();
+        skillsSpecificToLevel = new ArrayList<String>();
         skills = new ArrayList<>();
-        debug = false;
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(playerModelingDirectory + "skills.txt"));
@@ -109,22 +71,23 @@ public class SkillAnalyzer {
             while ((line = br.readLine()) != null) {
                 String skill = line.trim();
                 skills.add(skill);
-                skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
+                skillVector.put(skill, new Pair< Integer, Double >(0,-1.0));
             }
             br.close();
-            rule_evidence = new LinkedHashMap<String,Double>();
-            for ( String s : skill_vector.keySet() ) {
-                rule_evidence.put(s,0.0);
+            ruleEvidence = new LinkedHashMap<String,Double>();
+            for ( String s : skillVector.keySet() ) {
+                ruleEvidence.put(s,0.0);
             }
         } catch (IOException e) {
-            System.err.println("There is an error with reading in " + AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
-            e.printStackTrace();
+            logger.fatal("There is an error with reading in " + playerModelingDirectory + "skills.txt");
+            logger.catching(Level.FATAL, e);
+            System.exit(1);
         }
     }
 
     public SkillAnalyzer() {
-        skill_vector = new LinkedHashMap< String, Pair<Integer,Double> >();
-        skills_specific_to_level = new ArrayList<String>();
+        skillVector = new LinkedHashMap< String, Pair<Integer,Double> >();
+        skillsSpecificToLevel = new ArrayList<String>();
         skills = new ArrayList<>();
 
         try {
@@ -133,62 +96,56 @@ public class SkillAnalyzer {
             while ((line = br.readLine()) != null) {
                 String skill = line.trim();
                 skills.add(skill);
-                skill_vector.put(skill, new Pair< Integer, Double >(0,-1.0));
+                skillVector.put(skill, new Pair< Integer, Double >(0,-1.0));
             }
             br.close();
-            rule_evidence = new LinkedHashMap<String,Double>();
-            for ( String s : skill_vector.keySet() ) {
-                rule_evidence.put(s,0.0);
+            ruleEvidence = new LinkedHashMap<String,Double>();
+            for ( String s : skillVector.keySet() ) {
+                ruleEvidence.put(s,0.0);
             }
         } catch (IOException e) {
-            System.err.println("There is an error with reading in " + AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
-            e.printStackTrace();
+            logger.fatal("There is an error with reading in " + AbstractPlayerModeler.PLAYER_MODELING_DATA_DIR + "skills.txt");
+            logger.catching(Level.FATAL, e);
+            System.exit(1);
         }
     }
 
-    /* TODO: Future work: Write a function to read in a skill vector from a file */
+    /* TODO: Future work: Write a function to read in a skill vector from a file - Why? */
 
     public void resetSkillsPerLevel() {
-        if (debug) {
-            System.out.println("Resetting list of skills for each level");
-        }
-        skills_specific_to_level.clear();
+        logger.info("Resetting list of skills for each level");
+        skillsSpecificToLevel.clear();
     }
 
     public void resetSkillVector() {
-        if (debug) {
-            System.out.println("Resetting skill vector");
-        }
-        for( String s : skill_vector.keySet() ) {
-            Pair<Integer, Double> tmp = skill_vector.get(s);
+        logger.info("Resetting skill vector");
+        for( String s : skillVector.keySet() ) {
+            Pair<Integer, Double> tmp = skillVector.get(s);
             tmp.p1 = 0;
             tmp.p2 = -1.0;
-            skill_vector.replace(s,tmp);
+            skillVector.replace(s,tmp);
         }
     }
 
     public void resetRuleEvidence() {
-        if (debug) {
-            System.out.println("Resetting evidence for each rule");
-        }
-        for ( String s : rule_evidence.keySet() ) {
-            rule_evidence.replace(s,0.0);
+        logger.info("Resetting evidence for each rule");
+        for ( String s : ruleEvidence.keySet() ) {
+            ruleEvidence.replace(s,0.0);
         }
     }
 
-    public boolean readSkillsForLevel(String path, String level_name) {
-        if (debug) {
-            System.out.println(String.format("Getting skills for level %s", level_name));
-        }
+    public boolean readSkillsForLevel(String path, String levelName) {
+        logger.info(String.format("Getting skills for level %s", levelName));
+
         try {
-            BufferedReader br = new BufferedReader(new FileReader(path + "/" + level_name));
+            BufferedReader br = new BufferedReader(new FileReader(path + "/" + levelName));
             String line;
             while ((line = br.readLine()) != null) {
                 if ( !skills.contains(line.trim()) ) {
-                    System.out.println(String.format("Skill %s not correctly worded or doesn't exist in file %s",line.trim(), path + "/" + level_name));
+                    logger.warn(String.format("Skill %s not correctly worded or doesn't exist in file %s",line.trim(), path + "/" + levelName));
                     System.exit(1);
                 }
-                skills_specific_to_level.add(line.trim());
+                skillsSpecificToLevel.add(line.trim());
             }
             return true;
         } catch (IOException e) {
@@ -196,31 +153,27 @@ public class SkillAnalyzer {
         }
     }
 
-    public boolean readSkillsForLevel(PersistentData persistentData) {
-        if (debug) {
-            System.out.println(String.format("Getting skills for PCG level."));
-        }
-        ArrayList<String> skillsPerLevel = (ArrayList<String>)persistentData.persistent_data.get("skills_per_level");
+    public boolean readSkillsForLevel(LevelData levelData) {
+        logger.info("Reading in skills specific to level");
+
+        ArrayList<String> skillsPerLevel = (ArrayList<String>) levelData.data.get("skills_per_level");
         if ( skillsPerLevel.size() == 0 ) {
             return false;
         }
         for ( String s : skillsPerLevel ) {
-            skills_specific_to_level.add(s);
+            skillsSpecificToLevel.add(s);
         }
         return true;
     }
 
     public void updateRuleEvidence(String skill) {
-        if (debug) {
-            System.out.println("Adding evidence for skill: " + skill);
-        }
-        rule_evidence.replace(skill, rule_evidence.get(skill) + 1.0);
+        logger.info("Adding evidence for skill: " + skill);
+        ruleEvidence.replace(skill, ruleEvidence.get(skill) + 1.0);
     }
 
     public void updateSkillVectorUsingMachineLearning(String classification) {
-        if (debug) {
-            System.out.println("Updating skill vector with classification: " + classification);
-        }
+        logger.info("Updating skill vector with classification: " + classification);
+
         double val = 0.0;
         if (classification.equals("C")) {
             val = 1.0;
@@ -232,15 +185,13 @@ public class SkillAnalyzer {
             val = 0.0;
         }
 
-        for ( String s : skills_specific_to_level ) {
-            if ( !skill_vector.containsKey(s) ) {
-                if ( PlayerModelingEngine.debug ) {
-                    System.out.println("Skill not found (or doesn't have ground truth). Skipping..." + s);
-                }
+        for ( String s : skillsSpecificToLevel) {
+            if ( !skillVector.containsKey(s) ) {
+                logger.warn("Skill not found (or doesn't have ground truth). Skipping..." + s);
                 continue;
             }
 
-            Pair<Integer, Double> tmp = skill_vector.get(s);
+            Pair<Integer, Double> tmp = skillVector.get(s);
             if ( tmp.p2 < 0 ) {
                 tmp.p2 = val;
             } else {
@@ -248,23 +199,21 @@ public class SkillAnalyzer {
             }
             tmp.p1++;
 
-            skill_vector.replace(s,tmp);
+            skillVector.replace(s,tmp);
         }
     }
 
     public void updateSkillVectorUsingRules() {
-        for ( String s : skills_specific_to_level ) {
-            if ( !skill_vector.containsKey(s) ) {
-                if (PlayerModelingEngine.debug ) {
-                    System.out.println("Skill not found (or doesn't have ground truth). Skipping..." + s);
-                }
+        for ( String s : skillsSpecificToLevel ) {
+            if ( !skillVector.containsKey(s) ) {
+                logger.warn("Skill not found (or doesn't have ground truth). Skipping..." + s);
                 continue;
             }
-            if ( rule_evidence.get(s) > 0.0 ) {
-                Pair<Integer, Double> tmp = skill_vector.get(s);
-                tmp.p2 =  ( ( tmp.p2*tmp.p1 ) + rule_evidence.get(s) )/ ( tmp.p1+ rule_evidence.get(s) );
-                tmp.p1 += rule_evidence.get(s).intValue();
-                skill_vector.replace(s,tmp);
+            if ( ruleEvidence.get(s) > 0.0 ) {
+                Pair<Integer, Double> tmp = skillVector.get(s);
+                tmp.p2 =  ( ( tmp.p2*tmp.p1 ) + ruleEvidence.get(s) )/ ( tmp.p1+ ruleEvidence.get(s) );
+                tmp.p1 += ruleEvidence.get(s).intValue();
+                skillVector.replace(s,tmp);
             }
         }
     }
@@ -272,12 +221,12 @@ public class SkillAnalyzer {
     /* ------------------------------------------ Print Functions ------------------------------------------ */
     public String printSkillVector() {
         ArrayList<String> tmp = new ArrayList<String>();
-        for ( String s : skill_vector.keySet() ) {
+        for ( String s : skillVector.keySet() ) {
             String frmt;
-            if ( skill_vector.get(s).p2 < 0 ) {
+            if ( skillVector.get(s).p2 < 0 ) {
                 frmt = String.format("%f",0.5);
             } else {
-                frmt = String.format("%f",skill_vector.get(s).p2);
+                frmt = String.format("%f", skillVector.get(s).p2);
             }
             tmp.add(frmt);
         }
@@ -286,8 +235,8 @@ public class SkillAnalyzer {
 
     public String printRuleEvidence() {
         ArrayList<String> tmp = new ArrayList<String>();
-        for ( String s : rule_evidence.keySet() ) {
-            String frmt = String.format("%f",rule_evidence.get(s));
+        for ( String s : ruleEvidence.keySet() ) {
+            String frmt = String.format("%f", ruleEvidence.get(s));
             tmp.add(frmt);
         }
         return String.join(",",tmp);
@@ -297,26 +246,29 @@ public class SkillAnalyzer {
         /* Write skill vector as CSV (skill name, value) */
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(filename));
-            for ( String s : skill_vector.keySet() ) {
+            for ( String s : skillVector.keySet() ) {
                 String format;
-                if ( skill_vector.get(s).p2 < 0 ) {
-                    format = String.format("%s,%f,%d", s, 0.5, skill_vector.get(s).p1);
+                if ( skillVector.get(s).p2 < 0 ) {
+                    format = String.format("%s,%f,%d", s, 0.5, skillVector.get(s).p1);
                 } else {
-                    format = String.format("%s,%f,%d", s, skill_vector.get(s).p2, skill_vector.get(s).p1);
+                    format = String.format("%s,%f,%d", s, skillVector.get(s).p2, skillVector.get(s).p1);
                 }
                 writer.println(format);
             }
+            writer.flush();
             writer.close();
         } catch ( IOException e ) {
-            e.printStackTrace();
+            logger.fatal("Unable to write skill vector to file: " + filename);
+            logger.catching(Level.FATAL, e);
+            System.exit(1);
         }
     }
 
     @Override
     public String toString() {
         ArrayList<String> tmp = new ArrayList<String>();
-        for ( String s : skill_vector.keySet() ) {
-            String frmt = String.format("%s (%d,%f)",s,skill_vector.get(s).p1,skill_vector.get(s).p2);
+        for ( String s : skillVector.keySet() ) {
+            String frmt = String.format("%s (%d,%f)",s, skillVector.get(s).p1, skillVector.get(s).p2);
             tmp.add(frmt);
         }
         return  String.join("\n",tmp);

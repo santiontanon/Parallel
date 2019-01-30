@@ -1,7 +1,9 @@
 package playermodeling;
 
 import org.apache.commons.cli.*;
-import pmutils.ServerInterface;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import server.ServerInterface;
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
 
@@ -15,6 +17,7 @@ public class Main {
     public static final String TRAINING_MODEL_FILEPATH = "pmfiles/classifier-model.model";
     public static final double interval = 5;
     public static final int skillVectorUpdateTechniqueFlag = 0;
+    private static final Logger logger = LogManager.getLogger(Main.class);
     public static final Classifier cls = new NaiveBayes();
 
     public static void main(String [] args) throws Exception {
@@ -27,7 +30,6 @@ public class Main {
         cliOptions.addOption("user", true, "Player");
         cliOptions.addOption("hostname",true,"Hostname of server");
         cliOptions.addOption("port",true,"Port number of server");
-        cliOptions.addOption("debug",false,"Port number of server");
 
         String meExecutionFilepath = "";
         String telemetryFilepath = "";
@@ -67,36 +69,32 @@ public class Main {
             if ( line.hasOption("port") ) {
                 port = Integer.parseInt(line.getOptionValue("port"));
             }
-            if ( line.hasOption("debug") ) {
-                debug = true;
-            }
         } catch( ParseException exp ) {
-            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+            logger.fatal("Parsing failed. Reason: " + exp.getMessage());
+            System.exit(1);
         }
 
         if (meExecutionFilepath.equals("") || telemetryFilepath.equals("")) {
-            System.out.println("Need to specify arguments for ME Execution and Telemetry Filepath");
-            System.exit(-1);
+            logger.fatal("Need to specify arguments for ME Execution and Telemetry Filepath");
+            System.exit(1);
         }
 
-        if ( debug ) {
-            System.out.println("------------------- Arguments -------------------");
-            System.out.println("Username of Player: " + user);
-            System.out.println("Model Engine Execution Filepath: " + meExecutionFilepath);
-            System.out.println("Telemetry File Path: " + telemetryFilepath);
-            System.out.println("Path to parameter file: " + parameterFilepath);
-            System.out.println("Path to player modeling directory: " + pmdir);
-            System.out.println("Current level: " + level);
-            System.out.println("Hostname: " + hostname);
-            System.out.println("Port: " + port);
-            System.out.println("Debugging: " + debug);
-            System.out.println("-------------------------------------------------");
-        }
+        logger.info("------------------- Arguments -------------------");
+        logger.info("Username of Player: " + user);
+        logger.info("Model Engine Execution Filepath: " + meExecutionFilepath);
+        logger.info("Telemetry File Path: " + telemetryFilepath);
+        logger.info("Path to parameter file: " + parameterFilepath);
+        logger.info("Path to player modeling directory: " + pmdir);
+        logger.info("Current level: " + level);
+        logger.info("Hostname: " + hostname);
+        logger.info("Port: " + port);
+        logger.info("Debugging: " + debug);
+        logger.info("-------------------------------------------------");
 
-        PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, pmdir, level, user, debug);
+        PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, pmdir, level, user);
         pmEngine.readTrainingModel(pmdir, TRAINING_MODEL_FILEPATH);
         pmEngine.executePM(telemetryFilepath, meExecutionFilepath);
-        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, debug, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath);
-        serverInterface.saveSkillVectorToServer(level, user);
+        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath);
+        serverInterface.saveSkillVector(level, user);
     }
 }

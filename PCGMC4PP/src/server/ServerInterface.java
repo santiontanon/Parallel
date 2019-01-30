@@ -325,44 +325,59 @@ public class ServerInterface {
         JsonPrimitive localPMJsonPrimitive = localPMJsonObject.getAsJsonPrimitive("user");
         String localUsername = localPMJsonPrimitive.getAsString();
 
-        System.out.println(remotePMData);
+        //System.out.println(remotePMData);
         JsonObject remotePMJsonObject = (JsonObject) jsonParser.parse(remotePMData);
         JsonPrimitive remotePMJsonPrimitive = remotePMJsonObject.getAsJsonPrimitive("user");
         String remoteUsername = remotePMJsonPrimitive.getAsString();
         String convertedRemotePMData = remotePMJsonObject.toString();
 
         if (!localUsername.equals(remoteUsername)) {
-            logger.warn(String.format("Users differ (local: %s, remote: %s)....replacing local data with remote."), localUsername, remoteUsername);
+            logger.warn(String.format("Users differ (local: %s, remote: %s)....replacing local data with remote.", localUsername, remoteUsername));
 
             JsonPrimitive jsonPrimitive = remotePMJsonObject.getAsJsonPrimitive("current");
             String skillVector = jsonPrimitive.getAsString();
             writeLocalPMData(convertedRemotePMData);
             writeSkillVector(skillVector);
             logger.info("Synchronization complete!!");
-
             return;
         }
-
-        JsonPrimitive lastUpdatedPrimitive = localPMJsonObject.getAsJsonPrimitive("last-updated");
-        LocalDateTime localLastUpdatedTime = LocalDateTime.parse(lastUpdatedPrimitive.getAsString(), DateTimeFormatter.ISO_DATE_TIME);
-
-        lastUpdatedPrimitive  = remotePMJsonObject.getAsJsonPrimitive("last-updated");
-        LocalDateTime remoteLastUpdatedTime = LocalDateTime.parse(lastUpdatedPrimitive.getAsString(), DateTimeFormatter.ISO_DATE_TIME);
-        logger.info(String.format("Local Last Updated Time: %s, Remote Last Updated Time: %s", localLastUpdatedTime.toString(), remoteLastUpdatedTime.toString()));
-
-        if ( remoteLastUpdatedTime.isAfter(localLastUpdatedTime) ) {
-            logger.info("Remote player modeling is more recent. Update local player modeling data");
-            writeLocalPMData(convertedRemotePMData);
-            JsonPrimitive jsonPrimitive = remotePMJsonObject.getAsJsonPrimitive("current");
-            String skillVector = jsonPrimitive.getAsString();
-            writeSkillVector(skillVector);
+        if ( localPMJsonObject.getAsJsonPrimitive("last-updated") == null
+                || remotePMJsonObject.getAsJsonPrimitive("last-updated") == null) {
+            logger.warn("Player modeling data does not have \"last-updated\" key. Synchronization will now assume largest file is the most recent file");
+            /* Revert back to largest file is most recent */
+            if (remotePMJsonObject.toString().length() > localPMJsonObject.toString().length()) {
+                logger.info("Remote player modeling is more recent. Update local player modeling data");
+                writeLocalPMData(convertedRemotePMData);
+                JsonPrimitive jsonPrimitive = remotePMJsonObject.getAsJsonPrimitive("current");
+                String skillVector = jsonPrimitive.getAsString();
+                writeSkillVector(skillVector);
+            } else {
+                if (remotePMJsonObject.toString().length() <= localPMJsonObject.toString().length()) {
+                    logger.info("Local player modeling is more recent. Update remote player modeling data");
+                    postPlayerModelData(localPMData, user);
+                }
+            }
         } else {
-            if ( localLastUpdatedTime.isAfter(remoteLastUpdatedTime) ) {
-                logger.info("Local player modeling is more recent. Update remote player modeling data");
-                postPlayerModelData(localPMData, user);
+            JsonPrimitive lastUpdatedPrimitive = localPMJsonObject.getAsJsonPrimitive("last-updated");
+            LocalDateTime localLastUpdatedTime = LocalDateTime.parse(lastUpdatedPrimitive.getAsString(), DateTimeFormatter.ISO_DATE_TIME);
+
+            lastUpdatedPrimitive = remotePMJsonObject.getAsJsonPrimitive("last-updated");
+            LocalDateTime remoteLastUpdatedTime = LocalDateTime.parse(lastUpdatedPrimitive.getAsString(), DateTimeFormatter.ISO_DATE_TIME);
+            logger.info(String.format("Local Last Updated Time: %s, Remote Last Updated Time: %s", localLastUpdatedTime.toString(), remoteLastUpdatedTime.toString()));
+
+            if (remoteLastUpdatedTime.isAfter(localLastUpdatedTime)) {
+                logger.info("Remote player modeling is more recent. Update local player modeling data");
+                writeLocalPMData(convertedRemotePMData);
+                JsonPrimitive jsonPrimitive = remotePMJsonObject.getAsJsonPrimitive("current");
+                String skillVector = jsonPrimitive.getAsString();
+                writeSkillVector(skillVector);
+            } else {
+                if (localLastUpdatedTime.isAfter(remoteLastUpdatedTime)) {
+                    logger.info("Local player modeling is more recent. Update remote player modeling data");
+                    postPlayerModelData(localPMData, user);
+                }
             }
         }
-
         logger.info("Synchronization complete!!");
         return;
     }
@@ -413,7 +428,7 @@ public class ServerInterface {
     public static void main(String [] args) {
 
         Options cliOptions = new Options();
-        cliOptions.addOption("mode",true,"Mode of operation (read or write)");
+        cliOptions.addOption("mode",true,"Mode of operation (sync or save)");
         cliOptions.addOption("user",true,"Name of player");
         cliOptions.addOption("level",true,"Current level");
         cliOptions.addOption("path",true,"Path to currentparameters.txt");
@@ -468,11 +483,20 @@ public class ServerInterface {
         logger.info("Debugging: " + debug);
         logger.info("-------------------------------------------------");
 
+
         ServerInterface serverInterface = new ServerInterface(paramFilePath, hostname, port);
-        if ( mode.equals("read") ) {
-            serverInterface.synchronizePMData(user);
-        } else {
-            serverInterface.saveSkillVector(level, user);
+        switch (mode) {
+            case "sync":
+                serverInterface.synchronizePMData(user);
+                break;
+            case "save":
+                serverInterface.saveSkillVector(level, user);
+                break;
+            default:
+                System.err.println("Please specify mode of execution (sync or save). Exiting..");
+                System.exit(1);
+                break;
+
         }
         serverInterface.closeClient();
     }

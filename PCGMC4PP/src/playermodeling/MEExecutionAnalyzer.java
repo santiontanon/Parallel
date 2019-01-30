@@ -2,6 +2,11 @@ package playermodeling;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pmutils.Pair;
+import pmutils.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,17 +18,11 @@ import java.util.LinkedHashMap;
 
 public class MEExecutionAnalyzer {
 
-    public String criticalSectionRootPath;
-    public HashMap<String, String> colors;
+    public static HashMap<String, String> colors;
 
-    public boolean debug;
-    SkillAnalyzer skillAnalyzer;
+    private static final Logger logger = LogManager.getLogger(MEExecutionAnalyzer.class);
 
-    public MEExecutionAnalyzer(SkillAnalyzer analyzer, String criticalSectionPath, boolean debug_) {
-        skillAnalyzer = analyzer;
-        criticalSectionRootPath = criticalSectionPath;
-        debug = debug_;
-
+    public static void setColorMap() {
         colors = new HashMap<>();
         String[] color_strings = {" ", "!", "\"", "#", "$", "%", "&", "\'", "(", ")", "/", "."};
         for (int i = 0; i < color_strings.length; i++) {
@@ -31,24 +30,17 @@ public class MEExecutionAnalyzer {
         }
     }
 
-    public HashMap<String, Object> parseComponentInformation(String componentInfo) {
-        Gson gson = new Gson();
-        HashMap<String, Object> info = gson.fromJson(componentInfo, HashMap.class);
-        return info;
-    }
-
-    public void printBoard(ArrayList< ArrayList<String> > board) {
+    public static void printBoard(ArrayList< ArrayList<String> > board) {
         for ( int i = 0; i < board.size(); i++ ) {
-            System.out.println(String.join(" ", board.get(i)));
+            logger.debug(String.join(" ", board.get(i)));
         }
     }
 
-    public PersistentData analyzeMEExecution(String meExecutionFilepath) {
-        if (debug) {
-            System.out.println("---------------------------------- Analyzing Model Execution Output! ----------------------------------");
-        }
+    public static LevelData analyzeMEExecution(String meExecutionFilepath, String criticalSectionRootPath, SkillAnalyzer skillAnalyzer) {
+        logger.info("---------------------------------- Analyzing Model Execution Output! ----------------------------------");
+
         Gson gson = new Gson();
-        PersistentData persistentData = new PersistentData();
+        LevelData levelData = new LevelData();
 
         /* Specific component information */
         ArrayList<String> diverterIDs = new ArrayList<String>();
@@ -75,7 +67,6 @@ public class MEExecutionAnalyzer {
 
         boolean criticalSectionDataPopulated = false;
         LinkedHashMap<String, LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>>> criticalSectionData = null;
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(meExecutionFilepath));
             String meExecutionFileLine;
@@ -88,46 +79,39 @@ public class MEExecutionAnalyzer {
 
                 if (meExecutionFileLine.startsWith("board_width")) {
                     boardWidth = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
-                    persistentData.persistent_data.put("width", boardWidth);
-                    if (debug) {
-                        System.out.println("Board width: " + boardWidth);
-                    }
+                    levelData.data.put("width", boardWidth);
+                    logger.trace("Board width: " + boardWidth);
                 }
 
                 if (meExecutionFileLine.startsWith("board_height")) {
                     boardHeight = Integer.parseInt(meExecutionFileLine.split("\t")[1]);
-                    persistentData.persistent_data.put("height", boardHeight);
-                    if (debug) {
-                        System.out.println("Board height: " + boardHeight);
-                    }
+                    levelData.data.put("height", boardHeight);
+                    logger.trace("Board height: " + boardHeight);
                 }
 
                 if (meExecutionFileLine.startsWith("SKILLS")) {
                     startSkillListParsing = true;
-                    if (debug) {
-                        System.out.println("---------------------- Parsing Skill List ----------------------");
-                    }
+                    logger.info("Reading skill list!");
                 } else {
                     if (startSkillListParsing) {
                         if (meExecutionFileLine.length() == 0) {
                             startSkillListParsing = false;
-                            if (debug) {
-                                System.out.println("-----------------------------------------------------------");
-                            }
+                            logger.debug("-----------------------------------------------------------");
+
                         } else {
-                            ArrayList<String> skillsPerLevel = (ArrayList<String>) persistentData.persistent_data.get("skills_per_level");
-                            if (debug) {
-                                System.out.println("Skill: " + meExecutionFileLine.trim());
-                            }
+                            ArrayList<String> skillsPerLevel = (ArrayList<String>) levelData.data.get("skills_per_level");
+                            logger.debug("Skill: " + meExecutionFileLine.trim());
+
                             skillsPerLevel.add(meExecutionFileLine.trim());
-                            persistentData.persistent_data.put("skills_per_level", skillsPerLevel);
+                            levelData.data.put("skills_per_level", skillsPerLevel);
                         }
                     }
                 }
 
 
                 if (meExecutionFileLine.startsWith("DIRECTIONS")) {
-                    ArrayList<ArrayList<String>> directionBoard = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("direction_layout");
+                    logger.info("Reading direction map!");
+                    ArrayList<ArrayList<String>> directionBoard = (ArrayList<ArrayList<String>>) levelData.data.get("direction_layout");
                     for (int i = meExecutionNumLines + 1; i < meExecutionNumLines + boardHeight + 1; i++) {
                         String tmp = br.readLine();
                         ArrayList<String> row = new ArrayList<String>();
@@ -135,17 +119,16 @@ public class MEExecutionAnalyzer {
                             row.add(String.valueOf(tmp.charAt(m)));
                         }
                         directionBoard.add(row);
-                        persistentData.persistent_data.replace("direction_layout", directionBoard);
+                        levelData.data.replace("direction_layout", directionBoard);
                     }
-                    if (debug) {
-                        System.out.println("----- Printing out direction board! -----");
-                        printBoard(directionBoard);
-                        System.out.println("-----------------------------------------");
-                    }
+                    logger.debug("----- Printing out direction board! -----");
+                    printBoard(directionBoard);
+                    logger.debug("-----------------------------------------");
                 }
 
                 if (meExecutionFileLine.startsWith("COLORS")) {
-                    ArrayList<ArrayList<String>> color = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
+                    logger.info("Reading colors map!");
+                    ArrayList<ArrayList<String>> color = (ArrayList<ArrayList<String>>) levelData.data.get("color_layout");
                     for (int i = meExecutionNumLines + 1; i < meExecutionNumLines + boardHeight + 1; i++) {
                         String tmp = br.readLine();
                         ArrayList<String> row = new ArrayList<String>();
@@ -154,12 +137,10 @@ public class MEExecutionAnalyzer {
                         }
                         color.add(row);
                     }
-                    persistentData.persistent_data.replace("color_layout", color);
-                    if (debug) {
-                        System.out.println("----- Printing out color board! -----");
-                        printBoard(color);
-                        System.out.println("-----------------------------------------");
-                    }
+                    levelData.data.replace("color_layout", color);
+                    logger.debug("----- Printing out color board! -----");
+                    printBoard(color);
+                    logger.debug("-----------------------------------------");
                 }
 
                 if (meExecutionFileLine.startsWith(("level_id"))) {
@@ -170,149 +151,146 @@ public class MEExecutionAnalyzer {
                     } else {
                         levelFilename = String.format("level%d.txt", levelID);
                     }
-                    if (debug) {
-                        System.out.println("Reading critical section data: " + levelFilename);
-                    }
+                    logger.info("Reading critical section data: " + levelFilename);
+
                     /* Read in critical section information */
                     if (new File(criticalSectionRootPath + "/" + levelFilename).exists() && !criticalSectionDataPopulated) {
                         criticalSectionDataPopulated = true;
                         criticalSectionData = new LinkedHashMap<>();
+                        try {
+                            BufferedReader criticalSectionFileBufferedReader =
+                                    new BufferedReader(new FileReader(criticalSectionRootPath + "/" + levelFilename));
+                            String criticalSectionFileLine;
+                            int criticalSectionFileNumLines = 0;
+                            int boardHeightLocal = 0;
+                            ArrayList<ArrayList<String>> directionBoard = new ArrayList<>();
+                            while ((criticalSectionFileLine = criticalSectionFileBufferedReader.readLine()) != null) {
 
-                        BufferedReader criticalSectionFileBufferedReader =
-                                new BufferedReader(new FileReader(criticalSectionRootPath + "/" + levelFilename));
-                        String criticalSectionFileLine;
-                        int criticalSectionFileNumLines = 0;
-                        int boardHeightLocal = 0;
-                        ArrayList<ArrayList<String>> directionBoard = new ArrayList<>();
-                        while ((criticalSectionFileLine = criticalSectionFileBufferedReader.readLine()) != null) {
-
-                            if (criticalSectionFileLine.startsWith("board_height")) {
-                                boardHeightLocal = Integer.parseInt(criticalSectionFileLine.split("\t")[1]);
-                                if (debug) {
-                                    System.out.println("Board height: " + boardHeightLocal);
+                                if (criticalSectionFileLine.startsWith("board_height")) {
+                                    boardHeightLocal = Integer.parseInt(criticalSectionFileLine.split("\t")[1]);
+                                    logger.debug("Board height: " + boardHeightLocal);
                                 }
-                            }
 
-                            if (criticalSectionFileLine.startsWith("DIRECTIONS")) {
-                                for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeightLocal + 1; i++) {
-                                    String tmp = criticalSectionFileBufferedReader.readLine();
-                                    ArrayList<String> row = new ArrayList<String>();
-                                    for (int m = 0; m < tmp.length(); m++) {
-                                        row.add(String.valueOf(tmp.charAt(m)));
+                                if (criticalSectionFileLine.startsWith("DIRECTIONS")) {
+                                    logger.info("Reading direction map in critical section file!");
+                                    for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeightLocal + 1; i++) {
+                                        String tmp = criticalSectionFileBufferedReader.readLine();
+                                        ArrayList<String> row = new ArrayList<String>();
+                                        for (int m = 0; m < tmp.length(); m++) {
+                                            row.add(String.valueOf(tmp.charAt(m)));
+                                        }
+                                        directionBoard.add(row);
                                     }
-                                    directionBoard.add(row);
-                                }
-                                if (debug) {
-                                    System.out.println("----- Printing out direction board! -----");
+                                    logger.debug("----- Printing out direction board! -----");
                                     printBoard(directionBoard);
-                                    System.out.println("-----------------------------------------");
+                                    logger.debug("-----------------------------------------");
                                 }
-                            }
 
-                            if (criticalSectionFileLine.startsWith("CRITICALSECTIONS")) {
-                                ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("critical_section");
-                                for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeightLocal + 1; i++) {
-                                    String tmp = criticalSectionFileBufferedReader.readLine();
-                                    ArrayList<String> row = new ArrayList<String>();
-                                    for (int m = 0; m < tmp.length(); m++) {
-                                        row.add(String.valueOf(tmp.charAt(m)));
+                                if (criticalSectionFileLine.startsWith("CRITICALSECTIONS")) {
+                                    logger.info("Reading critical section map in critical section file!");
+                                    ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) levelData.data.get("critical_section");
+                                    for (int i = criticalSectionFileNumLines + 1; i < criticalSectionFileNumLines + boardHeightLocal + 1; i++) {
+                                        String tmp = criticalSectionFileBufferedReader.readLine();
+                                        ArrayList<String> row = new ArrayList<String>();
+                                        for (int m = 0; m < tmp.length(); m++) {
+                                            row.add(String.valueOf(tmp.charAt(m)));
+                                        }
+                                        criticalSection.add(row);
                                     }
-                                    criticalSection.add(row);
-                                }
-                                if (debug) {
-                                    System.out.println("----- Printing out critical section board! -----");
+                                    logger.debug("----- Printing out critical section board! -----");
                                     printBoard(criticalSection);
-                                    System.out.println("------------------------------------------------");
+                                    logger.debug("------------------------------------------------");
+                                    levelData.data.replace("critical_section", criticalSection);
                                 }
-                                persistentData.persistent_data.replace("critical_section", criticalSection);
+
+                                criticalSectionFileNumLines++;
                             }
+                            ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) levelData.data.get("critical_section");
+                            logger.info("Analyzing critical section data!");
+                            for (int i = 0; i < criticalSection.size(); i++) {
+                                for (int j = 0; j < criticalSection.get(0).size(); j++) {
+                                    logger.debug(String.format("(i,j): (%d,%d) - %s", i, j, criticalSection.get(i).get(j)));
 
-                            criticalSectionFileNumLines++;
-                        }
-                        ArrayList<ArrayList<String>> criticalSection = (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("critical_section");
+                                    if (Character.isUpperCase(criticalSection.get(i).get(j).charAt(0))) {
+                                        /* Delivery Point */
+                                        if (!criticalSectionData.containsKey(criticalSection.get(i).get(j).toLowerCase())) {
+                                            LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> coords =
+                                                    new LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>>();
+                                            coords.put("semaphore", new ArrayList<Pair<Integer, Integer>>());
+                                            coords.put("button", new ArrayList<Pair<Integer, Integer>>());
+                                            criticalSectionData.put(criticalSection.get(i).get(j).toLowerCase(), coords);
+                                        }
+                                        LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> tmp = criticalSectionData.get(criticalSection.get(i).get(j).toLowerCase());
+                                        ArrayList<Pair<Integer, Integer>> coords = tmp.get("button");
+                                        if (i - 1 >= 0 && directionBoard.get(i - 1).get(j).equals("A")) {
+                                            coords.add(new Pair<Integer, Integer>(j, i - 1));
+                                        }
 
-                        for (int i = 0; i < criticalSection.size(); i++) {
-                            for (int j = 0; j < criticalSection.get(0).size(); j++) {
-                                if (debug) {
-                                    System.out.println(String.format("(i,j): (%d,%d) - %s", i, j, criticalSection.get(i).get(j)));
-                                }
-                                if (Character.isUpperCase(criticalSection.get(i).get(j).charAt(0))) {
-                                    /* Delivery Point */
-                                    if (!criticalSectionData.containsKey(criticalSection.get(i).get(j).toLowerCase())) {
-                                        LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> coords =
-                                                new LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>>();
-                                        coords.put("semaphore", new ArrayList<Pair<Integer, Integer>>());
-                                        coords.put("button", new ArrayList<Pair<Integer, Integer>>());
-                                        criticalSectionData.put(criticalSection.get(i).get(j).toLowerCase(), coords);
-                                    }
-                                    LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> tmp = criticalSectionData.get(criticalSection.get(i).get(j).toLowerCase());
-                                    ArrayList<Pair<Integer, Integer>> coords = tmp.get("button");
-                                    if (i - 1 >= 0 && directionBoard.get(i - 1).get(j).equals("A")) {
-                                        coords.add(new Pair<Integer, Integer>(j, i - 1));
-                                    }
+                                        if (i + 1 < directionBoard.size() && directionBoard.get(i + 1).get(j).equals("V")) {
+                                            coords.add(new Pair<Integer, Integer>(j, i + 1));
+                                        }
 
-                                    if (i + 1 < directionBoard.size() && directionBoard.get(i + 1).get(j).equals("V")) {
-                                        coords.add(new Pair<Integer, Integer>(j, i + 1));
-                                    }
+                                        if (j - 1 >= 0 && directionBoard.get(i).get(j - 1).equals("<")) {
+                                            coords.add(new Pair<Integer, Integer>(j - 1, i));
+                                        }
 
-                                    if (j - 1 >= 0 && directionBoard.get(i).get(j - 1).equals("<")) {
-                                        coords.add(new Pair<Integer, Integer>(j - 1, i));
-                                    }
-
-                                    if (j + 1 < directionBoard.get(0).size() && directionBoard.get(i).get(j + 1).equals(">")) {
-                                        coords.add(new Pair<Integer, Integer>(j + 1, i));
-                                    }
-                                    tmp.replace("button", coords);
-                                    criticalSectionData.replace(criticalSection.get(i).get(j).toLowerCase(), tmp);
-                                }
-
-                                if (Character.isLowerCase(criticalSection.get(i).get(j).charAt(0))) {
-                                    /* Pickup Point */
-                                    if (!criticalSectionData.containsKey(criticalSection.get(i).get(j).toLowerCase())) {
-                                        LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> coords =
-                                                new LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>>();
-                                        coords.put("semaphore", new ArrayList<Pair<Integer, Integer>>());
-                                        coords.put("button", new ArrayList<Pair<Integer, Integer>>());
-                                        criticalSectionData.put(criticalSection.get(i).get(j).toLowerCase(), coords);
-                                    }
-                                    LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> tmp = criticalSectionData.get(criticalSection.get(i).get(j).toLowerCase());
-                                    ArrayList<Pair<Integer, Integer>> coords = tmp.get("semaphore");
-
-                                    if (i - 1 >= 0 && directionBoard.get(i - 1).get(j).equals("V")) {
-                                        coords.add(new Pair<Integer, Integer>(j, i - 1));
+                                        if (j + 1 < directionBoard.get(0).size() && directionBoard.get(i).get(j + 1).equals(">")) {
+                                            coords.add(new Pair<Integer, Integer>(j + 1, i));
+                                        }
+                                        tmp.replace("button", coords);
+                                        criticalSectionData.replace(criticalSection.get(i).get(j).toLowerCase(), tmp);
                                     }
 
-                                    if (i + 1 < directionBoard.size() && directionBoard.get(i + 1).get(j).equals("A")) {
-                                        coords.add(new Pair<Integer, Integer>(j, i + 1));
-                                    }
+                                    if (Character.isLowerCase(criticalSection.get(i).get(j).charAt(0))) {
+                                        /* Pickup Point */
+                                        if (!criticalSectionData.containsKey(criticalSection.get(i).get(j).toLowerCase())) {
+                                            LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> coords =
+                                                    new LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>>();
+                                            coords.put("semaphore", new ArrayList<Pair<Integer, Integer>>());
+                                            coords.put("button", new ArrayList<Pair<Integer, Integer>>());
+                                            criticalSectionData.put(criticalSection.get(i).get(j).toLowerCase(), coords);
+                                        }
+                                        LinkedHashMap<String, ArrayList<Pair<Integer, Integer>>> tmp = criticalSectionData.get(criticalSection.get(i).get(j).toLowerCase());
+                                        ArrayList<Pair<Integer, Integer>> coords = tmp.get("semaphore");
 
-                                    if (j - 1 >= 0 && directionBoard.get(i).get(j - 1).equals(">")) {
-                                        coords.add(new Pair<Integer, Integer>(j - 1, i));
-                                    }
+                                        if (i - 1 >= 0 && directionBoard.get(i - 1).get(j).equals("V")) {
+                                            coords.add(new Pair<Integer, Integer>(j, i - 1));
+                                        }
 
-                                    if (j + 1 < directionBoard.get(0).size() && directionBoard.get(i).get(j + 1).equals("<")) {
-                                        coords.add(new Pair<Integer, Integer>(j + 1, i));
+                                        if (i + 1 < directionBoard.size() && directionBoard.get(i + 1).get(j).equals("A")) {
+                                            coords.add(new Pair<Integer, Integer>(j, i + 1));
+                                        }
+
+                                        if (j - 1 >= 0 && directionBoard.get(i).get(j - 1).equals(">")) {
+                                            coords.add(new Pair<Integer, Integer>(j - 1, i));
+                                        }
+
+                                        if (j + 1 < directionBoard.get(0).size() && directionBoard.get(i).get(j + 1).equals("<")) {
+                                            coords.add(new Pair<Integer, Integer>(j + 1, i));
+                                        }
+                                        tmp.replace("semaphore", coords);
+                                        criticalSectionData.replace(criticalSection.get(i).get(j).toLowerCase(), tmp);
                                     }
-                                    tmp.replace("semaphore", coords);
-                                    criticalSectionData.replace(criticalSection.get(i).get(j).toLowerCase(), tmp);
                                 }
                             }
-                        }
-                        if (debug) {
-                            System.out.println("Level: " + levelFilename);
+                            logger.debug("Level: " + levelFilename);
                             for (String section : criticalSectionData.keySet()) {
                                 for (String sem_or_button : criticalSectionData.get(section).keySet()) {
                                     for (Pair<Integer, Integer> coord : criticalSectionData.get(section).get(sem_or_button)) {
-                                        System.out.println(String.format("Section %s, Component %s, Coordinate (i,j): (%d,%d)", section, sem_or_button, coord.p1, coord.p2));
+                                        logger.debug("Section %s, Component %s, Coordinate (i,j): (%d,%d)", section, sem_or_button, coord.p1, coord.p2);
                                     }
                                 }
                             }
+                            criticalSectionFileBufferedReader.close();
+                        } catch ( IOException e ) {
+                            logger.fatal("Unable to read critical section file: " + criticalSectionRootPath + "/" + levelFilename);
+                            logger.catching(Level.FATAL, e);
                         }
-                        criticalSectionFileBufferedReader.close();
                     }
                 }
 
                 if (meExecutionFileLine.startsWith("goal_struct")) {
+                    logger.info("Analyzing goal struct in ME Execution file");
                     /* Rule: "Understand specific delivery points" and "Deliver packages" */
 
                     HashMap<String, Object> goalInformation = gson.fromJson(meExecutionFileLine.split("\t")[1], HashMap.class);
@@ -341,18 +319,15 @@ public class MEExecutionAnalyzer {
 
                 if (meExecutionFileLine.startsWith("EXECUTION")) {
                     startExecutionParsing = true;
-                    if (debug) {
-                        System.out.println("---------------------- Parsing Execution ----------------------");
-                    }
+                    logger.info("Reading execution data!");
                 } else {
                     if (startExecutionParsing) {
                         if (meExecutionFileLine.length() == 0) {
                             startExecutionParsing = false;
-                            if (debug) {
-                                System.out.println("-----------------------------------------------------------");
-                            }
+                            logger.debug("-----------------------------------------------------------");
                         } else {
-                            if (meExecutionFileLine.split("\t")[0].equals("D")) {
+                            String [] splitLine = meExecutionFileLine.split("\t");
+                            if (splitLine[0].equals("D")) {
                                 /* Execution denotes a package was delivered */
                                 HashMap<String, Object> deliveryExecution = gson.fromJson(meExecutionFileLine.split("\t")[5], HashMap.class);
                                 /* Structure example:
@@ -372,13 +347,26 @@ public class MEExecutionAnalyzer {
                                 } else {
                                     ArrayList<Integer> delivered = (ArrayList<Integer>) deliveryExecution.get("delivered_items");
                                     ArrayList<Integer> missed = (ArrayList<Integer>) deliveryExecution.get("missed_items");
-                                    if (debug) {
-                                        System.out.println("Delivery execution: " + deliveryExecution.toString());
-                                    }
+                                    logger.debug("Delivery execution: " + deliveryExecution.toString());
+
                                     int id = ((Double) deliveryExecution.get("delivered_to")).intValue();
                                     if (componentIDToNumMissed.containsKey(id)) {
                                         componentIDToNumMissed.replace(id, componentIDToNumMissed.get(id) + missed.size());
                                         componentIDToNumDelivered.replace(id, componentIDToNumDelivered.get(id) + delivered.size());
+                                    }
+                                }
+                            } else {
+                                if ( splitLine[0].equals("E") ) {
+                                    HashMap<String, Object> parsedInfo = Utils.parseComponentInformation(splitLine[5]);
+                                    logger.info("Parsed Execution Data: " + parsedInfo);
+                                    if ( parsedInfo.containsKey("race_condition_detected") ) {
+                                        logger.debug("Running check to see if player avoided race condition");
+                                        if ( parsedInfo.get("race_condition_detected").equals("false") ) {
+                                            logger.debug("Race condition successfully avoided");
+                                            skillAnalyzer.updateRuleEvidence("Avoid race conditions");
+                                        } else {
+                                            logger.debug("Race condition not successfully avoided");
+                                        }
                                     }
                                 }
                             }
@@ -387,56 +375,48 @@ public class MEExecutionAnalyzer {
                 }
 
                 if (meExecutionFileLine.startsWith("COMPONENTS")) {
-                    if (debug) {
-                        System.out.println("---------------------- Parsing Component List ----------------------");
-                    }
+                    logger.info("Reading component information!");
                     startComponentParsing = true;
                 } else {
                     if (startComponentParsing) {
                         if (meExecutionFileLine.length() == 0) {
                             startComponentParsing = false;
-                            if (debug) {
-                                System.out.println("-----------------------------------------------------------");
-                            }
+                            logger.debug("-----------------------------------------------------------");
                         } else {
                             String[] componentInfo = meExecutionFileLine.split("\t");
 
                             /* Component -> x,y coordinate on board */
-                            if (persistentData.persistent_data.containsKey("comp_loc_map")) {
+                            if (levelData.data.containsKey("comp_loc_map")) {
                                 HashMap<String, ArrayList<Integer>> compLocationMap =
-                                        (HashMap<String, ArrayList<Integer>>) persistentData.persistent_data.get("comp_loc_map");
+                                        (HashMap<String, ArrayList<Integer>>) levelData.data.get("comp_loc_map");
                                 ArrayList<Integer> tmp = new ArrayList<Integer>();
                                 tmp.add(Integer.parseInt(componentInfo[2]));
                                 tmp.add(Integer.parseInt(componentInfo[3]));
                                 compLocationMap.put(componentInfo[0], tmp);
-                                persistentData.persistent_data.replace("comp_loc_map", compLocationMap);
+                                levelData.data.replace("comp_loc_map", compLocationMap);
                             }
 
                             /* Actual information about the component is located at index 6 */
-                            HashMap<String, Object> parsedInfo = parseComponentInformation(componentInfo[6]);
+                            HashMap<String, Object> parsedInfo = Utils.parseComponentInformation(componentInfo[6]);
 
                             if (parsedInfo.containsKey("color")) {
-                                if (persistentData.persistent_data.containsKey("comp_color_map")) {
+                                if (levelData.data.containsKey("comp_color_map")) {
                                     HashMap<String, String> compColorMap =
-                                            (HashMap<String, String>) persistentData.persistent_data.get("comp_color_map");
+                                            (HashMap<String, String>) levelData.data.get("comp_color_map");
                                     int x = Integer.parseInt(componentInfo[2]);
                                     int y = Integer.parseInt(componentInfo[3]);
                                     ArrayList<ArrayList<String>> colorBoard =
-                                            (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
+                                            (ArrayList<ArrayList<String>>) levelData.data.get("color_layout");
                                     String colorID = colors.get(colorBoard.get(y).get(x));
-//                                    System.out.println(colorBoard);
-//                                    System.out.println(parsedInfo);
                                     if (colorID == null) {
-                                        System.err.println("Add this color to the list: " + colorBoard.get(y).get(x));
+                                        logger.warn("Add this color to the list: " + colorBoard.get(y).get(x));
                                     } else {
                                         compColorMap.put(componentInfo[0], colorID);
                                     }
-                                    persistentData.persistent_data.replace("comp_color_map", compColorMap);
+                                    levelData.data.replace("comp_color_map", compColorMap);
                                 }
                             }
-                            if (debug) {
-                                System.out.println(String.format("%s (ID=%s): (%s,%s)", componentInfo[1], componentInfo[0], componentInfo[2], componentInfo[3]));
-                            }
+                            logger.debug(String.format("%s (ID=%s): (%s,%s)", componentInfo[1], componentInfo[0], componentInfo[2], componentInfo[3]));
                             switch (componentInfo[1]) {
                                 case "diverter":
 
@@ -454,16 +434,14 @@ public class MEExecutionAnalyzer {
                                     }
                                     semaphoreIDs.add(componentInfo[0]);
                                     ArrayList<ArrayList<String>> colorBoard =
-                                            (ArrayList<ArrayList<String>>) persistentData.persistent_data.get("color_layout");
+                                            (ArrayList<ArrayList<String>>) levelData.data.get("color_layout");
                                     if (!curLocSemaphores.containsKey(componentInfo[0])) {
                                         int x = Integer.parseInt(componentInfo[2]);
                                         int y = Integer.parseInt(componentInfo[3]);
                                         curLocSemaphores.put(componentInfo[0], new Pair<Integer, Integer>(x, y));
                                         String trackColor = colors.get(colorBoard.get(y).get(x));
                                         curTrackSemaphores.put(componentInfo[0], trackColor);
-                                        if (debug) {
-                                            System.out.println(String.format("Track of semaphore %s, (x,y): (%d,%d)", trackColor, x, y));
-                                        }
+                                        logger.debug(String.format("Track of semaphore %s, (x,y): (%d,%d)", trackColor, x, y));
                                     } else {
                                         int x = Integer.parseInt(componentInfo[2]);
                                         int y = Integer.parseInt(componentInfo[3]);
@@ -471,9 +449,7 @@ public class MEExecutionAnalyzer {
 
                                         String trackColor = colors.get(colorBoard.get(y).get(x));
                                         curTrackSemaphores.replace(componentInfo[0], trackColor);
-                                        if (debug) {
-                                            System.out.println(String.format("Track of semaphore %s, (x,y): (%d,%d)", trackColor, x, y));
-                                        }
+                                        logger.debug(String.format("Track of semaphore %s, (x,y): (%d,%d)", trackColor, x, y));
                                     }
                                     break;
                                 case "signal":
@@ -505,13 +481,13 @@ public class MEExecutionAnalyzer {
             }
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.fatal("Unable to read ME Execution file: " + meExecutionFilepath);
+            logger.catching(Level.FATAL, e);
         }
 
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skill \"Understand that arrows move at unpredictable rates\"");
-        }
+        logger.info("Checking whether player understood the skill \"Understand that arrows move at unpredictable rates\"");
+
         /* Rule: "Understand that arrows move at unpredictable rates"  */
         if (prevSemaphoreLocations == null) {
             prevSemaphoreLocations = new HashMap<>();
@@ -556,9 +532,7 @@ public class MEExecutionAnalyzer {
         HashMap<String, String> buttonSemaphoreLinkMap = new HashMap<String, String>();
         HashMap<String, ArrayList<String>> semaphoreButtonLinkMap = new HashMap<String, ArrayList<String>>();
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skills \"Be able to link semaphores to buttons\"");
-        }
+        logger.info("Checking whether player understood the skills \"Be able to link semaphores to buttons\"");
         /* Rule: "Be able to link semaphores to buttons" and "Understand that arrows move at unpredictable rates" */
         for (String semID : componentButtonMap.keySet()) {
             if (semaphoreIDs.contains(semID)) {
@@ -578,13 +552,11 @@ public class MEExecutionAnalyzer {
             }
         }
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skills \"Understand that arrows move at unpredictable rates\"");
-        }
+        logger.info("Checking whether player understood the skills \"Understand that arrows move at unpredictable rates\"");
 
-        HashMap<String, String> colorMap = (HashMap<String, String>) persistentData.persistent_data.get("comp_color_map");
+        HashMap<String, String> colorMap = (HashMap<String, String>) levelData.data.get("comp_color_map");
         HashMap<String, ArrayList<Integer>> compLocMap =
-                (HashMap<String, ArrayList<Integer>>) persistentData.persistent_data.get("comp_loc_map");
+                (HashMap<String, ArrayList<Integer>>) levelData.data.get("comp_loc_map");
         HashMap<String, Integer> numSemaphoresUnlinkedPerTrack = new HashMap<String, Integer>();
         for (String semID : unlinkedSemaphoreIDs) {
             String color = colorMap.get(semID);
@@ -607,9 +579,7 @@ public class MEExecutionAnalyzer {
          * */
 
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skill \"Block critical sections\"");
-        }
+        logger.info("Checking whether player understood the skill \"Block critical sections\"");
         if (criticalSectionData != null) {
             for (String section : criticalSectionData.keySet()) {
                 ArrayList<Pair<Integer, Integer>> semaphoreCoords = criticalSectionData.get(section).get("semaphore");
@@ -684,16 +654,12 @@ public class MEExecutionAnalyzer {
             }
         }
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skill \"Synchronize multiple arrows\"");
-        }
+        logger.info("Checking whether player understood the skill \"Synchronize multiple arrows\"");
         for (String buttonID : buttonSemaphoreLinkMap.keySet()) {
             String button1Color = colorMap.get(buttonID);
             /* Check the color of the linked semaphore */
             String semaphore2Color = colorMap.get(buttonSemaphoreLinkMap.get(buttonID));
-            if (debug) {
-                System.out.println("Button 1 color: " + button1Color + ", Semaphore 2 color: " + semaphore2Color);
-            }
+            logger.debug("Button 1 color: " + button1Color + ", Semaphore 2 color: " + semaphore2Color);
 
             /* Make sure these colors are different */
             if (button1Color.equals(semaphore2Color)) {
@@ -703,16 +669,11 @@ public class MEExecutionAnalyzer {
             /* Check if a semaphore exists on lock1_color, and check what lock it's connected to.  */
             for (String componentID : colorMap.keySet()) {
                 /* If one the same track as lock1, and is a semaphore */
-//                                    System.out.println("Color map: " + color_map);
-//                                    System.out.println("file: " + data_files.get(data_).get(0));
-//                                    System.out.println("data_files: " + data_files.get(data_));
                 if (colorMap.get(componentID).equals(button1Color) && semaphoreIDs.contains(componentID) && !unlinkedSemaphoreIDs.contains(componentID)) {
                     for (String button : semaphoreButtonLinkMap.get(componentID)) {
                         String button2Color = colorMap.get(button);
                         /* Check if lock2's color is the same as sem2's color, and check if lock2 isn't the same color as sem1 */
-                        if (debug) {
-                            System.out.println("Button 2 color: " + button2Color + ", Semaphore 2 color: " + semaphore2Color);
-                        }
+                        logger.debug("Button 2 color: " + button2Color + ", Semaphore 2 color: " + semaphore2Color);
                         if (button2Color.equals(semaphore2Color)) {
                             skillAnalyzer.updateRuleEvidence("Synchronize multiple arrows");
                         }
@@ -721,9 +682,7 @@ public class MEExecutionAnalyzer {
             }
         }
 
-        if (debug) {
-            System.out.println("Checking whether player understood the skills \"Deliver packages\" and \"Understand specific delivery points\"");
-        }
+        logger.info("Checking whether player understood the skills \"Deliver packages\" and \"Understand specific delivery points\"");
         /* NOTE: Is this computed for each file sent over to the ME or for all executions? */
         int totalMissed = 0;
         boolean allPackagesDelivered = true;
@@ -749,15 +708,13 @@ public class MEExecutionAnalyzer {
             }
         }
         if (allPackagesDelivered) {
-            //System.out.println("You successfully delivered all the packages!");
             skillAnalyzer.updateRuleEvidence("Deliver packages");
         }
 
         if (totalMissed == 0) {
-            //System.out.println("You successfully didn't miss any packages!");
             skillAnalyzer.updateRuleEvidence("Understand specific delivery points");
         }
 
-        return persistentData;
+        return levelData;
     }
 }

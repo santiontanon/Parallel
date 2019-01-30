@@ -99,3 +99,4 @@ Understand that arrows move at unpredictable rates
 Alternating access with semaphores and buttons (ensure mutual exclusion)
 Synchronize multiple arrows
 Testing before submitting
+Avoid race conditions

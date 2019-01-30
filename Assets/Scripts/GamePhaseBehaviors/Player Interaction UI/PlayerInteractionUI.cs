@@ -75,13 +75,15 @@ public class PlayerInteraction_UI
 		goalOverlay.ClosePanel(true);
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
-		levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != null && GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != "N/A")
+            levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Substring(GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Length - 3);
+        else
+            levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
         if(levelText.text.Length == 1)
         {
             levelText.text = 0 + levelText.text;
         }
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Study_8)
-            levelTimer.gameObject.SetActive(false);
+        levelTimer.gameObject.SetActive(false);
 		zoomMeter.OpenMeter();
 	}
 
@@ -144,16 +146,25 @@ public class PlayerInteraction_UI
 
 	public void SetText(Level inputLevel)
 	{
-		levelNameText.text = inputLevel.metadata.level_title;
+        if (inputLevel.metadata.pcg_id != "N/A")
+        {
+            levelNameText.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Number.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Title.text = inputLevel.metadata.pcg_id.ToUpper();
+        }
+        else{
+            levelNameText.text = inputLevel.metadata.level_title;
+            goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
+            goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
+        }
 		goalDescriptionText.text = inputLevel.metadata.goal_string;
-        goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
-        goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
         goalDescriptionOverlay.SetFeedbackScore(GameManager.Instance.GetScoreManager().GetCalculatedScore(inputLevel.metadata.level_id));
     }
 
 	public IEnumerator TriggerGoalPopUp(string titleText, string feedbackText)
 	{
         feedbackText = feedbackText.Replace("\n•", "");
+        feedbackText = feedbackText.Replace("\n", "");
         GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp", titleText + (feedbackText.TrimStart(new char[2] { '/', 'n' })));
 		goalOverlay.SetText( titleText, feedbackText );
 		goalOverlay.OpenPanel();

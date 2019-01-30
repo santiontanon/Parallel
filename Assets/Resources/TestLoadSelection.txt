@@ -1,0 +1,16 @@
+{  
+  "date":"2017-10-24",
+  "levels":{  
+    "required":[  
+      {  
+        "file":"level01",
+        "title":"1"
+      }
+    ],
+    "optional":[
+    ],
+    "previous":[  
+    ]
+  },
+  "id":4211
+}

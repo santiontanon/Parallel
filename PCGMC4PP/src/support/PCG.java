@@ -32,7 +32,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -49,15 +48,12 @@ import lgraphs.ontology.Sort;
 import lgraphs.sampler.LGraphGrammarSampler;
 import lgraphs.sampler.LGraphRewritingGrammar;
 import lgraphs.sampler.LGraphRewritingRule;
-import lgraphs.visualization.LGraphVisualizer;
 import optimization.EmbeddingComparator;
 import optimization.OrthographicEmbeddingBoardSizeOptimizer;
-import optimization.OrthographicEmbeddingOptimizer;
 import optimization.OrthographicEmbeddingPathOptimizer;
 import orthographicembedding.OrthographicEmbedding;
 import orthographicembedding.OrthographicEmbeddingResult;
 import util.Sampler;
-import util.SavePNG;
 import valls.util.IsNumber;
 import valls.util.ListToArrayUtility;
 
@@ -82,9 +78,21 @@ public class PCG {
         String sizeStr = args[2];
         String outputPath = null;
         boolean debug = false;
+        String desiredLevelID = null;
         if (args.length >= 4) {
             outputPath = args[3];
             dataFolderPath = args[3];
+            if (args.length >= 5) {
+                outputPath = args[4];
+            }
+        }
+        for(int i = 0;i<args.length;i++) {
+            if (args[i].equals("-pcgid")) {
+                if (args.length > i+1) {
+                    // we have the desired level ID name!
+                    desiredLevelID = args[i+1];
+                }
+            }
         }
         LinkedHashMap<String, Double> playerModel = null;
         if("debug".equals(parameterFile)) {
@@ -98,7 +106,7 @@ public class PCG {
             System.out.println(GameStateExporter.export(gs));
         } else {
             // Export
-            export(gs, getNewFileFromFilename(parameterFile, false, outputPath));
+            export(gs, getNewFileFromFilename(parameterFile, false, outputPath), desiredLevelID);
         }
         System.exit(0);
     }
@@ -410,8 +418,8 @@ public class PCG {
         return gs;
     }
 
-    public static void export(GameState gs, File out_file) throws IOException {
-        String out = GameStateExporter.export(gs);
+    public static void export(GameState gs, File out_file, String desiredLevelID) throws IOException {
+        String out = GameStateExporter.export(gs, desiredLevelID);
         PrintWriter writer = new PrintWriter(out_file);
         writer.print(out);
         writer.close();
