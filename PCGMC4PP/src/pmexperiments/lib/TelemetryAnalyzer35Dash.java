@@ -1,12 +1,11 @@
 package pmexperiments;
 
-import playermodeling.TelemetryUtils;
-
+import playermodeling.TelemetryAnalyzer;
 import java.util.ArrayList;
 
-public class TelemetryUtils35Dash extends TelemetryUtils {
+public class TelemetryAnalyzer35Dash extends TelemetryAnalyzer {
 
-    public TelemetryUtils35Dash() {}
+    public TelemetryAnalyzer35Dash() {}
 
     public String getUsername(ArrayList<String> data) {
         /*  NOTE: There are a few users from the study

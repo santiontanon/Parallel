@@ -1,0 +1,13 @@
+Hover over objects to see what they do
+Use help bar
+Hover over side arrows to see different colored tracks
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Be able to link buttons to direction switches
+Prevent starvation
+Understand that arrows move at unpredictable rates
+Understand the use of semaphores
+Understand exchange points
+Deliver packages with multiple synchronized arrows
+Testing before submitting

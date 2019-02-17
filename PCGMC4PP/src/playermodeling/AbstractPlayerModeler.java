@@ -37,7 +37,6 @@ public abstract class AbstractPlayerModeler {
         for (int i = 0; i < FeatureExtractor.features.length; i++) {
             attributes.add(new Attribute(FeatureExtractor.features[i]));
         }
-
         annotationValues = new ArrayList<String>();
         annotationValues.add("A");
         annotationValues.add("B");
