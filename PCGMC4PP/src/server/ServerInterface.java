@@ -32,6 +32,7 @@ public class ServerInterface {
     private String paramFilepath;
     private String serverHost;
     private int port;
+    private boolean serverConnectionAvail;
 
     private String startTimestamp;
     private String endTimestamp;
@@ -40,7 +41,7 @@ public class ServerInterface {
 
 
     public ServerInterface(String paramFilepath_, String serverHost_, int port_,
-                           String startTime_, String endTime_, String meFileName_) {
+                           String startTime_, String endTime_, String meFileName_, boolean connect) {
         RequestConfig defaultRequestConfig = RequestConfig.custom()
                 .setSocketTimeout(TIMEOUT_MILLISECONDS)
                 .setConnectTimeout(TIMEOUT_MILLISECONDS)
@@ -50,13 +51,14 @@ public class ServerInterface {
         paramFilepath = paramFilepath_;
         serverHost = serverHost_;
         port = port_;
+        serverConnectionAvail = connect;
 
         startTimestamp = startTime_;
         endTimestamp = endTime_;
         meFileName = meFileName_;
     }
 
-    public ServerInterface(String paramFilepath_, String serverHost_, int port_) {
+    public ServerInterface(String paramFilepath_, String serverHost_, int port_, boolean connect) {
         RequestConfig defaultRequestConfig = RequestConfig.custom()
                 .setSocketTimeout(TIMEOUT_MILLISECONDS)
                 .setConnectTimeout(TIMEOUT_MILLISECONDS)
@@ -66,6 +68,7 @@ public class ServerInterface {
         paramFilepath = paramFilepath_;
         serverHost = serverHost_;
         port = port_;
+        serverConnectionAvail = connect;
 
         startTimestamp = "";
         endTimestamp = "";
@@ -263,6 +266,29 @@ public class ServerInterface {
 
     public void synchronizePMData(String user) {
         logger.info("Synchronizing local and remote player modeling data!");
+        logger.info("Retrieving local player modeling data");
+
+        String localPMData = "";
+        if ( localPMDataExists() ) {
+            localPMData = readLocalPMData();
+        }
+
+        if ( !serverConnectionAvail ) {
+            logger.info("Server connection disabled. Working with local player modeling data!");
+            if ( localPMData.isEmpty() ) {
+                writeLocalPMData("");
+                writeSkillVector("");
+            } else {
+                JsonParser jsonParser = new JsonParser();
+                JsonObject jsonObject = (JsonObject)jsonParser.parse(localPMData);
+                JsonPrimitive jsonPrimitive = jsonObject.getAsJsonPrimitive("current");
+                String skillVector = jsonPrimitive.getAsString();
+                writeSkillVector(skillVector);
+            }
+            logger.info("Synchronization complete!!");
+            return;
+        }
+
         logger.info("Retrieving remote player modeling data");
 
         String remotePMData = getPlayerModelData(user);
@@ -278,13 +304,6 @@ public class ServerInterface {
         if ( remotePMData.contains("_error") || remotePMData.equals("timeout") ) {
             logger.warn(String.format("The following error has occured: %s. Relying on local player modeling data for now!", remotePMData));
             serverError = true;
-        }
-
-        logger.info("Retrieving local player modeling data");
-
-        String localPMData = "";
-        if ( localPMDataExists() ) {
-            localPMData = readLocalPMData();
         }
 
         if ( serverError ) {
@@ -422,7 +441,11 @@ public class ServerInterface {
         logger.info("Updating player modeling with new data: " + updatedJsonString);
 
         writeLocalPMData(updatedJsonString);
-        postPlayerModelData(updatedJsonString, user);
+        if ( serverConnectionAvail ) {
+            postPlayerModelData(updatedJsonString, user);
+        } else {
+            logger.info("Server connection disabled. Writing only to local player modeling data.");
+        }
     }
 
     public static void main(String [] args) {
@@ -435,6 +458,7 @@ public class ServerInterface {
         cliOptions.addOption("hostname",true,"Hostname of server");
         cliOptions.addOption("port",true,"Port number of server");
         cliOptions.addOption("debug",false,"Port number of server");
+        cliOptions.addOption("connect",false,"Enable server connection");
 
         String mode = "";
         String user = "";
@@ -443,6 +467,7 @@ public class ServerInterface {
         String hostname = "129.25.141.236";
         int port = 8787;
         boolean debug = false;
+        boolean connect = false;
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -465,6 +490,9 @@ public class ServerInterface {
             if ( line.hasOption("port") ) {
                 port = Integer.parseInt(line.getOptionValue("port"));
             }
+            if ( line.hasOption("connect") ) {
+                connect = true;
+            }
             if ( line.hasOption("debug") ) {
                 debug = true;
             }
@@ -481,10 +509,11 @@ public class ServerInterface {
         logger.info("Hostname: " + hostname);
         logger.info("Port: " + port);
         logger.info("Debugging: " + debug);
+        logger.info("Connect to Server: " + connect);
         logger.info("-------------------------------------------------");
 
 
-        ServerInterface serverInterface = new ServerInterface(paramFilePath, hostname, port);
+        ServerInterface serverInterface = new ServerInterface(paramFilePath, hostname, port, connect);
         switch (mode) {
             case "sync":
                 serverInterface.synchronizePMData(user);

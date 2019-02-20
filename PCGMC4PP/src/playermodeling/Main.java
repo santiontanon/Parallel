@@ -30,6 +30,7 @@ public class Main {
         cliOptions.addOption("user", true, "Player");
         cliOptions.addOption("hostname",true,"Hostname of server");
         cliOptions.addOption("port",true,"Port number of server");
+        cliOptions.addOption("connect",false,"Enable server connection");
 
         String meExecutionFilepath = "";
         String telemetryFilepath = "";
@@ -40,6 +41,7 @@ public class Main {
         String hostname = "129.25.141.236";
         int port = 8787;
         boolean debug = false;
+        boolean connect = false;
 
         CommandLineParser parser = new DefaultParser();
         try {
@@ -69,6 +71,9 @@ public class Main {
             if ( line.hasOption("port") ) {
                 port = Integer.parseInt(line.getOptionValue("port"));
             }
+            if ( line.hasOption("connect") ) {
+                connect = true;
+            }
         } catch( ParseException exp ) {
             logger.fatal("Parsing failed. Reason: " + exp.getMessage());
             System.exit(1);
@@ -89,12 +94,13 @@ public class Main {
         logger.info("Hostname: " + hostname);
         logger.info("Port: " + port);
         logger.info("Debugging: " + debug);
+        logger.info("Connect to Server: " + connect);
         logger.info("-------------------------------------------------");
 
         PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, pmdir, level, user);
         pmEngine.readTrainingModel(pmdir, TRAINING_MODEL_FILEPATH);
         pmEngine.executePM(telemetryFilepath, meExecutionFilepath);
-        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath);
+        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath, connect);
         serverInterface.saveSkillVector(level, user);
     }
 }

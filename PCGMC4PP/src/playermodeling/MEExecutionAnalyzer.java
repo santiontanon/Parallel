@@ -630,7 +630,7 @@ public class MEExecutionAnalyzer {
                             if (semaphoreCoordsListCopy.contains(semaphoreCoord)) {
                                 /* Now, search through all buttons connected to it and make sure all are in the critical section */
                                 boolean allButtonsAccounted = true;
-                                for (String button : semaphoreButtonLinkMap.get(semaphoreCoord)) {
+                                for (String button : semaphoreButtonLinkMap.get(semaphore)) {
                                     ArrayList<Integer> buttonCoordAsArrayList = compLocMap.get(button);
                                     Pair<Integer, Integer> buttonCoord = new Pair<Integer, Integer>(buttonCoordAsArrayList.get(0), buttonCoordAsArrayList.get(1));
                                     if (buttonCoordsListCopy.contains(buttonCoord)) {
