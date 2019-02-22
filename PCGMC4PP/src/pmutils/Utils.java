@@ -23,7 +23,7 @@ public class Utils {
         return info;
     }
 
-    public LinkedHashMap<String, ArrayList<String> > mapMEFileKeyToFile(String levelDataPath) {
+    public static LinkedHashMap<String, ArrayList<String> > mapMEFileKeyToFile(String levelDataPath) {
         LinkedHashMap<String, ArrayList<String> > ret = new  LinkedHashMap<String, ArrayList<String> >();
 
         File directory = new File(levelDataPath);

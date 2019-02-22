@@ -115,43 +115,40 @@ public class TelemetryAnalyzer {
         return ret;
     }
 
-//    public LinkedHashMap<String, ArrayList<String>> splitTelemetryByRun(ArrayList<String> telemetry) {
-//        LinkedHashMap<String, ArrayList<String>> telemetryByRun = new LinkedHashMap<>();
-//        ArrayList<String> runTelemetry = new ArrayList<>();
-//
-//        for ( String tel : telemetry ) {
-//            String [] data = tel.split("\t");
-//
-//            if ( data.length != 6 ) {
-//                if ( DEBUG > 0 ) {
-//                    System.out.println("======================================================");
-//                    for ( String s : data ) {
-//                        System.out.println("Data: " + s);
-//                    }
-//                }
-//                continue;
-//            }
-//            String name_ = data[1];
-//            String data_ = data[2];
-//            runTelemetry.add(tel);
-//
-//            if ( name_.equals("TriggerLoadLevel") ) {
-//                if (data_.length() != 0) {
-//                    if (!data_.startsWith("l")) {
-//                        if ( telemetryByRun.containsKey(data_) ) {
-//                            System.err.println("Same ME Execution File maps to different runs.");
-//                            System.exit(1);
-//                        } else {
-//                            telemetryByRun.put(data_, (ArrayList<String>)runTelemetry.clone());
-//                            runTelemetry = new ArrayList<>();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return telemetryByRun;
-//    }
+
+    public LinkedHashMap< String , ArrayList<String> > splitTelemetryByRun(ArrayList<String> telemetry) {
+        LinkedHashMap< String, ArrayList<String> > telemetryByRun = new LinkedHashMap<>();
+        ArrayList<String> runTelemetry = new ArrayList<>();
+
+        for ( String tel : telemetry ) {
+            String[] data = tel.split("\t");
+
+            if (data.length != 6) {
+                logger.warn("Incorrectly formatted telemetry log line: " + tel);
+                continue;
+            }
+
+            String name_ = data[1];
+            String data_ = data[2];
+            runTelemetry.add(tel);
+
+            if (name_.equals("TriggerLoadLevel")) {
+                if (data_.length() != 0) {
+                    if (!data_.startsWith("l")) {
+                        /* ME Execution */
+                        if (telemetryByRun.containsKey(data_)) {
+                            logger.fatal("ME Execution used in another run. Exiting!");
+                            System.exit(1);
+                        } else {
+                            telemetryByRun.put(data_, (ArrayList<String>) runTelemetry.clone());
+                            runTelemetry.clear();
+                        }
+                    }
+                }
+            }
+        }
+        return telemetryByRun;
+    }
 
     public LinkedHashMap<String, ArrayList<String> > splitTelemetryByLevels(ArrayList<String> telemetry) {
         LinkedHashMap<String, ArrayList<String> > telemetryByLevel = new LinkedHashMap<String, ArrayList<String> >();
