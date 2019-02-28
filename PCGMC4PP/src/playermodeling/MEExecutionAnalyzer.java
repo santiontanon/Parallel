@@ -358,9 +358,14 @@ public class MEExecutionAnalyzer {
                             } else {
                                 if ( splitLine[0].equals("E") ) {
                                     HashMap<String, Object> parsedInfo = Utils.parseComponentInformation(splitLine[5]);
+                                    logger.info("Parsed Execution Data: " + parsedInfo);
                                     if ( parsedInfo.containsKey("race_condition_detected") ) {
-                                        if ( parsedInfo.get("race_condition_detected").equals("true") ) {
+                                        logger.debug("Running check to see if player avoided race condition");
+                                        if ( parsedInfo.get("race_condition_detected").equals("false") ) {
+                                            logger.debug("Race condition successfully avoided");
                                             skillAnalyzer.updateRuleEvidence("Avoid race conditions");
+                                        } else {
+                                            logger.debug("Race condition not successfully avoided");
                                         }
                                     }
                                 }
@@ -625,7 +630,7 @@ public class MEExecutionAnalyzer {
                             if (semaphoreCoordsListCopy.contains(semaphoreCoord)) {
                                 /* Now, search through all buttons connected to it and make sure all are in the critical section */
                                 boolean allButtonsAccounted = true;
-                                for (String button : semaphoreButtonLinkMap.get(semaphoreCoord)) {
+                                for (String button : semaphoreButtonLinkMap.get(semaphore)) {
                                     ArrayList<Integer> buttonCoordAsArrayList = compLocMap.get(button);
                                     Pair<Integer, Integer> buttonCoord = new Pair<Integer, Integer>(buttonCoordAsArrayList.get(0), buttonCoordAsArrayList.get(1));
                                     if (buttonCoordsListCopy.contains(buttonCoord)) {
