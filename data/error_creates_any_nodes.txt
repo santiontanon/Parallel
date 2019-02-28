@@ -1,5 +1,0 @@
-RULE MAKE_SUBPROBLEM_ABST_SERIAL_TASKS 1.0 0.5 1 SERIAL
-    PATTERN A:problem()
-    REPLACEMENT A:{track,thread,start_point}(partOf:I,partOf:M,to:J),B:track(to:N),C{track,end_point}(),\
-    I:{subproblem_abst,dead_end}(),J:track(partOf:I,is:J_),K:track(to:B,partOf:I,is:K_),J_:out(),K_:in(),\
-    M:{subproblem_abst,dead_end}(),N:track(partOf:M,is:N_),O:track(to:C,partOf:M,is:O_),N_:out(),O_:in()
