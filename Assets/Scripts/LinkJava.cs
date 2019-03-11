@@ -46,15 +46,18 @@ public class LinkJava : MonoBehaviour
             if (GameManager.Instance.currentSaveMode == GameManager.SaveMode.Relative)
                 savePath = Application.dataPath + "/../Parallel/".Replace("/", pathSeparator);
             else
-                savePath = Application.persistentDataPath;
+                savePath = Application.persistentDataPath + pathSeparator;
         } else {
         	pcgPath = Application.dataPath + "/PCGMC4PP/dist/".Replace("/",pathSeparator);
             dataPath = Application.dataPath + "/data".Replace("/", pathSeparator);
             if (GameManager.Instance.currentSaveMode == GameManager.SaveMode.Relative)
                 savePath = Application.dataPath + "/Parallel/".Replace("/", pathSeparator);
             else
-                savePath = Application.persistentDataPath;
+                savePath = Application.persistentDataPath + pathSeparator;
         }
+        string filename = savePath + "currentParameters.txt";
+        if (!File.Exists(filename))
+            File.WriteAllText(filename, "");
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
     }
 
