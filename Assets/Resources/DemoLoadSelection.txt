@@ -53,17 +53,13 @@
       {  
         "file":"level13",
         "title":"Level 13"
+      },
+	  {
+        "file":"level17",
+        "title":"Level 17"
       }
     ],
     "optional":[
-	  {  
-        "file":"level15",
-        "title":"Level 15"
-      },
-      {  
-        "file":"level16",
-        "title":"16"
-      }
     ],
     "previous":[  
     ]

@@ -25,6 +25,7 @@ package game.component;
 
 import game.GameState;
 import java.util.ArrayList;
+import java.util.Arrays;
 import valls.util.ListToArrayUtility;
 import static valls.util.ListToArrayUtility.intInIntArray;
 import valls.util.Pair;
@@ -69,11 +70,13 @@ public class ComponentDelivery extends Component {
     private boolean canConsume(ComponentPickup cp){
         // old logic
         // return (this.color==0 || this.color==cp.color);
-        return ((this.accepted_types.length==0 || intInIntArray(this.accepted_types,cp.type)) && 
-                (this.accepted_colors.length==0 || intInIntArray(this.accepted_colors,cp.color)));
+//        System.out.println("  canConsume: " + cp.type + ", " + cp.color);
+//        System.out.println("    delivery: " + Arrays.toString(this.accepted_types) + ", " + Arrays.toString(this.accepted_colors));
+        return ((this.accepted_types.length==0 || intInIntArray(this.accepted_types, cp.type)) && 
+                (this.accepted_colors.length==0 || intInIntArray(this.accepted_colors, cp.color)));
     }
     
-    private void consume(ComponentUnit unit,GameState gs,boolean fail_to_deliver){
+    private void consume(ComponentUnit unit, GameState gs, boolean fail_to_deliver){
         if (this.consumer==0){
             // Consume nothing
         } else {            
@@ -85,6 +88,7 @@ public class ComponentDelivery extends Component {
                     if(canConsume(cp)){
                         cp.updateDelivery(this,unit,gs);
                         if(fail_to_deliver){
+                            gs.race_condition_detected = true;
                             this.missed++;
                             unit.missed++;                        
                         } else {

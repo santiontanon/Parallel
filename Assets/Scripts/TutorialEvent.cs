@@ -14,7 +14,11 @@ public class TutorialEvent
     public enum TutorialCompletionTriggers { placeSignal, placeSemaphore, clickButton, simulationInteraction, clickPopup }
     public TutorialCompletionTriggers complete_trigger;
 
+    public int sequenceId;
+
     public string popupDescription;
+
+    public bool nextTutorial;
 
     [Header("Simulation Pausing")]
     [Tooltip("Should this event pause the simulation?")]
@@ -36,6 +40,9 @@ public class TutorialEvent
     [Header("a button is pressed (clickButton)...")]
     public Button targetButton;
 
+    [Header("a component is interacted with (componentType)...")]
+    public string targetComponentType = "";
+
     [Header("a simulation event occurs (simulationInteraction) ...")]
     [SerializeField] public StepData targetSimulationStep;
 
@@ -48,12 +55,11 @@ public class TutorialEvent
         {
             case TutorialTypes.image:
             case TutorialTypes.video:
-                Debug.Log("Tutorial type " + type.ToString() + " not currently supported.");
+                //Debug.Log("Tutorial type " + type.ToString() + " not currently supported.");
                 break;
             case TutorialTypes.popup:
                 if (complete_trigger == TutorialCompletionTriggers.clickButton)
                 {
-                    Debug.Log("Click Button");
                     if (targetButton == null) return;
                     callReference = () => { TriggerTutorialEventListener(); };
                     targetButton.onClick.AddListener(callReference);
@@ -64,29 +70,32 @@ public class TutorialEvent
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSemaphore)
                 {
+                    if (PlayerInteraction_GamePhaseBehavior.onMenuInteraction != null)
+                        PlayerInteraction_GamePhaseBehavior.onMenuInteraction -= MenuInteractionListener;
                     PlayerInteraction_GamePhaseBehavior.onMenuInteraction += MenuInteractionListener;
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSignal)
                 {
-                    Debug.Log("Place Signal tutorial.");
+                    if (PlayerInteraction_GamePhaseBehavior.onMenuInteraction != null)
+                        PlayerInteraction_GamePhaseBehavior.onMenuInteraction -= MenuInteractionListener;
                     PlayerInteraction_GamePhaseBehavior.onMenuInteraction += MenuInteractionListener;
-                    //Debug.Log("Completion event for tutorial " + complete_trigger.ToString() + " not currently supported.");
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.simulationInteraction)
                 {
-                    Debug.Log("Completion event for tutorial " + complete_trigger.ToString() + " not currently supported.");
-                    // create listener to judge against targetSimulationStep
+                    /*if (PlayerInteraction_GamePhaseBehavior.onSimulationStep != null)
+                        PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;*/
                     PlayerInteraction_GamePhaseBehavior.onSimulationStep += StepListener;
                 }
                 break;
             case TutorialTypes.simulation:
+                /*if (PlayerInteraction_GamePhaseBehavior.onCompletion != null)
+                    PlayerInteraction_GamePhaseBehavior.onCompletion -= CompletionListener;*/
                 PlayerInteraction_GamePhaseBehavior.onCompletion = CompletionListener;
                 break;
         }
     }
     public void TriggerTutorialEventListener()
     {
-        Debug.Log("TRIGGER TUTORIAL EVENT LISTERNER");
         TerminateTutorialEventListener();
         GameManager.Instance.ReportTutorialEventComplete(this);
     }
@@ -97,7 +106,7 @@ public class TutorialEvent
         {
             case TutorialTypes.image:
             case TutorialTypes.video:
-                Debug.Log("Tutorial type " + type.ToString() + " not currently supported.");
+                //Debug.Log("Tutorial type " + type.ToString() + " not currently supported.");
                 break;
             case TutorialTypes.popup:
                 if (complete_trigger == TutorialCompletionTriggers.clickButton)
@@ -113,15 +122,15 @@ public class TutorialEvent
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSemaphore)
                 {
-                    Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
+                    //Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.placeSignal)
                 {
-                    Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
+                    //Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
                 }
                 else if (complete_trigger == TutorialCompletionTriggers.simulationInteraction)
                 {
-                    Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
+                    //Debug.Log("Terminate event for tutorial " + complete_trigger.ToString() + " not currently supported.");
                 }
                 break;
         }
@@ -150,7 +159,7 @@ public class TutorialEvent
             }
 
             GameManager.Instance.CreateTutorialPopup(this, GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID));
-            Debug.Log("Listen for step!");
+            //Debug.Log("Listen for step!");
             PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;
         }
         //if greater or equal 9000, the component is USER created so we can't assume its id
@@ -173,7 +182,7 @@ public class TutorialEvent
                         }
                         
                         GameManager.Instance.CreateTutorialPopup(this, GameManager.Instance.GetGridManager().GetGridObjectByID(inputStep.componentID));
-                        Debug.Log("Listen for step!");
+                        //Debug.Log("Listen for step!");
                         PlayerInteraction_GamePhaseBehavior.onSimulationStep -= StepListener;
                     }
                 } 
@@ -189,18 +198,24 @@ public class TutorialEvent
 
     void MenuInteractionListener( PlayerInteraction_GamePhaseBehavior.MenuOptions inputOption)
     {
-        Debug.Log("MenuInteractionListener");
+        //Debug.Log("MenuInteractionListener");
         if (complete_trigger == TutorialCompletionTriggers.placeSignal || complete_trigger == TutorialCompletionTriggers.placeSemaphore)
         {
             if (inputOption == PlayerInteraction_GamePhaseBehavior.MenuOptions.button)
             {
+                Debug.Log("A");
                 PlayerInteraction_GamePhaseBehavior.onMenuInteraction -= MenuInteractionListener;
                 TriggerTutorialEventListener();
             }
             else if(inputOption == PlayerInteraction_GamePhaseBehavior.MenuOptions.semaphore)
             {
+                Debug.Log("A");
                 PlayerInteraction_GamePhaseBehavior.onMenuInteraction -= MenuInteractionListener;
                 TriggerTutorialEventListener();
+            }
+            else
+            {
+                Debug.Log("C");
             }
         }
     }

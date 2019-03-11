@@ -49,6 +49,7 @@ public class PlayerInteraction_UI
     [Header("Updatable Elements")]
     public Text levelNameText;
     public Text loadingText;
+    public Text levelTimer;
 	public Image draggableElement;
 	public Text text_hintPopUp;
 	public Image image_hintPopUp;
@@ -56,6 +57,8 @@ public class PlayerInteraction_UI
     public Image rightPanelColorLock;
 	public Image topPanelConnectionLock;
 	public UIMeter zoomMeter;
+    public Image playbackButton;
+    public Sprite[] playbackButtonSprites;
 
     [Header("UI Containers")]
     public GameObject playbackControls;
@@ -72,11 +75,15 @@ public class PlayerInteraction_UI
 		goalOverlay.ClosePanel(true);
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
-		levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != null && GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id != "N/A")
+            levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Substring(GameManager.Instance.GetDataManager().currentLevelData.metadata.pcg_id.Length - 3);
+        else
+            levelText.text = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString();
         if(levelText.text.Length == 1)
         {
             levelText.text = 0 + levelText.text;
         }
+        levelTimer.gameObject.SetActive(false);
 		zoomMeter.OpenMeter();
 	}
 
@@ -89,9 +96,28 @@ public class PlayerInteraction_UI
 		goalOverlay.ClosePanel(true);
 		hintOverlay.ClosePanel(true);
 		tooltipOverlay.ClosePanel(true);
+        simulationErrorOverlay.ClosePanel(true);
 		UIOverlay_Hint_Container.gameObject.SetActive(false);
 		zoomMeter.CloseMeter();
 	}
+
+    public float startTime;
+    public void Timer()
+    {
+        float rawTime = Time.fixedTime - startTime;
+        float milliseconds = (Time.fixedTime % 1);
+        rawTime -= milliseconds;
+        int hours = (int)rawTime / 3600;
+        int minutes = ((int)rawTime % 3600) / 60;
+        int seconds = (int)rawTime % 60;
+        string sMinutes = minutes.ToString();
+        while (sMinutes.Length < 2) sMinutes = "0" + sMinutes;
+        string sSeconds = seconds.ToString();
+        while (sSeconds.Length < 2) sSeconds = "0" + sSeconds;
+        string sMilliseconds = ((int)(milliseconds * 1000)).ToString();
+        while (sMilliseconds.Length < 3) sMilliseconds = "0" + sMilliseconds;
+        levelTimer.text = hours.ToString() + ":" + sMinutes + ":" + sSeconds;// + ":" + sMilliseconds;
+    }
 
 	public void ClearButtonBehaviors()
 	{
@@ -104,7 +130,6 @@ public class PlayerInteraction_UI
 
 	public void SetDraggableElement ( Sprite inputTexture )
 	{
-		Debug.Log("Setting texture to " + inputTexture.name);
 		draggableElement.sprite = inputTexture;
 		draggableElement.gameObject.SetActive(true);
 	}
@@ -121,16 +146,26 @@ public class PlayerInteraction_UI
 
 	public void SetText(Level inputLevel)
 	{
-		levelNameText.text = inputLevel.metadata.level_title;
+        if (inputLevel.metadata.pcg_id != "N/A")
+        {
+            levelNameText.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Number.text = inputLevel.metadata.pcg_id.Substring(inputLevel.metadata.pcg_id.Length - 3);
+            goalDescription_Title.text = inputLevel.metadata.pcg_id.ToUpper();
+        }
+        else{
+            levelNameText.text = inputLevel.metadata.level_title;
+            goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
+            goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
+        }
 		goalDescriptionText.text = inputLevel.metadata.goal_string;
-        goalDescription_Number.text = inputLevel.metadata.level_id.ToString();
-        goalDescription_Title.text = inputLevel.metadata.level_title.ToString().ToUpper();
         goalDescriptionOverlay.SetFeedbackScore(GameManager.Instance.GetScoreManager().GetCalculatedScore(inputLevel.metadata.level_id));
     }
 
 	public IEnumerator TriggerGoalPopUp(string titleText, string feedbackText)
 	{
-		GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp",titleText + feedbackText);
+        feedbackText = feedbackText.Replace("\n•", "");
+        feedbackText = feedbackText.Replace("\n", "");
+        GameManager.Instance.tracker.CreateEventExt("TriggerGoalPopUp", titleText + (feedbackText.TrimStart(new char[2] { '/', 'n' })));
 		goalOverlay.SetText( titleText, feedbackText );
 		goalOverlay.OpenPanel();
 		while( goalOverlay.waitForUserInput ) { yield return new WaitForEndOfFrame(); }
@@ -160,7 +195,7 @@ public class PlayerInteraction_UI
 	{
         public Text titleText;
 		public Text feedbackText;
-        public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext;
+        public Button retry, replay, levels, levelsConfirm, levelsDeny, exit, exitConfirm, exitDeny, levelsNext, saveLevel;
         public ToggleUIElement goalToggle;
 
         public GameObject starContainer;
@@ -240,7 +275,11 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.RemoveAllListeners();
             levelsNext.onClick.RemoveAllListeners();
 
-            bool showNextLevelButton = (GameManager.Instance.currentLevelReferenceObject.completionRank > 0);
+            PlayerInteraction_GamePhaseBehavior playerInteraction = GameManager.Instance.playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+            bool showNextLevelButton = (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME && 
+                                        playerInteraction.playbackBehavior.success && 
+                                        GameManager.Instance.currentLevelReferenceObject.completionRank > 0 &&
+                                        !GameManager.Instance.IsInPCG());
             levelsNext.gameObject.SetActive(showNextLevelButton);
 
             exit.onClick.RemoveAllListeners();
@@ -254,6 +293,7 @@ public class PlayerInteraction_UI
             levelsDeny.onClick.AddListener(() => OpenRootScreen());
 
             levelsNext.onClick.AddListener(() => { userInput = UserInputs.levelsNext; /*GameManager.Instance.TriggerAdvanceToNextLevel();*/ ClosePanel(); });
+            //levelsNext.gameObject.SetActive(!GameManager.Instance.IsInPCG());
 
             exit.onClick.AddListener(()=> {userInput = UserInputs.exit; OpenExitConfirmationScreen(); } );
             exitConfirm.onClick.AddListener(() => { GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame);/* /*ClosePanel();*/ });
@@ -261,6 +301,12 @@ public class PlayerInteraction_UI
 
             goalToggle.toggleButton.onClick.RemoveAllListeners();
             goalToggle.toggleButton.onClick.AddListener(() => ToggleGoalVisibility());
+
+            saveLevel.onClick.RemoveAllListeners();
+            saveLevel.onClick.AddListener(() => GameManager.Instance.TriggerPCGLevelSave() );
+            saveLevel.gameObject.SetActive(false);
+            //saveLevel.gameObject.SetActive( GameManager.Instance.IsInPCG() );
+            //just for november 2018 study
         }
 
         void ToggleGoalVisibility()

@@ -1,0 +1,80 @@
+METADATA
+level_id	11
+level_title	Intro to Parallel
+goal_string	Deliver 1 packages
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":0}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	5
+board_height	11
+time_efficiency	21.0
+
+LAYOUT
+FEEEC
+J---J
+J---J
+J---J
+LEEEI
+-----
+FEEEC
+J---J
+J---J
+J---J
+LEEEI
+
+COLORS
+!!!!!
+!---!
+!---!
+!---!
+!!!!!
+-----
+"""""
+"---"
+"---"
+"---"
+"""""
+
+DIRECTIONS
+>>>>V
+A   V
+A   V
+A   V
+A<<<<
+     
+>>>>V
+A   V
+A   V
+A   V
+A<<<<
+
+CRITICALSECTIONS
+-----
+-   -
+-   -
+-   -
+-----
+     
+-----
+-   -
+-   -
+-   -
+-----
+
+COMPONENTS
+1001	thread	4	1	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+1002	thread	4	7	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+2001	pickup	1	4	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
+3001	delivery	1	6	S	L	{"accepted_types":["Unconditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":1}
+4001	exchange	2	0	S	L	{"delay":0,"color":0,"stop":1,"link":4002,"exchanged":0,"passed":0,"strict":1,"value":0}
+4002	exchange	2	10	S	L	{"delay":0,"color":0,"stop":1,"link":4001,"exchanged":0,"passed":0,"strict":1,"value":0}
+
+EXECUTION
+
+PLAYER
+

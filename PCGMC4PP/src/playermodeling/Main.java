@@ -1,9 +1,11 @@
 package playermodeling;
 
-import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-
-import java.util.HashMap;
+import org.apache.commons.cli.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import server.ServerInterface;
+import weka.classifiers.Classifier;
+import weka.classifiers.bayes.NaiveBayes;
 
 /**
  * Created by pavankantharaju on 2/26/18.
@@ -12,43 +14,93 @@ import java.util.HashMap;
 
 public class Main {
 
-    public static void main(String [] args) {
+    public static final String TRAINING_MODEL_FILEPATH = "pmfiles/classifier-model.model";
+    public static final double interval = 5;
+    public static final int skillVectorUpdateTechniqueFlag = 0;
+    private static final Logger logger = LogManager.getLogger(Main.class);
+    public static final Classifier cls = new NaiveBayes();
 
-//        if ( args.length < 2 ) {
-//            System.err.println("Program takes in three arguments: saved_data_location (required), slices_location (required), interval (optional. default=5)");
-//            System.exit(0);
-//        }
+    public static void main(String [] args) throws Exception {
+        Options cliOptions = new Options();
+        cliOptions.addOption("mepath",true,"Model Engine Execution Filepath");
+        cliOptions.addOption("pmdir",true,"Player Modeling Files Directory");
+        cliOptions.addOption("telemetrypath",true,"Telemetry Filepath");
+        cliOptions.addOption("parameterpath",true,"Parameter Filepath");
+        cliOptions.addOption("level", true, "Level of Game");
+        cliOptions.addOption("user", true, "Player");
+        cliOptions.addOption("hostname",true,"Hostname of server");
+        cliOptions.addOption("port",true,"Port number of server");
+        cliOptions.addOption("connect",false,"Enable server connection");
 
-//        String saved_data_location = "";
-//        String slices_location = "";
-//        int interval = 5;
-//        try {
-//            String saved_data_location = args[0];
-//        String slices_location = args[1];
-//        int interval = Integer.parseInt(args[2]);
-        String saved_data_location = "../35_saved_data";
-        String slices_location = "../LogVisualizer/slices.tsv";
-        int interval = Integer.parseInt("5");
+        String meExecutionFilepath = "";
+        String telemetryFilepath = "";
+        String parameterFilepath = "";
+        String pmdir = "";
+        String level = "";
+        String user = "";
+        String hostname = "129.25.141.236";
+        int port = 8787;
+        boolean debug = false;
+        boolean connect = false;
 
-        Simulation sim = new Simulation(saved_data_location,slices_location,interval);
-        sim.simulate();
-//        String str = "{\"color\":0,\"direction_condition\":\"West\",\"directions_colors\":[[],[],[],[]],\"passed\":0,\"directions_types\":[[\"Empty\"],[],[\"Unconditional\"],[]],\"direction_default\":\"West\"}";
-//        Gson gson = new Gson();
-//        HashMap<String,Object> tmp = gson.fromJson(str,HashMap.class);
-//        for ( String t : tmp.keySet() ) {
-//            System.out.println("T: " + t + "," + tmp.get(t));
-//        }
-//        str = str.replace("\"","");
-//        String brackets = "\\[\\]";
-////        str = str.replace("]","\"");
-////        //String [] tmp = str.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-//        String regex = String.format(",(?=([^%s]*:\\[.*\\])*[^%s]*$)",brackets,brackets);
-//        String [] tmp = str.split(regex);
-//        for ( String s : tmp ) {
-//            System.out.println(s);
-//        }
+        CommandLineParser parser = new DefaultParser();
+        try {
+            // parse the command line arguments
+            CommandLine line = parser.parse( cliOptions, args );
+            if ( line.hasOption("mepath") ) {
+                meExecutionFilepath = line.getOptionValue("mepath");
+            }
+            if ( line.hasOption("pmdir") ) {
+                pmdir = line.getOptionValue("pmdir");
+            }
+            if ( line.hasOption("telemetrypath") ) {
+                telemetryFilepath = line.getOptionValue("telemetrypath");
+            }
+            if ( line.hasOption("parameterpath") ) {
+                parameterFilepath = line.getOptionValue("parameterpath");
+            }
+            if ( line.hasOption("level") ) {
+                level = line.getOptionValue("level");
+            }
+            if ( line.hasOption("user") ) {
+                user = line.getOptionValue("user");
+            }
+            if ( line.hasOption("hostname") ) {
+                hostname = line.getOptionValue("hostname");
+            }
+            if ( line.hasOption("port") ) {
+                port = Integer.parseInt(line.getOptionValue("port"));
+            }
+            if ( line.hasOption("connect") ) {
+                connect = true;
+            }
+        } catch( ParseException exp ) {
+            logger.fatal("Parsing failed. Reason: " + exp.getMessage());
+            System.exit(1);
+        }
+
+        if (meExecutionFilepath.equals("") || telemetryFilepath.equals("")) {
+            logger.fatal("Need to specify arguments for ME Execution and Telemetry Filepath");
+            System.exit(1);
+        }
+
+        logger.info("------------------- Arguments -------------------");
+        logger.info("Username of Player: " + user);
+        logger.info("Model Engine Execution Filepath: " + meExecutionFilepath);
+        logger.info("Telemetry File Path: " + telemetryFilepath);
+        logger.info("Path to parameter file: " + parameterFilepath);
+        logger.info("Path to player modeling directory: " + pmdir);
+        logger.info("Current level: " + level);
+        logger.info("Hostname: " + hostname);
+        logger.info("Port: " + port);
+        logger.info("Debugging: " + debug);
+        logger.info("Connect to Server: " + connect);
+        logger.info("-------------------------------------------------");
+
+        PlayerModelingEngine pmEngine = new PlayerModelingEngine(cls, interval, skillVectorUpdateTechniqueFlag, parameterFilepath, pmdir, level, user);
+        pmEngine.readTrainingModel(pmdir, TRAINING_MODEL_FILEPATH);
+        pmEngine.executePM(telemetryFilepath, meExecutionFilepath);
+        ServerInterface serverInterface = new ServerInterface(parameterFilepath, hostname, port, pmEngine.logStartTimeStamp, pmEngine.logEndTimeStamp, meExecutionFilepath, connect);
+        serverInterface.saveSkillVector(level, user);
     }
-
-
-
 }

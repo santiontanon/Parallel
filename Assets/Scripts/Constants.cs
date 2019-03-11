@@ -133,4 +133,8 @@ public static class Constants {
             {"e48", "Couldn't evaluate the goal." }
         };
     }
+    public static class JVMSettings
+    {
+        public static string[] MemoryAllocation = new string[] { "-Xmx512m", "-Xmx2g", "-Xmx4g" };
+    }
 }

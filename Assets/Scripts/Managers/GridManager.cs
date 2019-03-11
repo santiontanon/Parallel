@@ -101,8 +101,10 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public void GenerateGrid(List<GridTrack>gridTracks, List<GridComponent> gridComponents)
+    public void GenerateGrid(List<GridTrack>gridTracks, List<GridComponent> gridComponents, bool resetCamera)
 	{
+        ClearGrid(true);
+
 		/*
 		currentGridWidth = layoutList[0].Length;
 		currentGridHeight = layoutList.Count;
@@ -216,11 +218,11 @@ public class GridManager : MonoBehaviour {
 			}
             instanceSpriteRenderer.color = new Color(0.2f,0.2f,0.2f,1f);
 			currentLevelObjects.Add(behavior);
-
 		}
 
 		averagePosition = averagePosition / gridTracks.Count;
-		worldCamera.transform.position = new Vector3( averagePosition.x, averagePosition.y, -15);
+        if(resetCamera)
+		    worldCamera.transform.position = new Vector3( averagePosition.x, averagePosition.y, -15);
 		float levelheight = GameManager.Instance.GetLevelHeight ();
 		float levelRatio = GameManager.Instance.GetLevelWidth () / GameManager.Instance.GetLevelHeight ();
 		if (levelRatio > 1.78f) { // 16:9
@@ -231,7 +233,8 @@ public class GridManager : MonoBehaviour {
 		} else {
 			levelheight +=1;
 		}
-		worldCamera.orthographicSize = (levelheight/2.0f)/0.78f; // To make room for the bottom banner
+        if(resetCamera)
+		    worldCamera.orthographicSize = ((levelheight/2.0f)/0.78f); // To make room for the bottom banner
         
 		foreach(GridComponent gridComponent in gridComponents)
 		{
@@ -250,7 +253,7 @@ public class GridManager : MonoBehaviour {
 			if(type == "signal")
 			{
 				Signal_GridObjectBehavior signal_Behavior = gridElementInstance.AddComponent<Signal_GridObjectBehavior>();
-				signal_Behavior.highlightObject = behavior.highlightObject;
+				//signal_Behavior.highlightObject = behavior.highlightObject;
 				signal_Behavior.lineRenderer = gridElementInstance.GetComponentInChildren<LineRenderer>();
 				signal_Behavior.teleportTrail = behavior.teleportTrail;
 				signal_Behavior.lockObject = behavior.lockObject;
@@ -260,7 +263,7 @@ public class GridManager : MonoBehaviour {
 			else if(type == "thread")
 			{
 				Thread_GridObjectBehavior thread_Behavior = gridElementInstance.AddComponent<Thread_GridObjectBehavior>();
-				thread_Behavior.highlightObject = behavior.highlightObject;
+				//thread_Behavior.highlightObject = behavior.highlightObject;
 				thread_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
 				behavior = thread_Behavior;
@@ -268,7 +271,7 @@ public class GridManager : MonoBehaviour {
 			else if(type == "diverter")
 			{
 				Diverter_GridObjectBehavior diverter_Behavior = gridElementInstance.AddComponent<Diverter_GridObjectBehavior>();
-				diverter_Behavior.highlightObject = behavior.highlightObject;
+				//diverter_Behavior.highlightObject = behavior.highlightObject;
 				diverter_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
 				behavior = diverter_Behavior;
@@ -277,27 +280,74 @@ public class GridManager : MonoBehaviour {
 			else if(type == "delivery")
 			{
 				Delivery_GridObjectBehavior delivery_Behavior = gridElementInstance.AddComponent<Delivery_GridObjectBehavior>();
-				delivery_Behavior.highlightObject = behavior.highlightObject;
+				//delivery_Behavior.highlightObject = behavior.highlightObject;
 				delivery_Behavior.teleportTrail = behavior.teleportTrail;
 				Destroy( behavior );
+                //delivery_Behavior.name = 
 				behavior = delivery_Behavior;
+                if(gridComponent.configuration.accepted_types.Length == 0)
+                {
+                    gridElementInstance.name = "universal_delivery";
+                }
+                else
+                {
+                    if (gridComponent.configuration.accepted_types[0] == "Unconditional")
+                    {
+                        gridElementInstance.name = "unconditional_delivery";
+                    }
+                    else if (gridComponent.configuration.accepted_types[0] == "Conditional")
+                    {
+                        gridElementInstance.name = "conditional_delivery";
+                    }
+                    else if (gridComponent.configuration.accepted_types[0] == "Limited")
+                    {
+                        gridElementInstance.name = "limited_delivery";
+                    }
+                }
 			}
+            else if(type == "pickup")
+            {
+                if(gridComponent.configuration.type == "Conditional")
+                {
+
+                    gridElementInstance.name = "conditional_pickup";
+                }
+                else if (gridComponent.configuration.type == "Unconditional")
+                {
+                    gridElementInstance.name = "unconditional_pickup";
+                }
+                else if(gridComponent.configuration.type == "Limited")
+                {
+                    gridElementInstance.name = "limited_pickup";
+                }
+            }
 
 			gridElementInstance.transform.SetParent(gridContainer);
 
-			gridElementInstance.name = type;
+            if(type != "delivery" && type != "pickup")
+			    gridElementInstance.name = type;
+
 			behavior.behaviorType = GridObjectBehavior.BehaviorTypes.component;
 			behavior.component = gridComponent;
 
-			instanceSpriteRenderer.sprite = GetSprite(gridComponent);
+            instanceSpriteRenderer.sprite = GetSprite(gridComponent);
 
 			currentLevelObjects.Add(behavior);
 			gridObjectLevelIDDictionary.Add(gridComponent.id,behavior);
 			gridObjectLevelPositionDictionary.Add(behavior.transform.position,behavior);
 
-			behavior.InitializeGridComponentBehavior();
-		}
-	}
+
+            /* NOTE 001 moving initialization to after full spawn, so objects can have a full view of the level for avoiding neighbors
+               behavior.InitializeGridComponentBehavior();
+            */
+        }
+
+        //ADDITION 001: moving initialization to after full spawn
+        foreach (GridObjectBehavior behavior in currentLevelObjects)
+        {
+           if(behavior.behaviorType != GridObjectBehavior.BehaviorTypes.track) behavior.InitializeGridComponentBehavior();
+        }
+    }
 
 	public void RevealGridColorMask(int mask)
 	{
@@ -379,7 +429,7 @@ public class GridManager : MonoBehaviour {
 		{
 			if(g.transform.position == testPosition && g.behaviorType == GridObjectBehavior.BehaviorTypes.track && !g.track.type.Equals('-') && g.track.type != null)
 			{
-				Debug.Log("Object " + g.transform.name + " is at position! ");
+				//Debug.Log("Object " + g.transform.name + " is at position! ");
 				returnValid = true;
 			}
             
@@ -412,7 +462,7 @@ public class GridManager : MonoBehaviour {
 			{
 				if(g.component.type == "thread" && g.component.configuration.color == colorQuery) 
 				{
-					Debug.Log("I found color " + colorQuery + " at " + g.name + ", " + g.component.id);
+					//Debug.Log("I found color " + colorQuery + " at " + g.name + ", " + g.component.id);
 					isCurrentThreadColor = true; 
 				}
 			}
@@ -466,7 +516,7 @@ public class GridManager : MonoBehaviour {
 		if(type == "signal")
 		{
 			Signal_GridObjectBehavior signal_Behavior = gridElementInstance.AddComponent<Signal_GridObjectBehavior>();
-			signal_Behavior.highlightObject = behavior.highlightObject;
+			//signal_Behavior.highlightObject = behavior.highlightObject;
 			signal_Behavior.lineRenderer = gridElementInstance.GetComponentInChildren<LineRenderer>();
 			signal_Behavior.teleportTrail = behavior.teleportTrail;
 			Destroy( behavior );
@@ -495,7 +545,6 @@ public class GridManager : MonoBehaviour {
 		if( gridObjectLevelPositionDictionary.ContainsKey( reversedYposition ) ) { s+="Grid Object Level Position Dictionary, "; gridObjectLevelPositionDictionary.Remove( reversedYposition ); }
 		if( gridObjectLevelIDDictionary.ContainsKey( objectToRemove.component.id ) ) { s+="Grid Object Level ID Dictionary, "; gridObjectLevelIDDictionary.Remove( objectToRemove.component.id ); }
 		if( currentLevelObjects.Contains( objectToRemove ) ) { s+="and Current Level Objects"; currentLevelObjects.Remove( objectToRemove ); }
-		Debug.Log(s);
 
 	}
 
@@ -732,6 +781,15 @@ public class GridManager : MonoBehaviour {
 	{
 		return gridObjectLevelPositionDictionary[position];
 	}
+
+    public bool GridComponentAtPosition(Vector3 position) {
+        bool returnBool = false;
+        if (gridObjectLevelPositionDictionary.ContainsKey(position))
+        {
+            returnBool = true;
+        }
+        return returnBool;
+    }
 
 	public bool ExchangeAtPosition(Vector3 position)
 	{

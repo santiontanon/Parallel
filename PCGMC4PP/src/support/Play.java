@@ -25,17 +25,11 @@ package support;
 
 import game.GameState;
 import game.GameStateDescriptionWrapper;
-import game.GameStateSearch;
-import game.execution.ExecutionDeterministic;
-import game.execution.ExecutionDeterministic1;
-import game.execution.ExecutionFair;
-import game.execution.ExecutionNonDeterministic;
 import game.execution.ExecutionPlan;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -46,8 +40,9 @@ import java.util.Random;
  */
 public class Play {
 
+    public static boolean debug = false;
+
     public static void main(String args[]) {
-        boolean debug = false;
         // ExitCode = 0: OK
         // ExitCode = 1: System Errors
         // ExitCode = 2: Errors parsing input, use support.validate to check input
@@ -70,48 +65,14 @@ public class Play {
                 if (args.length >= 3) {
                     how_many = Integer.parseInt(args[2]);
                 }
-                Map<GameStateDescriptionWrapper,Integer> gsh = new HashMap();
-                List<GameState> eps = new ArrayList();
-                eps.add(gs);
-                GameState gs_ = gs.clone();
-                for(int i=0;i<how_many;i++){
-                    List<GameState> successors = gs_.getSuccessors();
-                    if (successors.size() > 0) {
-                        GameState successor;
-                        if (deterministic < 0) {
-                            Random rand = new Random();
-                            gs_ = successors.get(rand.nextInt(successors.size()));
-                        } else if (deterministic == 0) {
-                            gs_ = successors.get(0);
-                        } else {
-                            gs_ = successors.get(deterministic % successors.size());
-                        }
-                        GameStateDescriptionWrapper gsw = new GameStateDescriptionWrapper(gs_);
-                        //System.out.println(Arrays.toString(gs_.stateDescription()));
-                        if(gsh.containsKey(gsw)){
-                            int num = gsh.get(gsw);
-                            num++;
-                            if(num>number_of_loops_before_breaking){
-                                break;
-                            }
-                            gsh.put(gsw, num);
-                        } else {
-                            gsh.put(gsw, 0);
-                        }
-                        eps.add(gs_);
-                    } else {
-                        break;
-                    }
-                    if(break_when_complete && gs_.isStateComplete()) break;
-                }
-                ExecutionPlan ep = new ExecutionPlan(eps);
-                String out = GameStateExporter.export(gs, ep, null);
-                if(debug){
+                ExecutionPlan ep = PlayLevel(gs, deterministic, how_many, number_of_loops_before_breaking, break_when_complete);
+                String out = GameStateExporter.export(gs, ep, null, null);
+                if (debug) {
                     System.out.println(out);
                 } else {
                     File file = new File(filename);
                     String path = file.getAbsolutePath();
-                    File out_file = File.createTempFile("play_out_",".txt",file.getParentFile());
+                    File out_file = File.createTempFile("play_out_", ".txt", file.getParentFile());
                     PrintWriter writer = new PrintWriter(out_file);
                     writer.print(out);
                     writer.close();
@@ -120,11 +81,56 @@ public class Play {
                 System.exit(0);
             } catch (Exception ex) {
                 System.out.println("Exception: " + ex.getMessage());
+                ex.printStackTrace();
                 System.exit(6);
             }
         } else {
             System.out.println("Usage: support.Play filename selection_strategy [how_many]");
             System.exit(4);
         }
+    }
+
+    
+    public static ExecutionPlan PlayLevel(GameState gs, int deterministic, int how_many, int number_of_loops_before_breaking, boolean break_when_complete) {
+        Map<GameStateDescriptionWrapper, Integer> gsh = new LinkedHashMap();
+        List<GameState> eps = new ArrayList();
+        eps.add(gs);
+        GameState gs_ = gs.clone();
+        Random rand = new Random(deterministic);
+        for (int i = 0; i < how_many; i++) {
+            List<GameState> successors = gs_.getSuccessors();
+            if (successors.size() > 0) {
+//                        GameState successor;
+                if (deterministic < 0) {
+                    int chosen = rand.nextInt(successors.size());
+//                            System.out.println("chosen: " + chosen + " / " + successors.size());
+                    gs_ = successors.get(chosen);
+                } else if (deterministic == 0) {
+                    gs_ = successors.get(0);
+                } else {
+                    gs_ = successors.get(deterministic % successors.size());
+                }
+                GameStateDescriptionWrapper gsw = new GameStateDescriptionWrapper(gs_);
+//                        System.out.println(Arrays.toString(gs_.stateDescription()));
+                if (gsh.containsKey(gsw)) {
+                    int num = gsh.get(gsw);
+                    num++;
+                    if (num > number_of_loops_before_breaking) {
+                        break;
+                    }
+                    gsh.put(gsw, num);
+                } else {
+                    gsh.put(gsw, 0);
+                }
+                eps.add(gs_);
+            } else {
+                break;
+            }
+            if (break_when_complete && gs_.isStateComplete()) {
+                break;
+            }
+        }
+        ExecutionPlan ep = new ExecutionPlan(eps);
+        return ep;
     }
 }

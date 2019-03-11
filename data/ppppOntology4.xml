@@ -10,9 +10,11 @@
     <sort name="situation_critical_thread_lost" super="situation_critical"/>
     <sort name="situation_critical_no_delivery_due_to_diverter" super="situation_critical"/>
     <sort name="situation_deadlock" super="situation_inst"/>
+    <sort name="situation_race_condition" super="situation_inst"/>
     <sort name="situation_deadlock_two_thread_semaphore" super="situation_deadlock"/>
     <sort name="situation_deadlock_two_pickup_delivery" super="situation_critical_thread_lost,situation_deadlock"/>
     <sort name="situation_syncro" super="situation_inst"/>
+    <sort name="situation_three_path_exchange_deadlock" super="situation_deadlock"/>
 
     <sort name="kind_of_iteration" super="any"/>
     <sort name="loop" super="kind_of_iteration"/>
@@ -33,8 +35,9 @@
     <sort name="end_point" super="dead_end"/>
     <sort name="pcg_hint" super="any"/>
     <sort name="trash" super="pcg_hint"/>
-    <sort name="first" super="pcg_hint"/>
+    <!--sort name="first" super="pcg_hint"/-->
     <sort name="two_thread_semaphore" super="pcg_hint"/>
+    <sort name="three_path_exchange_deadlock" super="pcg_hint"/>
 
     <sort name="control_loop" super="track,kind_of_iteration"/>
 
@@ -53,13 +56,13 @@
     <sort name="component" super="any"/>
     <sort name="thread" super="component"/>
     <sort name="multithread" super="pcg_hint"/>
+    <sort name="double_thread" super="multithread"/>
+    <sort name="triple_thread" super="multithread"/>
     <sort name="pickup" super="component"/>
     <sort name="pickup_unconditional" super="pickup"/> <!-- this is the default in Java -->
     <sort name="pickup_conditional" super="pickup"/> <!-- this is the default overwritten by rules -->
     <sort name="pickup_limited" super="pickup"/>
-    <sort name="pickup_preventor" super="pickup,preventor"/> <!-- since I cannot remove labels from a node, I add this node to prevent instantiation -->
     <sort name="delivery" super="component"/>
-    <sort name="delivery_preventor" super="delivery,preventor"/>
     <sort name="button" super="component"/>
     <sort name="semaphore" super="component"/>
     <sort name="semaphore_red" super="semaphore"/>
@@ -70,9 +73,14 @@
 
     <sort name="relation" super="any"/>
     <sort name="to" super="relation"/>
+    <sort name="toStarting" super="to"/>  <!-- this is to indicate the direction in which directional switches start point at -->
+    <sort name="toWithPackage" super="to"/>
+    <sort name="toWithoutPackage" super="to"/>
     <sort name="is" super="relation"/>
     <sort name="has" super="relation"/>
     <sort name="partOf" super="relation"/>
+    <sort name="link" super="relation"/>
+    <sort name="deliverTo" super="relation"/>
 
 <!-- THESE ARE INTENDED TO SELECT THE TOPICS ANNOTATED IN THE GRAMMAR RULES -->
     <sort name="TOPIC" super="any"/>

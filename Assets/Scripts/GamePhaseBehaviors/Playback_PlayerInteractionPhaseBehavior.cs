@@ -18,11 +18,15 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
     [SerializeField]
     bool paused;
 
+    //temp variables to resolve goal screen issues
+    public bool success; //was the solution successful
+
     public void StartPhase()
     {
         //reset values
         //start parse steps
         StartCoroutine(ParseSteps());
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void EndPhase()
@@ -30,6 +34,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         //end all coroutines
         StopAllCoroutines();
         //reset values
+        currentStep = 0;
+        playerInteraction.playerInteraction_UI.playbackSlider.value = 0;
+        paused = false;
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void PhaseUpdate()
@@ -43,174 +51,90 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         currentStep = 0;
         paused = false;
         Level lvl = GameManager.Instance.GetDataManager().currentLevelData;
-        int maxStep = 0;
-        stepDictionary = new Dictionary<int, List<StepData>>();
-        Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
-        timeSteps = new List<TimeStepData>();
-        List<GridComponent> threads = new List<GridComponent>();
-
-        foreach (GridComponent g in lvl.components)
+        if(lvl.execution.Count > 0)
         {
-            if (g.type == "thread")
-            {
-                threads.Add(g);
-            }
-        }
+            int maxStep = 0;
+            stepDictionary = new Dictionary<int, List<StepData>>();
+            Dictionary<int, List<int>> componentStepsDictionary = new Dictionary<int, List<int>>();
+            timeSteps = new List<TimeStepData>();
+            List<GridComponent> threads = new List<GridComponent>();
 
-        for (int i = 0; i < lvl.execution.Count; i++)
-        {
-            yield return new WaitForEndOfFrame();
-            StepData step = lvl.execution[i];
-
-            if (step.timeStep > maxStep)
+            foreach (GridComponent g in lvl.components)
             {
-                maxStep = step.timeStep;
-            }
-
-            if (step.eventType == "M")
-            {
-                if (!componentStepsDictionary.ContainsKey(step.componentID)) { componentStepsDictionary.Add(step.componentID, new List<int>()); componentStepsDictionary[step.componentID].Add(i); }
-                else { componentStepsDictionary[step.componentID].Add(i); }
-            }
-
-            if (stepDictionary.ContainsKey(step.timeStep))
-            {
-                if (step.eventType == "D")
+                if (g.type == "thread")
                 {
-                    stepDictionary[step.timeStep].Insert(0, step);
+                    threads.Add(g);
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < lvl.execution.Count; i++)
+            {
+                StepData step = lvl.execution[i];
+
+                if (step.timeStep > maxStep)
+                {
+                    maxStep = step.timeStep;
+                }
+
+                if (step.eventType == "M")
+                {
+                    if (!componentStepsDictionary.ContainsKey(step.componentID)) { componentStepsDictionary.Add(step.componentID, new List<int>()); componentStepsDictionary[step.componentID].Add(i); }
+                    else { componentStepsDictionary[step.componentID].Add(i); }
+                }
+
+                if (stepDictionary.ContainsKey(step.timeStep))
+                {
+                    if (step.eventType == "D")
+                    {
+                        stepDictionary[step.timeStep].Insert(0, step);
+                    }
+                    else
+                    {
+                        stepDictionary[step.timeStep].Add(step);
+                    }
                 }
                 else
                 {
+                    stepDictionary[step.timeStep] = new List<StepData>();
                     stepDictionary[step.timeStep].Add(step);
                 }
-            }
-            else
-            {
-                stepDictionary[step.timeStep] = new List<StepData>();
-                stepDictionary[step.timeStep].Add(step);
-            }
-        }
-
-        //create in between steps for thread movements
-        for (int i = 0; i <= maxStep; i++)
-        {
-            if (stepDictionary.ContainsKey(i) == false)
-                stepDictionary.Add(i, new List<StepData>());
-            if (stepDictionary[i] == null)
-                stepDictionary[i] = new List<StepData>();
-            if (stepDictionary[i].Count == 0)
-            {
-                for (int j = 0; j < threads.Count; j++)
+                if(stopwatch.ElapsedMilliseconds > 1000 / 60)
                 {
-                    Vector2 prevPos = new Vector2();
-                    for (int k = 0; k < stepDictionary[i - 1].Count; k++)
-                    {
-                        if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
-                        {
-                            prevPos = stepDictionary[i - 1][k].componentPos;
-                        }
-                    }
-
-                    Vector2 nextPos = prevPos;
-                    bool end = false;
-                    for (int k = i + 1; k < stepDictionary.Count; k++)
-                    {
-                        if (stepDictionary.ContainsKey(k))
-                        {
-                            for (int l = 0; l < stepDictionary[k].Count; l++)
-                            {
-                                if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
-                                {
-                                    if (stepDictionary[k][l].componentPos != prevPos)
-                                    {
-                                        if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
-                                        {
-                                            if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
-                                            {
-                                                if (prevPos.x != stepDictionary[k][l].componentPos.x)
-                                                {
-                                                    if (prevPos.x > stepDictionary[k][l].componentPos.x)
-                                                    {
-                                                        nextPos = new Vector2(nextPos.x - 1, nextPos.y);
-                                                    }
-                                                    else
-                                                    {
-                                                        nextPos = new Vector2(nextPos.x + 1, nextPos.y);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (prevPos.y > stepDictionary[k][l].componentPos.y)
-                                                    {
-                                                        nextPos = new Vector2(nextPos.x, nextPos.y - 1);
-                                                    }
-                                                    else
-                                                    {
-                                                        nextPos = new Vector2(nextPos.x, nextPos.y + 1);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    end = true;
-                                    break;
-                                }
-                            }
-                            if (end == true)
-                            {
-                                break;
-                            }
-                        }
-                    }
-
-                    StepData newStep = new StepData();
-                    newStep.componentID = threads[j].id;
-                    newStep.componentPos = nextPos;
-                    newStep.eventType = "M";
-                    newStep.timeStep = i;
-
-                    stepDictionary[i].Add(newStep);
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
                 }
-
             }
-            else
+
+            //create in between steps for thread movements
+            for (int i = 0; i <= maxStep; i++)
             {
-                List<bool> hasTimeStepData = new List<bool>();
-                for (int j = 0; j < threads.Count; j++)
+                if (stepDictionary.ContainsKey(i) == false)
+                    stepDictionary.Add(i, new List<StepData>());
+                if (stepDictionary[i] == null)
+                    stepDictionary[i] = new List<StepData>();
+                if (stepDictionary[i].Count == 0)
                 {
-                    hasTimeStepData.Add(false);
-                }
-
-                for (int j = 0; j < stepDictionary[i].Count; j++)
-                {
-                    if (stepDictionary[i][j].eventType == "M")
-                    {
-                        for (int k = 0; k < threads.Count; k++)
-                        {
-                            if (threads[k].id == stepDictionary[i][j].componentID)
-                            {
-                                hasTimeStepData[k] = true;
-                            }
-                        }
-                    }
-                }
-
-                for (int j = 0; j < hasTimeStepData.Count; j++)
-                {
-                    if (hasTimeStepData[j] == false)
+                    for (int j = 0; j < threads.Count; j++)
                     {
                         Vector2 prevPos = new Vector2();
-                        for (int k = 0; k < stepDictionary[i - 1].Count; k++)
+                        if (i > 0)
                         {
-                            if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                            for (int k = 0; k < stepDictionary[i - 1].Count; k++)
                             {
-                                prevPos = stepDictionary[i - 1][k].componentPos;
+                                if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                                {
+                                    prevPos = stepDictionary[i - 1][k].componentPos;
+                                }
                             }
                         }
-
                         Vector2 nextPos = prevPos;
                         bool end = false;
-                        for (int k = i + 1; k < stepDictionary.Count; k++)
+                        for (int k = i + 1; k < maxStep+1; k++)
                         {
                             if (stepDictionary.ContainsKey(k))
                             {
@@ -268,153 +192,286 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
                         stepDictionary[i].Add(newStep);
                     }
+
                 }
-            }
-        }
-
-        TimeStepData timeStep = new TimeStepData();
-        for (int i = 0; i < lvl.components.Count; i++)
-        {
-            switch (lvl.components[i].type)
-            {
-                case "thread":
-                    ThreadData thread = new ThreadData();
-                    thread.id = lvl.components[i].id;
-                    thread.pos = Vector2.zero;
-                    switch (lvl.components[i].configuration.initial_direction)
-                    {
-                        case "North": thread.rotation = new Vector3(0, 0, 90); break;
-                        case "South": thread.rotation = new Vector3(0, 0, -90); break;
-                        case "East": thread.rotation = new Vector3(0, 0, 0); break;
-                        case "West": thread.rotation = new Vector3(0, 0, 180); break;
-                    }
-                    timeStep.threads.Add(thread);
-                    break;
-
-                case "pickup":
-                    PickupData pickup = new PickupData();
-                    pickup.id = lvl.components[i].id;
-                    pickup.available = lvl.components[i].configuration.value;
-                    timeStep.pickups.Add(pickup);
-                    break;
-
-                case "delivery":
-                    DeliveryData delivery = new DeliveryData();
-                    delivery.id = lvl.components[i].id;
-                    delivery.deliveries = 0;
-                    timeStep.deliveryPoints.Add(delivery);
-                    break;
-
-                case "semaphore":
-                    SemaphoreData semaphore = new SemaphoreData();
-                    semaphore.id = lvl.components[i].id;
-                    semaphore.open = lvl.components[i].configuration.value;
-                    timeStep.sempahores.Add(semaphore);
-                    break;
-
-                case "conditional":
-                    ConditionalData conditional = new ConditionalData();
-                    conditional.id = lvl.components[i].id;
-                    conditional.current = lvl.components[i].configuration.current;
-                    conditional.directions = lvl.components[i].configuration.directions;
-                    timeStep.conditionals.Add(conditional);
-                    break;
-
-            }
-        }
-
-        for (int i = 0; i < stepDictionary.Count; i++)
-        {
-            if (i != 0)
-            {
-                timeStep = timeStep.Copy(timeSteps[i - 1]);
-                timeStep.timeStep = i;
-                timeStep.previousStep = timeSteps[i - 1];
-                timeSteps[i - 1].nextStep = timeStep;
-            }
-            for (int j = 0; j < stepDictionary[i].Count; j++)
-            {
-                switch (stepDictionary[i][j].eventType)
+                else
                 {
-                    case "M":
-                        timeStep.GetThread(stepDictionary[i][j].componentID).pos = stepDictionary[i][j].componentPos;
-                        if (i != 0)
+                    List<bool> hasTimeStepData = new List<bool>();
+                    for (int j = 0; j < threads.Count; j++)
+                    {
+                        hasTimeStepData.Add(false);
+                    }
+
+                    for (int j = 0; j < stepDictionary[i].Count; j++)
+                    {
+                        if (stepDictionary[i][j].eventType == "M")
                         {
-                            Vector2 difference = timeSteps[timeSteps.Count - 1].GetThread(stepDictionary[i][j].componentID).pos - timeStep.GetThread(stepDictionary[i][j].componentID).pos;
-                            if (difference.x > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 180); }
-                            else if (difference.x < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 0); }
-                            else if (difference.y > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 90); }
-                            else if (difference.y < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, -90); }
-                        }
-                        break;
-                    case "D":
-                        if(stepDictionary[i][j].componentStatus.delivered_to != 0)
-                        {
-                            timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
-                        }
-                        break;
-                    case "E":
-                        if (timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
-                        {
-                            timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
-                        }
-                        else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
-                        {
-                            timeStep.GetPickup(stepDictionary[i][j].componentID).available = stepDictionary[i][j].componentStatus.available;
-                        }
-                        else if (timeStep.GetThread(stepDictionary[i][j].componentID) != null)
-                        {
-                            if (stepDictionary[i][j].componentStatus.payload != null)
+                            for (int k = 0; k < threads.Count; k++)
                             {
-                                timeStep.GetThread(stepDictionary[i][j].componentID).DisablePackages();
-                                for (int k = 0; k < stepDictionary[i][j].componentStatus.payload.Length; k++)
+                                if (threads[k].id == stepDictionary[i][j].componentID)
                                 {
-                                    for (int l = 0; l < i; l++)
-                                    {
-                                        if (timeSteps[l].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]) == false)
-                                        {
-                                            PackageData package = new PackageData();
-                                            package.active = false;
-                                            package.id = stepDictionary[i][j].componentStatus.payload[k];
-                                            timeSteps[l].GetThread(stepDictionary[i][j].componentID).packages.Add(package);
-                                        }
-                                    }
-                                    if (timeStep.GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]))
-                                    {
-                                        timeStep.GetThread(stepDictionary[i][j].componentID).GetPackage(stepDictionary[i][j].componentStatus.payload[k]).active = true;
-                                    }
-                                    else
-                                    {
-                                        PackageData package = new PackageData();
-                                        package.active = true;
-                                        package.id = stepDictionary[i][j].componentStatus.payload[k];
-                                        timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(package);
-                                    }
+                                    hasTimeStepData[k] = true;
                                 }
                             }
                         }
-                        else if (timeStep.GetConditional(stepDictionary[i][j].componentID) != null)
+                    }
+
+                    for (int j = 0; j < hasTimeStepData.Count; j++)
+                    {
+                        if (hasTimeStepData[j] == false)
                         {
-                            if (stepDictionary[i][j].componentStatus.current != -1)
+                            Vector2 prevPos = new Vector2();
+                            for (int k = 0; k < stepDictionary[i - 1].Count; k++)
                             {
-                                timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
+                                if (stepDictionary[i - 1][k].eventType == "M" && stepDictionary[i - 1][k].componentID == threads[j].id)
+                                {
+                                    prevPos = stepDictionary[i - 1][k].componentPos;
+                                }
                             }
+                            Vector2 nextPos = prevPos;
+                            bool end = false;
+                            for (int k = i + 1; k < maxStep+1; k++)
+                            {
+                                if (stepDictionary.ContainsKey(k))
+                                {
+                                    for (int l = 0; l < stepDictionary[k].Count; l++)
+                                    {
+                                        if (stepDictionary[k][l].eventType == "M" && stepDictionary[k][l].componentID == threads[j].id)
+                                        {
+                                            if (stepDictionary[k][l].componentPos != prevPos)
+                                            {
+                                                if (Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) > 1 || Vector2.Distance(prevPos, stepDictionary[k][l].componentPos) < -1)
+                                                {
+                                                    if (k - Mathf.Abs(Vector2.Distance(prevPos, stepDictionary[k][l].componentPos)) == i - 1)
+                                                    {
+                                                        if (prevPos.x != stepDictionary[k][l].componentPos.x)
+                                                        {
+                                                            if (prevPos.x > stepDictionary[k][l].componentPos.x)
+                                                            {
+                                                                nextPos = new Vector2(nextPos.x - 1, nextPos.y);
+                                                            }
+                                                            else
+                                                            {
+                                                                nextPos = new Vector2(nextPos.x + 1, nextPos.y);
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (prevPos.y > stepDictionary[k][l].componentPos.y)
+                                                            {
+                                                                nextPos = new Vector2(nextPos.x, nextPos.y - 1);
+                                                            }
+                                                            else
+                                                            {
+                                                                nextPos = new Vector2(nextPos.x, nextPos.y + 1);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            end = true;
+                                            break;
+                                        }
+                                    }
+                                    if (end == true)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+
+                            StepData newStep = new StepData();
+                            newStep.componentID = threads[j].id;
+                            newStep.componentPos = nextPos;
+                            newStep.eventType = "M";
+                            newStep.timeStep = i;
+
+                            stepDictionary[i].Add(newStep);
                         }
-                        break;
+                    }
+                }
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
                 }
             }
-            timeSteps.Add(timeStep);
-        }
 
-        playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
-        playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
-        yield return PlaySimulation(maxStep);
+            yield return new WaitForSeconds(1f);
+            TimeStepData timeStep = new TimeStepData();
+            for (int i = 0; i < lvl.components.Count; i++)
+            {
+                switch (lvl.components[i].type)
+                {
+                    case "thread":
+                        ThreadData thread = new ThreadData();
+                        thread.id = lvl.components[i].id;
+                        thread.pos = Vector2.zero;
+                        switch (lvl.components[i].configuration.initial_direction)
+                        {
+                            case "North": thread.rotation = new Vector3(0, 0, 90); break;
+                            case "South": thread.rotation = new Vector3(0, 0, -90); break;
+                            case "East": thread.rotation = new Vector3(0, 0, 0); break;
+                            case "West": thread.rotation = new Vector3(0, 0, 180); break;
+                        }
+                        timeStep.threads.Add(thread);
+                        break;
+
+                    case "pickup":
+                        PickupData pickup = new PickupData();
+                        pickup.id = lvl.components[i].id;
+                        pickup.available = lvl.components[i].configuration.value;
+                        timeStep.pickups.Add(pickup);
+                        break;
+
+                    case "delivery":
+                        DeliveryData delivery = new DeliveryData();
+                        delivery.id = lvl.components[i].id;
+                        delivery.deliveries = 0;
+                        timeStep.deliveryPoints.Add(delivery);
+                        break;
+
+                    case "semaphore":
+                        SemaphoreData semaphore = new SemaphoreData();
+                        semaphore.id = lvl.components[i].id;
+                        semaphore.open = lvl.components[i].configuration.value;
+                        timeStep.sempahores.Add(semaphore);
+                        break;
+
+                    case "conditional":
+                        ConditionalData conditional = new ConditionalData();
+                        conditional.id = lvl.components[i].id;
+                        conditional.current = lvl.components[i].configuration.current;
+                        conditional.directions = lvl.components[i].configuration.directions;
+                        timeStep.conditionals.Add(conditional);
+                        break;
+
+                }
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+            for (int i = 0; i < stepDictionary.Count; i++)
+            {
+                if (i != 0)
+                {
+                    timeStep = timeStep.Copy(timeSteps[i - 1]);
+                    timeStep.timeStep = i;
+                    timeStep.previousStep = timeSteps[i - 1];
+                    timeSteps[i - 1].nextStep = timeStep;
+                }
+                for (int j = 0; j < stepDictionary[i].Count; j++)
+                {
+                    switch (stepDictionary[i][j].eventType)
+                    {
+                        case "M":
+                            timeStep.GetThread(stepDictionary[i][j].componentID).pos = stepDictionary[i][j].componentPos;
+                            if (i != 0)
+                            {
+                                Vector2 difference = timeSteps[timeSteps.Count - 1].GetThread(stepDictionary[i][j].componentID).pos - timeStep.GetThread(stepDictionary[i][j].componentID).pos;
+                                if (difference.x > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 180); }
+                                else if (difference.x < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 0); }
+                                else if (difference.y > 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, 90); }
+                                else if (difference.y < 0) { timeStep.GetThread(stepDictionary[i][j].componentID).rotation = new Vector3(0, 0, -90); }
+                            }
+                            break;
+                        case "D":
+                            if (stepDictionary[i][j].componentStatus.delivered_to != 0)
+                            {
+                                timeStep.GetDeliveryPoint(stepDictionary[i][j].componentStatus.delivered_to).deliveries++;
+                            }
+                            break;
+                        case "E":
+                            if (timeStep.GetSemaphore(stepDictionary[i][j].componentID) != null)
+                            {
+                                timeStep.GetSemaphore(stepDictionary[i][j].componentID).open = stepDictionary[i][j].componentStatus.value;
+                            }
+                            else if (timeStep.GetPickup(stepDictionary[i][j].componentID) != null)
+                            {
+                                timeStep.GetPickup(stepDictionary[i][j].componentID).available = stepDictionary[i][j].componentStatus.available;
+                            }
+                            else if (timeStep.GetThread(stepDictionary[i][j].componentID) != null)
+                            {
+                                if (stepDictionary[i][j].componentStatus.payload != null)
+                                {
+                                    timeStep.GetThread(stepDictionary[i][j].componentID).DisablePackages();
+                                    for (int k = 0; k < stepDictionary[i][j].componentStatus.payload.Length; k++)
+                                    {
+                                        for (int l = 0; l < i; l++)
+                                        {
+                                            if (timeSteps[l].GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]) == false)
+                                            {
+                                                PackageData package = new PackageData();
+                                                package.active = false;
+                                                package.id = stepDictionary[i][j].componentStatus.payload[k];
+                                                timeSteps[l].GetThread(stepDictionary[i][j].componentID).packages.Add(package);
+                                            }
+                                        }
+                                        if (timeStep.GetThread(stepDictionary[i][j].componentID).ContainsPackage(stepDictionary[i][j].componentStatus.payload[k]))
+                                        {
+                                            timeStep.GetThread(stepDictionary[i][j].componentID).GetPackage(stepDictionary[i][j].componentStatus.payload[k]).active = true;
+                                        }
+                                        else
+                                        {
+                                            PackageData package = new PackageData();
+                                            package.active = true;
+                                            package.id = stepDictionary[i][j].componentStatus.payload[k];
+                                            timeStep.GetThread(stepDictionary[i][j].componentID).packages.Add(package);
+                                        }
+                                    }
+                                }
+                            }
+                            else if (timeStep.GetConditional(stepDictionary[i][j].componentID) != null)
+                            {
+                                if (stepDictionary[i][j].componentStatus.current != -1)
+                                {
+                                    timeStep.GetConditional(stepDictionary[i][j].componentID).current = stepDictionary[i][j].componentStatus.current;
+                                }
+                            }
+                            break;
+                    }
+                }
+                timeSteps.Add(timeStep);
+                if (stopwatch.ElapsedMilliseconds > 1000 / 60)
+                {
+                    stopwatch.Stop();
+                    stopwatch.Reset();
+                    yield return new WaitForEndOfFrame();
+                    stopwatch.Start();
+                }
+            }
+
+            playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
+            playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+            playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.stopSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.stopSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.interactable = true;
+            playerInteraction.playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
+            playerInteraction.playerInteraction_UI.playbackSlider.interactable = true;
+            playerInteraction.playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
+            yield return PlaySimulation(maxStep);
+        }
+        else
+        {
+            yield return null;
+        }
     }
 
     IEnumerator PlaySimulation(int maxStep)
     {
         int maxGoalsCompleted = 0;
         currentStep = 0;
+        paused = false;
+        playerInteraction.playerInteraction_UI.playbackSlider.value = 0;
         bool nextLevelButtonVisibility = false;
         while (currentStep <= maxStep)
         {
@@ -444,26 +501,18 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                 string levelFileName = "";
                                 if (GameManager.Instance.currentLevelReferenceObject != null) levelFileName = GameManager.Instance.currentLevelReferenceObject.file;
 
-                                /* allowed attempts */
-                                bool foundSolution = false;
-                                LevelScore solution = GameManager.Instance.GetScoreManager().GetSolutionInfo(playerInteraction.score, out foundSolution);
-
                                 switch (step.componentStatus.final_condition)
                                 {
                                     case 2:
                                     case 8:
                                     case 10:
+                                        success = true;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {
                                             titleString = "SUCCESSFUL SOLUTION";
                                             goalString += "\n• Congratulations! This solution will always work. Please proceed to the next level.";
                                             playerInteraction.score.completed = true;
-
-                                            if (foundSolution)
-                                            {
-                                                goalString += "\n• Attempts Allowed: " + solution.attemptCount;
-                                            }
 
                                             //get current score
                                             int currentScore = GameManager.Instance.GetScoreManager().GetCalculatedScore(playerInteraction.score);
@@ -487,6 +536,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         break;
                                     default:
+                                        success = false;
                                         //if "test" versus "submit" change this text
                                         if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.ME)
                                         {
@@ -501,27 +551,27 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         goalString = "";
                                         if ((step.componentStatus.final_condition & 1) != 0)
                                         {
-                                            goalString += "• Make sure arrows aren't blocked.\n";
+                                            goalString += "\n• Make sure arrows aren't blocked.";
                                         }
                                         if ((step.componentStatus.final_condition & 4) != 0)
                                         {
-                                            goalString += "• This solution was unsuccessful.\n";
+                                            goalString += "\n• This solution was unsuccessful.";
                                         }
                                         if ((step.componentStatus.final_condition & 16) != 0)
                                         {
-                                            goalString += "• Make sure arrows can't deliver at the same time.\n";
+                                            goalString += "\n• Make sure arrows can't deliver at the same time.";
                                         }
                                         if ((step.componentStatus.final_condition & 32) != 0)
                                         {
-                                            goalString += "• Make sure all arrows can move.\n";
+                                            goalString += "\n• Make sure all arrows can move.";
                                         }
                                         if ((step.componentStatus.final_condition & 64) != 0)
                                         {
-                                            goalString += "• Make sure arrows don't get caught in an infinite loop.\n";
+                                            goalString += "\n• Make sure arrows don't get caught in an infinite loop.";
                                         }
                                         if ((step.componentStatus.final_condition & 512) != 0)
                                         {
-                                            goalString += "• Wrong turn! Check the Flow Arrows at the top of the screen.\n";
+                                            goalString += "\n• Wrong turn! Check the Flow Arrows on the right of the screen.";
                                         }
                                         List<string> errorFeedback = new List<string>();
                                         foreach (string errorKey in step.componentStatus.goal_descriptions)
@@ -534,11 +584,6 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                             }
                                         }
                                         foreach (string s in errorFeedback) goalString += ("• " + s + "\n");
-
-                                        if (foundSolution)
-                                        {
-                                            goalString += "• Attempts Allowed: " + solution.attemptCount + "\n";
-                                        }
 
                                         break;
                                 }
@@ -594,6 +639,8 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     IEnumerator FinishSimulation()
     {
+        Debug.Log("FinishSimulation");
+
         yield return new WaitForEndOfFrame();
 
         if (PlayerInteraction_GamePhaseBehavior.onCompletion != null) PlayerInteraction_GamePhaseBehavior.onCompletion();
@@ -608,37 +655,40 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.exit:
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levels:
                 playerInteraction.TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
+                //Debug.Log("User input for exit or levels hit.");
                 playerInteraction.EndSimulation();
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.stop:
                 playerInteraction.TriggerPlayPhaseEnd();
-                Debug.Log("User input for exit or levels hit.");
+                //Debug.Log("User input for exit or levels hit.");
                 playerInteraction.EndSimulation();
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
 
-                Debug.Log("REPLAY");
+                //Debug.Log("REPLAY");
                 //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation;
                 GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
 
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
-                Debug.Log("Retry");
+                //Debug.Log("Retry");
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 playerInteraction.EndSimulation();
-                GameManager.Instance.TriggerLevelTutorial
-                (
-                    GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-                    playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation || playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-                );
+                if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
+                {
+                    GameManager.Instance.TriggerLevelTutorial
+                    (
+                        GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
+                        playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation || playerInteraction.interactionPhase == PlayerInteraction_GamePhaseBehavior.InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
+                    );
+                }
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.levelsNext:
                 playerInteraction.TriggerPlayPhaseEnd(GameManager.GamePhases.LoadScreen, true);
                 break;
             default:
-                Debug.Log("No case defined for " + playerInteraction.playerInteraction_UI.goalOverlay.userInput.ToString());
+                //Debug.Log("No case defined for " + playerInteraction.playerInteraction_UI.goalOverlay.userInput.ToString());
                 playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.ingame_default;
                 break;
         }
@@ -660,6 +710,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         GameManager.Instance.tracker.CreateEventExt("PauseSimulation", paused.ToString());
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.AddListener(UnpauseSimulation);
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[1];
     }
 
     public void UnpauseSimulation()
@@ -668,6 +719,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
         GameManager.Instance.tracker.CreateEventExt("PauseSimulation", paused.ToString());
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.RemoveAllListeners();
         playerInteraction.playerInteraction_UI.pauseSimulationButton.onClick.AddListener(PauseSimulation);
+        playerInteraction.playerInteraction_UI.playbackButton.sprite = playerInteraction.playerInteraction_UI.playbackButtonSprites[0];
     }
 
     public void OnTimeSliderValueChanged(int i)
@@ -682,7 +734,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     public void DelayedUnpause(float delay = 0, TutorialEvent t = null)
     {
-        Debug.Log(delay);
+        //Debug.Log(delay);
         if (delay == 0)
         {
             paused = false;

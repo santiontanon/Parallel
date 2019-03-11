@@ -27,7 +27,7 @@ import game.execution.ExecutionPlan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +61,7 @@ public class GameStateSearch {
     public int result_successful_depth = Integer.MAX_VALUE;
     public int nodes_ignored_result_successful_depth = 0;
 
+    private int maximum_number_of_steps_of_a_solution = 200;
     private int search_budget = 1000;
     //private int search_millis = Integer.MAX_VALUE;
     private int search_millis = 60000;
@@ -185,8 +186,8 @@ public class GameStateSearch {
         this.start.updateGameStateDescriptionLength();
         this.open = new LinkedList<GameState>();
         this.open.add(gs);
-        this.closed_hashes = new HashSet();
-        this.open_hashes = new HashSet();
+        this.closed_hashes = new LinkedHashSet();
+        this.open_hashes = new LinkedHashSet();
     }
 
     public void search() {
@@ -194,6 +195,8 @@ public class GameStateSearch {
         this.search_millis_end = System.currentTimeMillis()+this.search_millis;
         // TODO Q what is the right threshold for unfair schedulers?
         this.unfair_scheduler_threshold = this.start.getComponentState().getComponents().size();
+        if (this.unfair_scheduler_threshold < 40) this.unfair_scheduler_threshold = 40;
+        if(!this.verbose) System.out.println("unfair threshold: " + this.unfair_scheduler_threshold);
         
         if(!this.verbose) GameState.verbose = false;
         
@@ -209,11 +212,12 @@ public class GameStateSearch {
             }
             //current = this.open.pop();
             current = this.open.removeLast();
-            if(this.verbose) System.out.println("Result of type "+current.result_type+" in time\t"+current.getTime()+" steps\t"+current.getSteps()+"\t"+current);
+            //if(this.verbose) System.out.println("Result of type "+current.result_type+" in time\t"+current.getTime()+" steps\t"+current.getSteps()+"\t"+current);
             closed_hashes.add(new GameStateDescriptionWrapper(current));
 
             // Evaluate the current GameState
             if (current.isStateComplete()) {
+                //System.out.println("complete");
                 current.result_type |= GameState.RESULT_SUCCESSFUL;
                 if(current.getTime()<this.result_successful_depth){
                     this.results_successful.add(current);
@@ -228,11 +232,20 @@ public class GameStateSearch {
                 // don't break here unless the goal conditions always encode the problem completely
             } 
             if (current.isStateDeadEnd()) {
+                //System.out.println("deadend");
                 current.result_type |= GameState.RESULT_DEADEND;
                 this.results_deadend.add(current);
                 if (this.break_on_first_deadlock) {
                     if(this.verbose) System.out.println("Break on first deadlock hit");
                     break; // should be safe to always break here in production
+                }
+            }
+            if (current.getSteps() > maximum_number_of_steps_of_a_solution) {
+                current.result_type |= GameState.RESULT_PROBLEMATIC;
+                this.results_problematic.add(current);
+                if (this.break_on_first_problematic) {
+                    if(this.verbose) System.out.println("Break on first problematic hit");
+                    break; // TODO Q what search breaks stay in production?
                 }
             }
             int problem_code = 0;
@@ -244,8 +257,8 @@ public class GameStateSearch {
                     if(this.verbose) System.out.println("Break on first problematic hit");
                     break; // TODO Q what search breaks stay in production?
                 }
-
             }
+            
             if (current.isStatePartial()) {
                 current.result_type |= GameState.RESULT_PARTIAL;
                 // do NOT break here, it may lead to a successful later on
@@ -258,9 +271,12 @@ public class GameStateSearch {
                 this.result_first_longer = current;
             }
             // Compute successors and filter successors
-            for (GameState successor : current.getSuccessors()) {
+            List<GameState> successors = current.getSuccessors();
+//            System.out.println("successors: " + successors.size());
+            for (GameState successor : successors) {
                 // Check for unfair schedules
                 boolean is_unfair = false;
+//                System.out.println("unfair: " + successor.getMostUnfairScheduledUnit().consecutive_unscheduled);
                 if(successor.getMostUnfairScheduledUnit().consecutive_unscheduled>this.unfair_scheduler_threshold){
                     this.nodes_ignored_unfair_scheduler++;
                     is_unfair = true;
@@ -274,15 +290,20 @@ public class GameStateSearch {
                     symmetry_found = true;
                 }
                 // TODO not all symmetries should be discared AND/OR need more precise description...
-
+                
                 if ((!is_unfair)
                         && (!symmetry_found || !drop_symmetries_successors)
                         && !current.isStateComplete()) {
                     this.open.add(successor);
                     open_hashes.add(successor_hash);
+                } else {
+                    if (this.verbose) System.out.println("ignored: " + is_unfair + ", " + symmetry_found + ", " + current.isStateComplete());
                 }
             }
+            //if (this.verbose) System.out.println("open: " + this.open.size());
+//            System.out.println("closed: " + this.closed_hashes.size());
         }
+        if (this.verbose) System.out.println("open at the end: " + this.open.size() + ", search_cost: " + search_cost);
         this.result_last_current=current;
         this.search_space_exhausted = this.open.isEmpty();
     }

@@ -28,7 +28,6 @@ import game.GameStateSearch;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.text.ParseException;
 
 /**
  *
@@ -76,7 +75,7 @@ public class ME {
                     System.out.println("Search space exhausted without solutions");
                     System.exit(4);                    
                 } else {
-                    String out = GameStateExporter.export(gss,null);
+                    String out = GameStateExporter.export(gss, null, null);
                     File file = new File(filename);
                     String path = file.getAbsolutePath();
                     File out_file = File.createTempFile("me_out_",".txt",file.getParentFile());
@@ -88,6 +87,7 @@ public class ME {
                 }
             } catch (FileNotFoundException ex) {
                 System.out.println("Exception: " + ex.getMessage());
+                ex.printStackTrace();
                 System.exit(6);
             }
         } else {

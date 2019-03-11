@@ -14,7 +14,7 @@ public class GridObjectBehavior : MonoBehaviour
 	public GridComponent component;
 	public GridTrack track;
 	public Camera levelCamera;
-	public GameObject highlightObject;
+	//public GameObject highlightObject;
 	public GameObject teleportTrail;
 	public GameObject lockObject;
 	public Vector2 lastSimulationPosition;
@@ -70,7 +70,10 @@ public class GridObjectBehavior : MonoBehaviour
 				SpriteRenderer instanceSpriteRenderer = GetComponent<SpriteRenderer>();
 				instanceSpriteRenderer.enabled = false;
 			}
-			break;
+			    break;
+            case "semaphore":
+                component.configuration.value_original = component.configuration.value;
+                break;
 			case "conditional":
 			{
 				component.configuration.current_original = component.configuration.current;
@@ -141,7 +144,7 @@ public class GridObjectBehavior : MonoBehaviour
 	#region "Left Click Drags"
 	public void BeginDrag()
 	{
-		Debug.Log("Start drag!");
+
 	}
 	public void ContinueDrag()
 	{
@@ -151,13 +154,10 @@ public class GridObjectBehavior : MonoBehaviour
 	}
 	public void EndDrag()
 	{
-		Debug.Log("Ending the drag");
-
 		if( GameManager.Instance.GetGridManager().IsValidLocation( Input.mousePosition ) 
 			&& !GameManager.Instance.GetGridManager().IsOccupied( Input.mousePosition )
 		) 
 		{
-			Debug.Log("It's a good spot!");
 			Vector3 dragToPosition = levelCamera.ScreenToWorldPoint(Input.mousePosition);
 			Vector3 previousPosition = new Vector3( component.posX, GameManager.Instance.GetLevelHeight() - component.posY, 0 );
 			dragToPosition = new Vector3( Mathf.RoundToInt(dragToPosition.x), Mathf.RoundToInt(dragToPosition.y), 0);
@@ -379,11 +379,12 @@ public class GridObjectBehavior : MonoBehaviour
 		}
 		else if(component.type == "semaphore")
 		{
+            component.configuration.value = component.configuration.value_original;
 			GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite( component );
 		}
 		else if(component.type == "conditional")
 		{
-			if(component.configuration.current_original != null) component.configuration.current = component.configuration.current_original;
+			component.configuration.current = component.configuration.current_original;
 			int index = 0;
 			foreach(GameObject g in conditionalDirections)
 			{
@@ -636,20 +637,45 @@ public class GridObjectBehavior : MonoBehaviour
 	{
 		if(isEnabled)
 		{
-			highlightObject.transform.localScale = Vector3.zero;
+            /*
+            highlightObject.transform.localScale = Vector3.zero;
 			iTween.ScaleTo( highlightObject, iTween.Hash("scale", Vector3.one * 1.5f, "time", 0.5f) );
 			highlightObject.SetActive(true);
+            */
+            UpdateOutline(true);
 		}
 		else
 		{
+            /*
 			highlightObject.transform.localScale = Vector3.one * 1.5f;
 			iTween.ScaleTo( highlightObject, iTween.Hash("scale", Vector3.one * 0f, "time", 1f, "onComplete", "TurnOffHighlight") );
-		}
+		    */
+            UpdateOutline(false);
+        }
 	}
 
 	void TurnOffHighlight()
 	{
-		highlightObject.SetActive(false);
+        UpdateOutline(false);
+		//highlightObject.SetActive(false);
 	}
 
+    
+    void UpdateOutline(bool outline) {
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color color = new Color(204f/255f, 88f/255f, 39f/255f);
+        //Color color = new Color(1f, 1f, 0f);
+        float outlineSize = 10f;
+        float outlineMultiplier = GameManager.Instance.GetGridManager().worldCamera.orthographicSize / 5.7f; //5.7 is the ortho size for the level 1 grid.
+        //outlineSize *=outlineMultiplier;
+        
+        //Debug.Log("outlineMultiplier = " + outlineMultiplier);
+        spriteRenderer.GetPropertyBlock(mpb);
+        mpb.SetFloat("_Outline", outline ? 1f : 0);
+        mpb.SetColor("_OutlineColor", color);
+        mpb.SetFloat("_OutlineSize", outlineSize);
+        mpb.SetFloat("_OutlineFill", outlineMultiplier>2f?1f:0f);
+        spriteRenderer.SetPropertyBlock(mpb);
+    }
 }

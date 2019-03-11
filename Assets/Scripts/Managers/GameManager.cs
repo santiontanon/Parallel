@@ -8,13 +8,16 @@ public class GameManager : MonoBehaviour {
 	public enum GamePhases {StartScreen, LoadScreen, GenerateTrack, PlayerInteraction, GradeSubmission, GradeReport, EndScreen, CloseGame}
 	public GamePhases gamePhase = GamePhases.StartScreen;
 	public GamePhaseBehavior startScreenBehavior, loadScreenBehavior, generateTrackBehavior, playerInteractionBehavior, gradeSubmissionBehavior, gradeReportBehavior, endScreenBehavior, exitGameBehavior;
-    public enum GameMode { Test, Demo, Class }
+    public enum GameMode { Test, Demo, Class, Study }
     public GameMode currentGameMode;
+    public enum SaveMode { Relative, Default }
+    public SaveMode currentSaveMode;
 	public bool hideTestsForBuild = false;
 	GamePhaseBehavior currentPhase;
     public LevelReferenceObject currentLevelReferenceObject;
+    public int JVMMemorySelection = 0;
 
-    public bool preSurveyComplete, postSurveyComplete = false;
+    public bool preSurveyComplete, postSurveyComplete, trackerIntialized, playerModelingIntialized = false;
 
     //FOR DEBUG, REMOVE THIS LATER
     string lastPhase = "";
@@ -52,7 +55,8 @@ public class GameManager : MonoBehaviour {
         saveManager = GetComponent<SaveManager>();
 		linkJava = GetComponent<LinkJava>();
 		tracker = GetComponent<Tracker>();
-        
+
+        linkJava.Init();
         saveManager.Init();
         scoreManager.Init();
 	}
@@ -107,6 +111,7 @@ public class GameManager : MonoBehaviour {
 
 	public void SetGamePhase(GamePhases inputPhase)
 	{
+        Debug.Log("SetGamePhase" + inputPhase.ToString());
 		if(currentPhase!=null) { EndGamePhaseBehavior(); }
 
 		gamePhase = inputPhase;
@@ -150,7 +155,6 @@ public class GameManager : MonoBehaviour {
 
 	void EndGamePhaseBehavior()
 	{
-        Debug.Log("Ending phase " + gamePhase.ToString());
 		switch( gamePhase )
 		{
 		case GamePhases.PlayerInteraction:
@@ -178,6 +182,12 @@ public class GameManager : MonoBehaviour {
 		UpdateGamePhaseBehavior();
 	}
 
+    public void ResetInitStatus()
+    {
+        playerModelingIntialized = false;
+        trackerIntialized = false;
+    }
+
 	public void UpdatePlayerField(string inputPlayerId)
 	{
 		Debug.Log("Player ID is now:" + inputPlayerId);
@@ -188,49 +198,75 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-
-	public void TriggerLoadLevel(DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
+	public void TriggerLoadLevel(bool restartPhase = false, DataManager.LoadType loadType = DataManager.LoadType.RESOURCES, string inputLevelName = "")
 	{
-        Debug.Log(loadType);
-		tracker.CreateEventExt("TriggerLoadLevel",inputLevelName);
+        tracker.ResetModelLog();
 		if(inputLevelName.Length == 0) inputLevelName = dataManager.levelname;
 		dataManager.InitializeLoadLevel( inputLevelName, loadType );
         LevelReferenceObject levRef = dataManager.GetLevelByFile(inputLevelName);
         if (levRef != null)
             currentLevelReferenceObject = levRef;
-        //TODO: Since this gets called when a simulation completes and re-opens everything, it can cause bugs with the tutorials loading
-        SetGamePhase(GameManager.GamePhases.GenerateTrack);
-	}
+        InitiateTrackGeneration(restartPhase);
+        if (restartPhase)
+            SetGamePhase(GamePhases.PlayerInteraction);
+        if (loadType == DataManager.LoadType.STRING)
+            tracker.CreateEventExt("TriggerLoadLevel", currentLevelReferenceObject.file);
+        else
+            tracker.CreateEventExt("TriggerLoadLevel", inputLevelName);
+    }
 
     public void TriggerLoadLevel(LevelReferenceObject inputLevelReferenceObject)
     {
+        tracker.ResetModelLog();
         currentLevelReferenceObject = inputLevelReferenceObject;
-        TriggerLoadLevel( DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
+        TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, inputLevelReferenceObject.file);
     }
 
-    public void TriggerLoadTutorialLevel(string path)
+    public void TriggerLoadTutorialLevel(string levelName)
     {
-        tracker.CreateEventExt("TriggerLoadLevel", path);
-        if (path.Length == 0) path = dataManager.levelname;
-        dataManager.InitializeLoadLevel(path, DataManager.LoadType.RESOURCES);
+        tracker.CreateEventExt("TriggerLoadLevel", levelName);
+        TextAsset text = Resources.Load("Levels/" + levelName) as TextAsset;
+        if (levelName.Length == 0) levelName = dataManager.levelname;
+        dataManager.InitializeLoadLevel(text.text, DataManager.LoadType.STRING);
     }
 
-    public void TriggerPCG(string inputLevelName = "")
+    public void TriggerPCG()
 	{
 		tutorialManager.tutorialIndex = -1;
-		string filename = Application.persistentDataPath + linkJava.pathSeparator + "currentParameters.txt";
-		System.IO.File.WriteAllText(filename, "");
+		string filename = linkJava.savePath + "currentParameters.txt";
+        if(!System.IO.File.Exists(filename))
+		    System.IO.File.WriteAllText(filename, "");
 		tracker.CreateEventExt("TriggerPCG",filename);
 		linkJava.filename = filename;
 		//LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
 		linkJava.simulationMode = LinkJava.SimulationTypes.PCG;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 		//SetGamePhase(GameManager.GamePhases.GenerateTrack);
 	}
 
-	public void InitiateTrackGeneration()
+    public bool IsInPCG()
+    {
+        return linkJava.simulationMode == 
+            LinkJava.SimulationTypes.PCG || 
+            (dataManager.currentLevelData.metadata.level_id == -1  && linkJava.GetLastPCGGeneratedLevel().Length>0);
+    }
+
+    public void TriggerPCGLevelSave()
+    {
+        string lastLevelData = linkJava.GetLastPCGGeneratedLevel();
+        if (lastLevelData.Length > 0f)
+        {
+            GetSaveManager().currentSave.AddNewPCGLevel(lastLevelData);
+            linkJava.ClearLastPCGGeneratedLevel();
+            GetSaveManager().UpdateSave();
+        }
+        else Debug.Log("No previous PCG level was found.");
+    }
+
+
+	public void InitiateTrackGeneration(bool resetCamera)
 	{
-		gridManager.GenerateGrid(/*dataManager.currentLevelData.layoutList,*/ dataManager.currentLevelData.tracks, dataManager.currentLevelData.components);
+		gridManager.GenerateGrid(/*dataManager.currentLevelData.layoutList,*/ dataManager.currentLevelData.tracks, dataManager.currentLevelData.components, resetCamera);
 	}
 
 
@@ -244,10 +280,15 @@ public class GameManager : MonoBehaviour {
 		tutorialManager.PerformTutorialSeries( inputLevelId, inputPlayPhase);
 	}
 
+    public void TriggerLevelTutorialSkip(bool allSubsequentForLevel)
+    {
+        tutorialManager.ReportTutorialEventSkip(allSubsequentForLevel);
+    }
+
     public void CreateTutorialPopup(TutorialEvent t, GridObjectBehavior gridObject)
     {
         //two versions, depending on if we want to set the position at the same time as setting the pop up to open
-        tutorialManager.tutorialOverlay.SetTooltip(t.popupDescription, gridObject.gameObject);
+        tutorialManager.tutorialOverlay.SetTooltip(t.popupDescription, gridObject.gameObject, t.nextTutorial);
         tutorialManager.tutorialOverlay.tutorialCloseButton.onClick.AddListener(() => tutorialManager.tutorialOverlay.ClosePanel() );
         tutorialManager.tutorialOverlay.OpenPanel();
     }
@@ -267,10 +308,9 @@ public class GameManager : MonoBehaviour {
     public void PlayTutorialLevel()
     {
         string levelToString = SerializeCurrentLevel();
-        Debug.Log(levelToString);
+        //Debug.Log(levelToString);
         string filename =
-            Application.persistentDataPath
-            + linkJava.pathSeparator
+            linkJava.savePath
             + Constants.FilePrefixes.inputLevelFile + "_PLAY_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         linkJava.simulationMode = LinkJava.SimulationTypes.Play;
@@ -287,27 +327,25 @@ public class GameManager : MonoBehaviour {
 	public void SubmitCurrentLevel(LinkJava.SimulationTypes inputSimulationType)
 	{        
 		string levelToString = SerializeCurrentLevel();
-		Debug.Log( levelToString );
 		string filename = 
-            Application.persistentDataPath 
-            + linkJava.pathSeparator 
+            linkJava.savePath
             + Constants.FilePrefixes.inputLevelFile + "_"  + inputSimulationType.ToString().ToUpper() + "_"
             + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
-        Debug.Log(filename);
+        //Debug.Log(filename);
         System.IO.File.WriteAllText(filename, levelToString);
 		linkJava.filename = filename;
 		linkJava.simulationMode = inputSimulationType;
 		GameManager.Instance.tracker.CreateEventExt("SubmitCurrentLevel"+inputSimulationType.ToString(),filename);
 
 		LinkJava.OnSimulationCompleted += TriggerLevelSimulation;
-		linkJava.SendToME();
+		linkJava.SendToJava();
 	}
 
     public void TriggerAdvanceToNextLevel()
     {
         LevelReferenceObject nextLevel = dataManager.GetNextLevel(currentLevelReferenceObject);
-        Debug.Log("Next level is: " + nextLevel.levelId);
-        TriggerLoadLevel(DataManager.LoadType.RESOURCES, nextLevel.file);
+        //Debug.Log("Next level is: " + nextLevel.levelId);
+        TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, nextLevel.file);
     }
 
     public void TriggerLevelSimulation(LinkJava.SimulationFeedback feedback)
@@ -319,7 +357,7 @@ public class GameManager : MonoBehaviour {
         //none indicates hitting the replay button
         if (feedback != LinkJava.SimulationFeedback.none)
         {
-            Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
+            //Debug.Log("Feedback from LinkJava to GameManager was " + feedback.ToString());
             castBehavior.StartSimulation();
         }
 
@@ -327,6 +365,9 @@ public class GameManager : MonoBehaviour {
 
 		else if(feedback == LinkJava.SimulationFeedback.failure) 
 		{
+            castBehavior.playerInteraction_UI.loadingOverlay.ClosePanel();
+            PlayerInteraction_GamePhaseBehavior playerInteraction = playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+            playerInteraction.EndSimulation();
 			castBehavior.playerInteraction_UI.simulationErrorOverlay.OpenPanel();
 		}
 	}
@@ -338,6 +379,27 @@ public class GameManager : MonoBehaviour {
 		levelJSON = dataManager.GetLevelJson();
 		return levelJSON;
 	}
+
+    public void AbortLinkJavaProcess()
+    {
+        GetLinkJava().StopExternalProcess();
+        Load_GamePhaseBehavior levelSelect = loadScreenBehavior as Load_GamePhaseBehavior;
+        levelSelect.loadUI.levelLoadingOverlay.ClosePanel();
+        PlayerInteraction_GamePhaseBehavior playerInteraction = playerInteractionBehavior as PlayerInteraction_GamePhaseBehavior;
+        playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+        playerInteraction.playerInteraction_UI.simulationErrorOverlay.ClosePanel();
+    }
+
+    public void ResetToLevelSelect()
+    {
+        AbortLinkJavaProcess();
+        if (gamePhase == GamePhases.PlayerInteraction)
+        {
+            PlayerInteraction_GamePhaseBehavior playPhase = (PlayerInteraction_GamePhaseBehavior)playerInteractionBehavior;
+            playPhase.TriggerPlayPhaseEnd();
+        }
+        SetGamePhase(GamePhases.LoadScreen);
+    }
 		
 	public int GetLevelHeight() { return GetDataManager().currentLevelData.metadata.board_height; }
 	public int GetLevelWidth() { return GetDataManager().currentLevelData.metadata.board_width; }
@@ -345,6 +407,7 @@ public class GameManager : MonoBehaviour {
 	public DataManager GetDataManager(){ return dataManager;}
     public ScoreManager GetScoreManager() { return scoreManager; }
     public SaveManager GetSaveManager() { return saveManager; }
+    public LinkJava GetLinkJava() { return linkJava; }
     public LinkJava.SimulationTypes GetCurrentSimulationType() { return linkJava.simulationMode; }
 
 }

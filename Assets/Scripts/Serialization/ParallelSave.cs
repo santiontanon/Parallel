@@ -8,11 +8,24 @@ public class ParallelSave {
     public static ParallelSave current;
 
     public LevelScore[] scores;
+    public List<LevelScore> pcgScores;
+    public List<string> pcgLevels;
     public string name;
 
     public void UpdateName(string s)
     {
 
+    }
+
+    public int AddNewPCGLevel(string level)
+    {
+        if (pcgLevels == null)
+            pcgLevels = new List<string>();
+        if (pcgScores == null)
+            pcgScores = new List<LevelScore>();
+        pcgLevels.Add(level);
+        pcgScores.Add(new LevelScore());
+        return pcgLevels.IndexOf(level);
     }
 
     public void UpdateScore(LevelScore score, int index)

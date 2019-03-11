@@ -10,6 +10,9 @@ public class ScoreManager : MonoBehaviour {
     [SerializeField]
     LevelScore[] scores;
 
+    [SerializeField]
+    LevelScore[] pcgScores;
+
     /// <summary>
     /// Array of level solutions
     /// 0 = allowed submit attempts
@@ -29,7 +32,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
     public void ClearScores()
     {
-        foreach(LevelScore score in scores)
+        foreach (LevelScore score in scores)
         {
             score.completed = false;
             score.attemptCount = -1;
@@ -44,7 +47,7 @@ public class ScoreManager : MonoBehaviour {
     /// </summary>
 	public void SaveScores()
     {
-        GameManager.Instance.GetSaveManager().UpdateSave(scores, GameManager.Instance.GetSaveManager().currentSave.name);
+        GameManager.Instance.GetSaveManager().UpdateSave(GameManager.Instance.GetSaveManager().currentSave.name, scores, new System.Collections.Generic.List<LevelScore>(pcgScores), GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
     }
 
     /// <summary>
@@ -60,6 +63,24 @@ public class ScoreManager : MonoBehaviour {
                 scores[i] = new LevelScore();
             }
         }
+        if(GameManager.Instance.GetSaveManager().currentSave.pcgScores != null)
+        {
+            pcgScores = GameManager.Instance.GetSaveManager().currentSave.pcgScores.ToArray();
+        }
+        if (pcgScores != null)
+        {
+            for (int i = 0; i < pcgScores.Length; i++)
+            {
+                if (pcgScores[i] == null)
+                {
+                    pcgScores[i] = new LevelScore();
+                }
+            }
+        }
+        else
+        {
+            pcgScores = new LevelScore[0];
+        }
     }
 
     /// <summary>
@@ -68,7 +89,7 @@ public class ScoreManager : MonoBehaviour {
     /// <param name="index">index of the target level</param>
     public LevelScore GetScore(int index)
     {
-        if(scores.Length > index)
+        if (scores.Length > index)
         {
             return scores[index];
         }
@@ -91,21 +112,30 @@ public class ScoreManager : MonoBehaviour {
         if (score.completed == true)
         {
             _score++;
-            if (score.attemptCount <= solutions[score.index].attemptCount)
+            if(score.index >= 0)
             {
-                _score++;
-            }
-            if (score.stepCount <= solutions[score.index].stepCount)
-            {
-                _score++;
+                if (score.attemptCount <= solutions[score.index].attemptCount)
+                {
+                    _score++;
+                }
+                if (score.stepCount <= solutions[score.index].stepCount)
+                {
+                    _score++;
+                }
             }
         }
         return _score;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="score"></param>
+    /// <param name="success"></param>
+    /// <returns></returns>
     public LevelScore GetSolutionInfo(LevelScore score, out bool success)
     {
-        if (solutions.Length > score.index)
+        if (solutions.Length > score.index && score.index >= 0)
         {
             success = true;
             return solutions[score.index];
@@ -125,14 +155,21 @@ public class ScoreManager : MonoBehaviour {
     /// <returns></returns>
     public int GetCalculatedScore(int index)
     {
-        if (scores.Length > index)
+        if (scores.Length > index && index >= 0)
         {
             return GetCalculatedScore(scores[index]);
         }
         else
         {
-            AddNewScores(index);
-            return GetCalculatedScore(scores[index]);
+            if(index >= 0)
+            {
+                AddNewScores(index);
+                return GetCalculatedScore(scores[index]);
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 
@@ -143,7 +180,7 @@ public class ScoreManager : MonoBehaviour {
     /// <param name="score">LevelScore object that holds data for scoring</param>
     public void ScoreLevel(LevelScore score)
     {
-        if(solutions.Length > score.index)
+        if (solutions.Length > score.index && score.index >= 0)
         {
             int _score = GetCalculatedScore(score);
             if(scores.Length <= score.index)
@@ -173,7 +210,8 @@ public class ScoreManager : MonoBehaviour {
         scores = new LevelScore[index + 1];
         for (int i = 0; i < oldScores.Length; i++)
         {
-            scores[oldScores[i].index] = oldScores[i];
+            if(oldScores[i].index >= 0)
+                scores[oldScores[i].index] = oldScores[i];
         }
         for (int i = 0; i < scores.Length; i++)
         {
@@ -182,7 +220,6 @@ public class ScoreManager : MonoBehaviour {
                 scores[i] = new LevelScore();
             }
         }
-        SaveScores();
     }
 
     [ContextMenu("Setup Solution Default Values")]

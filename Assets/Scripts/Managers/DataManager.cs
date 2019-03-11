@@ -28,10 +28,10 @@ public class DataManager : MonoBehaviour {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
             TextAsset lr_text = null;
-            lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+            lr_text = Resources.Load("TestLoadSelection") as TextAsset;
             text = lr_text.text;
         }
-        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+        else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class || GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
         {
             if(GameManager.Instance.tracker.level_data != "")
             {
@@ -40,7 +40,10 @@ public class DataManager : MonoBehaviour {
             else
             {
                 TextAsset lr_text = null;
-                lr_text = Resources.Load("LevelLoadSelection") as TextAsset;
+                if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                else
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
                 text = lr_text.text;
             }
         }
@@ -51,55 +54,97 @@ public class DataManager : MonoBehaviour {
             text = lr_text.text;
         }
 
-        // Change Loading
         GetLevels(text);
 	}
 
     public void GetLevels(string inputJson)
     {
         allLevels.Clear();
-
         levRef = JsonUtility.FromJson<LevelReference>(inputJson);
 
         //Load pre-existing scores
-        GameManager.Instance.GetScoreManager().LoadScores();
+        //GameManager.Instance.GetScoreManager().LoadScores();
 
-        //link level int ids to each level reference object
-        foreach (LevelReferenceObject lrObj in levRef.levels.required)
-        {
-            if (lrObj.levelId == -1)
+        try{
+            //link level int ids to each level reference object
+            foreach (LevelReferenceObject lrObj in levRef.levels.required)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
-        foreach (LevelReferenceObject lrObj in levRef.levels.previous)
-        {
-            if (lrObj.levelId == -1)
+            foreach (LevelReferenceObject lrObj in levRef.levels.previous)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
-        foreach (LevelReferenceObject lrObj in levRef.levels.optional)
-        {
-            if (lrObj.levelId == -1)
+            foreach (LevelReferenceObject lrObj in levRef.levels.optional)
             {
-                lrObj.levelId = GetLevelId(lrObj.file);
+                if (lrObj.levelId == -99999)
+                {
+                    lrObj.levelId = GetLevelId(lrObj.file);
+                }
+                lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
             }
-            lrObj.completionRank = GameManager.Instance.GetScoreManager().GetCalculatedScore(lrObj.levelId);
-        }
 
-
-        Object[] loadedObjects = Resources.LoadAll("Levels");
-        foreach (Object o in loadedObjects)
-        {
-            //TextAsset t = o as TextAsset;
-            allLevels.Add(o);
-            allLevelNames.Add(o.name);
- 
+            GetPCGLevels(GameManager.Instance.GetSaveManager().currentSave.pcgLevels);
         }
-        Debug.Log(allLevels.Count + " is all files in resources folder");
+        catch (System.Exception e)
+        {
+            Debug.Log(e);
+            TextAsset lr_text = null;
+            switch (GameManager.Instance.currentGameMode)
+            {
+                case GameManager.GameMode.Class:
+                    lr_text = Resources.Load("ClassLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Demo:
+                    lr_text = Resources.Load("DemoLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Test:
+                    lr_text = Resources.Load("TestLoadSelection") as TextAsset;
+                    break;
+                case GameManager.GameMode.Study:
+                    lr_text = Resources.Load("StudyLoadSelection") as TextAsset;
+                    break;
+            }
+            GetLevels(lr_text.text);
+        }
+    }
+
+    public void GetPCGLevels(List<string> levels)
+    {
+        if(levels != null)
+        {
+            levRef.levels.pcg.Clear();
+            List<LevelReferenceObject> refs = new List<LevelReferenceObject>();
+            for (int i = 0; i < levels.Count; i++)
+            {
+                if (levels[i] != "")
+                {
+                    LevelReferenceObject lro = new LevelReferenceObject();
+                    lro.file = "levelX";
+                    lro.title = "X";
+                    if (i < 10)
+                    {
+                        lro.file += 0;
+                        lro.title += 0;
+                    }
+                    lro.file += i;
+                    lro.title += i;
+                    lro.data = GameManager.Instance.GetSaveManager().currentSave.pcgLevels[i];
+                    lro.levelId = i;
+                    lro.completionRank = 0;
+                    refs.Add(lro);
+                }
+            }
+            levRef.levels.pcg = refs;
+        }
     }
 
     int GetLevelId(string levelFileName)
@@ -186,12 +231,13 @@ public class DataManager : MonoBehaviour {
     {
         RESOURCES,
         FILENAME,
-        FILEPATH
+        FILEPATH,
+        STRING
     }
    
-	public void InitializeLoadLevel(string inputLevelName, LoadType loadType)
+	public void InitializeLoadLevel(string inputString, LoadType loadType)
 	{
-		levelname = inputLevelName;
+		levelname = inputString;
         string[] bindata_split = new string[0];
 
         switch (loadType)
@@ -201,11 +247,13 @@ public class DataManager : MonoBehaviour {
                 bindata_split = bindata.ToString().Split('\n');
                 break;
             case LoadType.FILENAME:
-                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(Application.dataPath + "/" + inputString);
                 break;
-
             case LoadType.FILEPATH:
-                bindata_split = System.IO.File.ReadAllLines(inputLevelName);
+                bindata_split = System.IO.File.ReadAllLines(inputString);
+                break;
+            case LoadType.STRING:
+                bindata_split = inputString.Split('\n');
                 break;
         }
         currentLevelData = LoadLevel(bindata_split);
@@ -213,14 +261,8 @@ public class DataManager : MonoBehaviour {
 
     public void UpdateLevelRank(string inputLevelFile, int inputNewRank)
     {
-        bool isLevelFound = false;
-        GetLevelByFile(inputLevelFile).completionRank = inputNewRank;
-
-        if (isLevelFound) {
-            Debug.Log("Located file " + inputLevelFile);
-            return;
-        }
-        Debug.Log("Could not locate level " + inputLevelFile + " in level references of Data Manager.");
+        if(GetLevelByFile(inputLevelFile) != null)
+            GetLevelByFile(inputLevelFile).completionRank = inputNewRank;
     }
 
     Level LoadLevel(string[] levelDataArray)
@@ -235,12 +277,12 @@ public class DataManager : MonoBehaviour {
 		returnLevel.directionList = GetSectionData("DIRECTIONS", bindata_split);
 		returnLevel.componentList = GetSectionData("COMPONENTS", bindata_split);
 		returnLevel.executionList = GetSectionData("EXECUTION", bindata_split);
+        returnLevel.skillList = GetSectionData("SKILLS", bindata_split);
 
 		returnLevel.metadata = ParseMetadata( returnLevel.metadataList );
 		returnLevel.components = ParseComponents( returnLevel.componentList );
 		returnLevel.tracks = ParseTracks( returnLevel.layoutList, returnLevel.colorList, returnLevel.directionList );
 		returnLevel.execution = ParseExecution( returnLevel.executionList );
-		//Debug.Log( returnLevel.metadata.goal_struct.desired[0].id );
 
 		return returnLevel;
 	}
@@ -303,52 +345,56 @@ public class DataManager : MonoBehaviour {
 
 			switch(sLine[0])
 			{
-			case "level_id":
-				returnMetadata.level_id = int.Parse(sLine[1]);
-				break;
-			case "level_title":
-				returnMetadata.level_title = sLine[1];
-				break;
-			case "goal_string":
-				returnMetadata.goal_string = sLine[1];
-				break;
-			case "goal_struct":
-				//Debug.Log( sLine[1] );
-				returnMetadata.goal_struct = JsonUtility.FromJson<GoalCondition>(sLine[1]);
-				//Debug.Log(sLine[1] + "\n" + returnMetadata.goal_struct.desired.Length + "\n" + returnMetadata.goal_struct.required.Length);
-				break;
-			case "player_palette":
-				//returnMetadata.player_palette = sLine[1];
-				returnMetadata.player_palette = JsonUtility.FromJson<PlayerPalette>(sLine[1]);
-				break;
-			case "time_delivery_min":
-				returnMetadata.time_delivery_min = int.Parse(sLine[1]);
-				break;
-			case "time_delivery_max":
-				returnMetadata.time_exchange_max = int.Parse(sLine[1]);
-				break;
-			case "time_pickup_min":
-				returnMetadata.time_pickup_min = int.Parse(sLine[1]);
-				break;
-			case "time_pickup_max":
-				returnMetadata.time_pickup_max = int.Parse(sLine[1]);
-				break;
-			case "time_exchange_min":
-				returnMetadata.time_exchange_min = int.Parse(sLine[1]);
-				break;
-			case "time_exchange_max":
-				returnMetadata.time_exchange_max = int.Parse(sLine[1]);
-				break;
-			case "board_width":
-				returnMetadata.board_width = int.Parse(sLine[1]);
-				break;
-			case "board_height":
-				returnMetadata.board_height = int.Parse(sLine[1]);
-				break;
-            case "time_efficiency":
-                returnMetadata.time_efficiency = float.Parse(sLine[1]);
-                break;
-			}
+                case "level_id":
+                    returnMetadata.level_id = int.Parse(sLine[1]);
+                    break;
+                case "pcg_id":
+                    returnMetadata.pcg_id = sLine[1];
+                    break;
+                case "level_title":
+                    returnMetadata.level_title = sLine[1];
+                    if (returnMetadata.level_title == "PCG Level")
+                    {
+                        returnMetadata.level_id = -1;
+                    }
+                    break;
+                case "goal_string":
+                    returnMetadata.goal_string = sLine[1];
+                    break;
+                case "goal_struct":
+                    returnMetadata.goal_struct = JsonUtility.FromJson<GoalCondition>(sLine[1]);
+                    break;
+                case "player_palette":
+                    returnMetadata.player_palette = JsonUtility.FromJson<PlayerPalette>(sLine[1]);
+                    break;
+                case "time_delivery_min":
+                    returnMetadata.time_delivery_min = int.Parse(sLine[1]);
+                    break;
+                case "time_delivery_max":
+                    returnMetadata.time_exchange_max = int.Parse(sLine[1]);
+                    break;
+                case "time_pickup_min":
+                    returnMetadata.time_pickup_min = int.Parse(sLine[1]);
+                    break;
+                case "time_pickup_max":
+                    returnMetadata.time_pickup_max = int.Parse(sLine[1]);
+                    break;
+                case "time_exchange_min":
+                    returnMetadata.time_exchange_min = int.Parse(sLine[1]);
+                    break;
+                case "time_exchange_max":
+                    returnMetadata.time_exchange_max = int.Parse(sLine[1]);
+                    break;
+                case "board_width":
+                    returnMetadata.board_width = int.Parse(sLine[1]);
+                    break;
+                case "board_height":
+                    returnMetadata.board_height = int.Parse(sLine[1]);
+                    break;
+                case "time_efficiency":
+                    returnMetadata.time_efficiency = float.Parse(sLine[1]);
+                    break;
+            }
 		}
 
 		return returnMetadata;
@@ -527,11 +573,11 @@ public class DataManager : MonoBehaviour {
 
 	}
 
-	public string GetLevelJson()
-	{
-		string levelDataString = "";
+    public string GetLevelJson()
+    {
+        string levelDataString = "";
 
-		/*
+        /*
 METADATA
 level_id	3
 level_title	Introduction (3) - Prototype
@@ -547,56 +593,64 @@ time_exchange_max	0
 board_width	19
 board_height	15
 		*/
-		string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
-		metadataFormat = 
-			"level_id\t{0}"+
-			"\nlevel_title\t{1}"+
-			"\ngoal_string\t{2}"+
-			"\ngoal_struct\t{3}"+
-			"\nplayer_palette\t{4}"+
-			"\ntime_pickup_min\t{5}"+
-			"\ntime_delivery_min\t{6}"+
-			"\ntime_exchange_min\t{7}"+
-			"\ntime_pickup_max\t{8}"+
-			"\ntime_delivery_max\t{9}"+
-			"\ntime_exchange_max\t{10}"+
-			"\nboard_width\t{11}"+
-			"\nboard_height\t{12}";
+        string metadataFormat = "";//JsonUtility.ToJson( currentLevelData.metadata );
+        metadataFormat =
+            "level_id\t{0}" +
+            "\npcg_id\t{1}" +
+            "\nlevel_title\t{2}" +
+            "\ngoal_string\t{3}" +
+            "\ngoal_struct\t{4}" +
+            "\nplayer_palette\t{5}" +
+            "\ntime_pickup_min\t{6}" +
+            "\ntime_delivery_min\t{7}" +
+            "\ntime_exchange_min\t{8}" +
+            "\ntime_pickup_max\t{9}" +
+            "\ntime_delivery_max\t{10}" +
+            "\ntime_exchange_max\t{11}" +
+            "\nboard_width\t{12}" +
+            "\nboard_height\t{13}";
 
-		string metadataJson = string.Format(metadataFormat, 
-			currentLevelData.metadata.level_id, 
-			currentLevelData.metadata.level_title,
-			currentLevelData.metadata.goal_string,
-			JsonUtility.ToJson (currentLevelData.metadata.goal_struct),
-			JsonUtility.ToJson (currentLevelData.metadata.player_palette),
-			currentLevelData.metadata.time_pickup_min,
-			currentLevelData.metadata.time_delivery_min,
-			currentLevelData.metadata.time_exchange_min,
-			currentLevelData.metadata.time_pickup_max,
-			currentLevelData.metadata.time_delivery_max,
-			currentLevelData.metadata.time_exchange_max,
-			currentLevelData.metadata.board_width,
-			currentLevelData.metadata.board_height
-		);
+        string metadataJson = string.Format(metadataFormat,
+            currentLevelData.metadata.level_id,
+            currentLevelData.metadata.pcg_id,
+            currentLevelData.metadata.level_title,
+            currentLevelData.metadata.goal_string,
+            JsonUtility.ToJson(currentLevelData.metadata.goal_struct),
+            JsonUtility.ToJson(currentLevelData.metadata.player_palette),
+            currentLevelData.metadata.time_pickup_min,
+            currentLevelData.metadata.time_delivery_min,
+            currentLevelData.metadata.time_exchange_min,
+            currentLevelData.metadata.time_pickup_max,
+            currentLevelData.metadata.time_delivery_max,
+            currentLevelData.metadata.time_exchange_max,
+            currentLevelData.metadata.board_width,
+            currentLevelData.metadata.board_height
+        );
 
-		string layoutJson = "";
-		foreach(string s in currentLevelData.layoutList)
-		{
-			layoutJson+=s;
-			layoutJson+='\n';
-		}
+        string layoutJson = "";
+        foreach (string s in currentLevelData.layoutList)
+        {
+            layoutJson += s;
+            layoutJson += '\n';
+        }
 
-		string colorJson = "";
-		foreach(string s in currentLevelData.colorList)
-		{
-			colorJson+= s + '\n';
-		}
+        string colorJson = "";
+        foreach (string s in currentLevelData.colorList)
+        {
+            colorJson += s + '\n';
+        }
 
-		string directionJson = "";
-		foreach(string s in currentLevelData.directionList)
-		{
-			directionJson+= s + '\n';
-		}
+        string directionJson = "";
+        foreach (string s in currentLevelData.directionList)
+        {
+            directionJson += s + '\n';
+        }
+
+        string skillJson = "";
+        foreach (string s in currentLevelData.skillList)
+        {
+            skillJson += s + '\n';
+        }
 
 		/*
 9	14	S	L	{"directions":["North","West","North","East","North","North"],"passed":0}
@@ -628,12 +682,14 @@ board_height	15
 		}
 
 
-		levelDataString = 
-			"METADATA\n" + metadataJson
-			+ "\n\nLAYOUT\n" + layoutJson
-			+ "\nCOLORS\n" + colorJson
-			+ "\nDIRECTIONS\n" + directionJson
-			+ "\nCOMPONENTS\n" + componentString + "\nEXECUTION\n\nPLAYER\n";
+        levelDataString =
+            "METADATA\n" + metadataJson
+            + "\n\nLAYOUT\n" + layoutJson
+            + "\nCOLORS\n" + colorJson
+            + "\nDIRECTIONS\n" + directionJson
+            + "\nSKILLS\n" + skillJson
+            + "\nCOMPONENTS\n" + componentString
+            + "\nEXECUTION\n\nPLAYER\n";
 
 		return levelDataString;
 	}

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System;
 
 public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
-    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_connecting, ingame_help, simulation, awaitingSimulation }
+    public enum InteractionPhases { ingame_default, ingame_dragging, ingame_placing, ingame_connecting, ingame_help, simulation, awaitingSimulation }
     public InteractionPhases interactionPhase = InteractionPhases.simulation;
 
     public Playback_PlayerInteractionPhaseBehavior playbackBehavior;
@@ -81,7 +81,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     
     public override void BeginPhase()
     {
-        Debug.Log("BeginPhase");
         pauseSimulation += PauseSimulation;
         unpauseSimulation += UnpauseSimulation;
         delayedUnpause += DelayedUnpauseSimulation;
@@ -90,28 +89,34 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.OpenUI();
         DefineButtonBehaviors();
 
+        playerInteraction_UI.startTime = Time.fixedTime;
+
         score.index = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
 
-        GameManager.Instance.TriggerLevelTutorial
-        (
-            GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
-            interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
-        );
+        if (GameManager.Instance.GetDataManager().currentLevelData.metadata.level_type != -1)
+        {
+            GameManager.Instance.TriggerLevelTutorial
+            (
+                GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id,
+                interactionPhase == InteractionPhases.awaitingSimulation || interactionPhase == InteractionPhases.simulation ? TutorialEvent.TutorialInitializeTriggers.duringSimulation : TutorialEvent.TutorialInitializeTriggers.beforePlay
+            );
+        }
 
         GameManager.Instance.SetUpLevelInventory();
 
         //for zooming
         originalOrthographicSize = GameManager.Instance.GetGridManager().worldCamera.orthographicSize;
-        maxOrtho = originalOrthographicSize;
-        zoomLevel = 1f;
+        maxOrtho = originalOrthographicSize * 1.5f;
+        zoomLevel = 0.66f;
+        playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
         originalCameraPosition = GameManager.Instance.GetGridManager().worldCamera.transform.position;
         xMax = originalCameraPosition.x * 2;
         yMax = originalCameraPosition.y * 2;
         currentCameraPosition = originalCameraPosition;
         isZooming = false;
 
+        lastMousePos = currentMousePos;
         currentMousePos = Input.mousePosition;
-        lastMousePos = Input.mousePosition;
 
         if (PlayerPrefs.HasKey("LinkHover"))
         {
@@ -136,17 +141,24 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		if(interactionPhase == InteractionPhases.simulation)
 		{
 			GameManager.Instance.TriggerTrackUpdate();
-		}
+            PlayerInteractionListener();
+        }
 		else 
 		{
 			PlayerInteractionListener();
 		}
+        //playerInteraction_UI.Timer();
 	}
 
 	public override void EndPhase()
 	{
 		playerInteraction_UI.CloseUI();
         LockFlowVisibility(-1);
+
+        //cleanup tutorials
+        onCompletion = null;
+        onMenuInteraction = null;
+        onSimulationStep = null;
     }
 
     public void DefineButtonBehaviors()
@@ -204,7 +216,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         EventTrigger.Entry hover_bezier = new EventTrigger.Entry();
         hover_bezier.eventID = EventTriggerType.PointerEnter;
-        hover_bezier.callback.AddListener((eventData) => { connectVisibility = false; ToggleConnectionVisibility(); });
+        hover_bezier.callback.AddListener((eventData) => { Debug.Log("Bezier"); connectVisibility = false; ToggleConnectionVisibility(); });
         playerInteraction_UI.preview.triggers.Add(hover_bezier);
 
         EventTrigger.Entry click_bezier = new EventTrigger.Entry();
@@ -228,7 +240,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.simulationButton.interactable = true;
 
         playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); Debug.Log("End Simulation Button hit."); });
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); });
         playerInteraction_UI.stopSimulationButton.interactable = false;
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 
@@ -264,7 +276,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 EventTrigger.Entry beginHoverColor = new EventTrigger.Entry();
 				beginHoverColor.eventID = EventTriggerType.PointerEnter;
 				beginHoverColor.callback.AddListener( (eventData) => {
-					if ( !/*connectVisibilityLock*/colorFlowVisibilityLock )  GameManager.Instance.GetGridManager().RevealGridColorMask(loadColors);
+					if ( !colorFlowVisibilityLock )  GameManager.Instance.GetGridManager().RevealGridColorMask(loadColors);
                     ToggleFlowVisibility(true);
                 } );
 				playerInteraction_UI.rightPanelColors[triggerIndex].triggers.Add(beginHoverColor);
@@ -279,7 +291,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 EventTrigger.Entry endHoverColor = new EventTrigger.Entry();
 				endHoverColor.eventID = EventTriggerType.PointerExit;
 				endHoverColor.callback.AddListener( (eventData) => {
-					if ( !/*connectVisibilityLock*/colorFlowVisibilityLock ) GameManager.Instance.GetGridManager().HideGridColorMask();
+					if ( !colorFlowVisibilityLock ) GameManager.Instance.GetGridManager().HideGridColorMask();
                     ToggleFlowVisibility(false);
                 } );
 				playerInteraction_UI.rightPanelColors[triggerIndex].triggers.Add(endHoverColor);
@@ -376,6 +388,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.ingame_default) return;
 
+        interactionPhase = InteractionPhases.ingame_placing;
+
 		Sprite[] spriteSheet = Resources.LoadAll<Sprite>("Sprites/gridsprites_v3") as Sprite[];
 		GameManager.Instance.tracker.CreateEventExt("startDrag",selectedOption.ToString());
 
@@ -414,7 +428,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void EndDrag(MenuOptions selectedOption)
 	{
-		if(interactionPhase != InteractionPhases.ingame_default) return;
+		if(interactionPhase != InteractionPhases.ingame_placing) return;
+        interactionPhase = InteractionPhases.ingame_default;
 		playerInteraction_UI.ReleaseDraggableElement();
 		GameManager.Instance.tracker.CreateEventExt("endDrag",selectedOption.ToString());
 		if( GameManager.Instance.GetGridManager().IsValidLocation(Input.mousePosition) && !GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition) ) 
@@ -451,7 +466,8 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
-				resetObject.ResetPosition();
+            //Debug.Log(resetObject.component.id);
+		    resetObject.ResetPosition();
 		}
 
 		flowVisibility = false;
@@ -461,6 +477,13 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
     public void TriggerSimulation(LinkJava.SimulationTypes simulationType)
     {
+
+        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
+        playerInteraction_UI.simulationButton.interactable = false;
+        playerInteraction_UI.simulationButton.gameObject.SetActive(false);
+        playerInteraction_UI.submitButton.interactable = false;
+        playerInteraction_UI.submitButton.gameObject.SetActive(false);
+
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
         playerInteraction_UI.loadingText.text = "Simulating...";
@@ -489,26 +512,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 	{
 		if(interactionPhase != InteractionPhases.awaitingSimulation) return;
         interactionPhase = InteractionPhases.simulation;
-        Debug.Log("Setting to Simulation.");
+        //Debug.Log("Setting to Simulation.");
 		GridObjectBehavior[] gridObjs = GameManager.Instance.GetGridManager().RetrieveComponentsOfType("thread");
 		foreach(GridObjectBehavior g in gridObjs) g.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.thread_simulation;
-
-        playerInteraction_UI.revealHintsToggle.toggleRoot.SetActive(false);
-		playerInteraction_UI.simulationButton.interactable = false;
-		playerInteraction_UI.simulationButton.gameObject.SetActive(false);
-		playerInteraction_UI.submitButton.interactable = false;
-		playerInteraction_UI.submitButton.gameObject.SetActive(false);
-        playerInteraction_UI.playbackControls.gameObject.SetActive(true);
-		playerInteraction_UI.stopSimulationButton.interactable = true;
-		playerInteraction_UI.stopSimulationButton.gameObject.SetActive( true );
-        playerInteraction_UI.pauseSimulationButton.interactable = true;
-        playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(true);
-        playerInteraction_UI.playbackSlider.interactable = true;
-        playerInteraction_UI.playbackSlider.gameObject.SetActive(true);
-
-        //reset zoom stuff
-        ResetZoom();
-
 
 		playerInteraction_UI.goalOverlay.userInput = PlayerInteraction_UI.Goal_UIOverlay.UserInputs.none;
         playbackBehavior.StartPhase();
@@ -537,16 +543,98 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.pauseSimulationButton.gameObject.SetActive(false);
         playerInteraction_UI.playbackSlider.interactable = false;
         playerInteraction_UI.playbackSlider.gameObject.SetActive(false);
-	}	
+        playerInteraction_UI.simulationErrorOverlay.ClosePanel();
+    }	
+
+    public enum MouseInput
+    {
+        LeftMouse,
+        RightMouse,
+        MiddleMouse,
+        None
+    }
+
+    public MouseInput mouseInput;
 
     // Behavior for Player Interaction
 	void PlayerInteractionListener()
 	{
         // Mouse movement tracking
         lastMousePos = currentMousePos;
-        currentMousePos = Input.mousePosition;
+        currentMousePos = Input.mousePosition / new Vector2(Screen.width, Screen.height);
         deltaMousePos = currentMousePos - lastMousePos;
 
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) ||
+            Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand) ||
+            Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                mouseInput = MouseInput.RightMouse;
+            }
+            else
+            {
+                mouseInput = MouseInput.None;
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.LeftAlt))
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                mouseInput = MouseInput.MiddleMouse;
+            }
+            else
+            {
+                mouseInput = MouseInput.None;
+            }
+        }
+        else if (Input.GetKey(KeyCode.Mouse0))
+        {
+            mouseInput = MouseInput.LeftMouse;
+        }
+        else if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            mouseInput = MouseInput.RightMouse;
+        }
+        else if (Input.GetKey(KeyCode.Mouse2))
+        {
+            mouseInput = MouseInput.MiddleMouse;
+        }
+        else
+        {
+            mouseInput = MouseInput.None;
+        }
+
+        if (interactionPhase != InteractionPhases.ingame_connecting && interactionPhase != InteractionPhases.ingame_dragging && interactionPhase != InteractionPhases.ingame_placing)
+        {
+            if (mouseInput == MouseInput.LeftMouse)
+            {
+                GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+                PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                uiRaycastData.position = Input.mousePosition;
+                List<RaycastResult> uiResults = new List<RaycastResult>();
+                uiRaycast.Raycast(uiRaycastData, uiResults);
+                if (uiResults.Count == 0)
+                {
+                    if (!GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
+                    {
+                        if (dragging == false)
+                        {
+                            UpdatePan();
+                        }
+                    }
+                }
+            }
+            else if (mouseInput == MouseInput.MiddleMouse)
+            {
+                ResetZoom();
+            }
+            else
+            {
+                float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+                if (scrollAxis != 0)
+                    UpdateZoom(scrollAxis * -1); //invert so the scrolling works in the expected direction
+            }
+        }
         // Interaction Phases
         switch (interactionPhase)
 		{
@@ -557,7 +645,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                  * if player LEFT clicks during basic play, they can 
                  * (1) Click and drag movable elements
                 */
-                if (Input.GetKeyDown(KeyCode.Mouse0))
+                if (mouseInput == MouseInput.LeftMouse)
                 {
                     if (GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
                     {
@@ -590,7 +678,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                 * (1) link connectable elements through Signals
                 * (2) Open/Close Semaphores
                */
-                else if (Input.GetKeyDown(KeyCode.Mouse1))
+                else if (mouseInput == MouseInput.RightMouse)
                 {
                     if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal") && GameManager.Instance.GetGridManager().IsEditableElement( Input.mousePosition ) )
                     {
@@ -624,9 +712,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                         hoverObject = null;
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.Mouse2))
+                else if (mouseInput == MouseInput.MiddleMouse)
                 {
-                    ResetZoom();
+                    //ResetZoom();
                 }
                 /*
                  * if a player isn't clicking the mouse, we should check for hover behaviors AND zoom behaviors
@@ -657,9 +745,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
                             }
                         }
 
-                        float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-                        if (scrollAxis != 0)
-                            UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
+                        //float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+                        //if (scrollAxis != 0)
+                            //UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
                     }
                     else //if mouse has moved since last frame 
                     {
@@ -703,8 +791,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
-                Debug.Log("dragging");
-			if(Input.GetKey(KeyCode.Mouse0))
+			if(mouseInput == MouseInput.LeftMouse)
 			{
 				if( currentGridObject != null )
 				{
@@ -714,7 +801,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				}
 				else 
 				{
-                        Debug.Log("END DRAGGING");
                         interactionPhase = InteractionPhases.ingame_default;
 				}
 			}
@@ -731,10 +817,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GameManager.Instance.tracker.CreateEventExt("Destroying",currentGridObject.component.type);	
 					Destroy( currentGridObject.gameObject );
 					currentGridObject = null;
-
-                        Debug.Log("END TRASH HOVER");
-                        interactionPhase = InteractionPhases.ingame_default;
-					
+                    interactionPhase = InteractionPhases.ingame_default;
 				}
 				else 
 				{
@@ -749,7 +832,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
                     currentGridObject = null;
                         
-                    Debug.Log("END REPOSITION");
 					interactionPhase = InteractionPhases.ingame_default;
                 }
 
@@ -757,10 +839,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			}
 		break;
 
+            case InteractionPhases.ingame_placing:
+                if(mouseInput == MouseInput.LeftMouse)
+                {
+
+                }
+                break;
+
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
 
-			if(Input.GetKeyDown(KeyCode.Mouse1))
+			if(mouseInput == MouseInput.RightMouse)
 			{
 				currentGridObject.EndInteraction();
 				if( GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore") ) 
@@ -768,14 +857,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				else if( GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "conditional") ) 
 				{
 					GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 					currentGridObject.LinkTo( g );
 					GameManager.Instance.tracker.CreateEventExt("LinkTo",currentGridObject.component.type);
-				}
+                    currentGridObject.SetHighlight(true);
+                }
 
 				playerInteraction_UI.onHoverLightbox.ClosePanel();
 
@@ -786,8 +877,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 					if(connectVisibilityLock) otherSignal.SetHighlight( true );
 				}
 
-                
-                Debug.Log("END CONNECTING");
 				interactionPhase = InteractionPhases.ingame_default;
 			}
 			else 
@@ -799,21 +888,49 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Help Phase
         case InteractionPhases.ingame_help:
             // On Left Click
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (mouseInput == MouseInput.LeftMouse)
             {
-                    // Get Object at Mouse Position
-                    GridManager grid = GameManager.Instance.GetGridManager();
-                    GridObjectBehavior current_object = grid.GetGridObjectByMousePosition(currentMousePos);
+                    Button current_button = null;
+                    Image current_image = null;
+                    GridObjectBehavior current_object = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 
-                    // If there is an object here
-                    if (current_object)
+                    //raycasting to find buttons for glossary
+                    GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+                    PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+                    uiRaycastData.position = Input.mousePosition;
+                    List<RaycastResult> uiResults = new List<RaycastResult>();
+                    uiRaycast.Raycast(uiRaycastData, uiResults);
+
+                    foreach (RaycastResult r in uiResults)
                     {
-                        // Display its hint UI
-                        string obj_name = current_object.component.type;
+                        if (r.gameObject.GetComponent<Button>() != null)
+                        {
+                            current_button = r.gameObject.GetComponent<Button>();
+                            break;
+                        }
+                        if (r.gameObject.GetComponent<Image>() != null)
+                        {
+                            current_image = r.gameObject.GetComponent<Image>();
+                            break;
+                        }
+                    }
+
+                    if (current_button)
+                    {
+                        string obj_name = current_button.name;
                         TriggerHint(obj_name);
-                        // Testing to make sure the interaction worked, always displays Track Hint
-                        //HintConstructor h = playerInteraction_UI.hintButtons[0].hint;
-                        //TriggerHint(h.hintTitle, h.hintDescription, h.hintImage);
+                    }
+                    else if (current_image)
+                    {
+                        string obj_name = current_image.name;
+                        TriggerHint(obj_name);
+                    }
+                    else if (current_object)
+                    {
+                        string obj_name = current_object.component.type;
+                        if (obj_name == "delivery" || obj_name == "pickup")
+                            obj_name = current_object.name;
+                        TriggerHint(obj_name);
                     }
                 }
             break;
@@ -854,7 +971,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     	GameManager.Instance.tracker.CreateEventExt("LockFlowVisibility",lockTarget.ToString());
         if (lockTarget == -1) //force quit
         {
-            playerInteraction_UI.rightPanelColorLock.enabled = false;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(false);
 			colorFlowVisibilityLock = false;
             return;
         }
@@ -862,16 +979,16 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		if (/*connectVisibilityLock*/colorFlowVisibilityLock)
         {
             playerInteraction_UI.rightPanelColorLock.rectTransform.position = playerInteraction_UI.rightPanelColors[lockTarget].transform.position;
-            playerInteraction_UI.rightPanelColorLock.enabled = true;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(true);
         }
         else
         {
-            playerInteraction_UI.rightPanelColorLock.enabled = false;
+            playerInteraction_UI.rightPanelColorLock.gameObject.SetActive(false);
             GameManager.Instance.GetGridManager().RevealGridColorMask(lockTarget);
         }
     }
 
-    public void ToggleConnectionVisibility()
+    public void ToggleConnectionVisibility(float duration = -1.0f)
 	{
 		connectVisibility = !connectVisibility;
 
@@ -885,7 +1002,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			Signal_GridObjectBehavior s = (Signal_GridObjectBehavior) g;
 			s.SetHighlight(connectVisibility);
 		}
+        if(duration > 0)
+        {
+            StartCoroutine(ToggleConnectionVisibilityRoutine(duration));
+        }
 	}
+
+    IEnumerator ToggleConnectionVisibilityRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ToggleConnectionVisibility();
+    }
 
     public void LockConnectionVisibility()
 	{
@@ -917,6 +1044,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_default;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (false).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(true);
+            playerInteraction_UI.simulationButton.interactable = true;
+            playerInteraction_UI.submitButton.interactable = true;
+            playerInteraction_UI.trash.enabled = true;
+            playerInteraction_UI.preview.enabled = true;
+            playerInteraction_UI.place_semaphore.enabled = true;
+            playerInteraction_UI.place_button.enabled = true;
+            foreach (EventTrigger e in playerInteraction_UI.rightPanelColors)
+                e.enabled = true;
         }
         else
         {
@@ -924,6 +1059,14 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             interactionPhase = InteractionPhases.ingame_help;
             GameManager.Instance.tracker.CreateEventExt("ToggleHintsVisibility", (true).ToString());
             playerInteraction_UI.revealHintsToggle.SetToggle(false);
+            playerInteraction_UI.simulationButton.interactable = false;
+            playerInteraction_UI.submitButton.interactable = false;
+            playerInteraction_UI.trash.enabled = false;
+            playerInteraction_UI.preview.enabled = false;
+            playerInteraction_UI.place_semaphore.enabled = false;
+            playerInteraction_UI.place_button.enabled = false;
+            foreach(EventTrigger e in playerInteraction_UI.rightPanelColors)
+                e.enabled = false;
         }
         TriggerHintFader();
 
@@ -950,7 +1093,6 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             else
             {
                 g.SetHighlight(fadeNonInteractables);
-                Debug.Log("Keeping Active: " + g.component.type);
             }
         }
 
@@ -996,61 +1138,35 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             return;
         else
         {
-            if (zoomRoutine != null)
-                StopCoroutine(zoomRoutine);
-            zoomRoutine = StartCoroutine(ZoomRoutine(zoom));
-        }
-    }
-
-    IEnumerator ZoomRoutine(float zoom)
-    {
-        if (zoomLevel < 0.01) //round small enough values off to 0
-            zoomLevel = 0;
-        if ((zoomLevel != 0f || zoom > 0) && (zoomLevel != 1f || zoom < 0))
-        {
-            float newZoom = zoomLevel + zoom;
-            newZoom = Mathf.Clamp(newZoom, 0f, 1f);
-            Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
-            float targetOrtho = ((maxOrtho - minOrtho) * newZoom) + minOrtho;
-
-            Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
-            newTargetPosition = new Vector3(Mathf.Clamp(newTargetPosition.x, 0 + (xMax / 2 * zoomLevel), xMax - (xMax / 2 * zoomLevel)),
-                                            Mathf.Clamp(newTargetPosition.y, 0 + (yMax / 2 * zoomLevel), yMax - (yMax / 2 * zoomLevel)), 
-                                            orthoCam.transform.position.z);
-
-            float timeToZoom = 0.5f;
-            while (timeToZoom > 0f)
+            if (zoomLevel < 0.01) //round small enough values off to 0
+                zoomLevel = 0;
+            if ((zoomLevel != 0f || zoom > 0) && (zoomLevel != 1f || zoom < 0))
             {
-                timeToZoom -= Time.deltaTime;
-                float mult = (timeToZoom / 0.5f);
-                zoomLevel = newZoom + (zoomLevel - newZoom) * mult;
-                orthoCam.orthographicSize = targetOrtho + (orthoCam.orthographicSize - targetOrtho) * mult;
-                orthoCam.transform.position = newTargetPosition + (orthoCam.transform.position - newTargetPosition) * mult;
+                float newZoom = zoomLevel + zoom;
+                newZoom = Mathf.Clamp(newZoom, 0f, 1f);
+                Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
+                float targetOrtho = ((maxOrtho - minOrtho) * newZoom) + minOrtho;
+
+                Vector3 newTargetPosition = GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition);
+                newTargetPosition = new Vector3(Mathf.Clamp(newTargetPosition.x, 0 + (xMax / 2 * zoomLevel), xMax - (xMax / 2 * zoomLevel)),
+                                                Mathf.Clamp(newTargetPosition.y, 0 + (yMax / 2 * zoomLevel), yMax - (yMax / 2 * zoomLevel)),
+                                                orthoCam.transform.position.z);
+
+                zoomLevel = newZoom;
+                orthoCam.orthographicSize = targetOrtho;
+                orthoCam.transform.position = newTargetPosition;
                 playerInteraction_UI.zoomMeter.SetMeterValue(zoomLevel);
-                yield return null;
             }
         }
-        yield return null;
     }
 
     void UpdatePan()
     {
-        panRoutine = StartCoroutine(PanRoutine());
-    }
-
-    IEnumerator PanRoutine()
-    {
-        yield return new WaitForSeconds(0.05f);
-        while (Input.GetMouseButton(0) && dragging == false)
-        {
-            Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
-            orthoCam.transform.Translate(-deltaMousePos.x * .015f,-deltaMousePos.y * .015f, 0);
-            orthoCam.transform.position = new Vector3(  Mathf.Clamp(orthoCam.transform.position.x, 0 + (xMax/2*zoomLevel), xMax - (xMax/2*zoomLevel)), 
-                                                        Mathf.Clamp(orthoCam.transform.position.y, 0 + (yMax/2*zoomLevel), yMax - (yMax/2*zoomLevel)), 
-                                                        orthoCam.transform.position.z   );
-            yield return new WaitForEndOfFrame();
-        }
-        yield return null;
+        Camera orthoCam = GameManager.Instance.GetGridManager().worldCamera;
+        orthoCam.transform.Translate(-deltaMousePos.x * (xMax - xMin), -deltaMousePos.y * (yMax - yMin), 0);
+        orthoCam.transform.position = new Vector3(Mathf.Clamp(orthoCam.transform.position.x, 0 + (xMax / 2 * zoomLevel), xMax - (xMax / 2 * zoomLevel)),
+                                                    Mathf.Clamp(orthoCam.transform.position.y, 0 + (yMax / 2 * zoomLevel), yMax - (yMax / 2 * zoomLevel)),
+                                                    orthoCam.transform.position.z);
     }
 
     void ResetZoom()

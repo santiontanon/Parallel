@@ -25,7 +25,7 @@ package game;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +35,9 @@ import java.util.Map;
  */
 public class BoardState {
 
-    private int width;
-    private int height;
-    private Tile[] tiles;
+    public int width;
+    public int height;
+    public Tile[] tiles;
 
     public int level_id = 1;
     public String level_title = "Parallel Programming";
@@ -69,7 +69,7 @@ public class BoardState {
     }
 
     public BoardState() {
-        this.player_palette = new HashMap();
+        this.player_palette = new LinkedHashMap();
         this.goal_struct = new ArrayList();
     }
 

@@ -7,7 +7,6 @@ package tests;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import game.BoardState;
 import game.GameState;
 import game.GameStateSearch;
 import game.Tile;
@@ -20,54 +19,24 @@ import game.component.ComponentSemaphore;
 import game.component.ComponentSignal;
 import game.component.ComponentUnit;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import lgraphs.LGraph;
 import lgraphs.ontology.Ontology;
 import lgraphs.ontology.Sort;
-import lgraphs.sampler.LGraphGrammarSampler;
-import lgraphs.sampler.LGraphRewritingGrammar;
-import lgraphs.sampler.LGraphRewritingRule;
 import support.GameStateExporter;
 import support.GameStateParser;
 import support.PCG;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import util.Sampler;
-import static support.PCG.applyGrammar;
 import valls.util.MathUtils;
-import static support.PCG.applyGrammar;
 import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
-import static support.PCG.applyGrammar;
-import static support.PCG.embeddGraph;
-import static support.PCG.applyGrammar;
 
 /**
  *
@@ -125,7 +94,7 @@ public class GrammarStats {
         List<Integer> different_components_per_row = new ArrayList();
         List<Integer> same_components_per_row = new ArrayList();
         for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -147,7 +116,7 @@ public class GrammarStats {
         different_components_per_row = new ArrayList();
         same_components_per_row = new ArrayList();
         for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -166,8 +135,8 @@ public class GrammarStats {
         m.put("v_colSameComponentsAvg", MathUtils.average(same_components_per_row));
         m.put("v_colDifferentComponentsAvg", MathUtils.average(different_components_per_row));
 
-        Set anchors_w = new HashSet();
-        Set anchors_h = new HashSet();
+        Set anchors_w = new LinkedHashSet();
+        Set anchors_h = new LinkedHashSet();
         for (Component c : gs.getComponentState().getComponents()) {
             anchors_w.add(c.x);
             anchors_h.add(c.y);
@@ -275,6 +244,7 @@ public class GrammarStats {
         vector[0] = (double) gs.getBoardState().getWidth();
         vector[1] = (double) gs.getBoardState().getHeight();
         vector[2] = ((double) gs.getBoardState().getWidth()) / ((double) gs.getBoardState().getHeight());
+//        System.out.println(vector[0] + " x " + vector[1]);
         int track_num = 0;
         for(Tile tile:gs.getBoardState().getTiles()){
             if (tile.isPassable()){
@@ -289,7 +259,7 @@ public class GrammarStats {
         List<Integer> different_components_per_row = new ArrayList();
         List<Integer> same_components_per_row = new ArrayList();
         for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -310,7 +280,7 @@ public class GrammarStats {
         different_components_per_row = new ArrayList();
         same_components_per_row = new ArrayList();
         for (int y = 0; y < gs.getBoardState().getHeight(); y++) {
-            Map<String, Integer> cp = new HashMap();
+            Map<String, Integer> cp = new LinkedHashMap();
             for (int x = 0; x < gs.getBoardState().getWidth(); x++) {
                 for (Component c : gs.getComponentsAt(x, y)) {
                     int val = 0;
@@ -328,8 +298,8 @@ public class GrammarStats {
         vector[8] =   MathUtils.average(same_components_per_row);
         vector[9] =   MathUtils.average(different_components_per_row);
 
-        Set anchors_w = new HashSet();
-        Set anchors_h = new HashSet();
+        Set anchors_w = new LinkedHashSet();
+        Set anchors_h = new LinkedHashSet();
         for (Component c : gs.getComponentState().getComponents()) {
             anchors_w.add(c.x);
             anchors_h.add(c.y);
@@ -516,7 +486,7 @@ public class GrammarStats {
 
     public Map<String, Double> getStatsOnGameState(GameState gs) {
         // Collect level statistics
-        Map<String, Double> export_map = new HashMap();
+        Map<String, Double> export_map = new LinkedHashMap();
         //export_map.putAll(rule_applications);
         // Level properties
         getLevelProperties(gs, export_map);
@@ -539,9 +509,9 @@ public class GrammarStats {
         File out_file = new File("/Users/josepvalls/temp/pppp_samples/", "pcg_"+size+"_"+seed+".json");
         if(out_file.exists()) return;
         
-        Map<String, Integer> rule_applications = new HashMap();
-        LGraph graph = PCG.generateGraph(seed, size, true, true, null);
-        GameState gs = embeddGraph(graph, seed, true);
+        Map<String, Integer> rule_applications = new LinkedHashMap();
+        LGraph graph = PCG.generateGraph(seed, size, true, false, null, null, true, null);
+        GameState gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         
         Gson gson = new GsonBuilder().create();
         String out = gson.toJson(rule_applications);
@@ -554,9 +524,9 @@ public class GrammarStats {
     public void generateFiles(int seed, int size, File out_file_ns, File out_file_ws) throws Exception {
         // Generate
         System.out.println("USING SEED " + Integer.toString(seed));
-        Map<String, Integer> rule_applications = new HashMap();
-        LGraph graph = PCG.generateGraph(seed, size, true, true, null);
-        GameState gs = embeddGraph(graph, seed, true);
+        Map<String, Integer> rule_applications = new LinkedHashMap();
+        LGraph graph = PCG.generateGraph(seed, size, true, false, null, null, true, null);
+        GameState gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         String out = GameStateExporter.export(gs);
         PrintWriter writer = new PrintWriter(out_file_ws);
         writer.print(out);
@@ -564,8 +534,8 @@ public class GrammarStats {
         // Remove solution
         Sort.clearSorts();
         Ontology ontology = new Ontology("data/ppppOntology4.xml");
-        graph = PCG.generateGraph(seed, size, false, true, rule_applications);
-        gs = embeddGraph(graph, seed, true);
+        graph = PCG.generateGraph(seed, size, false, false, null, null, true, rule_applications);
+        gs = embeddGraph(graph, seed, true, new ArrayList<String>());
         out = GameStateExporter.export(gs);
         writer = new PrintWriter(out_file_ns);
         writer.print(out);
@@ -589,7 +559,7 @@ public class GrammarStats {
     Map<String, Integer> rule_applications_general;
 
     public void run() throws Exception {
-        rule_applications_general = new HashMap();
+        rule_applications_general = new LinkedHashMap();
 
         File out_file = new File("/Users/josepvalls/temp/pppp_samples/", WRITE_ARFF ? "dataset___.arff" : "dataset.txt");
         PrintWriter writer = new PrintWriter(out_file);

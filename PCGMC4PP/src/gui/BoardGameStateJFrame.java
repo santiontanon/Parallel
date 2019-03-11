@@ -14,6 +14,11 @@ import game.GameState;
 public class BoardGameStateJFrame extends JFrame {
     BoardGameStatePanel panel = null;
     
+    public BoardGameStateJFrame(String title, int dx, int dy, GameState gs) {
+        this(title, dx, dy, new BoardGameStatePanel(gs));
+    }
+    
+    
     public BoardGameStateJFrame(String title, int dx, int dy, BoardGameStatePanel a_panel) {
         super(title);
         panel = a_panel;

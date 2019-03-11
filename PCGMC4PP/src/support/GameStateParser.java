@@ -56,13 +56,11 @@ import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -90,7 +88,7 @@ public class GameStateParser {
         ComponentCustoms.class,
         ComponentArrow.class,
         ComponentComment.class,};
-    public static Set<String> componentNames = new HashSet();
+    public static Set<String> componentNames = new LinkedHashSet();
 
     public static void prepareParser() {
         if (componentNames.size() == 0) {
@@ -112,11 +110,12 @@ public class GameStateParser {
         GameStateParser.prepareParser();
 
         if (verbose) {
-            System.err.println("Loading: " + filename);
+            System.out.println("Loading: " + filename);
         }
 
         BoardState board = null;
         ComponentState components = null;
+        List<String> skills = null;
         UnitState units = null;
         List<String> data = new ArrayList();
 
@@ -171,11 +170,12 @@ public class GameStateParser {
                         }
                     } else if ("EXECUTION".equals(current_section)) {
                         if (verbose) {
-                            System.err.println("EXECUTION Section ignored when parsing file.");
+                            System.out.println("EXECUTION Section ignored when parsing file.");
                         }
-                        break;
+                    } else if ("SKILLS".equals(current_section)) {
+                        skills = parseSkills(data);
                     } else if (verbose) {
-                        System.err.println("Unknown section ignored when parsing file.");
+                        System.out.println("Unknown section ignored when parsing file.");
                     }
                     current_section = null;
                     data.clear();
@@ -194,7 +194,7 @@ public class GameStateParser {
             throw new ParseException("Units is null", 0);
         }
 
-        GameState gs = new GameState(board, components, units);
+        GameState gs = new GameState(board, components, units, skills);
         gs.init();
         return gs;
     }
@@ -386,6 +386,13 @@ public class GameStateParser {
         }
 
     }
+    
+    public static List<String> parseSkills(List<String> data) throws Exception
+    {
+        List<String> skills = new ArrayList<>();
+        skills.addAll(data);
+        return skills;
+    }
 
     public static ComponentState parseFileComponents(List<String> data, int offset, BoardState board) throws Exception {
 
@@ -483,7 +490,7 @@ public class GameStateParser {
     }
 
     public static Map<String, Integer> parsePalette(String json, int line_number) {
-        Map<String, Integer> palette = new HashMap();
+        Map<String, Integer> palette = new LinkedHashMap();
         try {
             JsonElement root = new JsonParser().parse(json);
             for (Map.Entry<String, JsonElement> entry : root.getAsJsonObject().entrySet()) {
@@ -505,7 +512,7 @@ public class GameStateParser {
     public static void parseComponentJson(Component c, String json, int line_number) {
         // Lazy initialization
         if (properties_valid_set == null) {
-            properties_valid_set = new HashSet();
+            properties_valid_set = new LinkedHashSet();
             properties_valid_set.addAll(Arrays.asList(properties_valid));
         }
         JsonElement root = new JsonParser().parse(json);

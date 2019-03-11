@@ -9,14 +9,12 @@ public static class Serializer
 
     public static List<ParallelSave> LoadSaves()
     {
-        if(Directory.Exists(Application.persistentDataPath + "/Saves")){
-            Debug.Log("Parallel save directory found");
+        if(Directory.Exists(GameManager.Instance.GetLinkJava().savePath + "Saves")){
             return LoadDirectory();
         }
         else
         {
-            Debug.Log("Parallel save directory not found");
-            Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
+            Directory.CreateDirectory(GameManager.Instance.GetLinkJava().savePath + "Saves");
             return LoadDirectory();
         }
     }
@@ -24,7 +22,7 @@ public static class Serializer
     static List<ParallelSave> LoadDirectory()
     {
         // Process the list of files found in the directory.
-        string[] fileEntries = Directory.GetFiles(Application.persistentDataPath + "/Saves");
+        string[] fileEntries = Directory.GetFiles(GameManager.Instance.GetLinkJava().savePath + "Saves");
         List<ParallelSave> saves = new List<ParallelSave>();
         for(int i = 0; i < fileEntries.Length; i++)
         {
@@ -35,16 +33,28 @@ public static class Serializer
 
     static ParallelSave DeserializeData(string s)
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(s , FileMode.Open);
-        ParallelSave save = (ParallelSave)bf.Deserialize(file);
+        ParallelSave save = null;
+        try
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(s, FileMode.Open);
+            save = (ParallelSave)bf.Deserialize(file);
+        }
+        catch
+        {
+            Debug.Log("Error Reading Save");
+        }
+        if(save == null)
+        {
+            save = new ParallelSave();
+        }
         return save;
     }
 
     public static void SerializeData(ParallelSave save)
     {
         BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/Saves/" + save.name + ".prl");
+        FileStream file = File.Create(GameManager.Instance.GetLinkJava().savePath + "Saves/" + save.name + ".prl");
         bf.Serialize(file, save);
         file.Close();
     }

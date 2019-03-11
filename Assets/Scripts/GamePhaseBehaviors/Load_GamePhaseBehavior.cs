@@ -14,12 +14,14 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 
         public RectTransform requiredLevelContainer, requiredTransform;
         public RectTransform optionalLevelContainer, optionalTransform;
-        public RectTransform previousContainer, previousTransform;
+        public RectTransform previousLevelContainer, previousTransform;
+        public RectTransform generateLevelContainer, generateTransform;
 
         public GameObject levelButtonPrefab;
+
         public Button exitLevelSelectionButton;
         [SerializeField] public UIOverlay levelLoadingOverlay;
-        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton;
+        public Button requiredLevelsButton, optionalLevelsButton, previousLevelsButton, generateLevelButton, pcgButton;
 	}
 	public Load_UI loadUI;
 
@@ -27,6 +29,15 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	public override void BeginPhase()
 	{
         GameManager.Instance.GetDataManager().GetLevels();
+        ClearOldButtons();
+        SetupButtonFunctions();
+        SetupContainers();
+        loadUI.levelLoadingOverlay.ClosePanel(true);
+        loadUI.loadPhaseUI.SetActive(true);
+    }
+
+    void ClearOldButtons()
+    {
         foreach (Transform child in loadUI.requiredLevelContainer)
         {
             GameObject.Destroy(child.gameObject);
@@ -35,72 +46,122 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         {
             GameObject.Destroy(child.gameObject);
         }
-        foreach (Transform child in loadUI.previousContainer)
+        foreach (Transform child in loadUI.previousLevelContainer)
         {
             GameObject.Destroy(child.gameObject);
         }
+        foreach (Transform child in loadUI.generateLevelContainer)
+        {
+            if (loadUI.generateLevelContainer.GetChild(0) != child)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
 
+    void SetupContainers()
+    {
+        if(GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
+        {
+            TriggerPanelSwap(true, false, false, false); //this system of panel swapping is broken atm, needs to coexist with the system below
+        }
+        else
+        {
+            loadUI.optionalLevelContainer.gameObject.SetActive(false);
+            loadUI.previousLevelContainer.gameObject.SetActive(false);
+            loadUI.requiredLevelsButton.gameObject.SetActive(false);
+            loadUI.previousLevelsButton.gameObject.SetActive(false);
+            loadUI.generateLevelButton.gameObject.SetActive(false);
+            loadUI.optionalLevelsButton.gameObject.SetActive(false);
+
+            loadUI.requiredTransform.gameObject.SetActive(true);
+            loadUI.generateTransform.gameObject.SetActive(true);
+        }
+    }
+
+    void SetupButtonFunctions()
+    {
         foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.required)
         {
-            SetupLevelButton(lr, loadUI.requiredLevelContainer);
+            SetupLevelButton(lr, loadUI.requiredLevelContainer, false);
         }
         foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.optional)
         {
-            SetupLevelButton(lr, loadUI.optionalLevelContainer);
+            SetupLevelButton(lr, loadUI.optionalLevelContainer, false);
         }
         if (GameManager.Instance.GetDataManager().levRef.levels.previous != null)
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.previous)
             {
-                SetupLevelButton(lr, loadUI.previousContainer);
+                SetupLevelButton(lr, loadUI.previousLevelContainer, false);
             }
         }
-
-        if (!GameManager.Instance.hideTestsForBuild)
+        if (GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
         {
-            //AddPCGButton();
+            foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.pcg)
+            {
+                SetupLevelButton(lr, loadUI.generateLevelContainer, true);
+            }
         }
-
-        loadUI.levelLoadingOverlay.ClosePanel(true);
-
-        loadUI.loadPhaseUI.SetActive(true);
 
         loadUI.exitLevelSelectionButton.onClick.AddListener(() => GameManager.Instance.SetGamePhase(GameManager.GamePhases.StartScreen));
 
         loadUI.requiredLevelsButton.onClick.RemoveAllListeners();
-        loadUI.requiredLevelsButton.onClick.AddListener(() => 
+        loadUI.requiredLevelsButton.onClick.AddListener(() =>
         {
-            TriggerPanelSwap(true, false, false);
+            TriggerPanelSwap(true, false, false, false);
         });
 
         loadUI.optionalLevelsButton.onClick.RemoveAllListeners();
         loadUI.optionalLevelsButton.onClick.AddListener(() =>
         {
-            TriggerPanelSwap(false, false, true);
+            TriggerPanelSwap(false, false, true, false);
         });
 
         loadUI.previousLevelsButton.onClick.RemoveAllListeners();
         loadUI.previousLevelsButton.onClick.AddListener(() =>
         {
-            TriggerPanelSwap(false, true, false);
+            TriggerPanelSwap(false, true, false, false);
         });
 
-        TriggerPanelSwap(true, false, false);
+        loadUI.generateLevelButton.onClick.RemoveAllListeners();
+        loadUI.generateLevelButton.onClick.AddListener(() =>
+        {
+            TriggerPanelSwap(false, false, false, true);
+        });
+
+        loadUI.pcgButton.onClick.RemoveAllListeners();
+        loadUI.pcgButton.onClick.AddListener(() => LoadPCGBehavior());
     }
 
-    void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel )
+    void TriggerPanelSwap(bool requiredPanel, bool previousPanel, bool optionalPanel, bool generatePanel )
     {
-        loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
+        //loadUI.requiredLevelsButton.gameObject.SetActive(!requiredPanel);
+        loadUI.requiredLevelsButton.interactable = !requiredPanel;
+        loadUI.requiredLevelsButton.GetComponentInChildren<Text>().color = requiredPanel ? new Color(0.7f,0.7f,0.7f) : Color.white;
+        loadUI.requiredLevelsButton.GetComponentInChildren<Image>().color = requiredPanel ? new Color(1f,1f,1f,0.7f) : Color.white;
         loadUI.requiredTransform.gameObject.SetActive(requiredPanel);
 
-        loadUI.previousLevelsButton.gameObject.SetActive(!previousPanel);
+        //loadUI.previousLevelsButton.gameObject.SetActive(!previousPanel);
+        loadUI.previousLevelsButton.interactable = !previousPanel;
+        loadUI.previousLevelsButton.GetComponentInChildren<Text>().color = previousPanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.previousLevelsButton.GetComponentInChildren<Image>().color = previousPanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
         loadUI.previousTransform.gameObject.SetActive(previousPanel);
 
-        loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        //loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        loadUI.optionalLevelsButton.interactable = !optionalPanel;
+        loadUI.optionalLevelsButton.GetComponentInChildren<Text>().color = optionalPanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.optionalLevelsButton.GetComponentInChildren<Image>().color = optionalPanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
         loadUI.optionalTransform.gameObject.SetActive(optionalPanel);
+
+        //loadUI.optionalLevelsButton.gameObject.SetActive(!optionalPanel);
+        loadUI.generateLevelButton.interactable = !generatePanel;
+        loadUI.generateLevelButton.GetComponentInChildren<Text>().color = generatePanel ? new Color(0.7f, 0.7f, 0.7f) : Color.white;
+        loadUI.generateLevelButton.GetComponentInChildren<Image>().color = generatePanel ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
+        loadUI.generateTransform.gameObject.SetActive(generatePanel);
     }
 
-    void SetupLevelButton(LevelReferenceObject lr, Transform container)
+    void SetupLevelButton(LevelReferenceObject lr, Transform container, bool pcg)
     {
         char[] trimArray = new char[5] { 'L', 'l', 'e', 'v', ' ' };
         string levelName = lr.file;
@@ -108,7 +169,7 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         LevelButtonBehavior buttonInstance = g.GetComponent<LevelButtonBehavior>();
         if (buttonInstance != null)
         {
-            buttonInstance.SetLevelSprite(false, lr.completionRank > 0);
+            buttonInstance.SetLevelSprite(pcg, lr.completionRank > 0);
             buttonInstance.SetLevelRank(lr.GetLevelCompletionRank());
         }
 
@@ -117,18 +178,25 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         g.transform.localScale = Vector3.one;
         Text gText = g.GetComponentInChildren<Text>();
         gText.text = levelName.TrimStart(trimArray);
-        gButton.onClick.AddListener(() => LoadButtonBehavior(levelName));
+        if (!pcg)
+        {
+            gButton.onClick.AddListener(() => LoadButtonBehavior(levelName));
+        }
+        else
+        {
+            gButton.onClick.AddListener(() => LoadPCGButtonBehavior(lr.data));
+        }
     }
 
     public void AddPCGButton(){
-			GameObject g = Instantiate(loadUI.levelButtonPrefab) as GameObject;
-			Button gButton = g.GetComponent<Button>();
-			g.transform.SetParent( loadUI.requiredLevelContainer );
-			g.transform.localScale = Vector3.one;
-			Text gText = g.GetComponentInChildren<Text>();
-			gText.text = "PCG";
-			gButton.onClick.AddListener( ()=> LoadPCGBehavior() );
-	}
+        GameObject g = Instantiate(loadUI.levelButtonPrefab) as GameObject;
+        Button gButton = g.GetComponent<Button>();
+        g.transform.SetParent(loadUI.requiredLevelContainer);
+        g.transform.localScale = Vector3.one;
+        Text gText = g.GetComponentInChildren<Text>();
+        gText.text = "PCG";
+        gButton.onClick.AddListener(() => LoadPCGBehavior());
+    }
 
 	public override void UpdatePhase()
 	{
@@ -143,18 +211,66 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
 	public void LoadButtonBehavior( string levelName ) 
 	{
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel( DataManager.LoadType.RESOURCES, levelName );
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, levelName);
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
 	}
+
+    public void LoadPCGButtonBehavior(string level)
+    {
+        loadUI.levelLoadingOverlay.OpenPanel();
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(true, DataManager.LoadType.STRING, level);
+        }
+        catch (System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
+    }
 
     public void LoadButtonBehavior(LevelReferenceObject levelReference)
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerLoadLevel(levelReference);
+        try
+        {
+            GameManager.Instance.TriggerLoadLevel(levelReference);
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+            DisplayError("Level Loading Failed", "An error was encountered while loading the level, if this issue persists, please contact the research team.");
+        }
     }
 
     public void LoadPCGBehavior()
     {
         loadUI.levelLoadingOverlay.OpenPanel();
-        GameManager.Instance.TriggerPCG();
+        try
+        {
+            GameManager.Instance.TriggerPCG();
+        }
+        catch(System.Exception e)
+        {
+            loadUI.levelLoadingOverlay.ClosePanel();
+        }
+    }
+
+    public void DisplayError(string title, string description, string button = "", System.Action action = null)
+    {
+        UnityEngine.Debug.Log("Display error " + title);
+        UINotifications.Notification error_message = new UINotifications.Notification(title, description);
+        if (button != "" && action != null)
+            error_message.AddButton(button, new UINotifications.ButtonMethod(() => { action(); }));
+        error_message.AddButton("Close", new UINotifications.ButtonMethod(() => { UINotifications.Close(); }));
+        error_message.AddButton("Exit", new UINotifications.ButtonMethod(() => { Application.Quit(); }));
+        UINotifications.Notify(error_message);
     }
 }

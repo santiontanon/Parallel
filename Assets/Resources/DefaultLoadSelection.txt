@@ -1,0 +1,92 @@
+{
+  "id":1,
+  "date":"2017-09-09",
+  "levels":{
+    "required":[
+      {
+        "file":"level01",
+        "title":"Level 1"
+      },
+      {
+        "file":"level02",
+        "title":"Level 2"
+      },
+      {
+        "file":"level03",
+        "title":"Level 3"
+      },
+      {
+        "file":"level04",
+        "title":"Level 4"
+      },
+      {
+        "file":"level05",
+        "title":"Level 5"
+      },
+      {
+        "file":"level06",
+        "title":"Level 6"
+      },
+      {
+        "file":"level07",
+        "title":"Level 7"
+      },
+      {
+        "file":"level08",
+        "title":"Level 8"
+      },
+      {
+        "file":"level09",
+        "title":"Level 9"
+      },
+      {
+        "file":"level10",
+        "title":"Level 10"
+      },
+      {
+        "file":"level11",
+        "title":"Level 11"
+      },
+      {
+        "file":"level12",
+        "title":"Level 12"
+      },
+      {
+        "file":"level13",
+        "title":"Level 13"
+      },
+      {
+        "file":"level14",
+        "title":"Level 14"
+      },
+      {
+        "file":"level15",
+        "title":"Level 15"
+      },
+      {
+        "file":"level16",
+        "title":"Level 16"
+      },
+      {
+        "file":"level17",
+        "title":"Level 17"
+      },
+      {
+        "file":"level18",
+        "title":"Level 18"
+      },
+      {
+        "file":"level19",
+        "title":"Level 19"
+      },
+	  {
+        "file":"level60",
+        "title":"Level 60"
+      }
+    ],
+    "optional":[
+    ],
+    "previous":[
+    ]
+  }
+}

@@ -10,14 +10,16 @@ public class TutorialManager : MonoBehaviour {
     TutorialEvent[] currentTutorialEventQueue;
     int tutorialEventIndex = 0;
 
-
     [System.Serializable]
     public class Tutorial_UIOverlay : ParallelProg.UI.UIOverlay
     {
         public Text tutorialDescription;
-        public Button tutorialCloseButton;
         public Canvas canvas;
         public CanvasScaler scaler;
+        public RectTransform tutorialArrow;
+        public Button tutorialCloseButton;
+        public Button skipTutorialsButton;
+        public Button nextTutorialButton;
 
         public override void OpenPanel()
         {
@@ -28,128 +30,52 @@ public class TutorialManager : MonoBehaviour {
             if (panelContainer.position.y < Screen.height * 0.2f) { pivotOffset.y = 0.0f; }
             if (panelContainer.position.y > Screen.height * 0.8f) { pivotOffset.y = 1.0f; }
             //panelContainer.pivot = pivotOffset;
+
+            if (skipTutorialsButton)
+            {
+                skipTutorialsButton.onClick.RemoveAllListeners();
+                skipTutorialsButton.onClick.AddListener( ()=> GameManager.Instance.TriggerLevelTutorialSkip(true) );
+            }
             base.OpenPanel();
         }
 
-        public void SetTooltip(string inDescription, Button button)
+        public void SetTooltip(string inDescription, Button button, bool nextTutorial = false)
         {
-            if(button != null)
+            if (button != null)
             {
                 RectTransform elementRect = button.gameObject.GetComponent<RectTransform>();
-                panelContainer.position = button.gameObject.transform.position;
+                //panelContainer.position = button.gameObject.transform.position;
                 float posX = button.gameObject.transform.position.x;
                 float posY = button.gameObject.transform.position.y;
 
+                //account for canvas size and resolution
                 float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
                 RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
 
-                float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
-                float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
-                float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
-                float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
-                float ttWidth = tooltip.rect.width * multiplier;
-                float ttHeight = tooltip.rect.height * multiplier;
-
-                float eXMin = elementRect.position.x + elementRect.rect.xMin;
-                float eXMax = elementRect.position.x + elementRect.rect.xMax;
-                float eYMin = elementRect.position.y + elementRect.rect.yMin;
-                float eYMax = elementRect.position.y + elementRect.rect.yMax;
-                float eWidth = elementRect.rect.width * multiplier;
-                float eHeight = elementRect.rect.width * multiplier;
-              
-                if (ttXMin < 0)
-                {
-                    posX += Mathf.Abs(posX - (ttWidth / 2));
-                }
-                else if (ttXMax > Screen.width)
-                {
-                    posX -= (ttWidth / 2) + posX - Screen.width;
-                }
-                if (ttYMin < 0)
-                {
-                    posY += Mathf.Abs(posY - (ttHeight / 2));
-                }
-                else if (ttYMax > Screen.height)
-                {
-                    posY -= (ttHeight / 2) + posY - Screen.height;
-                }
-
-                ttXMin = posX - (ttWidth / 2);
-                ttXMax = posX + (ttWidth / 2);
-                ttYMin = posY - (ttHeight / 2);
-                ttYMax = posY + (ttHeight / 2);
-
-                float normalizedX = posX / canvas.pixelRect.width;
-                float normalizedY = posY / canvas.pixelRect.height;
-
-                if (ttXMin <= eXMax)
-                {
-                    if (ttXMin >= eXMin || ttXMax >= eXMin)
-                    {
-                        if (ttYMin <= eYMax)
-                        {
-                            if (ttYMin >= eYMin || ttYMax >= eYMin)
-                            {
-                                if (normalizedX >= 0.5f)
-                                {
-                                    if (normalizedY >= 0.5f)
-                                    {
-                                        if (normalizedX > normalizedY)
-                                        {
-                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (normalizedX - 0.5f >= 0.5f - normalizedY)
-                                        {
-                                            posX = posX - (posX - elementRect.position.x) - ((elementRect.position.x - eXMin) * multiplier) - (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedY < 0.5f)
-                                    {
-                                        if (normalizedX < normalizedY)
-                                        {
-                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
-                                        }
-                                        else
-                                        {
-                                            posY = posY + (elementRect.position.y - posY) + ((elementRect.position.y + eYMax) * multiplier) + (ttHeight / 2);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (normalizedY - 0.5f >= 0.5f - normalizedX)
-                                        {
-                                            posY = posY - (posY - elementRect.position.y) - ((elementRect.position.y - eYMin) * multiplier) - (ttHeight / 2);
-                                        }
-                                        else
-                                        {
-                                            posX = posX + (elementRect.position.x - posX) + ((elementRect.position.x + eXMax) * multiplier) + (ttWidth / 2);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
+                Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
+                PositionTutorialPanel(nextPanelPosition, button.transform.position, inDescription.Length);
+            }
+            else
+            {
+                float posX = Screen.width / 2f;
+                float posY = Screen.height / 2f;
+                Vector3 nextPanelPosition = new Vector3(posX, posY, panelContainer.position.z);
+                PositionTutorialPanel(nextPanelPosition, nextPanelPosition, inDescription.Length);
+            }
+            if (nextTutorial)
+            {
+                nextTutorialButton.gameObject.SetActive(true);
+                nextTutorialButton.onClick.RemoveAllListeners();
+                nextTutorialButton.onClick.AddListener(() => GameManager.Instance.TriggerLevelTutorialSkip(false));
+            }
+            else
+            {
+                nextTutorialButton.gameObject.SetActive(false);
             }
             tutorialDescription.text = inDescription;
         }
 
-        public void SetTooltip(string inDescription, GameObject element)
+        public void SetTooltip(string inDescription, GameObject element, bool nextTutorial = false)
         {
             SpriteRenderer sprite = element.GetComponent<SpriteRenderer>();
             panelContainer.position = element.transform.position;
@@ -158,112 +84,95 @@ public class TutorialManager : MonoBehaviour {
 
             float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
             RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
+            
+            Camera gameCamera = GameObject.Find("UICamera").GetComponent<Camera>();
 
-            float ttXMin = panelContainer.position.x + tooltip.rect.xMin;
-            float ttXMax = panelContainer.position.x + tooltip.rect.xMax;
-            float ttYMin = panelContainer.position.y + tooltip.rect.yMin;
-            float ttYMax = panelContainer.position.y + tooltip.rect.yMax;
-            float ttWidth = tooltip.rect.width * multiplier;
-            float ttHeight = tooltip.rect.height * multiplier;
+            Vector3 start_tooltipCenter = new Vector3(Screen.width / 2, Screen.height / 2, panelContainer.position.z);
+            start_tooltipCenter = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
-            float eXMin = sprite.bounds.min.x;
-            float eXMax = sprite.bounds.max.x;
-            float eYMin = sprite.bounds.min.y;
-            float eYMax = sprite.bounds.max.y;
-            float eWidth = sprite.bounds.size.x;
-            float eHeight = sprite.bounds.size.y;
+            Vector3 end_tooltipFocusPoint = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
-            if (ttXMin < 0)
-            {
-                posX += Mathf.Abs(posX - (ttWidth / 2));
-            }
-            else if (ttXMax > Screen.width)
-            {
-                posX -= (ttWidth / 2) + posX - Screen.width;
-            }
-            if (ttYMin < 0)
-            {
-                posY += Mathf.Abs(posY - (ttHeight / 2));
-            }
-            else if (ttYMax > Screen.height)
-            {
-                posY -= (ttHeight / 2) + posY - Screen.height;
-            }
+            PositionTutorialPanel(start_tooltipCenter, end_tooltipFocusPoint, inDescription.Length);
 
-            ttXMin = posX - (ttWidth / 2);
-            ttXMax = posX + (ttWidth / 2);
-            ttYMin = posY - (ttHeight / 2);
-            ttYMax = posY + (ttHeight / 2);
-
-            float normalizedX = posX / canvas.pixelRect.width;
-            float normalizedY = posY / canvas.pixelRect.height;
-
-            if (ttXMin <= eXMax)
-            {
-                if (ttXMin >= eXMin || ttXMax >= eXMin)
-                {
-                    if (ttYMin <= eYMax)
-                    {
-                        if (ttYMin >= eYMin || ttYMax >= eYMin)
-                        {
-                            if (normalizedX >= 0.5f)
-                            {
-                                if (normalizedY >= 0.5f)
-                                {
-                                    if (normalizedX > normalizedY)
-                                    {
-                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedX - 0.5f >= 0.5f - normalizedY)
-                                    {
-                                        posX = posX - (posX - sprite.bounds.center.x) - ((sprite.bounds.center.x - eXMin) * multiplier) - (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (normalizedY < 0.5f)
-                                {
-                                    if (normalizedX < normalizedY)
-                                    {
-                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
-                                    }
-                                    else
-                                    {
-                                        posY = posY + (sprite.bounds.center.y - posY) + ((sprite.bounds.center.y + eYMax) * multiplier) + (ttHeight / 2);
-                                    }
-                                }
-                                else
-                                {
-                                    if (normalizedY - 0.5f >= 0.5f - normalizedX)
-                                    {
-                                        posY = posY - (posY - sprite.bounds.center.y) - ((sprite.bounds.center.y - eYMin) * multiplier) - (ttHeight / 2);
-                                    }
-                                    else
-                                    {
-                                        posX = posX + (sprite.bounds.center.x - posX) + ((sprite.bounds.center.x + eXMax) * multiplier) + (ttWidth / 2);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            panelContainer.position = new Vector3(posX, posY, panelContainer.position.z);
+            if (nextTutorial)
+                nextTutorialButton.gameObject.SetActive(true);
+            else
+                nextTutorialButton.gameObject.SetActive(false);
             tutorialDescription.text = inDescription;
         }
+
+        void PositionTutorialPanel(Vector3 position, Vector3 tutorialFocusTargetPosition, int descriptionSize = 0 )
+        {
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+
+            //BOYD: MAYBE WE CAN FIND A BETTER WAY TO SIZE OUR TUTORIAL BOXES
+            Vector2 targetPanelSize = new Vector2(200f, 100f);
+            if (descriptionSize <= 20) { }
+            else if (descriptionSize <= 50) { targetPanelSize.y = 200f; }
+            else if (descriptionSize <= 100) { targetPanelSize.x = 250f;  targetPanelSize.y = 250f; }
+            else { targetPanelSize.x = 280f; targetPanelSize.y = 260f; }
+
+            panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetPanelSize.x);
+            panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetPanelSize.y);
+
+            float topBannerHeight = multiplier * GameObject.Find("Top_Banner").GetComponent<RectTransform>().rect.height;
+            float rightBannerWidth = multiplier * GameObject.Find("Right_Banner").GetComponent<RectTransform>().rect.width;
+            float bottomBannerHeight = multiplier * GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
+            float panelClearHeight = multiplier * panelContainer.rect.height / 2f;
+            float panelClearWidth = multiplier * panelContainer.rect.width / 2f;
+            float tooltipNubSize = 50f * multiplier;
+
+
+            Vector3 start = position;
+
+            //height bounds exceeded?
+            if (start.y >= (Screen.height - topBannerHeight - panelClearHeight))
+            {
+                start = new Vector3(start.x, Screen.height - topBannerHeight - panelClearHeight - tooltipNubSize, position.z);
+            }
+            else if (start.y <= bottomBannerHeight + panelClearHeight)
+            {
+                start = new Vector3(start.x, bottomBannerHeight + panelClearHeight + tooltipNubSize, position.z);
+            }
+
+            //width bounds exceeded?
+            if (start.x >= (Screen.width - rightBannerWidth - panelClearWidth))
+            {
+                start = new Vector3(Screen.width - panelClearWidth - rightBannerWidth - tooltipNubSize, start.y, position.z);
+            }
+            else if (start.x <= 0f + panelClearWidth)
+            {
+                start = new Vector3(0f + panelClearWidth + tooltipNubSize, start.y, position.z);
+            }
+
+            Vector3 end = tutorialFocusTargetPosition;
+            end.z = start.z;
+
+            if (Vector3.Distance(start, end) <= panelClearHeight)
+            {
+                Vector3 centerPoint = new Vector3(Screen.width / 2f, Screen.height / 2f, start.z);
+                Vector3 rayToCenter = (centerPoint - start).normalized;
+                start += rayToCenter * panelClearHeight * 2f;
+            }
+
+            panelContainer.position = start;
+            TutorialPanelTail(start, end);
+        }
+
+        void TutorialPanelTail(Vector3 start, Vector3 end)
+        {
+            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
+            Vector3 ray = end - start;
+            float rad = Mathf.Atan2(ray.y, ray.x); // In radians
+            float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
+            tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
+            float targetNubSize = ray.magnitude;
+            tutorialArrow.localScale = Vector3.one;
+            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize + 10f);
+        }
+
+
+        
     }
 
     [SerializeField]
@@ -300,7 +209,6 @@ public class TutorialManager : MonoBehaviour {
 
 	public void PerformTutorialSeries(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase = TutorialEvent.TutorialInitializeTriggers.beforePlay)
 	{
-        Debug.Log("perform tutorial series");
         List<TutorialEvent> returnEvents = RetrieveTutorialEvents(inputLevelId, inputInitPhase);
         currentTutorialEventQueue = returnEvents.ToArray();
         tutorialEventIndex = 0;
@@ -334,19 +242,33 @@ public class TutorialManager : MonoBehaviour {
 
     List<TutorialEvent> RetrieveTutorialEvents(int inputLevelId, TutorialEvent.TutorialInitializeTriggers inputInitPhase)
     {
-        Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
+        //Debug.Log("Retrieving Tutorial Events... Level " + inputLevelId + " Phase " + inputInitPhase.ToString());
         List<TutorialEvent> returnEvents = new List<TutorialEvent>();
         PlayerInteraction_GamePhaseBehavior p = (PlayerInteraction_GamePhaseBehavior)GameManager.Instance.playerInteractionBehavior;
 
+        bool foundSimEvents = false; //triggered once events made to play during the simulation are found, prevents queuing of beforePlay events that follow it
+
+        int currentSequence = -1;
+
         foreach (TutorialEvent t in tutorialEvents)
         {
-            if (t.init_trigger == inputInitPhase)
+            if (t.levelNumber == inputLevelId && !t.hasCompleted)
+            {
+                if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.duringSimulation) foundSimEvents = true;
+                else if (t.init_trigger == TutorialEvent.TutorialInitializeTriggers.beforePlay && foundSimEvents == true) break;
+                if (currentSequence == -1)
+                    currentSequence = t.sequenceId;
+                if(currentSequence == t.sequenceId)
+                    returnEvents.Add(t);
+            }
+            else if (t.levelNumber > inputLevelId) break;
+            /*if (t.init_trigger == inputInitPhase)
             {
                 if (t.levelNumber == inputLevelId && !t.hasCompleted) returnEvents.Add(t);
-            }
-            else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
+            }*/
+            //else if (t.init_trigger != inputInitPhase && returnEvents.Count > 0) break;
         }
-        foreach (TutorialEvent t in returnEvents) Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
+        foreach (TutorialEvent t in returnEvents) { } //Debug.Log("TUTORIAL QUEUED: " + t.popupDescription + "\n");
         return returnEvents;
     }
 
@@ -354,11 +276,11 @@ public class TutorialManager : MonoBehaviour {
     {
         if (tutorialEventIndex >= currentTutorialEventQueue.Length )
         {
-            Debug.Log("All tutorials complete for this level.");
+            //Debug.Log("All tutorials complete for this level.");
         }
         else
         {
-            Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
+            //Debug.Log(tutorialIndex.ToString() + " is current Tutorial index.");
             TutorialEvent currentTutorial = currentTutorialEventQueue[tutorialEventIndex];
             PerformTutorial(currentTutorial);
             if(currentTutorialEventQueue.Length > tutorialEventIndex + 2) //is there a next tutorial?
@@ -366,7 +288,7 @@ public class TutorialManager : MonoBehaviour {
                 TutorialEvent nextTutorial = currentTutorialEventQueue[tutorialEventIndex + 1];
                 if (nextTutorial.type == TutorialEvent.TutorialTypes.simulation)
                 {
-                    Debug.Log("PREFORMING SIM");
+                    //Debug.Log("PREFORMING SIM");
                     PerformTutorial(nextTutorial);
                 }
             }
@@ -375,25 +297,34 @@ public class TutorialManager : MonoBehaviour {
 
     void PerformTutorial(TutorialEvent t)
     {
+        //Debug.Log("Performing Tutorial Event");
         if (t.type == TutorialEvent.TutorialTypes.popup)
         {
             switch (t.complete_trigger)
             {
                 case TutorialEvent.TutorialCompletionTriggers.clickButton:
-                case TutorialEvent.TutorialCompletionTriggers.clickPopup:
                 case TutorialEvent.TutorialCompletionTriggers.placeSignal:
                 case TutorialEvent.TutorialCompletionTriggers.placeSemaphore:
                     GameManager.Instance.tracker.CreateEventExt("PerformTutorial",t.popupDescription);
-                    Vector3 defaultPosition = new Vector3(Screen.width / 2, Screen.height / 2, 0);
-                    if (t.targetButton != null)
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
+                    tutorialOverlay.OpenPanel();
+                    t.ActivateTutorialEventListener();
+                    break;
+
+                case TutorialEvent.TutorialCompletionTriggers.clickPopup:
+                    GameManager.Instance.tracker.CreateEventExt("PerformTutorial", t.popupDescription);
+                    if (t.targetComponentType.Length > 0)
                     {
-                        defaultPosition = t.targetButton.transform.position;
-                        if (defaultPosition.x > (Screen.width / 2)) { defaultPosition.x -= t.targetButton.GetComponent<RectTransform>().rect.width/2; }
-                        else { defaultPosition.x += t.targetButton.GetComponent<RectTransform>().rect.width/2; }
-                        if (defaultPosition.y > (Screen.height / 2)) { defaultPosition.x -= t.targetButton.GetComponent<RectTransform>().rect.height/2; }
-                        else { defaultPosition.x += t.targetButton.GetComponent<RectTransform>().rect.height/2; }
+                        List<GridObjectBehavior> objectsOfType = GameManager.Instance.GetGridManager().GetGridComponentsOfType("signal");
+                        if(objectsOfType.Count>0) tutorialOverlay.SetTooltip(t.popupDescription, objectsOfType[0].gameObject, t.nextTutorial);
+                        else tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
                     }
-                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton);
+                    else
+                    {
+                        tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
+                    }
+                    tutorialOverlay.SetTooltip(t.popupDescription, t.targetButton, t.nextTutorial);
+
                     tutorialOverlay.OpenPanel();
                     t.ActivateTutorialEventListener();
                     break;
@@ -453,17 +384,108 @@ public class TutorialManager : MonoBehaviour {
     {
         CloseTutorial(t);
         tutorialEventIndex++;
-        if (tutorialIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
+        if (tutorialEventIndex < currentTutorialEventQueue.Length) InitializeCurrentTutorialEvent();
         else { 
-			Debug.Log("No more tutorials."); 
+			//Debug.Log("No more tutorials."); 
 			GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventComplete","NoMore");
 		}
     }
 
+    public void ReportTutorialEventSkip (bool allSubsequentForLevel)
+    {
+        GameManager.Instance.tracker.CreateEventExt("ReportTutorialEventSkip", "AllSubsequent="+allSubsequentForLevel.ToString());
+        
+        if (allSubsequentForLevel)
+        {
+            if (tutorialEventIndex < currentTutorialEventQueue.Length) CloseTutorial(currentTutorialEventQueue[tutorialEventIndex]);
+            foreach (TutorialEvent t in currentTutorialEventQueue)
+            {
+                t.hasCompleted = true;
+            }
+            tutorialEventIndex = currentTutorialEventQueue.Length;
+
+            int levelIndex = GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id;
+            ForceTutorialSeriesCompletion(levelIndex);
+        }
+        else
+        {
+            if (tutorialEventIndex < currentTutorialEventQueue.Length)
+            { 
+                TutorialEvent targetTutorial = currentTutorialEventQueue[tutorialEventIndex];
+                ReportTutorialEventComplete(targetTutorial);
+            }
+        }
+    }
+
+    void ForceTutorialSeriesCompletion(int levelIndex)
+    {
+        foreach (TutorialEvent t in tutorialEvents)
+        {
+            if(t.levelNumber == levelIndex) t.hasCompleted = true;
+        }
+    }
+
     public void ClearActiveTutorials()
     {
-        Debug.Log("ClearActiveTutorials");
+        //Debug.Log("ClearActiveTutorials");
         tutorialOverlay.ClosePanel();
+    }
+
+    [SerializeField]
+    int tutorialEditIndex = 0; //this variable is for editing the tutorial events array without having to manually move data in conjunction with tutorial edit mode and the EditTutorial function
+    [SerializeField]
+    int tutorialEditMode = 1; // 0 -> Adds new tutorial at the above index; 1 -> Removes tutorial at the above index
+
+    [ContextMenu("Edit Tutorial")]
+    public void EditTutorial()
+    {
+        switch (tutorialEditMode)
+        {
+            case 0:
+                AddNewTutorial(tutorialEditIndex);
+                break;
+            case 1:
+                RemoveTutorial(tutorialEditIndex);
+                break;
+        }
+    }
+
+    void AddNewTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length + 1];
+        for(int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if(i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else if(i == index)
+            {
+                newTutorialEvents[i] = new TutorialEvent();
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i-1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
+    }
+
+    void RemoveTutorial(int index)
+    {
+        TutorialEvent[] newTutorialEvents = new TutorialEvent[tutorialEvents.Length - 1];
+        for (int i = 0; i < newTutorialEvents.Length; i++)
+        {
+            if (i < index)
+            {
+                newTutorialEvents[i] = tutorialEvents[i];
+            }
+            else
+            {
+                newTutorialEvents[i] = tutorialEvents[i + 1];
+            }
+        }
+        tutorialEvents = newTutorialEvents;
     }
 
     #region Legacy Tutorial Code

@@ -164,12 +164,14 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 			case "signal":
 				if( inputStep.eventType == "E" )
 				{
+                    int passed = component.configuration.passed;
 					if( inputStep.componentStatus != null ) 
 					{
 						if( inputStep.componentStatus.passed != null )
 						{
 							if (inputStep.componentStatus.passed >= 1)
 							{
+                                passed = inputStep.componentStatus.passed - component.configuration.passed;
 								component.configuration.passed = inputStep.componentStatus.passed;
 								GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite( component );
 								iTween.ScaleFrom( gameObject, iTween.Hash( 
@@ -177,7 +179,6 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 									"time",0.5f,
 									"oncomplete", "ResetSprite"
 								));
-								component.configuration.passed = 0;
 							}
 						}
 					}
@@ -185,9 +186,9 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 					GridObjectBehavior linkedObject = GameManager.Instance.GetGridManager().GetGridObjectByID( component.configuration.link );
 					if( linkedObject !=null && linkedObject.component != null && linkedObject.component.type == "conditional" )
 					{
-						linkedObject.BeginInteraction();
+                        for(int i = 0; i < passed; i++)
+						    linkedObject.BeginInteraction();
 					}
-
 				}
 				break;
 			}
@@ -202,39 +203,41 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
         if (isEnabled && component.configuration.link != -1)
         {
             GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(component.configuration.link);
-            g.SetHighlight(isEnabled);
-            
-            //IF CONSTANT COLORS FOR COMPONENTS...
-            /**/
-            if (Constants.ComponentLinkColor.componentLinkColors.ContainsKey(g.component.type))
+            if(g != null)
             {
-                Debug.Log(g.component.type + "Should have a colored line.");
-                if (lineRenderer)
+                g.SetHighlight(isEnabled);
+                //IF CONSTANT COLORS FOR COMPONENTS...
+                /**/
+                if (Constants.ComponentLinkColor.componentLinkColors.ContainsKey(g.component.type))
                 {
-                    //int randomLineIndex = Random.Range(0, Constants.ComponentLinkColor.componentLinkColors[g.component.type].Count);
-                    int randomLineIndex = component.id % Constants.ComponentLinkColor.componentLinkColors[g.component.type].Count;
-                    Color lineColor = Constants.ComponentLinkColor.componentLinkColors[g.component.type][randomLineIndex];// * g.lineColorVariant;
-                    lineColor.a = 1f;
-                    lineRenderer.SetColors(lineColor, lineColor);
-                    lineRenderer.sortingOrder = Constants.ComponentSortingOrder.connectionOverlay + 1;
+                    if (lineRenderer)
+                    {
+                        //int randomLineIndex = Random.Range(0, Constants.ComponentLinkColor.componentLinkColors[g.component.type].Count);
+                        int randomLineIndex = component.id % Constants.ComponentLinkColor.componentLinkColors[g.component.type].Count;
+                        Color lineColor = Constants.ComponentLinkColor.componentLinkColors[g.component.type][randomLineIndex];// * g.lineColorVariant;
+                        lineColor.a = 1f;
+                        lineRenderer.SetColors(lineColor, lineColor);
+                        lineRenderer.sortingOrder = Constants.ComponentSortingOrder.connectionOverlay + 1;
+                    }
                 }
+                else
+                {
+                    if (lineRenderer) lineRenderer.SetColors(Constants.ComponentLinkColor.componentLinkColors["default"][0], Constants.ComponentLinkColor.componentLinkColors["default"][0]);
+                }
+                /**/
+
+                UpdateBezier(transform.position, g.transform.position);
             }
-            else
-            {
-                if (lineRenderer) lineRenderer.SetColors(Constants.ComponentLinkColor.componentLinkColors["default"][0], Constants.ComponentLinkColor.componentLinkColors["default"][0]);
-            }
-            /**/
-            
-            UpdateBezier(transform.position, g.transform.position);
         }
         else if (!isEnabled)
         {
             if (component.configuration.link != -1)
             {
                 GridObjectBehavior g = GameManager.Instance.GetGridManager().GetGridObjectByID(component.configuration.link);
-                g.SetHighlight(isEnabled);
+                if(g != null)
+                    g.SetHighlight(isEnabled);
             }
             UpdateBezier(transform.position, transform.position);
 		}
-	}
+    }
 }

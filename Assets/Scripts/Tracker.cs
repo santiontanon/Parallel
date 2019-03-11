@@ -2,13 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
 using System.Text;
 //using SimpleJSON; // http://wiki.unity3d.com/index.php/SimpleJSON
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE
 using System.IO;
 using System.Net.NetworkInformation;
 #endif
@@ -18,28 +14,46 @@ public class Tracker : MonoBehaviour {
 	public bool ShowDebugInfoLabel = true;
 	private bool allowQuitting = false;
 	private bool allowQuittingRequested = false;
-	public string url = "";
-	public string url_id = "";
-	public string url_logs = "";
-	public string url_data = "";
+    public string hostname;
+    public string port;
+	public string url
+    {
+        get { return "http://" + hostname + ":" + port; }
+    }
+	public string url_id
+    {
+        get { return url +"/id"; }
+    }
+	public string url_logs
+    {
+        get { return url + "/log"; }
+    }
+    public string url_data
+    {
+        get { return url + "/data"; }
+    }
     public string level_data = "";
 	public float logs_uploaded_time = 0f;
+    public string session_id
+    {
+        get { return tracking_session_id; }
+    }
 	private string tracking_session_id = "NA";
 	private string tracking_session_user = "NONE";
 	private string tracking_session_version = "Study3/RC2";
 	public bool connected = false;
 	public bool ready = false;
 
-	public bool tracking_local_enabled = true;
-	public bool tracking_message_collection = true;
-	public bool register_remote_enabled = true;
+	public bool local_tracking_enabled = true;
+    public bool remote_tracking_enabled = true;
+    public bool tracking_message_collection = true;
 	
-	#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
 	StreamWriter log = null;
-	#endif
 	private StringBuilder log2 = null;
+    public StreamWriter modelLog = null;
+    public string modelLogPath;
 
-	private static int[] keys_of_interest = new int[] {
+    private static int[] keys_of_interest = new int[] {
 		(int)KeyCode.Return, (int)KeyCode.Escape, (int)KeyCode.Space,
 		(int)KeyCode.Keypad8, (int)KeyCode.Keypad2, (int)KeyCode.Keypad4, (int)KeyCode.Keypad6,
 		(int)KeyCode.UpArrow, (int)KeyCode.DownArrow, (int)KeyCode.LeftArrow, (int)KeyCode.RightArrow,
@@ -72,133 +86,166 @@ public class Tracker : MonoBehaviour {
 		allowQuittingRequested = false;
 		connected = false;
 		ready = false;
-		url = "https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod"; // this is out of date, not to be used
-		url = "http://129.25.12.216:8787"; // this is the CCI cloud "centos" server
-		url = "http://144.118.172.191:8787"; // this is the "magic" server in Santi's office
+		hostname = "https://tkv2t9v8ad.execute-api.us-east-1.amazonaws.com/prod"; // this is out of date, not to be used
+		hostname = "129.25.12.216"; // this is the CCI cloud "centos" server
+		hostname = "129.25.141.236"; // this is the "magic" server in Santi's office
+        port = "8787";
 		// to start the service in the server, start a `screen` session, then go into LogVisualizer and type `python httpserver.py -i 10000 -s 144.118.172.191 -p 8787`
 		// then you can close the `screen` by hitting `control+a`, `d`, and then you can `exit`.
 		// the logs are saved in a directory called `saved_data` relative to the location of the server script
-		url_id = url + "/id";
-		url_logs = url + "/log";
-		url_data = url + "/data";
 	}
 
-	public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD){
+	public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD, string _url = "NA", bool trackLocal = true, bool trackRemote = true){
 		onSuccess = onSuccessD;
 		onFail = onFailD;
+        if (_url != "NA")
+            hostname = _url;
+        local_tracking_enabled = trackLocal;
+        remote_tracking_enabled = trackRemote;
         StartTracker();
-        
 	}
 
 	public void StartTracker()
     {
-        Debug.Log("StartTracker");
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+        if (ready && tracking_session_user == PlayerPrefs.GetString("PlayerId", "NONE")) return;
+        tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
+        if (remote_tracking_enabled)
         {
-            if (ready && tracking_session_user == PlayerPrefs.GetString("PlayerId", "NONE")) return;
-            tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
-            if (register_remote_enabled)
-            {
-                StartCoroutine(FetchConfig());
-            }
-            else
-            {
-                SetupTracking();
-            }
+            FetchConfig();
         }
-
-    }
-
-	IEnumerator FetchConfig(){
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+        else
         {
-            Debug.Log("FetchConfig");
-            DebugInfoLabel = "FetchConfig from " + url_id;
-            string ourPostData = "{\"user\":\"" + tracking_session_user + "\",\"version\":\"" + tracking_session_version + "\"}";
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Content-Type", "application/json");
-            byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
-            WWW www = new WWW(url_id, pData, headers);
-            yield return www;
-            if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
-            {
-                try
-                {
-                    Debug.Log(www.text);
-                    JSONObject ob = new JSONObject(www.text.Trim());
-                    tracking_session_id = ob.GetField("id").ToString();
-                    level_data = www.text;
-                }
-                catch (System.Exception e)
-                {
-                    Debug.Log(e);
-                }
-                if (onSuccess != null) onSuccess(www.text);
-            }
-            else
-            {
-                if (onFail != null) onFail();
-                Debug.Log(www.error);
-                tracking_session_id = "NA";
-            }
-            //tracking_session_id = {"id": 11, "user": "hello"}
             SetupTracking();
         }
+    }
+
+    public void ChangeRemoteAddress(string ipAndPort, System.Action callback = null)
+    {
+        hostname =  ipAndPort;
+        Debug.Log(url);
+        FetchConfig(callback);
+    }
+
+    public void UpdateTracking(bool trackLocal, bool trackRemote)
+    {
+        local_tracking_enabled = trackLocal;
+        remote_tracking_enabled = trackRemote;
+    }
+
+    public void FetchConfig(System.Action callback = null)
+    {
+        StartCoroutine(FetchConfigRoutine(callback));
+    }
+    
+	IEnumerator FetchConfigRoutine(System.Action callback = null)
+    {
+        DebugInfoLabel = "FetchConfig from " + url_id;
+        Debug.Log(url_id);
+        string ourPostData = "{\"user\":\"" + tracking_session_user + "\",\"version\":\"" + tracking_session_version + "\"}";
+        Dictionary<string, string> headers = new Dictionary<string, string>();
+        headers.Add("Content-Type", "application/json");
+        byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
+        WWW www = new WWW(url_id, pData, headers);
+        yield return www;
+        if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
+        {
+            try
+            {
+                Debug.Log(www.text);
+                JSONObject ob = new JSONObject(www.text.Trim());
+                tracking_session_id = ob.GetField("id").ToString();
+                level_data = www.text;
+                SetupTracking();
+                PlayerModelingServerCall();
+            }
+            catch (System.Exception e)
+            {
+                Debug.Log(e);
+            }
+            if (onSuccess != null) onSuccess(www.text);
+        }
+        else
+        {
+            if (onFail != null) onFail();
+            Debug.Log(www.error);
+            tracking_session_id = "NA";
+        }
+        if (callback != null)
+            callback();
+        //tracking_session_id = {"id": 11, "user": "hello"}
         yield return null; 
 	}
 
+    void SetupTracking()
+    {
+        string fileName = GameManager.Instance.GetLinkJava().savePath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
+        log = File.CreateText(fileName);
+        if (log == null)
+        {
+            Debug.Log("Error opening local log " + fileName);
+        }
+        {
+            Debug.Log("Logging locally to " + fileName);
+        }
+        log2 = new StringBuilder();
+        CreateEvent("SessionID", tracking_session_id);
+        CreateEvent("SessionUser", tracking_session_user);
+        CreateEvent("SessionVersion", tracking_session_version);
+        CreateEvent("Calibration", Screen.width.ToString() + "x" + Screen.height.ToString());
+        ready = true;
+        DebugInfoLabel = "TRACKING " + tracking_session_id;
+        GameManager.Instance.trackerIntialized = true;
+    }
+
+    IEnumerator SaveLogs()
+    {
+        Debug.Log("SaveLogs");
+        if (remote_tracking_enabled)
+        {
+            yield return StartCoroutine(UploadLogsWWW());
+        }
+        if (local_tracking_enabled)
+        {
+            if (log != null) log.Close();
+        }
+        yield return new WaitForSeconds(1f);
+        allowQuitting = true;
+        Application.Quit();
+    }
+
     public void UploadData(string data)
     {
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
-        {
-            StartCoroutine(UploadDataWWW(data));
-        }
+        StartCoroutine(UploadDataWWW(data));
     }
 
     IEnumerator UploadDataWWW(string data)
     {
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+        Debug.Log("UploadDataWWW");
+        Dictionary<string, string> headers = new Dictionary<string, string>();
+        headers.Add("Content-Type", "text/plain");
+        byte[] pData = System.Text.Encoding.ASCII.GetBytes(data.ToCharArray());
+        WWW www = new WWW(url_data, pData, headers);
+        yield return www;
+        if (www.error == null)
         {
-            Debug.Log("UploadDataWWW");
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Content-Type", "text/plain");
-            byte[] pData = System.Text.Encoding.ASCII.GetBytes(data.ToCharArray());
-            WWW www = new WWW(url_data, pData, headers);
-            yield return www;
-            if (www.error == null)
-            {
-                CreateEvent("UploadDataWWW", "OK");
-                Debug.Log("UploadDataWWW OK");
-            }
-            else
-            {
-                Debug.Log("UploadDataWWW Error");
-                Debug.Log(www.error);
-                CreateEvent("UploadDataWWW", "Error");
-            }
+            CreateEvent("UploadDataWWW", "OK");
+            Debug.Log("UploadDataWWW OK");
+        }
+        else
+        {
+            Debug.Log("UploadDataWWW Error");
+            Debug.Log(www.error);
+            CreateEvent("UploadDataWWW", "Error");
         }
     }
 
     public void UploadLogs(){
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+        if (log2 != null && (Time.time - logs_uploaded_time) > 3.0f)
         {
-            if (log2 != null && (Time.time - logs_uploaded_time) > 3.0f)
-            {
-                logs_uploaded_time = Time.time;
-                CreateEvent("UploadRequest", "Sent");
-                StartCoroutine("UploadLogsWWW");
-            }
-            else
-            {
-                Debug.Log("There are no logs to upload.");
-                if (allowQuittingRequested)
-                {
-                    allowQuitting = true;
-                    Application.Quit();
-                }
-            }
+            logs_uploaded_time = Time.time;
+            CreateEvent("UploadRequest", "Sent");
+            StartCoroutine("UploadLogsWWW");
         }
-
     }
 
     IEnumerator UploadLogsWWW() {
@@ -209,69 +256,27 @@ public class Tracker : MonoBehaviour {
         byte[] pData = System.Text.Encoding.ASCII.GetBytes(ourPostData.ToCharArray());
         WWW www = new WWW(url_logs, pData, headers);
         yield return www;
-
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+        if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
         {
-            if (allowQuittingRequested)
-            {
-                allowQuitting = true;
-                Application.Quit();
-            }
+            CreateEvent("UploadRequest", "OK");
+            Debug.Log("UploadLogsWWW OK");
+            Debug.Log(www.text);
         }
         else
         {
-
-            if (www.isDone && www.error == null && www.text != null && www.text.Trim() != "")
+            Debug.Log("UploadLogsWWW Error");
+            Debug.Log(www.error);
+            CreateEvent("UploadRequest", "Error");
+            Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
+            string path = GameManager.Instance.GetLinkJava().savePath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
+            System.Diagnostics.Process.Start(path);
+            if (allowQuittingRequested)
             {
-                CreateEvent("UploadRequest", "OK");
-                Debug.Log("UploadLogsWWW OK");
-                if (allowQuittingRequested)
-                {
-                    allowQuitting = true;
-                    Application.Quit();
-                }
+                Exit_GamePhaseBehavior exitBehaviorCast = GameManager.Instance.exitGameBehavior as Exit_GamePhaseBehavior;
+                //string error = "Error uploading content to Server. Please zip content at location" + path + "and email it to pxl@gmail.com";
+                exitBehaviorCast.ReportQuitError(Constants.Messages.DisconnectedOnExit);
             }
-            else
-            {
-                Debug.Log("UploadLogsWWW Error");
-                Debug.Log(www.error);
-                CreateEvent("UploadRequest", "Error");
-                Debug.Log("Show a message here instructing the players to zip all the files in this folder and send to pxl@gmail.com");
-                string path = Application.persistentDataPath.TrimEnd(new[] { '\\', '/' }); // Mac doesn't like trailing slash
-                System.Diagnostics.Process.Start(path);
-                if (allowQuittingRequested)
-                {
-                    Exit_GamePhaseBehavior exitBehaviorCast = GameManager.Instance.exitGameBehavior as Exit_GamePhaseBehavior;
-                    //string error = "Error uploading content to Server. Please zip content at location" + path + "and email it to pxl@gmail.com";
-                    exitBehaviorCast.ReportQuitError(Constants.Messages.DisconnectedOnExit);
-                }
 
-            }
-        }
-
-        }
-
-	void SetupTracking(){
-        if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
-        {
-        #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-            string fileName = Application.persistentDataPath + "/Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + ".log";
-            log = File.CreateText(fileName);
-            if (log == null)
-            {
-                Debug.Log("Error opening local log " + fileName);
-            }
-            {
-                Debug.Log("Logging locally to " + fileName);
-            }
-        #endif
-            log2 = new StringBuilder();
-            CreateEvent("SessionID", tracking_session_id);
-            CreateEvent("SessionUser", tracking_session_user);
-            CreateEvent("SessionVersion", tracking_session_version);
-            CreateEvent("Calibration", Screen.width.ToString() + "x" + Screen.height.ToString());
-            ready = true;
-            DebugInfoLabel = "TRACKING " + tracking_session_id;
         }
     }
 	
@@ -310,18 +315,47 @@ public class Tracker : MonoBehaviour {
 			+ e.e + "\t" + e.data + "\t" + e.time + "\t" 
 			+ e.mouse_x + "\t" + e.mouse_y;
 
-		#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-		if(tracking_local_enabled && log!=null){
+		if(local_tracking_enabled && log!=null){
 			log.WriteLine(line);
 		}
-		#endif
 		if(log2!=null){
 			log2.Append(line+"\n");
-		} else {
-			Debug.Log("Cannot log line: "+line);
 		}
+        if(modelLog != null)
+        {
+            modelLog.WriteLine(line);
+        }
 		return e;
 	}
+
+    [ContextMenu("Test Player Modeling Server")]
+    public void PlayerModelingServerCall()
+    {
+        GameManager.Instance.GetLinkJava().StartPlayerModelingServerCall(tracking_session_user, hostname, HandlePlayerModelingInitSuccess);
+    }
+
+    public void HandlePlayerModelingInitSuccess()
+    {
+        GameManager.Instance.playerModelingIntialized = true;
+    }
+
+    public void ResetModelLog()
+    {
+        if (modelLog != null)
+        {
+            modelLog.Close();
+            modelLog = null;
+        }
+        modelLogPath = GameManager.Instance.GetLinkJava().savePath + "Session-" + tracking_session_id.ToString() + "-" + System.DateTime.Now.ToString("MM-dd-yy-HH-mm-ss") + "model.log";
+        modelLog = File.CreateText(modelLogPath);
+    }
+
+    public void SendModelLog(string executionPath)
+    {
+        modelLog.Close();
+        modelLog = null;
+        GameManager.Instance.GetLinkJava().StartPlayerModelingProcess(executionPath, modelLogPath, tracking_session_user, "level"+GameManager.Instance.GetDataManager().currentLevelData.metadata.level_id.ToString(), hostname);
+    }
 
 	void Update(){
 		if(ready) EventCollection();
@@ -392,18 +426,16 @@ public class Tracker : MonoBehaviour {
 	}
 
 	public void OnApplicationQuit () {
+        Debug.Log("OnApplicationQuit");
 		if(allowQuitting){
+            Debug.Log("AllowQuit");
 			Application.Quit();
 		} else {
+            Debug.Log("CancelQuit");
 			Application.CancelQuit();
 			allowQuittingRequested = true;
 			CreateEvent("End","Quit");
-			UploadLogs();
-			#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
-			if(log!=null) log.Close();
-			log = null;
-			#endif
-			
+            StartCoroutine(SaveLogs());
 		}
 	}
 

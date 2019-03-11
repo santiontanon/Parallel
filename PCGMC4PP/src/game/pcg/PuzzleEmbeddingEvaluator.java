@@ -6,8 +6,6 @@
 package game.pcg;
 
 import game.GameState;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import lgraphs.LGraph;
 import lgraphs.LGraphNode;
@@ -33,6 +31,7 @@ public class PuzzleEmbeddingEvaluator {
     //private static double[] normalized_averages = {0.225641025641026,0.613333333333333,0.047380943877247,0.342654735272185,0.587150626286478,0.71267083147736,0.756494020382909,1.01421078921079,0.211462699557938,0.505123991235102,0.404250290473201,0.884634787169363,0.704434402504578,0.638888888888889,0.583333333333333};
     private static double[] normalized_averages = {0.225641025641026,0.613333333333333,1,0,0.587150626286478,0.71267083147736,1,0,1,0,0,1,1,1,1};    
     private static double[] vector_weights = {1,1,10,200,1,1,100,100,100,100,1,1,1,1,1};
+//    private static double[] vector_weights = {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0};
     //private static double[] vector_weights = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
     
 

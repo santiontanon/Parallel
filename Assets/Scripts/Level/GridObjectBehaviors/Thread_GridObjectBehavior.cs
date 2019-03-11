@@ -41,7 +41,7 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override void ResetPosition()
 	{
-		Debug.Log("Reseting " + this.component.id.ToString());
+		//Debug.Log("Reseting " + this.component.id.ToString());
 		SpriteRenderer instanceSpriteRenderer = GetComponent<SpriteRenderer>();
 		instanceSpriteRenderer.sortingOrder = Constants.ComponentSortingOrder.thread;
 		base.ResetPosition();
@@ -79,7 +79,6 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 			{
 				GameObject destroyTrail = trailObjectList[trailIndex];
 				trailObjectList.Remove( destroyTrail );
-				Debug.Log("I'm gonna clear this caboose: " + destroyTrail);
 				destroyTrail.GetComponent<CabooseObject>().Disconnect();
 				Destroy( destroyTrail );
 			}
@@ -88,6 +87,12 @@ public class Thread_GridObjectBehavior : GridObjectBehavior {
 
 	public override float DoStep(StepData inputStep, Dictionary<int, List<StepData>> dictionary = null)
 	{
+        foreach(GameObject g in trailObjectList)
+        {
+            CabooseObject caboose = g.GetComponent<CabooseObject>();
+            if (caboose != null)
+                caboose.UpdateFollow(false);
+        }
         while(timeStep.timeStep != inputStep.timeStep)
         {
             if(timeStep.timeStep > inputStep.timeStep)

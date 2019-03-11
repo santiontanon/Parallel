@@ -31,6 +31,7 @@ import game.UnitState;
 import game.component.ComponentUnit;
 import game.component.Component;
 import game.component.ComponentIntersection;
+import java.util.ArrayList;
 
 /**
  *
@@ -47,7 +48,7 @@ public class MapGenerator {
         board.initTileNeighbors();
         ComponentState components = new ComponentState();
         UnitState units = new UnitState();
-        return new GameState(board,components,units);
+        return new GameState(board,components,units, new ArrayList<String>());
     }
 
     public static GameState SmallerTest() {
@@ -76,7 +77,7 @@ public class MapGenerator {
         ComponentState components = new ComponentState();
         UnitState units = new UnitState();
         units.getUnits().add(new ComponentUnit(0,0,0,0));
-        return new GameState(board,components,units);
+        return new GameState(board,components,units, new ArrayList<String>());
     }
 
     
@@ -87,7 +88,7 @@ public class MapGenerator {
         if(expand) board = board.expand();
         ComponentState components = new ComponentState();
         UnitState units = CreateAlternatingUnits(expand ? 1 : 0,expand ? 1 : 0,6,2);
-        return new GameState(board,components,units);
+        return new GameState(board,components,units, new ArrayList<String>());
     }
 
     public static BoardState CreateSmallCrossWorld(int size_x, int size_y) {

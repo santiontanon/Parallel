@@ -18,21 +18,17 @@ public class Inventory
 
 	public void ClearInventory() {
 		availableTools.Clear ();
-		Debug.Log ("Inventory Cleared");
 	}
 
 	public void FillInventory() {
 		foreach (Tool t in Enum.GetValues(typeof(Tool))) {
 			availableTools.Add (t); 
 		}
-		Debug.Log ("Inventory Filled: " + toString(availableTools));
 	}
 
 	public void RemoveTool(Tool t) {
 		if(availableTools.Contains(t))
 			availableTools.Remove (t);
-		
-		Debug.Log ("Tool, " + (int) t + ", removed");
 	}
 
 	public void AddTool(Tool t) {

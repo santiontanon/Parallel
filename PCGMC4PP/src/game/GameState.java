@@ -38,8 +38,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -73,20 +73,25 @@ public class GameState {
     public static final int RESULT_PROBLEMATIC_REGRESSION = 256;
     public static final int RESULT_PROBLEMATIC_WRONG_PATH = 512;
     
-    private ComponentState cs;
-    private UnitState us;
-    private BoardState bs;
-    public Map<Pair<Integer,Integer>,Integer> goals_delivery = new HashMap(); // TODO generalize this to other properties
+    public ComponentState cs;
+    public UnitState us;
+    public BoardState bs;
+    public Map<Pair<Integer,Integer>,Integer> goals_delivery = new LinkedHashMap(); // TODO generalize this to other properties
     private int time_elapsed_total = 0;
     private int time_elapsed_this_step = 0;
-    private Map<Integer, Integer> time_elapsed_per_unit_moved = new HashMap();
+    private Map<Integer, Integer> time_elapsed_per_unit_moved = new LinkedHashMap();
     public List<IntermediateUnitPosition> intermediate_unit_positions = new ArrayList();
     private int steps = 0;
+    boolean endlessloop[][] = null; // an array that marks which positions are part of an endless loop
+    boolean endlessloopIfNoPayload[][] = null;
+    
     // Note, without state compression, time and steps should be the same
-
+    public List<String> skills = null;
+    
     private GameState parent = null;
     private boolean[] achieved_goals = null;
 
+    public boolean race_condition_detected = false;
     public int state_type = STATE_UNKNOWN;
     public int result_type = RESULT_INCOMPLETE;
     // Note, result_type holds ancestry information so it can find a previously partial solution
@@ -245,9 +250,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e12 An arrow didn't deliver the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e13 An arrow delivered more packages than it was supposed.";
+                return "e13 An arrow delivered more packages than it was supposed to.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e14 An arrow did not deliver all the packages it was supposed.";
+                return "e14 An arrow did not deliver all the packages it was supposed to.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e15 An arrow delivered the wrong number of packages.";
             }
@@ -255,9 +260,9 @@ public class GameState {
             if ("eq".equals(gc.condition) && !(value == gc.component_value)) {
                 return "e22 A delivery point didn't get the exact number of packages.";
             } else if ("lt".equals(gc.condition) && !(value < gc.component_value)) {
-                return "e23 A delivery point got more packages than it was supposed.";
+                return "e23 A delivery point got more packages than it was supposed to.";
             } else if ("gt".equals(gc.condition)&& !(value > gc.component_value)) {
-                return "e24 A delivery point did not get all the packages it was supposed.";
+                return "e24 A delivery point did not get all the packages it was supposed to.";
             } else if ("ne".equals(gc.condition)&& !(value != gc.component_value)) {
                 return "e25 A delivery point got the wrong number of packages.";
             }
@@ -378,7 +383,7 @@ public class GameState {
     }
 
     private GameState newSuccessor(int successor_type) {
-        Map<Pair<Integer, Integer>, Integer> new_goal_delivery = new HashMap();
+        Map<Pair<Integer, Integer>, Integer> new_goal_delivery = new LinkedHashMap();
         for(Map.Entry<Pair<Integer, Integer>, Integer> entry : this.goals_delivery.entrySet()){
             new_goal_delivery.put(entry.getKey(), entry.getValue());
         }
@@ -430,6 +435,7 @@ public class GameState {
         */
         // Move or update a single unit
         for (int i = 0; i < this.us.getUnits().size(); i++) {
+            //if (true) break;
             ComponentUnit cu = us.getUnit(i);
             if (this.canMoveUnit(cu)) {
                 successor = this.newSuccessor(GameState.STATE_MOVE);
@@ -442,6 +448,7 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
+//                System.out.println("move unit (individually): " + cu.id);
                 successors.add(successor);
             } else if (this.canUpdateComponent(cu)) {
                 successor = this.newSuccessor(GameState.STATE_EVENT);
@@ -454,36 +461,58 @@ public class GameState {
                     }
                     successor.getUnitState().getUnit(j).consecutive_unscheduled++;
                 }
+//                System.out.println("update component (individually): " + cu.id);
                 successors.add(successor);
             }
         }
         // Update all components
+//        System.out.println("update all components:");
         successor = this.newSuccessor(GameState.STATE_EVENT);
-        successors.add(successor);
+        boolean anyComponentUpdated = false;
         for (int i = 0; i < this.cs.getComponents().size(); i++) {
             Component c = cs.getComponent(i);
             if (this.canUpdateComponent(c)) {
+//                System.out.println("update component (all at once): " + c.id);
                 successor.updateComponent(i);
+                anyComponentUpdated = true;
             }
         }
+        // if no components are updated, then the state did not change!
+        if (anyComponentUpdated) successors.add(successor);
         // See comment above for this block of code.
         // Move all units at once
         if (this.us.getUnits().size() > 1) {
+            int nUnitsUpdated = 0;
+            int nComponentsUpdated = 0;
             successor = this.newSuccessor(GameState.STATE_MOVE);
-            successors.add(successor);
             for (int i = 0; i < this.us.getUnits().size(); i++) {
                 ComponentUnit cu = us.getUnit(i);
                 successor.getUnitState().getUnit(i).consecutive_unscheduled = 0;
                 if (this.canMoveUnit(cu)) {
                     successor.getUnitState().getUnit(i).consecutive_blocked = 0;
+                    //System.out.println("    "+this.steps+" - Before moveUnit "+i+": " + Arrays.toString(us.getUnit(i).payload));
                     successor.moveUnit(i);
+                    //System.out.println("    "+this.steps+" - After moveUnit "+i+": " + Arrays.toString(us.getUnit(i).payload));
+//                    System.out.println("move unit (all units/components): " + cu.id);
+                    nUnitsUpdated++;
                 } else if (this.canUpdateComponent(cu)) {
                     successor.getUnitState().getUnit(i).consecutive_blocked = 0;
                     successor.updateComponentUnit(i);
+//                    System.out.println("update component (all units/components): " + cu.id);
+                    nComponentsUpdated++;
                 } else {
                     successor.getUnitState().getUnit(i).consecutive_blocked++;
-                    // TODO this may be sufficient to identify starvation but may need to be updated also in all successors when moving a single unit for all "other" units
+                    //System.out.println("blocked");
+                    // TODO this may be sufficient to identify starvation but may 
+                    // need to be updated also in all successors when moving a single 
+                    // unit for all "other" units
                 }
+            }
+            // unless we updated both units and components, this is covered already with the previous moves!
+            if ((nUnitsUpdated != 0 &&
+                 nComponentsUpdated != 0) || 
+                 nUnitsUpdated > 1) {
+                successors.add(successor);
             }
         } // END Move all units at once
         return successors;
@@ -520,7 +549,7 @@ public class GameState {
         // TODO since the semaphores now stop before entering, units should not move before entering a semaphore in a single movement, will lose some branches
         boolean allowed_to_continue = true;
         int time = 0;
-        Set<Integer> unit_hashes = new HashSet();
+        Set<Integer> unit_hashes = new LinkedHashSet();
         while (this.canMoveUnit(unit) && allowed_to_continue) {
             time++;
             allowed_to_continue = this.moveUnitRepeat(unit);
@@ -531,14 +560,20 @@ public class GameState {
                 // TODO move this to the export section to save on memory
                 this.intermediate_unit_positions.add(new IntermediateUnitPosition(unit.id, unit.tile_current.id, time));
             }
-            // TODO detect cycles here, find a better way to handle this
+            // detect cycles here:
             Integer unit_hash = this.stateUnitDescriptionHash(unit);
             if(unit_hashes.contains(unit_hash)){
                 allowed_to_continue = false;
-                // This is broken in PCG levels where the ending of one path is a loop, when we properly support track endings maybe we can enable this again.
-                // TODO have a check that looks for ALL the threads in a LOOPY state, then break
-                // this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;                
             }
+            if (endlessloop[unit.x][unit.y]) {
+                this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
+                allowed_to_continue = false;
+            }          
+            if (endlessloopIfNoPayload[unit.x][unit.y] && (unit.payload == null || unit.payload.length == 0)) {
+                this.result_type |= GameState.RESULT_PROBLEMATIC_LOOPY_HASH;
+                allowed_to_continue = false;
+            }
+
             unit_hashes.add(unit_hash);
             if(time>this.bs.getWidth() * this.bs.getHeight()){
                 allowed_to_continue = false;
@@ -675,6 +710,7 @@ public class GameState {
         // Needs to be updated between calls of different levels in the GameStateSearch, otherwise could be static
         GameState.description_length = this.us.getUnits().size()
                 + this.cs.getComponentsByType(ComponentPickup.class).size() // what is available to pickup
+                + this.cs.getComponentsByType(ComponentDelivery.class).size() // what is available to pickup
                 + this.cs.getComponentsByType(ComponentSemaphore.class).size()
                 + this.cs.getComponentsByType(ComponentConditional.class).size();
 
@@ -738,6 +774,9 @@ public class GameState {
         for (Component c : this.cs.getComponentsByType(ComponentPickup.class)) {
             description[offset++] = ((ComponentPickup) c).available;
         }
+        for (Component c : this.cs.getComponentsByType(ComponentDelivery.class)) {
+            description[offset++] = ((ComponentDelivery) c).delivered;
+        }
 
         for (Component c : this.cs.getComponentsByType(ComponentSemaphore.class)) {
             description[offset++] = ((ComponentSemaphore) c).value;
@@ -790,10 +829,11 @@ public class GameState {
         return true;
     }
 
-    public GameState(BoardState board, ComponentState components, UnitState units) {
+    public GameState(BoardState board, ComponentState components, UnitState units, List<String> a_skills) {
         this.bs = board;
         this.cs = components;
         this.us = units;
+        this.skills = a_skills;
     }
 
     public GameState(GameState parent, BoardState board, ComponentState components, UnitState units, int steps, int time, int state_type, int result_type, Map<Pair<Integer,Integer>,Integer> goals_delivery) {
@@ -803,9 +843,12 @@ public class GameState {
         this.parent = parent;
         this.steps = steps;
         this.time_elapsed_total = time;
+        if (parent != null) this.race_condition_detected = parent.race_condition_detected;
         this.state_type = state_type;
         this.result_type = result_type;
         this.goals_delivery = goals_delivery;
+        if (parent != null) this.endlessloop = parent.endlessloop;
+        if (parent != null) this.endlessloopIfNoPayload = parent.endlessloopIfNoPayload;
     }
 
     public void expand() {
@@ -827,6 +870,7 @@ public class GameState {
         this.bs.initTileNeighbors();
         this.initIntersections();
         this.initUnitsNextTile();
+        this.findEndlessLoops();
         this.updateGameStateDescriptionLength();
     }
 
@@ -973,7 +1017,10 @@ public class GameState {
         GameState gs = new GameState(
                 bs_,
                 cs.clone(),
-                us.clone());
+                us.clone(),
+                skills);
+        gs.endlessloop = this.endlessloop;
+        gs.endlessloopIfNoPayload = this.endlessloopIfNoPayload;
         return gs;
     }
 
@@ -996,4 +1043,76 @@ public class GameState {
         }
         return this.result_type;
     }
+    
+    public void findEndlessLoops()
+    {
+        int w = getBoardState().getWidth();
+        int h = getBoardState().getHeight();
+        boolean considered[][] = new boolean[w][h];
+        endlessloop = new boolean[w][h];
+        endlessloopIfNoPayload = new boolean[w][h];
+        System.out.println("findEndlessLoops start");
+        
+        for(int i = 0;i<h;i++) {
+            for(int j = 0;j<w;j++) {
+                Tile t = getBoardState().getTile(j, i);
+                if (t != null && t.type == Tile.TILE_TRACK && !considered[j][i]) {
+//                    System.out.println("nbs of " + j + "," + i + " ("+t.type+"): " + t.getNeighborsBitmask());
+//                    System.out.println("    traveled_to: " + t.traveled_to);
+                    List<Tile> pathForward = new ArrayList<>();
+                    
+                    // follow it forward until a fork, component, or we loop back:
+                    Tile current = t;
+                    Tile pathIncludesDiverter = null;
+                    while(true) {
+                        considered[current.x][current.y] = true;
+                        Tile nextTileThroughEmptyPayloadDiverter = null;
+                        if (current.component_index.size() == 1) {
+                            Component c = this.cs.getComponent(current.component_index.get(0));
+                            if (c instanceof ComponentDiverter) {
+                                ComponentDiverter diverter = (ComponentDiverter)c;
+                                
+                                int emptyDirection = diverter.getDirectionForEmptyPayload();
+//                                System.out.println("   diverter.empty payload direction: " + emptyDirection);
+                                Tile tile_emptyPayload = this.bs.getTile(current.x + Component.DIRECTION_OFFSET_DICT_X[emptyDirection], current.y + Component.DIRECTION_OFFSET_DICT_Y[emptyDirection]);
+//                                System.out.println("   diverter tile at emptyDirection: " + tile_emptyPayload);
+                                if (current.traveled_to.contains(tile_emptyPayload)) {
+//                                    System.out.println("    good, tile is within traveled_to");
+                                    nextTileThroughEmptyPayloadDiverter = tile_emptyPayload;
+                                }
+                            }
+                        }
+                        if (!current.component_index.isEmpty() &&
+                            nextTileThroughEmptyPayloadDiverter == null) break;
+                        if (pathForward.contains(current)) {
+                            // loop!!!
+                            if (pathIncludesDiverter != null) {
+//                                System.out.println("Endless Loop if no payload!!! " + pathForward);
+                                for(Tile t2:pathForward) {
+                                    endlessloopIfNoPayload[t2.x][t2.y] = true;
+                                }
+                            } else {
+//                                System.out.println("Endless Loop!!! " + pathForward);
+                                for(Tile t2:pathForward) {
+                                    endlessloop[t2.x][t2.y] = true;
+                                }
+                            }
+                            break;
+                        }
+                        pathForward.add(current);
+                        if (current.traveled_to.size()==1) {
+                            current = current.traveled_to.iterator().next();
+                        } else if (nextTileThroughEmptyPayloadDiverter != null) {
+                            current = nextTileThroughEmptyPayloadDiverter;
+                            pathIncludesDiverter = nextTileThroughEmptyPayloadDiverter;
+                        } else {
+                            break;
+                        }
+                    }
+//                    System.out.println("    pathForward: " + pathForward.size());
+                }
+            }
+        }
+    }    
+    
 }

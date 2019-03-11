@@ -51,6 +51,22 @@ public class ComponentDiverter extends Component {
     public ComponentDiverter(int x, int y, int id, int color, char owner, boolean locked) {
         super(x, y, id, color, owner, locked);
     }
+    
+    
+    public int getDirectionForEmptyPayload()
+    {
+        for(int direction=0;direction<4;direction++){
+            if(intInIntArray(this.directions_types[direction],ComponentPickup.EMPTY)){
+                return direction;
+            }
+            if(intInIntArray(this.directions_colors[direction],-1)){
+                return direction;
+            }
+        }
+        return 0;   // this should never happen
+    }
+    
+    
     public int forcesDirection(ComponentUnit unit, GameState gs) {
         if(unit.payload.length==0){
             for(int direction=0;direction<4;direction++){
@@ -83,7 +99,7 @@ public class ComponentDiverter extends Component {
         }
         return -1;
     }
-    
+    /*
     public int forcesDirectionOldCodeByDiverterColor(ComponentUnit unit, GameState gs) {
         if (unit == null || unit.payload.length==0){
             // No package always fails
@@ -104,7 +120,7 @@ public class ComponentDiverter extends Component {
         }
         
     }
-    
+    */
     public boolean updateUnitEnter(ComponentUnit unit,GameState gs){
         // This doesn't depend on anything else, same as intersection
         super.updateUnitEnter(unit, gs);

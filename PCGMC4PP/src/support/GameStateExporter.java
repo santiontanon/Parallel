@@ -25,11 +25,8 @@ package support;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import game.BoardState;
 import game.component.Component;
-import game.component.ComponentIntersection;
 import game.component.ComponentPickup;
 import game.ComponentState;
 import game.component.ComponentUnit;
@@ -44,14 +41,12 @@ import game.component.ComponentComment;
 import game.component.ComponentConditional;
 import game.component.ComponentDelivery;
 import game.component.ComponentExchange;
-import game.component.ComponentSignal;
 import game.playermodel.PlayerData;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,21 +66,26 @@ public class GameStateExporter {
 
     public static char color_base = ' ';
 
-    public static String export(GameStateSearch gss, PlayerData pd) throws Exception {
-        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, false);
+    public static String export(GameStateSearch gss, PlayerData pd, String desiredID) throws Exception {
+        return GameStateExporter.export(gss, gss.getStart(), GameStateSearch.toExecutionPlan(gss.getWorstResult()), null, desiredID, false);
     }
 
-    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd) {
-        return GameStateExporter.export(null, gs, ep, pd, false);
+    public static String export(GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID) {
+        return GameStateExporter.export(null, gs, ep, pd, desiredID, false);
     }
 
-    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, boolean verbose) {
+    public static String export(GameStateSearch gss, GameState gs, ExecutionPlan ep, PlayerData pd, String desiredID, boolean verbose) {
         StringBuilder sb = new StringBuilder();
         BoardState board = gs.getBoardState();
         sb.append("METADATA\n");
         sb.append("level_id\t");
         sb.append(board.level_id);
         sb.append('\n');
+        if (desiredID != null) {
+            sb.append("pcg_id\t");
+            sb.append(desiredID);
+            sb.append('\n');
+        }
         sb.append("level_title\t");
         sb.append(board.level_title);
         sb.append('\n');
@@ -142,6 +142,13 @@ public class GameStateExporter {
         sb.append("DIRECTIONS\n");
         sb.append(exportBoardToTextDirections(board));
         sb.append("\n");
+        if (gs.skills!=null) {
+            sb.append("SKILLS\n");
+            for(String s:gs.skills) {
+                sb.append(s + "\n");
+            }
+            sb.append("\n");
+        }
 
         ComponentState components = gs.getComponentState();
         sb.append(exportComponentsToTextRepresentation(components));
@@ -152,11 +159,15 @@ public class GameStateExporter {
     }
 
     public static String export(GameState gs) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), false);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, false);
+    }
+
+    public static String export(GameState gs, String desiredLEvelID) {
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), desiredLEvelID, false);
     }
 
     public static String export(GameState gs, boolean verbose) {
-        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), verbose);
+        return GameStateExporter.export(null, gs, new ExecutionPlan(), new PlayerData(), null, verbose);
     }
 
     private static String exportBoardTtoTextHelper(BoardState board, boolean colors, boolean verbose) {
@@ -269,7 +280,7 @@ public class GameStateExporter {
     }
 
     public static String exportComponentPropertiesToJson(Component c) {
-        Map<String, Object> export_map = new HashMap();
+        Map<String, Object> export_map = new LinkedHashMap();
         for (String property : GameStateParser.properties_valid) {
             try {
                 export_map.put(property, c.getClass().getField(property).get(c));
@@ -364,9 +375,9 @@ public class GameStateExporter {
     public static String exportGoalsToJson(List<GoalCondition> goal_struct) {
         List<Map<String, Object>> goals_required = new ArrayList();
         List<Map<String, Object>> goals_desired = new ArrayList();
-        Map<String, List<Map<String, Object>>> goal_struct_export = new HashMap();
+        Map<String, List<Map<String, Object>>> goal_struct_export = new LinkedHashMap();
         for (GoalCondition goal : goal_struct) {
-            Map<String, Object> export_map = new HashMap();
+            Map<String, Object> export_map = new LinkedHashMap();
             export_map.put("id", goal.component_id);
             export_map.put("type", goal.component_class);
             export_map.put("property", goal.component_property);
@@ -413,7 +424,7 @@ public class GameStateExporter {
         sb.append("\t");
         sb.append(unit.y);
         sb.append("\t");
-        Map<String, Object> export_map = new HashMap();
+        Map<String, Object> export_map = new LinkedHashMap();
         export_map.put("speed", speed);
         sb.append(gson.toJson(export_map));
         sb.append("\n");
@@ -464,7 +475,7 @@ public class GameStateExporter {
         List<IntermediateUnitPosition> final_unit_positions = new ArrayList(); // TODO this is only used for units that will not move at all, remove?        
 
         // Extract unit movement and compute speeds
-        Map<Integer, List<Pair<Integer, Integer>>> um = new HashMap();
+        Map<Integer, List<Pair<Integer, Integer>>> um = new LinkedHashMap();
         // This is a set of unit_id and a list of x,y pairs
 
         // Export speed change events in a per-unit basis
@@ -536,7 +547,7 @@ public class GameStateExporter {
         
         // Export events from changed properties
         gs_prev = null;
-        Set<String> export_props = new HashSet();
+        Set<String> export_props = new LinkedHashSet();
         for (String i : GameStateParser.properties_valid) {
             if(!"directions".equals(i)){
                 // TODO figure out why this happened. See the file michael sent me by e-mail, couldn't reproduce.
@@ -557,7 +568,7 @@ public class GameStateExporter {
                             Object vn = field.get(c);
                             Object vo = field.get(old);
                             if (vn != null && !vn.equals(vo) && export_props.contains(field.getName())) {
-                                Map<String, Object> export_map = new HashMap();
+                                Map<String, Object> export_map = new LinkedHashMap();
                                 export_map.put(field.getName(), vn);
                                 exportExecutionToTextRepresentationEvent(sb, 'E', old, gs.getTime(), export_map);
                             }
@@ -576,7 +587,7 @@ public class GameStateExporter {
                         }
                     }
                 }
-                Set<Integer> exchangedIds = new HashSet();
+                Set<Integer> exchangedIds = new LinkedHashSet();
                 for (Component c : gs.getUnitState().getUnits()) {
                     Component old = gs_prev.getUnitState().getUnitById(c.id);
                     Field[] fields = c.getClass().getFields();
@@ -585,7 +596,7 @@ public class GameStateExporter {
                             Object vn = field.get(c);
                             Object vo = field.get(old);
                             if (vn != null && !vn.equals(vo) && export_props.contains(field.getName())) {
-                                Map<String, Object> export_map = new HashMap();
+                                Map<String, Object> export_map = new LinkedHashMap();
                                 export_map.put(field.getName(), vn);
                                 exportExecutionToTextRepresentationEvent(sb, 'E', old, gs.getTime(), export_map);
                             }
@@ -600,7 +611,7 @@ public class GameStateExporter {
                     Component component_to = gs.getComponentState().getComponentByPosition(ou.x, ou.y);
                     if (ou.payload.length > 0 && ou.payload.length > nu.payload.length && ComponentDelivery.class.isInstance(component_to)) {
                         // Delivery of packages to delivery points
-                        Map<String, Object> export_map = new HashMap();
+                        Map<String, Object> export_map = new LinkedHashMap();
                         List<Integer> delivered = toIntegerList(ou.payload);
                         List<Integer> missed = new ArrayList();
                         export_map.put("delivered_items", delivered);
@@ -621,7 +632,7 @@ public class GameStateExporter {
                         ComponentUnit ce2u = gs.getUnitState().getUnitByPosition(ce2.x, ce2.y);
                         exchangedIds.add(nu.id);
                         exchangedIds.add(ce2u.id);
-                        Map<String, Object> export_map = new HashMap();
+                        Map<String, Object> export_map = new LinkedHashMap();
                         export_map.put("exchange_between_a", nu.id);
                         export_map.put("exchange_between_b", ce2u.id);
                         exportExecutionToTextRepresentationEvent(sb, 'D', old, gs.getTime(), export_map);
@@ -629,7 +640,7 @@ public class GameStateExporter {
                 }
                 if (gs.evaluateState() > previous_goals) {
                     previous_goals = gs.evaluateState();
-                    Map<String, Object> export_map = new HashMap();
+                    Map<String, Object> export_map = new LinkedHashMap();
                     export_map.put("goals_completed", previous_goals);
                     exportExecutionToTextRepresentationEvent(sb, gs.getTime(), export_map);
                 }
@@ -662,10 +673,11 @@ public class GameStateExporter {
             reasons.add(gs.describeGoal(goal));
         }
         
-        Map<String, Object> export_map = new HashMap();
+        Map<String, Object> export_map = new LinkedHashMap();
         export_map.put("final_condition", gs.updateAndGetResultType());
         export_map.put("goal_state", gs.updateAndGetAchievedGoals());
         export_map.put("goal_descriptions", reasons);
+        export_map.put("race_condition_detected", "" + gs.race_condition_detected);
         
         return export_map;
     }

@@ -127,7 +127,7 @@ public class FEStatePane extends JPanel {
                                 pcgRandomSeedGraph.setText(Long.toString(randomSeedGraph+1));
                                 //pcgRandomSeedEmbedding.setText(Long.toString(randomSeedEmbedding+1));
                                 System.out.println(pcgRandomSeedGraph+"; "+pcgRandomSeedEmbedding);
-                                initialGameState = PCG.generateGameState(randomSeedGraph, randomSeedEmbedding, size, true, false);
+                                initialGameState = PCG.generateGameState(randomSeedGraph, randomSeedEmbedding, size, true, false, null, false);
                                 //initialGameState = PCG.generateGameState(randomSeed, true, false);
                                 initialGameState.init();
                                 currentGameState = initialGameState.clone();
@@ -352,7 +352,7 @@ public class FEStatePane extends JPanel {
                             File file = fileChooser.getSelectedFile();
                             try {
                                 FileWriter fw = new FileWriter(file);
-                                fw.write(GameStateExporter.export(initialGameState, current_plan, null));
+                                fw.write(GameStateExporter.export(initialGameState, current_plan, null, null));
                                 fw.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
