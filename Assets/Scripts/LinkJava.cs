@@ -386,7 +386,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.RedirectStandardError = true;
             modelingProcess.StartInfo.FileName = "java";
             modelingProcess.StartInfo.Arguments = " -classpath " + "\"" + pcgPath + "PCGMC4PP.jar" + "\"";
-            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles/log4j2.xml" + " server.ServerInterface";
+            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles" + pathSeparator + "log4j2.xml" + " server.ServerInterface";
             modelingProcess.StartInfo.Arguments += " -mode sync";
             modelingProcess.StartInfo.Arguments += " -user " + username;
             modelingProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
@@ -438,7 +438,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.RedirectStandardError = true;
             modelingProcess.StartInfo.FileName = "java";
             modelingProcess.StartInfo.Arguments = " -classpath " + "\"" + pcgPath + "PCGMC4PP.jar" + "\"";
-            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles/log4j2.xml" + " playermodeling.Main";
+            modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=" + pcgPath + "pmfiles" + pathSeparator + "log4j2.xml" + " playermodeling.Main";
             modelingProcess.StartInfo.Arguments += " -mepath " + "\"" + executionPath + "\"";
             modelingProcess.StartInfo.Arguments += " -telemetrypath " + "\"" + logPath + "\"";
             modelingProcess.StartInfo.Arguments += " -user " + username;
