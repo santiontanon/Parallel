@@ -116,6 +116,7 @@ public class Tracker : MonoBehaviour {
         else
         {
             SetupTracking();
+            PlayerModelingServerCall();
         }
     }
 

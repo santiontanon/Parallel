@@ -1371,7 +1371,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: currentGameMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 2}
@@ -1413,7 +1413,7 @@ Prefab:
       objectReference: {fileID: 1554837229}
     - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}
       propertyPath: currentSaveMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 2}

@@ -55,9 +55,11 @@ public class LinkJava : MonoBehaviour
             else
                 savePath = Application.persistentDataPath + pathSeparator;
         }
-        string filename = savePath + "currentParameters.txt";
-        if (!File.Exists(filename))
-            File.WriteAllText(filename, "");
+        filename = savePath + "currentParameters.txt";
+        FileInfo currentParameters = new FileInfo(filename);
+        currentParameters.Directory.Create();
+        if (!currentParameters.Exists)
+            File.WriteAllText(currentParameters.FullName, "");
         filename = Application.dataPath + "Resources/Exports/levels/level-2-prototype.txt";
     }
 
@@ -327,7 +329,8 @@ public class LinkJava : MonoBehaviour
     {
         // send this to the server first
         string upload_data = "filename\t" + filename + "\ntimestamp\t" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\n\n" + System.IO.File.ReadAllText(filename);
-        GameManager.Instance.tracker.UploadData(upload_data);
+        if(GameManager.Instance.tracker.remote_tracking_enabled)
+            GameManager.Instance.tracker.UploadData(upload_data);
         UnityEngine.Debug.Log("It's now time to load " + filename);
         StreamReader reader = new StreamReader(filename);
 
@@ -390,7 +393,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.Arguments += " -mode sync";
             modelingProcess.StartInfo.Arguments += " -user " + username;
             modelingProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
-            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787 -connect " + GameManager.Instance.tracker.remote_tracking_enabled;
             UnityEngine.Debug.Log(modelingProcess.StartInfo.Arguments);
             modelingProcess.Start();
             StartCoroutine(PlayerModelingServerRoutine(callback));
@@ -445,7 +448,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.Arguments += " -level " + levelname;
             modelingProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
             modelingProcess.StartInfo.Arguments += " -pmdir " + "\"" + pcgPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
-            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
+            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787 -connect " + GameManager.Instance.tracker.remote_tracking_enabled;
             UnityEngine.Debug.Log(modelingProcess.StartInfo.Arguments);
             modelingProcess.Start();
             StartCoroutine(PlayerModelingRoutine(callback));

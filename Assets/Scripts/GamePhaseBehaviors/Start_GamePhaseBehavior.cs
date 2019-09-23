@@ -70,7 +70,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             currentPlayerID = playerIdField.text;
             GameManager.Instance.trackerIntialized = false;
             GameManager.Instance.playerModelingIntialized = false;
-            if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+            if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo && GameManager.Instance.currentGameMode != GameManager.GameMode.Test)
             {
                 if (playerIdField.text.Length > 0)
                 {
@@ -99,6 +99,10 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
                     postSurvey.interactable = false;
                     postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
                 }
+            }
+            else if(GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
+            {
+                GameManager.Instance.tracker.StartTrackerWithCallback(null, null, "NA", true, false);
             }
         }
         else
