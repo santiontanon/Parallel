@@ -333,6 +333,7 @@ public class Tracker : MonoBehaviour {
     public void PlayerModelingServerCall()
     {
         GameManager.Instance.GetLinkJava().StartPlayerModelingServerCall(tracking_session_user, hostname, HandlePlayerModelingInitSuccess);
+        HandlePlayerModelingInitSuccess();
     }
 
     public void HandlePlayerModelingInitSuccess()
