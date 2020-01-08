@@ -95,7 +95,13 @@ public class Tracker : MonoBehaviour {
 		// the logs are saved in a directory called `saved_data` relative to the location of the server script
 	}
 
-	public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD, string _url = "NA", bool trackLocal = true, bool trackRemote = true){
+    private void FixedUpdate()
+    {
+        /*Debug.Log(GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition).x + "," +
+                  GameManager.Instance.GetGridManager().worldCamera.ScreenToWorldPoint(Input.mousePosition).y);*/
+    }
+
+    public void StartTrackerWithCallback(Start_GamePhaseBehavior.StartPlayingWithLevelInformationDelegate onSuccessD, Start_GamePhaseBehavior.NoInternetErrorDelegate onFailD, string _url = "NA", bool trackLocal = true, bool trackRemote = true){
 		onSuccess = onSuccessD;
 		onFail = onFailD;
         if (_url != "NA")
@@ -107,7 +113,7 @@ public class Tracker : MonoBehaviour {
 
 	public void StartTracker()
     {
-        if (ready && tracking_session_user == PlayerPrefs.GetString("PlayerId", "NONE")) return;
+        //if (ready && tracking_session_user == PlayerPrefs.GetString("PlayerId", "NONE")) return;
         tracking_session_user = PlayerPrefs.GetString("PlayerId", "NONE");
         if (remote_tracking_enabled)
         {

@@ -392,7 +392,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.Arguments += " -Dlog4j.configurationFile=\"" + pcgPath + "pmfiles" + pathSeparator + "log4j2.xml\"" + " server.ServerInterface";
             modelingProcess.StartInfo.Arguments += " -mode sync";
             modelingProcess.StartInfo.Arguments += " -user " + username;
-            modelingProcess.StartInfo.Arguments += " -path " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
+            modelingProcess.StartInfo.Arguments += " -path " + "\"" + savePath + "currentParameters.txt" + "\"";
             modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787 -connect " + GameManager.Instance.tracker.remote_tracking_enabled;
             UnityEngine.Debug.Log(modelingProcess.StartInfo.Arguments);
             modelingProcess.Start();
@@ -446,7 +446,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.Arguments += " -telemetrypath " + "\"" + logPath + "\"";
             modelingProcess.StartInfo.Arguments += " -user " + username;
             modelingProcess.StartInfo.Arguments += " -level " + levelname;
-            modelingProcess.StartInfo.Arguments += " -parameterpath " + "\"" + Application.persistentDataPath + pathSeparator + "currentParameters.txt" + "\"";
+            modelingProcess.StartInfo.Arguments += " -parameterpath " + "\"" + savePath + "currentParameters.txt" + "\"";
             modelingProcess.StartInfo.Arguments += " -pmdir " + "\"" + pcgPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
             modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787 -connect " + GameManager.Instance.tracker.remote_tracking_enabled;
             UnityEngine.Debug.Log(modelingProcess.StartInfo.Arguments);
