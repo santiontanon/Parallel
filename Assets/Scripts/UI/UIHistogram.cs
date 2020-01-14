@@ -26,7 +26,9 @@ public class UIHistogram : MonoBehaviour {
     [SerializeField]
     List<Image> Bars;
     [SerializeField]
-    Image Target;
+    RectTransform TargetIndicator;
+    [SerializeField]
+    Text TargetText;
 
     public void Init(string title, List<int> values, int target, int degrees = 5, int @base = 0)
     {
@@ -57,7 +59,6 @@ public class UIHistogram : MonoBehaviour {
                 min = i;
         }
         interval = (max - min) / Degrees;
-        Debug.Log(interval);
 
         float start = 0;
         float end = 0;
@@ -90,8 +91,8 @@ public class UIHistogram : MonoBehaviour {
         }
 
         float offset = target / (float)max;
-        float width = Target.rectTransform.parent.gameObject.GetComponent<RectTransform>().rect.width;
-        Target.rectTransform.localPosition = new Vector3(offset * width - (width/2f),0);
+        float width = TargetIndicator.parent.gameObject.GetComponent<RectTransform>().rect.width;
+        TargetIndicator.localPosition = new Vector3(offset * width - (width/2f),0);
     }
 
     void ClearBars()
@@ -104,7 +105,7 @@ public class UIHistogram : MonoBehaviour {
     [ContextMenu("Test")]
     public void Test()
     {
-        Init("Test Histogram", new List<int> { 0, 1, 1, 1, 1, 2, 3, 4, 5, 6 }, 4, 4, 0);
+        Init("Test Histogram", new List<int> { 4, 4, 2, 12, 12, 2, 12, 8, 11, 6, 11, 2, 8, 11, 1, 6, 9, 4, 2, 11, 10, 12, 11, 8, 8 }, 7, 5, 0);
     }
 
     // 0 - 1.5 1.5 - 3 3 - 4.5 4.5 - 6
