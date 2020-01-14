@@ -46,7 +46,6 @@ public class UIHistogram : MonoBehaviour {
     void CreateBars(List<int> values, int target)
     {
         values.Sort();
-        values = values.Distinct().ToList();
         int min = 0;
         int max = 0;
         int interval = 0;
@@ -58,16 +57,29 @@ public class UIHistogram : MonoBehaviour {
                 min = i;
         }
         interval = (max - min) / Degrees;
-        //if the values don't contain the exact interval
-        //find the value before and after the interval
-        //interpolate
-        //graph
-        for (int i = 0; i < Degrees; i++)
+
+        int b = 0;
+        int e = 0;
+        int count = 0;
+        int maxCount = 0;
+        for (int index = 0; index < Degrees; index++)
         {
+            b = min + (interval * index);
+            e = min + (interval * (index + 1));
+            count = 0;
+            foreach (int i in values)
+            {
+                if (i >= b && i < e)
+                {
+                    count++;
+                    if (count > maxCount)
+                        maxCount = count;
+                }
+            }
             Image image = Instantiate(BarPrefab, BarParent);
             image.fillAmount = Mathf.Max(
                 BarParent.GetComponent<HorizontalLayoutGroup>().spacing/100,
-                (float)values[i] / (float)max);
+                (float)count / (float)maxCount);
             Bars.Add(image);
         }
         
@@ -88,5 +100,7 @@ public class UIHistogram : MonoBehaviour {
     {
         Init("Test Histogram", new List<int> { 0, 1, 2, 3, 4, 5, 6 }, 4, 4, 0);
     }
+
+    // 0 - 1.5 1.5 - 3 3 - 4.5 4.5 - 6
 
 }
