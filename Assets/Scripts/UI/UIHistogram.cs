@@ -46,9 +46,9 @@ public class UIHistogram : MonoBehaviour {
     void CreateBars(List<int> values, int target)
     {
         values.Sort();
-        int min = 0;
-        int max = 0;
-        int interval = 0;
+        float min = 0;
+        float max = 0;
+        float interval = 0;
         foreach (int i in values)
         {
             if (i > max)
@@ -57,32 +57,38 @@ public class UIHistogram : MonoBehaviour {
                 min = i;
         }
         interval = (max - min) / Degrees;
+        Debug.Log(interval);
 
-        int b = 0;
-        int e = 0;
+        float start = 0;
+        float end = 0;
         int count = 0;
         int maxCount = 0;
+        List<int> counts = new List<int>();
         for (int index = 0; index < Degrees; index++)
         {
-            b = min + (interval * index);
-            e = min + (interval * (index + 1));
+            start = min + (interval * index);
+            end = min + (interval * (index + 1));
             count = 0;
             foreach (int i in values)
             {
-                if (i >= b && i < e)
+                if (i >= start && i < end)
                 {
                     count++;
                     if (count > maxCount)
                         maxCount = count;
                 }
             }
+            counts.Add(count);
+        }
+        for (int index = 0; index < Degrees; index++)
+        {
             Image image = Instantiate(BarPrefab, BarParent);
             image.fillAmount = Mathf.Max(
-                BarParent.GetComponent<HorizontalLayoutGroup>().spacing/100,
-                (float)count / (float)maxCount);
+                BarParent.GetComponent<HorizontalLayoutGroup>().spacing / 100,
+                (float)counts[index] / (float)maxCount);
             Bars.Add(image);
         }
-        
+
         float offset = target / (float)max;
         float width = Target.rectTransform.parent.gameObject.GetComponent<RectTransform>().rect.width;
         Target.rectTransform.localPosition = new Vector3(offset * width - (width/2f),0);
@@ -98,7 +104,7 @@ public class UIHistogram : MonoBehaviour {
     [ContextMenu("Test")]
     public void Test()
     {
-        Init("Test Histogram", new List<int> { 0, 1, 2, 3, 4, 5, 6 }, 4, 4, 0);
+        Init("Test Histogram", new List<int> { 0, 1, 1, 1, 1, 2, 3, 4, 5, 6 }, 4, 4, 0);
     }
 
     // 0 - 1.5 1.5 - 3 3 - 4.5 4.5 - 6
