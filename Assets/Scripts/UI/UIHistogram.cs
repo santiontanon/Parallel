@@ -2,7 +2,6 @@
 ///   Class:          UIHistogram
 ///   Description:    Class for creating a unity ui based histogram
 ///                   to visualize data
-///                   WIP - logic for the individual bars is weird
 ///   Author:         Boyd Fox                    Date: 1/07/2019
 ///-----------------------------------------------------------------
 
@@ -107,7 +106,5 @@ public class UIHistogram : MonoBehaviour {
     {
         Init("Test Histogram", new List<int> { 4, 4, 2, 12, 12, 2, 12, 8, 11, 6, 11, 2, 8, 11, 1, 6, 9, 4, 2, 11, 10, 12, 11, 8, 8 }, 7, 5, 0);
     }
-
-    // 0 - 1.5 1.5 - 3 3 - 4.5 4.5 - 6
 
 }
