@@ -16,7 +16,10 @@ public class MultiBuild : MonoBehaviour {
     [MenuItem("Parallel/Start Builds")]
     public static void StartBuilds()
     {
-        foreach(BuildTarget b in TargetPlatforms)
+        int version = int.Parse(System.IO.File.ReadAllText(Application.dataPath + "/version.txt"));
+        version++;
+        System.IO.File.WriteAllText(Application.dataPath + "/version.txt", version.ToString());
+        foreach (BuildTarget b in TargetPlatforms)
         {
             string path = Application.dataPath + "/../Builds/" + b.ToString();
             string[] levels = new string[] { "Assets/Scenes/main.unity" };

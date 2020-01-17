@@ -13,24 +13,24 @@ public class VersionInfo : MonoBehaviour
     {
         if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
-            VersionText.text = "Demo Build v" + Application.version;
+            VersionText.text = "Demo Build v1.3." + System.IO.File.ReadAllText(Application.dataPath + "/version.txt");
         }
         else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Class)
         {
-            VersionText.text = "Class Build v" + Application.version;
+            VersionText.text = "Class Build v1.3." + System.IO.File.ReadAllText(Application.dataPath + "/version.txt");
         }
         else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Study)
         {
-            VersionText.text = "Study Build v" + Application.version;
+            VersionText.text = "Study Build v1.3." + System.IO.File.ReadAllText(Application.dataPath + "/version.txt");
 
         }
         else if (GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
         {
-            VersionText.text = "Test Build v" + Application.version;
+            VersionText.text = "Test Build v1.3." + System.IO.File.ReadAllText(Application.dataPath + "/version.txt");
         }
         else
         {
-            VersionText.text = "Build v" + Application.version;
+            VersionText.text = "Build v1.3." + System.IO.File.ReadAllText(Application.dataPath + "/version.txt");
         }
 
         PathText.text = GameManager.Instance.GetLinkJava().savePath;
