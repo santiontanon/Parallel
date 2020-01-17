@@ -448,7 +448,7 @@ public class LinkJava : MonoBehaviour
             modelingProcess.StartInfo.Arguments += " -level " + levelname;
             modelingProcess.StartInfo.Arguments += " -parameterpath " + "\"" + savePath + "currentParameters.txt" + "\"";
             modelingProcess.StartInfo.Arguments += " -pmdir " + "\"" + pcgPath.TrimEnd(new char[2] {'/', '\\' }) + "\"";
-            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787 -connect " + GameManager.Instance.tracker.remote_tracking_enabled;
+            modelingProcess.StartInfo.Arguments += " -hostname " + hostname + " -port 8787";
             UnityEngine.Debug.Log(modelingProcess.StartInfo.Arguments);
             modelingProcess.Start();
             StartCoroutine(PlayerModelingRoutine(callback));
