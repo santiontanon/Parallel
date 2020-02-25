@@ -20,7 +20,7 @@ public class GraphTest : MonoBehaviour
         for(int i = 0; i < Data.nodes.Count; i++)
         {
             GraphNode node = Instantiate(Node, this.transform);
-            float angle = 360 / (Data.nodes.Count) * i;
+            float angle = 360f / (float)(Data.nodes.Count) * (float)i;
             float sin = Mathf.Sin(angle * Mathf.PI / 180);
             float cosin = Mathf.Cos(angle * Mathf.PI / 180);
             node.transform.localPosition = new Vector3(650 * sin, 650 * cosin);
@@ -32,9 +32,7 @@ public class GraphTest : MonoBehaviour
             GraphLine line = Instantiate(Line, this.transform);
             line.Begin = Nodes[Data.links[i].source];
             line.End = Nodes[Data.links[i].target];
-            float width = Data.links[i].user_ids.Count * 2f;
-            line.Line.startWidth = width;
-            line.Line.endWidth = width;
+            line.Width = Data.links[i].user_ids.Count * 2f;
             Lines.Add(line);
         }
     }
