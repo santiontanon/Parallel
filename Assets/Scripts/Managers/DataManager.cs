@@ -287,7 +287,6 @@ public class DataManager : MonoBehaviour {
 		return returnLevel;
 	}
 
-
 	List<string> GetSectionData(string sectionName, string[] bindata_split)
 	{
 		List<string> returnStringList = new List<string>();

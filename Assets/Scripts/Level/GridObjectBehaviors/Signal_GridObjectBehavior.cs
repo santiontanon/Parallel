@@ -67,7 +67,8 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 		{
 			lineRendererPoints[j] = GetBezierPoint(((float)j / lineRendererSegments), p0, p1, p2, p3, lineZ);
 		}
-		lineRenderer.SetPositions( lineRendererPoints );	
+        lineRenderer.SetPositions(lineRendererPoints);
+        Debug.Log(lineRenderer.positionCount);
 	}
 		
 
