@@ -11,7 +11,6 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     public Button preSurvey;
     public Button postSurvey;
     public InputField playerIdField;
-    public Text versionNumber;
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
     public StartErrorOverlay fetchConfigErrorOverlay;
@@ -29,13 +28,9 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             preSurvey.gameObject.SetActive(false);
             postSurvey.gameObject.SetActive(false);
             playerIdField.gameObject.SetActive(false);
-
-            versionNumber.text = "Demo Build v" + Application.version;
         }
         else
         {
-            versionNumber.text = "Release Build v" + Application.version;
-
             postSurvey.onClick.RemoveAllListeners();
             preSurvey.onClick.RemoveAllListeners();
             playerIdField.onEndEdit.RemoveAllListeners();
@@ -70,7 +65,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             currentPlayerID = playerIdField.text;
             GameManager.Instance.trackerIntialized = false;
             GameManager.Instance.playerModelingIntialized = false;
-            if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
+            if (GameManager.Instance.currentGameMode != GameManager.GameMode.Demo && GameManager.Instance.currentGameMode != GameManager.GameMode.Test)
             {
                 if (playerIdField.text.Length > 0)
                 {
@@ -99,6 +94,11 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
                     postSurvey.interactable = false;
                     postSurvey.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 0.25f);
                 }
+            }
+            else if(GameManager.Instance.currentGameMode == GameManager.GameMode.Test)
+            {
+                Debug.Log("test");
+                GameManager.Instance.tracker.StartTrackerWithCallback(null, null, "NA", true, false);
             }
         }
         else
