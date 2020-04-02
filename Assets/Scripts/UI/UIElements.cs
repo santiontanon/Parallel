@@ -8,22 +8,25 @@ namespace ParallelProg.UI
     {
         public RectTransform panelContainer;
         public bool isOpen;
+		
+		public virtual void Update() {
+		}
 
         public virtual void OpenPanel()
         {
-            iTween.Stop(panelContainer.gameObject);
+ //         iTween.Stop(panelContainer.gameObject);
             panelContainer.gameObject.SetActive(true);
-            if (isOpen || iTween.Count(panelContainer.gameObject) > 0)
+ /*           if (isOpen || iTween.Count(panelContainer.gameObject) > 0)
             {
                 panelContainer.gameObject.transform.localScale = Vector3.one;
                 isOpen = true;
             }
             else
-            {
+            {*/
                 isOpen = true;
                 panelContainer.gameObject.transform.localScale = Vector3.zero;
-                iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.5f));
-            }
+                iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.one, "time", 0.25f));
+        //    }
         }
 
         public virtual void ClosePanel(bool forceClose = false)
@@ -37,7 +40,7 @@ namespace ParallelProg.UI
             }
             else
             {
-                iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.zero, "time", 0.5f));
+                iTween.ScaleTo(panelContainer.gameObject, iTween.Hash("scale", Vector3.zero, "time", 0.25f));
             }
         }
     }
