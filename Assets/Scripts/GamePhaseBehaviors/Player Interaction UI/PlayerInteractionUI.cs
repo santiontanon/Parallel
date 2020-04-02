@@ -11,6 +11,7 @@ public class PlayerInteraction_UI
 	[Header("UI Containers")]
 	public RectTransform UIOverlayContainer;
 	public RectTransform UICameraContainer;
+	public UIOverlayBackground overlayBackground;
 	//public RectTransform UIOverlay_Pause_Container;
 	[SerializeField] public Pause_UIOverlay pauseOverlay;
 	//public RectTransform UIOverlay_Goal_Container;
@@ -180,6 +181,7 @@ public class PlayerInteraction_UI
     [System.Serializable]
     public class GoalDescription_UIOverlay : UIOverlay
     {
+		
         public Image star_1, star_2, star_3;
         public Sprite star_empty, star_fill;
         public void SetFeedbackScore(int inScore)
@@ -360,7 +362,7 @@ public class PlayerInteraction_UI
 			exit.onClick.AddListener( ()=> ClosePanel() );
 		}
 	}
-
+	
 	[System.Serializable]
 	public class Pause_UIOverlay : UIOverlay
 	{
@@ -368,6 +370,12 @@ public class PlayerInteraction_UI
 		public bool isPaused = false;
 
         [SerializeField] public UIOverlay rootMenu, exitConfirmationMenu;
+		
+		public PlayerInteraction_GamePhaseBehavior pi_gpb;
+		
+		public Playback_PlayerInteractionPhaseBehavior playback;
+		
+		private bool playbackPrevPaused = false;
 
 		public override void OpenPanel()
 		{
@@ -377,12 +385,30 @@ public class PlayerInteraction_UI
 
             rootMenu.OpenPanel();
             exitConfirmationMenu.ClosePanel(true);
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(1f);
+			if (!playback.paused) {
+				playbackPrevPaused = false;
+				playback.paused = true;
+				return;
+			} else {
+				playbackPrevPaused = true;
+				playback.paused = true;
+				return;
+			}
 		}
 
 		public override void ClosePanel(bool forceClose = false)
 		{
 			isPaused = false;
 			base.ClosePanel(forceClose);
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(0f);
+			if (playbackPrevPaused) {
+				playback.paused = true;
+				return;
+			} else {
+				playback.paused = false;
+				return;
+			}
 		}
 		public void EnableButtonBehaviors()
 		{
@@ -416,6 +442,7 @@ public class PlayerInteraction_UI
         {
             PlayerInteraction_GamePhaseBehavior playPhase = (PlayerInteraction_GamePhaseBehavior)GameManager.Instance.playerInteractionBehavior;
             playPhase.TriggerPlayPhaseEnd();
+			pi_gpb.playerInteraction_UI.overlayBackground.SetAlpha(0f);
         }
 	}
 

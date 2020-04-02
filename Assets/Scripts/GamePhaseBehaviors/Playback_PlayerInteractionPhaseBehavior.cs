@@ -15,8 +15,8 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     [SerializeField]
     int currentStep = 0;
-    [SerializeField]
-    bool paused;
+    
+    public bool paused;
 
     //temp variables to resolve goal screen issues
     public bool success; //was the solution successful
