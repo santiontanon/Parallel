@@ -26,8 +26,11 @@ public class PlayerInteraction_UI
 
 	[Header("Banner Event Triggers")]
 	public EventTrigger place_semaphore;
+	public Button place_semaphoreButton;
 	public EventTrigger place_button;
+	public Button place_buttonButton;
 	public EventTrigger trash;
+	public Button trashButton;
 	public EventTrigger preview;
 	//public EventTrigger exit;
 	public Button simulationButton;
@@ -212,6 +215,8 @@ public class PlayerInteraction_UI
 
         bool visibilityToggle = true;
         bool[] visibilitySettings = new bool[] { false, false, false };
+		
+		public PlayerInteraction_GamePhaseBehavior pi_gpb;
 
 		public override void OpenPanel()
 		{
@@ -221,12 +226,16 @@ public class PlayerInteraction_UI
             confirmExitOverlay.ClosePanel(true);
             confirmLevelsOverlay.ClosePanel(true);
 			EnableButtonBehaviors();
+			
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(1f);
 		}
 
 		public override void ClosePanel(bool forceClose = false) 
 		{
 			waitForUserInput = false;
 			base.ClosePanel(forceClose);
+			
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(0f);
 		}
 
         public void OpenRootScreen()

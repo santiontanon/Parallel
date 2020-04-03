@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 224000012389786772}
   - component: {fileID: 222000010668277768}
-  - component: {fileID: 114000011330294042}
   m_Layer: 5
   m_Name: Goal_Panel
   m_TagString: Untagged
@@ -34,7 +33,7 @@ RectTransform:
   - {fileID: 224000011432521402}
   - {fileID: 224000011951482776}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 10
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -49,35 +48,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000010023997134}
   m_CullTransparentMesh: 0
---- !u!114 &114000011330294042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000010023997134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.74509805}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
 --- !u!1 &1000010056320036
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,11 +1256,11 @@ RectTransform:
   - {fileID: 224000011683073842}
   - {fileID: 224000011600691284}
   - {fileID: 224000012134658544}
-  - {fileID: 224000012389786772}
   - {fileID: 224961489778609658}
   - {fileID: 224000013890215990}
   - {fileID: 224000014293434984}
   - {fileID: 8440694687463296163}
+  - {fileID: 224000012389786772}
   - {fileID: 224000011168393594}
   - {fileID: 224000011923579736}
   - {fileID: 224000012877272790}
@@ -1386,6 +1356,7 @@ MonoBehaviour:
         isOpen: 0
       waitForUserInput: 0
       userInput: 0
+      pi_gpb: {fileID: 114000011069610498}
     UIOverlay_Hint_Container: {fileID: 224000012128283596}
     hint_button_container: {fileID: 224000011530368368}
     hintOverlay:
@@ -1414,8 +1385,11 @@ MonoBehaviour:
       panelContainer: {fileID: 224000012209610702}
       isOpen: 0
     place_semaphore: {fileID: 114000012188733926}
+    place_semaphoreButton: {fileID: 114000013781415136}
     place_button: {fileID: 114000010431845708}
+    place_buttonButton: {fileID: 114000010033894540}
     trash: {fileID: 114000010808615036}
+    trashButton: {fileID: 114000011110400788}
     preview: {fileID: 114000013697017244}
     simulationButton: {fileID: 114000013890134070}
     stopSimulationButton: {fileID: 114000010227598758}
@@ -2550,7 +2524,7 @@ RectTransform:
   m_Children:
   - {fileID: 224000011284683332}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -10233,7 +10207,7 @@ RectTransform:
   - {fileID: 224034096934248388}
   - {fileID: 224000011187673574}
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -14515,7 +14489,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -14754,7 +14728,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224000011781466348}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
