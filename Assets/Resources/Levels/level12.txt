@@ -63,7 +63,7 @@ A   V   V >>>>A
 A   V   V      
 A   V   V      
 A   V   V      
-A<<<<<<<<  
+A<<<<<<<<      
 
 CRITICALSECTIONS
       ---------
