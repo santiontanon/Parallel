@@ -451,6 +451,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+			playerInteraction.playerInteraction_UI.overlayBackground.SetTargetAlpha(0f);
             playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);
             playerInteraction.playerInteraction_UI.stopSimulationButton.interactable = true;
             playerInteraction.playerInteraction_UI.stopSimulationButton.gameObject.SetActive(true);

@@ -486,6 +486,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
+		this.playerInteraction_UI.overlayBackground.SetTargetAlpha(1f);
         playerInteraction_UI.loadingText.text = "Simulating...";
         if (tutorialMode)
         {
@@ -643,14 +644,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
             // Default Phase
 			case InteractionPhases.ingame_default:
 		
-			if (!playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = true;
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = true;
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = true;
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
 			}
 			
 			if(playerInteraction_UI.IsSubPanelOpen()) return;
@@ -805,14 +809,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
 		
-			if (!playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = true;
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = true;
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = true;
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
 			}
 			
 			if(mouseInput == MouseInput.LeftMouse)
@@ -873,14 +880,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
 		
-			if (!playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = true;
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = true;
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = true;
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
 			}
 
 			if(mouseInput == MouseInput.RightMouse)
@@ -922,14 +932,17 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         // Help Phase
         case InteractionPhases.ingame_help:
 		
-			if (!playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = true;
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = true;
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
 			}
-			if (!playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = true;
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
 			}
 		
 			// On Left Click
@@ -982,26 +995,32 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 				
 		// Awaiting Simulation Phase
 		case InteractionPhases.awaitingSimulation:
-			if (playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = false;
+			if (this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(false);
 			}
-			if (playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = false;
+			if (this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(false);
 			}
-			if (playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = false;
+			if (this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(false);
 			}
 			break;
 			
 		case InteractionPhases.simulation:
-			if (playerInteraction_UI.place_semaphoreButton.enabled) {
-				playerInteraction_UI.place_semaphoreButton.enabled = false;
+			if (this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(false);
 			}
-			if (playerInteraction_UI.place_buttonButton.enabled) {
-				playerInteraction_UI.place_buttonButton.enabled = false;
+			if (this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(false);
 			}
-			if (playerInteraction_UI.trashButton.enabled) {
-				playerInteraction_UI.trashButton.enabled = false;
+			if (this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(false);
 			}
 			break;			
 		}
