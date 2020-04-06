@@ -26,11 +26,11 @@ public class PlayerInteraction_UI
 
 	[Header("Banner Event Triggers")]
 	public EventTrigger place_semaphore;
-	public Button place_semaphoreButton;
+	public PlayerInteraction_UI.ButtonUI place_semaphoreButton;
 	public EventTrigger place_button;
-	public Button place_buttonButton;
+	public PlayerInteraction_UI.ButtonUI place_buttonButton;
 	public EventTrigger trash;
-	public Button trashButton;
+	public PlayerInteraction_UI.ButtonUI trashButton;
 	public EventTrigger preview;
 	//public EventTrigger exit;
 	public Button simulationButton;
@@ -659,6 +659,40 @@ public class PlayerInteraction_UI
             }
         }
     }
+	
+	[System.Serializable]
+	public class ButtonUI
+	{ 
+		public GameObject buttonObject;
+		public Button button;
+		public Image image;
+
+		public void ToggleButton(bool enable)
+		{ 
+			if (enable)
+			{ 
+			this.button.enabled = true;
+			this.ImageAdjust(false);
+			}
+			else
+			{ 
+			this.button.enabled = false;
+			this.ImageAdjust(true);
+			}
+		}
+
+		private void ImageAdjust(bool dark)
+		{ 
+			if (dark)
+			{ 
+				this.image.color = Color.grey;
+			}
+			else
+			{ 
+				this.image.color = Color.white;
+			}
+		}
+	}
 }
 
 public class GoalDescription_UIOverlay : UIOverlay

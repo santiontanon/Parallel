@@ -1966,6 +1966,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 74610943}
     m_Modifications:
+    - target: {fileID: 1000012070593496, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224000011120932076, guid: fc994ba4b3f9b644a951c0743b3a9890,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2065,6 +2069,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -38.52466
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012367674112, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014048432266, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013279190714, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012961731668, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
