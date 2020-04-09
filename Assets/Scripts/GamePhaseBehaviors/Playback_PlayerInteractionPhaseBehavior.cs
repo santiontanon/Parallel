@@ -635,10 +635,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
             }
         }
 
-        yield return StartCoroutine(FinishSimulation());
+        yield return StartCoroutine(FinishSimulation(maxStep));
     }
 
-    IEnumerator FinishSimulation()
+    IEnumerator FinishSimulation(int maxStep)
     {
         Debug.Log("FinishSimulation");
 
@@ -666,10 +666,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
 
-                //Debug.Log("REPLAY");
-                //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
-                playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation;
-                GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
+                playerInteraction.playerInteraction_UI.goalOverlay.ClosePanel();
+                StartCoroutine(PlaySimulation(maxStep));
+                PauseSimulation();
+                DelayedUnpause(1f);
 
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:
