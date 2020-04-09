@@ -463,7 +463,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void ResetStartValues()
 	{
-		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
+		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional","signal"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
             //Debug.Log(resetObject.component.id);
