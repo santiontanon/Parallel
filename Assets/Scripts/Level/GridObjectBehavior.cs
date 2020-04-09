@@ -393,6 +393,10 @@ public class GridObjectBehavior : MonoBehaviour
 				index++;
 			}
 		}
+        else if(component.type == "signal")
+        {
+            component.configuration.passed = 0;
+        }
 	}
 
     public virtual void ReturnToStep(TimeStepData timeStep)
