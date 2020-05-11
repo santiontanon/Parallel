@@ -1,4 +1,4 @@
- METADATA
+METADATA
 level_id	7
 level_title	Intro to Parallel
 goal_string	Deliver 4 packages with each arrow delivering at least 2
