@@ -463,7 +463,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
 	public void ResetStartValues()
 	{
-		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional"});
+		List<GridObjectBehavior> resetObjects = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>(){"thread","delivery","pickup","exchange","semaphore","conditional","signal"});
 		foreach(GridObjectBehavior resetObject in resetObjects)
 		{
             //Debug.Log(resetObject.component.id);
@@ -486,6 +486,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         interactionPhase = InteractionPhases.awaitingSimulation;
         playerInteraction_UI.loadingOverlay.OpenPanel();
+		this.playerInteraction_UI.overlayBackground.SetTargetAlpha(1f);
         playerInteraction_UI.loadingText.text = "Simulating...";
         if (tutorialMode)
         {
@@ -500,7 +501,9 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
     [ContextMenu("Reset Placed Objects")]
     public void ResetPlacedObjects()
     {
-        GameManager.Instance.GetGridManager().ClearGrid(false);
+		if (interactionPhase == InteractionPhases.ingame_default || interactionPhase == InteractionPhases.ingame_help) {
+			GameManager.Instance.GetGridManager().ClearGrid(false);
+		}
     }
 
     public void TriggerTutorialSimulation()
@@ -640,157 +643,185 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 		{
             // Default Phase
 			case InteractionPhases.ingame_default:
-				if(playerInteraction_UI.IsSubPanelOpen()) return;
-                /*
-                 * if player LEFT clicks during basic play, they can 
-                 * (1) Click and drag movable elements
-                */
-                if (mouseInput == MouseInput.LeftMouse)
-                {
-                    if (GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
-                    {
-                        currentGridObject = GameManager.Instance.GetGridManager().RetrieveEditableGridObject(Input.mousePosition);
-                        currentGridObject.BeginDrag();
-                        interactionPhase = InteractionPhases.ingame_dragging;
-                        GameManager.Instance.tracker.CreateEventExt("BeginReposition", currentGridObject.component.type);
+		
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
+			}
+			
+			if(playerInteraction_UI.IsSubPanelOpen()) return;
+			/*
+			 * if player LEFT clicks during basic play, they can 
+			 * (1) Click and drag movable elements
+			*/
+			if (mouseInput == MouseInput.LeftMouse)
+			{
+				if (GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
+				{
+					currentGridObject = GameManager.Instance.GetGridManager().RetrieveEditableGridObject(Input.mousePosition);
+					currentGridObject.BeginDrag();
+					interactionPhase = InteractionPhases.ingame_dragging;
+					GameManager.Instance.tracker.CreateEventExt("BeginReposition", currentGridObject.component.type);
 
-                        if (currentGridObject.component.type == "signal" && connectVisibilityLock)
-                        {
-                            Signal_GridObjectBehavior s = (Signal_GridObjectBehavior)currentGridObject;
-                            s.SetHighlight(false);
-                        }
-                    }
-                    else
-                    {
-                        if(dragging == false)
-                        {
-                            UpdatePan();
-                        }
-                    }
-                    if (hoverObject)
-                    {
-                        if (!connectVisibility) hoverObject.EndHoverBehavior();
-                        hoverObject = null;
-                    }
-                }
-                /*
-                * if player RIGHT clicks during basic play, they can:
-                * (1) link connectable elements through Signals
-                * (2) Open/Close Semaphores
-               */
-                else if (mouseInput == MouseInput.RightMouse)
-                {
-                    if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal") && GameManager.Instance.GetGridManager().IsEditableElement( Input.mousePosition ) )
-                    {
-                        currentGridObject = GameManager.Instance.GetGridManager().RetrieveGridObjectOfType(Input.mousePosition, "signal");
-                        currentGridObject.EnableGridObjectEventBehaviors(GridObjectBehavior.InteractTypes.rightClick);
-                        interactionPhase = InteractionPhases.ingame_connecting;
-                        currentGridObject.BeginInteraction();
+					if (currentGridObject.component.type == "signal" && connectVisibilityLock)
+					{
+						Signal_GridObjectBehavior s = (Signal_GridObjectBehavior)currentGridObject;
+						s.SetHighlight(false);
+					}
+				}
+				else
+				{
+					if(dragging == false)
+					{
+						UpdatePan();
+					}
+				}
+				if (hoverObject)
+				{
+					if (!connectVisibility) hoverObject.EndHoverBehavior();
+					hoverObject = null;
+				}
+			}
+			/*
+			* if player RIGHT clicks during basic play, they can:
+			* (1) link connectable elements through Signals
+			* (2) Open/Close Semaphores
+		   */
+			else if (mouseInput == MouseInput.RightMouse)
+			{
+				if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal") && GameManager.Instance.GetGridManager().IsEditableElement( Input.mousePosition ) )
+				{
+					currentGridObject = GameManager.Instance.GetGridManager().RetrieveGridObjectOfType(Input.mousePosition, "signal");
+					currentGridObject.EnableGridObjectEventBehaviors(GridObjectBehavior.InteractTypes.rightClick);
+					interactionPhase = InteractionPhases.ingame_connecting;
+					currentGridObject.BeginInteraction();
 
-                        List<GridObjectBehavior> otherSignals = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>() { "signal" });
-                        foreach (GridObjectBehavior otherSignal in otherSignals)
-                        {
-                            if (currentGridObject != otherSignal) { otherSignal.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.connectionOverlay - 1; }
-                        }
+					List<GridObjectBehavior> otherSignals = GameManager.Instance.GetGridManager().GetGridComponentsOfType(new List<string>() { "signal" });
+					foreach (GridObjectBehavior otherSignal in otherSignals)
+					{
+						if (currentGridObject != otherSignal) { otherSignal.GetComponent<SpriteRenderer>().sortingOrder = Constants.ComponentSortingOrder.connectionOverlay - 1; }
+					}
 
-                        GameManager.Instance.tracker.CreateEventExt("BeginLink", currentGridObject.component.type);
+					GameManager.Instance.tracker.CreateEventExt("BeginLink", currentGridObject.component.type);
 
-                        playerInteraction_UI.onHoverLightbox.OpenPanel();
+					playerInteraction_UI.onHoverLightbox.OpenPanel();
 
-                    }
-                    else if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore") && GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
-                    {
-                        currentGridObject = GameManager.Instance.GetGridManager().RetrieveGridObjectOfType(Input.mousePosition, "semaphore");
-                        currentGridObject.EnableGridObjectEventBehaviors(GridObjectBehavior.InteractTypes.rightClick);
-                        currentGridObject.BeginInteraction();
-                        GameManager.Instance.tracker.CreateEventExt("BeginLink", currentGridObject.component.type);
-                    }
+				}
+				else if (GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore") && GameManager.Instance.GetGridManager().IsEditableElement(Input.mousePosition))
+				{
+					currentGridObject = GameManager.Instance.GetGridManager().RetrieveGridObjectOfType(Input.mousePosition, "semaphore");
+					currentGridObject.EnableGridObjectEventBehaviors(GridObjectBehavior.InteractTypes.rightClick);
+					currentGridObject.BeginInteraction();
+					GameManager.Instance.tracker.CreateEventExt("BeginLink", currentGridObject.component.type);
+				}
 
-                    if (hoverObject /*&& !connectVisibilityLock*/)
-                    {
-                        hoverObject.EndHoverBehavior();
-                        hoverObject = null;
-                    }
-                }
-                else if (mouseInput == MouseInput.MiddleMouse)
-                {
-                    //ResetZoom();
-                }
-                /*
-                 * if a player isn't clicking the mouse, we should check for hover behaviors AND zoom behaviors
-                */
-                else
-                {
-                    if (Input.mousePosition == stationaryMousePosition) //if mouse is stationary
-                    {
-                        if (hoverObject == null)
-                        {
-                            stationaryTime += Time.deltaTime;
-                            if (stationaryTime >= 0.2f)
-                            {
-                                if (
-                                        GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "diverter")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "exchange")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "delivery")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "pickup")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "conditional")
-                                        || GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore")
-                                    )
-                                {
-                                    hoverObject = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
-                                    hoverObject.OnHoverBehavior();
-                                    GameManager.Instance.tracker.CreateEventExt("OnHoverBehavior", hoverObject.component.type);
-                                }
-                            }
-                        }
+				if (hoverObject /*&& !connectVisibilityLock*/)
+				{
+					hoverObject.EndHoverBehavior();
+					hoverObject = null;
+				}
+			}
+			else if (mouseInput == MouseInput.MiddleMouse)
+			{
+				//ResetZoom();
+			}
+			/*
+			 * if a player isn't clicking the mouse, we should check for hover behaviors AND zoom behaviors
+			*/
+			else
+			{
+				if (Input.mousePosition == stationaryMousePosition) //if mouse is stationary
+				{
+					if (hoverObject == null)
+					{
+						stationaryTime += Time.deltaTime;
+						if (stationaryTime >= 0.2f)
+						{
+							if (
+									GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "signal")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "diverter")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "exchange")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "delivery")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "pickup")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "conditional")
+									|| GameManager.Instance.GetGridManager().IsObjectOfType(Input.mousePosition, "semaphore")
+								)
+							{
+								hoverObject = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
+								hoverObject.OnHoverBehavior();
+								GameManager.Instance.tracker.CreateEventExt("OnHoverBehavior", hoverObject.component.type);
+							}
+						}
+					}
 
-                        //float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
-                        //if (scrollAxis != 0)
-                            //UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
-                    }
-                    else //if mouse has moved since last frame 
-                    {
-                        stationaryMousePosition = Input.mousePosition;
-                        if (hoverObject)
-                        {
-                            if (GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition))
-                            {
-                                if (hoverObject != GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition))
-                                { EndHoverEvent(); }
-                            }
-                            else { EndHoverEvent(); }
-                        }
-                        else
-                        {
-                            stationaryTime = 0f;
-                        }
+					//float scrollAxis = Input.GetAxis("Mouse ScrollWheel");
+					//if (scrollAxis != 0)
+						//UpdateZoom(scrollAxis*-1); //invert so the scrolling works in the expected direction
+				}
+				else //if mouse has moved since last frame 
+				{
+					stationaryMousePosition = Input.mousePosition;
+					if (hoverObject)
+					{
+						if (GameManager.Instance.GetGridManager().IsOccupied(Input.mousePosition))
+						{
+							if (hoverObject != GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition))
+							{ EndHoverEvent(); }
+						}
+						else { EndHoverEvent(); }
+					}
+					else
+					{
+						stationaryTime = 0f;
+					}
 
-                        //pop up tooltip close check
-                        if (playerInteraction_UI.tooltipOverlay.tooltipActive && Time.time - playerInteraction_UI.tooltipOverlay.openTime > 0.5f)
-                        { playerInteraction_UI.tooltipOverlay.ClosePanel(); }
-                    }
-                    stationaryMousePosition = Input.mousePosition;
-                    GridObjectBehavior hoverObject__ = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
-                    if (hoverObject__ != null && hoverObject__ != hoverObject_)
-                    {
-                        hoverObject_ = hoverObject__;
-                        if (hoverObject_.component != null)
-                        {
-                            GameManager.Instance.tracker.CreateEventExt("OnMouseComponent", hoverObject_.component.type.ToString() + "/" + hoverObject_.component.id.ToString());
-                        }
-                    }
-                    if (hoverObject__ == null && hoverObject_ != null)
-                    {
-                        GameManager.Instance.tracker.CreateEventExt("OutMouseComponent", hoverObject_.component.type.ToString() + "/" + hoverObject_.component.id.ToString());
-                        hoverObject_ = null;
-                    }
+					//pop up tooltip close check
+					if (playerInteraction_UI.tooltipOverlay.tooltipActive && Time.time - playerInteraction_UI.tooltipOverlay.openTime > 0.5f)
+					{ playerInteraction_UI.tooltipOverlay.ClosePanel(); }
+				}
+				stationaryMousePosition = Input.mousePosition;
+				GridObjectBehavior hoverObject__ = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
+				if (hoverObject__ != null && hoverObject__ != hoverObject_)
+				{
+					hoverObject_ = hoverObject__;
+					if (hoverObject_.component != null)
+					{
+						GameManager.Instance.tracker.CreateEventExt("OnMouseComponent", hoverObject_.component.type.ToString() + "/" + hoverObject_.component.id.ToString());
+					}
+				}
+				if (hoverObject__ == null && hoverObject_ != null)
+				{
+					GameManager.Instance.tracker.CreateEventExt("OutMouseComponent", hoverObject_.component.type.ToString() + "/" + hoverObject_.component.id.ToString());
+					hoverObject_ = null;
+				}
 
-                }
-			break;
+			}
+		break;
 
         // Dragging Phase
 		case InteractionPhases.ingame_dragging:
+		
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
+			}
+			
 			if(mouseInput == MouseInput.LeftMouse)
 			{
 				if( currentGridObject != null )
@@ -839,15 +870,28 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 			}
 		break;
 
-            case InteractionPhases.ingame_placing:
-                if(mouseInput == MouseInput.LeftMouse)
-                {
+		case InteractionPhases.ingame_placing:
+			if(mouseInput == MouseInput.LeftMouse)
+			{
 
-                }
-                break;
+			}
+			break;
 
         // Connection Phase
 		case InteractionPhases.ingame_connecting:
+		
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
+			}
 
 			if(mouseInput == MouseInput.RightMouse)
 			{
@@ -887,53 +931,98 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         // Help Phase
         case InteractionPhases.ingame_help:
-            // On Left Click
-            if (mouseInput == MouseInput.LeftMouse)
-            {
-                    Button current_button = null;
-                    Image current_image = null;
-                    GridObjectBehavior current_object = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
+		
+			if (!this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(true);
+			}
+			if (!this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(true);
+			}
+		
+			// On Left Click
+			if (mouseInput == MouseInput.LeftMouse)
+			{
+				Button current_button = null;
+				Image current_image = null;
+				GridObjectBehavior current_object = GameManager.Instance.GetGridManager().GetGridObjectByMousePosition(Input.mousePosition);
 
-                    //raycasting to find buttons for glossary
-                    GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
-                    PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
-                    uiRaycastData.position = Input.mousePosition;
-                    List<RaycastResult> uiResults = new List<RaycastResult>();
-                    uiRaycast.Raycast(uiRaycastData, uiResults);
+				//raycasting to find buttons for glossary
+				GraphicRaycaster uiRaycast = FindObjectOfType<GraphicRaycaster>();
+				PointerEventData uiRaycastData = new PointerEventData(FindObjectOfType<EventSystem>());
+				uiRaycastData.position = Input.mousePosition;
+				List<RaycastResult> uiResults = new List<RaycastResult>();
+				uiRaycast.Raycast(uiRaycastData, uiResults);
 
-                    foreach (RaycastResult r in uiResults)
-                    {
-                        if (r.gameObject.GetComponent<Button>() != null)
-                        {
-                            current_button = r.gameObject.GetComponent<Button>();
-                            break;
-                        }
-                        if (r.gameObject.GetComponent<Image>() != null)
-                        {
-                            current_image = r.gameObject.GetComponent<Image>();
-                            break;
-                        }
-                    }
+				foreach (RaycastResult r in uiResults)
+				{
+					if (r.gameObject.GetComponent<Button>() != null)
+					{
+						current_button = r.gameObject.GetComponent<Button>();
+						break;
+					}
+					if (r.gameObject.GetComponent<Image>() != null)
+					{
+						current_image = r.gameObject.GetComponent<Image>();
+						break;
+					}
+				}
 
-                    if (current_button)
-                    {
-                        string obj_name = current_button.name;
-                        TriggerHint(obj_name);
-                    }
-                    else if (current_image)
-                    {
-                        string obj_name = current_image.name;
-                        TriggerHint(obj_name);
-                    }
-                    else if (current_object)
-                    {
-                        string obj_name = current_object.component.type;
-                        if (obj_name == "delivery" || obj_name == "pickup")
-                            obj_name = current_object.name;
-                        TriggerHint(obj_name);
-                    }
-                }
-            break;
+				if (current_button)
+				{
+					string obj_name = current_button.name;
+					TriggerHint(obj_name);
+				}
+				else if (current_image)
+				{
+					string obj_name = current_image.name;
+					TriggerHint(obj_name);
+				}
+				else if (current_object)
+				{
+					string obj_name = current_object.component.type;
+					if (obj_name == "delivery" || obj_name == "pickup")
+						obj_name = current_object.name;
+					TriggerHint(obj_name);
+				}
+			}
+			break;
+				
+		// Awaiting Simulation Phase
+		case InteractionPhases.awaitingSimulation:
+			if (this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(false);
+			}
+			if (this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(false);
+			}
+			if (this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(false);
+			}
+			break;
+			
+		case InteractionPhases.simulation:
+			if (this.playerInteraction_UI.place_semaphoreButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_semaphoreButton.ToggleButton(false);
+			}
+			if (this.playerInteraction_UI.place_buttonButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.place_buttonButton.ToggleButton(false);
+			}
+			if (this.playerInteraction_UI.trashButton.button.enabled)
+			{ 
+				this.playerInteraction_UI.trashButton.ToggleButton(false);
+			}
+			break;			
 		}
 
 	}

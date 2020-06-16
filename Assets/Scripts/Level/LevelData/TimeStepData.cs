@@ -16,6 +16,7 @@ public class TimeStepData{
     public List<DeliveryData> deliveryPoints;
     public List<SemaphoreData> sempahores;
     public List<ConditionalData> conditionals;
+    public List<SignalData> signals;
 
     public TimeStepData()
     {
@@ -24,6 +25,7 @@ public class TimeStepData{
         deliveryPoints = new List<DeliveryData>();
         sempahores = new List<SemaphoreData>();
         conditionals = new List<ConditionalData>();
+        signals = new List<SignalData>();
     }
 
     public TimeStepData Copy(TimeStepData _timeStep)
@@ -77,6 +79,13 @@ public class TimeStepData{
                 conditional.directions[j] = _timeStep.conditionals[i].directions[j];
             }
             timeStep.conditionals.Add(conditional);
+        }
+        for(int i = 0; i < _timeStep.signals.Count; i++)
+        {
+            SignalData signal = new SignalData();
+            signal.id = _timeStep.signals[i].id;
+            signal.passed = _timeStep.signals[i].passed;
+            timeStep.signals.Add(signal);
         }
         return timeStep;
     }
@@ -136,6 +145,18 @@ public class TimeStepData{
             if (conditionals[i].id == id)
             {
                 return conditionals[i];
+            }
+        }
+        return null;
+    }
+
+    public SignalData GetSignal(int id)
+    {
+        for (int i = 0; i < signals.Count; i++)
+        {
+            if (signals[i].id == id)
+            {
+                return signals[i];
             }
         }
         return null;
@@ -224,4 +245,11 @@ public class ConditionalData
     public int id;
     public int current;
     public string[] directions;
+}
+
+[System.Serializable]
+public class SignalData
+{
+    public int id;
+    public int passed;
 }

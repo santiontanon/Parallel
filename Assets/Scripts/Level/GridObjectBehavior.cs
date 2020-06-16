@@ -393,6 +393,10 @@ public class GridObjectBehavior : MonoBehaviour
 				index++;
 			}
 		}
+        else if(component.type == "signal")
+        {
+            component.configuration.passed = 0;
+        }
 	}
 
     public virtual void ReturnToStep(TimeStepData timeStep)
@@ -418,6 +422,9 @@ public class GridObjectBehavior : MonoBehaviour
                         if (i == component.configuration.current) { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 1f); }
                         else { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); }
                     }
+                    break;
+                case "signal":
+                    component.configuration.passed = timeStep.GetSignal(component.id).passed;
                     break;
             }
         }

@@ -63,7 +63,7 @@ A   V   V >>>>A
 A   V   V      
 A   V   V      
 A   V   V      
-A<<<<<<<<  
+A<<<<<<<<      
 
 CRITICALSECTIONS
       ---------
@@ -80,7 +80,7 @@ CRITICALSECTIONS
 -   -   -      
 -   -   -      
 -   -   -      
----------     
+---------      
 
 COMPONENTS
 1001	thread	1	8	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}

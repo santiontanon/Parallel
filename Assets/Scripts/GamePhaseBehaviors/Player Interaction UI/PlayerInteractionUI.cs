@@ -26,8 +26,11 @@ public class PlayerInteraction_UI
 
 	[Header("Banner Event Triggers")]
 	public EventTrigger place_semaphore;
+	public PlayerInteraction_UI.ButtonUI place_semaphoreButton;
 	public EventTrigger place_button;
+	public PlayerInteraction_UI.ButtonUI place_buttonButton;
 	public EventTrigger trash;
+	public PlayerInteraction_UI.ButtonUI trashButton;
 	public EventTrigger preview;
 	//public EventTrigger exit;
 	public Button simulationButton;
@@ -212,6 +215,8 @@ public class PlayerInteraction_UI
 
         bool visibilityToggle = true;
         bool[] visibilitySettings = new bool[] { false, false, false };
+		
+		public PlayerInteraction_GamePhaseBehavior pi_gpb;
 
 		public override void OpenPanel()
 		{
@@ -221,12 +226,16 @@ public class PlayerInteraction_UI
             confirmExitOverlay.ClosePanel(true);
             confirmLevelsOverlay.ClosePanel(true);
 			EnableButtonBehaviors();
+			
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(1f);
 		}
 
 		public override void ClosePanel(bool forceClose = false) 
 		{
 			waitForUserInput = false;
 			base.ClosePanel(forceClose);
+			
+			pi_gpb.playerInteraction_UI.overlayBackground.SetTargetAlpha(0f);
 		}
 
         public void OpenRootScreen()
@@ -650,6 +659,40 @@ public class PlayerInteraction_UI
             }
         }
     }
+	
+	[System.Serializable]
+	public class ButtonUI
+	{ 
+		public GameObject buttonObject;
+		public Button button;
+		public Image image;
+
+		public void ToggleButton(bool enable)
+		{ 
+			if (enable)
+			{ 
+			this.button.enabled = true;
+			this.ImageAdjust(false);
+			}
+			else
+			{ 
+			this.button.enabled = false;
+			this.ImageAdjust(true);
+			}
+		}
+
+		private void ImageAdjust(bool dark)
+		{ 
+			if (dark)
+			{ 
+				this.image.color = Color.grey;
+			}
+			else
+			{ 
+				this.image.color = Color.white;
+			}
+		}
+	}
 }
 
 public class GoalDescription_UIOverlay : UIOverlay

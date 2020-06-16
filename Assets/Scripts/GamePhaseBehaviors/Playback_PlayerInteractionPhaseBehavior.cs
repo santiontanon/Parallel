@@ -348,6 +348,13 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                         timeStep.conditionals.Add(conditional);
                         break;
 
+                    case "signal":
+                        SignalData signal = new SignalData();
+                        signal.id = lvl.components[i].id;
+                        signal.passed = lvl.components[i].configuration.passed;
+                        timeStep.signals.Add(signal);
+                        break;
+
                 }
                 if (stopwatch.ElapsedMilliseconds > 1000 / 60)
                 {
@@ -451,6 +458,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
             playerInteraction.playerInteraction_UI.playbackSlider.maxValue = maxStep;
             playerInteraction.playerInteraction_UI.loadingOverlay.ClosePanel();
+			playerInteraction.playerInteraction_UI.overlayBackground.SetTargetAlpha(0f);
             playerInteraction.playerInteraction_UI.playbackControls.gameObject.SetActive(true);
             playerInteraction.playerInteraction_UI.stopSimulationButton.interactable = true;
             playerInteraction.playerInteraction_UI.stopSimulationButton.gameObject.SetActive(true);
@@ -634,10 +642,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
             }
         }
 
-        yield return StartCoroutine(FinishSimulation());
+        yield return StartCoroutine(FinishSimulation(maxStep));
     }
 
-    IEnumerator FinishSimulation()
+    IEnumerator FinishSimulation(int maxStep)
     {
         Debug.Log("FinishSimulation");
 
@@ -665,10 +673,10 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.replay:
 
-                //Debug.Log("REPLAY");
-                //TODO: CHECK IF INTERACTION PHASE IS INCORRECT HERE.
-                playerInteraction.interactionPhase = PlayerInteraction_GamePhaseBehavior.InteractionPhases.awaitingSimulation;
-                GameManager.Instance.TriggerLevelSimulation(LinkJava.SimulationFeedback.none);
+                playerInteraction.playerInteraction_UI.goalOverlay.ClosePanel();
+                StartCoroutine(PlaySimulation(maxStep));
+                PauseSimulation();
+                DelayedUnpause(1f);
 
                 break;
             case PlayerInteraction_UI.Goal_UIOverlay.UserInputs.retry:

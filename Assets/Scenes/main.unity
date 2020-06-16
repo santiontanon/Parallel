@@ -705,6 +705,16 @@ PrefabInstance:
       propertyPath: playerInteraction_UI.onHoverLightbox.lightboxElement
       value: 
       objectReference: {fileID: 686196261}
+    - target: {fileID: 114000011069610498, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: playerInteraction_UI.goalDescriptionOverlay.pi_gpb
+      value: 
+      objectReference: {fileID: 644581664}
+    - target: {fileID: 114000011069610498, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: playerInteraction_UI.goalDescriptionOverlay.playback
+      value: 
+      objectReference: {fileID: 1449588229}
     - target: {fileID: 224000012064912602, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1117,6 +1127,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000010519043950, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000012098485578, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
@@ -1951,6 +1966,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 74610943}
     m_Modifications:
+    - target: {fileID: 1000012070593496, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224000011120932076, guid: fc994ba4b3f9b644a951c0743b3a9890,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2050,6 +2069,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -38.52466
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012367674112, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014048432266, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013279190714, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012961731668, guid: fc994ba4b3f9b644a951c0743b3a9890,
+        type: 3}
+      propertyPath: m_ScrollSensitivity
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
@@ -2259,6 +2298,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1862395651, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1449588229 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114000012409007930, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+    type: 3}
+  m_PrefabInstance: {fileID: 790319443}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3ee7b397e6b42947871ad77c03b2a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1457013329
