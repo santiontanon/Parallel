@@ -348,6 +348,13 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                         timeStep.conditionals.Add(conditional);
                         break;
 
+                    case "signal":
+                        SignalData signal = new SignalData();
+                        signal.id = lvl.components[i].id;
+                        signal.passed = lvl.components[i].configuration.passed;
+                        timeStep.signals.Add(signal);
+                        break;
+
                 }
                 if (stopwatch.ElapsedMilliseconds > 1000 / 60)
                 {

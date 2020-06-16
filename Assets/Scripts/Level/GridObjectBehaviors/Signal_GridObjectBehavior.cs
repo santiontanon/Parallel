@@ -161,37 +161,37 @@ public class Signal_GridObjectBehavior : GridObjectBehavior {
 		if(behaviorType==BehaviorTypes.component && component!=null){
 			switch(component.type.ToLower())
 			{
-			case "signal":
-				if( inputStep.eventType == "E" )
-				{
-                    int passed = component.configuration.passed;
-					if( inputStep.componentStatus != null ) 
-					{
-						if( inputStep.componentStatus.passed != null )
-						{
-							if (inputStep.componentStatus.passed >= 1)
-							{
-                                passed = inputStep.componentStatus.passed - component.configuration.passed;
-								component.configuration.passed = inputStep.componentStatus.passed;
-								GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite( component );
-								iTween.ScaleFrom( gameObject, iTween.Hash( 
-									"scale", Vector3.one*1.5f,
-									"time",0.5f,
-									"oncomplete", "ResetSprite"
-								));
-							}
-						}
-					}
+                case "signal":
+                    if (inputStep.eventType == "E")
+                    {
+                        int passed = component.configuration.passed;
+                        if (inputStep.componentStatus != null)
+                        {
+                            if (inputStep.componentStatus.passed != null)
+                            {
+                                if (inputStep.componentStatus.passed >= 1)
+                                {
+                                    passed = inputStep.componentStatus.passed - component.configuration.passed;
+                                    component.configuration.passed = inputStep.componentStatus.passed;
+                                    GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetGridManager().GetSprite(component);
+                                    iTween.ScaleFrom(gameObject, iTween.Hash(
+                                        "scale", Vector3.one * 1.5f,
+                                        "time", 0.5f,
+                                        "oncomplete", "ResetSprite"
+                                    ));
+                                }
+                            }
+                        }
 
-					GridObjectBehavior linkedObject = GameManager.Instance.GetGridManager().GetGridObjectByID( component.configuration.link );
-					if( linkedObject !=null && linkedObject.component != null && linkedObject.component.type == "conditional" )
-					{
-                        for(int i = 0; i < passed; i++)
-						    linkedObject.BeginInteraction();
-					}
-				}
-				break;
-			}
+                        GridObjectBehavior linkedObject = GameManager.Instance.GetGridManager().GetGridObjectByID(component.configuration.link);
+                        if (linkedObject != null && linkedObject.component != null && linkedObject.component.type == "conditional")
+                        {
+                            for (int i = 0; i < passed; i++)
+                                linkedObject.BeginInteraction();
+                        }
+                    }
+                    break;
+            }
 		}
         return 0;
 	}

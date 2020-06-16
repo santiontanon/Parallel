@@ -423,6 +423,9 @@ public class GridObjectBehavior : MonoBehaviour
                         else { instanceSpriteRenderer.color = new Color(1f, 1f, 1f, 0.5f); }
                     }
                     break;
+                case "signal":
+                    component.configuration.passed = timeStep.GetSignal(component.id).passed;
+                    break;
             }
         }
     }
