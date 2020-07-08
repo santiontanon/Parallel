@@ -1,3 +1,16 @@
+# Project Setup
+
+If you are looking to setup this portion of the project for development, you can follow the steps below. Note: these steps are specifically for NetBeans, but obviously any IDE will work
+
+1. Create a new empty project: Java with Ant -> Java Application -> Uncheck 'create main class'
+2. Right click your new project in the explorer and open Properties
+3. Go to 'Sources' and remove any default package source folders
+4. Click 'Add Folder' and add the following directory from the Parallel repo 'PARALLELROOT\PCGMC4PP\src'
+5. Click 'Libraries', click the '+' button next to Classpath and select 'Add JAR/Folder', navigate to 'PARALLELROOT\PCGMC4PP\dist\lib' and add all of the .jar files located there
+6. Click 'Run' then set the working directory to the root of the Parallel repository
+7. Within NetBeans, within the project explorer, open the Parallel src direcotry, then open the tests package, right click on 'GrammarTest_.java' and select 'Run File'
+8. If the test was sucessful, the project has been setup correctly
+
 # Player Modeling and PCG Systems for Parallel
 
 This README provides instructions on running the Player Modeling System and the Procedural Content Generator (PCG) System. The Player Modeling System is made up of three components: `Player Modeler (PM)`, `Server Interface (SI)`, and `Model Execution (ME)`. There is one JAR executable for both systems, `PCGPM4PP.jar`, located in the `dist/` directory. All systems are run using this JAR executable.
