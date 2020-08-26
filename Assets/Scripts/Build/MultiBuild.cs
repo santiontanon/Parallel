@@ -9,9 +9,9 @@ public class MultiBuild : MonoBehaviour {
       { BuildTarget.StandaloneLinux,
         BuildTarget.StandaloneLinux64,
         BuildTarget.StandaloneLinuxUniversal,
-        BuildTarget.StandaloneOSX,
         BuildTarget.StandaloneWindows,
-        BuildTarget.StandaloneWindows64 };
+        BuildTarget.StandaloneWindows64,
+        BuildTarget.StandaloneOSX };
 
     [MenuItem("Parallel/Start Builds")]
     public static void StartBuilds()
@@ -21,6 +21,13 @@ public class MultiBuild : MonoBehaviour {
         System.IO.File.WriteAllText(Application.dataPath + "/version.txt", version.ToString());
         foreach (BuildTarget b in TargetPlatforms)
         {
+            if (b.Equals(BuildTarget.StandaloneOSX)) {
+                
+            }
+            else
+            {
+
+            }
             string path = Application.dataPath + "/../Builds/" + b.ToString();
             string[] levels = new string[] { "Assets/Scenes/main.unity" };
             try
