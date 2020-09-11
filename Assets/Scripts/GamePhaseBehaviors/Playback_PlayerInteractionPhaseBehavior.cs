@@ -552,14 +552,14 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         else if (GameManager.Instance.GetCurrentSimulationType() == LinkJava.SimulationTypes.Play)
                                         {
-                                            titleString = "TEST COMPLETE";
+                                            titleString = "FAILED";
                                             playerInteraction.playerInteraction_UI.goalOverlay.SetFeedbackScore(-1);
                                         }
 
                                         goalString = "";
                                         if ((step.componentStatus.final_condition & 1) != 0)
                                         {
-                                            goalString += "\n• Make sure arrows aren't blocked.";
+                                            goalString += "\n• An Arrow was blocked before reaching the level goal.";
                                         }
                                         if ((step.componentStatus.final_condition & 4) != 0)
                                         {
@@ -567,7 +567,7 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
                                         }
                                         if ((step.componentStatus.final_condition & 16) != 0)
                                         {
-                                            goalString += "\n• Make sure arrows can't deliver at the same time.";
+                                            goalString += "\n• If Arrows try to deliver packages at the same time, the delivery will fail. This is a Race Condition.";
                                         }
                                         if ((step.componentStatus.final_condition & 32) != 0)
                                         {
