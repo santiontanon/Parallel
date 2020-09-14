@@ -1766,7 +1766,7 @@ PrefabInstance:
         type: 3}
       propertyPath: tutorialEvents.Array.data[14].targetButton
       value: 
-      objectReference: {fileID: 2092442645}
+      objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[18].targetButton
@@ -2452,12 +2452,13 @@ PrefabInstance:
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[14].complete_trigger
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[14].popupDescription
-      value: Press "test" to simulate 1 random set of Arrow speeds.
+      value: Just like Signals, you can also place your own Semaphores. You can set
+        the starting state by right-clicking a Semaphore you placed.
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
@@ -2582,7 +2583,7 @@ PrefabInstance:
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[14].nextTutorial
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
@@ -2597,8 +2598,7 @@ PrefabInstance:
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[15].popupDescription
-      value: Just like Signals, you can also place your own Semaphores. You can set
-        the starting state by right-clicking a Semaphore you placed.
+      value: Press "test" to simulate 1 random set of Arrow speeds.
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
@@ -2649,7 +2649,7 @@ PrefabInstance:
         type: 3}
       propertyPath: tutorialEvents.Array.data[15].targetButton
       value: 
-      objectReference: {fileID: 169655107}
+      objectReference: {fileID: 2092442645}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[16].targetButton
@@ -2673,7 +2673,7 @@ PrefabInstance:
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[15].complete_trigger
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
