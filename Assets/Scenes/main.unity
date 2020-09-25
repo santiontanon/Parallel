@@ -419,6 +419,18 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &313621481 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114000013746923780, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+    type: 3}
+  m_PrefabInstance: {fileID: 790319443}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &325216060 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000013182703010, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
@@ -1682,10 +1694,6 @@ PrefabInstance:
       value: _Managers
       objectReference: {fileID: 0}
     - target: {fileID: 11421052, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
-      propertyPath: processIndicators.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11421052, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
       propertyPath: processIndicators.Array.data[0]
       value: 
       objectReference: {fileID: 1554837230}
@@ -1725,20 +1733,17 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.size
-      value: 17
+    - target: {fileID: 497172, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].targetButton
-      value: 
+    - target: {fileID: 497172, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].targetButton
-      value: 
+    - target: {fileID: 497172, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
@@ -1752,11 +1757,6 @@ PrefabInstance:
       objectReference: {fileID: 180840123}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[6].targetButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
       propertyPath: tutorialEvents.Array.data[7].targetButton
       value: 
       objectReference: {fileID: 1115598523}
@@ -1764,7 +1764,17 @@ PrefabInstance:
         type: 3}
       propertyPath: tutorialEvents.Array.data[8].targetButton
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 313621481}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[9].targetButton
+      value: 
+      objectReference: {fileID: 313621481}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[10].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[12].targetButton
@@ -1777,27 +1787,12 @@ PrefabInstance:
       objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[18].targetButton
-      value: 
-      objectReference: {fileID: 169655107}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[21].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[24].targetButton
-      value: 
-      objectReference: {fileID: 180840123}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[25].targetButton
+      propertyPath: tutorialEvents.Array.data[15].targetButton
       value: 
       objectReference: {fileID: 2092442645}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[29].targetButton
+      propertyPath: tutorialEvents.Array.data[16].targetButton
       value: 
       objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
@@ -1810,11 +1805,6 @@ PrefabInstance:
       propertyPath: tutorialOverlay.tutorialDescription
       value: 
       objectReference: {fileID: 1959885821}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialOverlay.tutorialCloseButton
-      value: 
-      objectReference: {fileID: 643386307}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialOverlay.canvas
@@ -1832,9 +1822,19 @@ PrefabInstance:
       objectReference: {fileID: 1949301678}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
+      propertyPath: tutorialOverlay.tutorialCloseButton
+      value: 
+      objectReference: {fileID: 643386307}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
       propertyPath: tutorialOverlay.skipTutorialsButton
       value: 
       objectReference: {fileID: 720912341}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialOverlay.nextTutorialButton
+      value: 
+      objectReference: {fileID: 1300136995}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialImageTriggerObject
@@ -1870,829 +1870,6 @@ PrefabInstance:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].popupDescription
-      value: Good work! When you think you have a correct solution, press the "Submit"
-        button.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialOverlay.nextTutorialButton
-      value: 
-      objectReference: {fileID: 1300136995}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].popupDescription
-      value: Welcome to Parallel. A game about parallel and concurrent programming.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].init_trigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].popupDescription
-      value: An Arrow is a thread. The track is the concurrent program.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].pause
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].pauseDuration
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].popupDescription
-      value: Your task is to design the synchronization mechanism to meet the level
-        goal.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].pause
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].pauseDuration
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].complete_trigger
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].popupDescription
-      value: Click "Test" to run the program.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].targetComponentType
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].init_trigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].complete_trigger
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].popupDescription
-      value: An open Semaphore closes AFTER an Arrow passes it.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].pause
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].pauseDuration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].targetSimulationStep.componentID
-      value: 4001
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].targetSimulationStep.componentStatus.passed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[4].targetSimulationStep.componentStatus.current
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].complete_trigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].popupDescription
-      value: Now, let's build a solution! To open a closed Semaphore, an arrow must
-        pass a linked Signal. To do this, drag a Signal to the track.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].targetSimulationStep.componentStatus.final_condition
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].targetSimulationStep.componentStatus.speed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].targetSimulationStep.componentStatus.available
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[5].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].popupDescription
-      value: Next, link them together by right-clicking on the Signal and right-clicking
-        again on a Semaphore.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].levelNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].complete_trigger
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.eventType
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.timeStep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentPos.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentPos.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentStatus.final_condition
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentStatus.speed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentStatus.available
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].levelNumber
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].complete_trigger
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].popupDescription
-      value: Arrows pick up packages from here. Packages are resources in parallel
-        programming.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].targetSimulationStep.componentID
-      value: 2001
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].targetSimulationStep.componentStatus.passed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].targetSimulationStep.componentStatus.current
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].levelNumber
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].init_trigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].complete_trigger
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].popupDescription
-      value: This is a package Delivery Point. It shows that you delivered 1 of the
-        2 packages it needs.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].pause
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].pauseDuration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].targetSimulationStep.componentID
-      value: 3001
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].targetSimulationStep.componentStatus.passed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].targetSimulationStep.componentStatus.current
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[0].hasCompleted
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[1].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].levelNumber
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].init_trigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].complete_trigger
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].popupDescription
-      value: Your turn! Build a solution so the Arrow can deliver the package twice.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].pause
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].pauseDuration
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].popupDescription
-      value: Like in concurrent programming, Arrows here move in nondeterministic
-        ways each playthrough.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].complete_trigger
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].popupDescription
-      value: Press "test" a couple of times. You may see how the arrows move differently.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].overrideSimulation
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].filepath
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].complete_trigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].popupDescription
-      value: Just like Signals, you can also place your own Semaphores. You can set
-        the starting state by right-clicking a Semaphore you placed.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].init_trigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].targetComponentType
-      value: pickup
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].pause
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[8].pauseDuration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].targetComponentType
-      value: delivery
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].init_trigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].pause
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].init_trigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].pause
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].sequenceId
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].sequenceId
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].popupDescription
-      value: Due to nondeterminism a solution may work sometimes but not others.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].overrideSimulation
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].filepath
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].targetButton
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].sequenceId
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].sequenceId
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].popupDescription
-      value: Press "test" to simulate 1 random set of Arrow speeds.
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].levelNumber
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].sequenceId
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].popupDescription
-      value: Once you think you find a solution that always works, press "Submit".
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].targetSimulationStep.componentID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].targetSimulationStep.componentStatus.passed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].targetSimulationStep.componentStatus.current
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].targetButton
-      value: 
-      objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[15].complete_trigger
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].complete_trigger
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: LevelInventories.Array.size
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: ToolArray.Array.data[0].toolInstance
@@ -2739,14 +1916,6 @@ PrefabInstance:
       propertyPath: exitGameBehavior
       value: 
       objectReference: {fileID: 446793111}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
-      propertyPath: currentGameMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
-      propertyPath: currentSaveMode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 11432306, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
       propertyPath: worldCamera
       value: 
@@ -2864,6 +2033,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -38.52466
       objectReference: {fileID: 0}
+    - target: {fileID: 1000010405702870, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000013169581460, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000012729354332, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114000012367674112, guid: fc994ba4b3f9b644a951c0743b3a9890,
         type: 3}
       propertyPath: m_ScrollSensitivity
@@ -2883,18 +2064,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ScrollSensitivity
       value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000010405702870, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000013169581460, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000012729354332, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
