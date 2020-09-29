@@ -131,6 +131,7 @@ public class LinkJava : MonoBehaviour
     /// <returns></returns>
     public int CheckJava()
 	{
+        UnityEngine.Debug.Log("Check Java");
 		int ExitCode = -1;
         Process myProcess = new Process();
         try 
@@ -352,13 +353,13 @@ public class LinkJava : MonoBehaviour
     public void SendToJava() 
 	{
 		bool java_found = false;
-		if (CheckEnvironment () != 0) 
+		if (CheckEnvironment() != 0) 
 		{
             DisplayError("Environment Error", "Parallel currently only supports Windows, OSX and Linux.");
 		} 
 		else 
 		{
-			java_found = (CheckJava () == 0);
+			java_found = (CheckJava() == 0);
 		}
 		if (!java_found) 
 		{
@@ -373,6 +374,11 @@ public class LinkJava : MonoBehaviour
     #region Player Modeling
     public string StartPlayerModelingServerCall(string username, string hostname, Action callback = null)
     {
+        if (CheckJava() != 0)
+        {
+            UnityEngine.Debug.Log("Java Not Found");
+            DisplayError("Java Not Found", "Parallel could not confirm that the Java Development Kit is installed. Ensure JDK version 8, updated 171 or higher is installed.");
+        }
         // prevent concurrent calls
         if (modelingProcess != null)
         {
@@ -425,6 +431,11 @@ public class LinkJava : MonoBehaviour
 
     public string StartPlayerModelingProcess(string executionPath, string logPath, string username, string levelname, string hostname, Action callback = null)
     {
+        if(CheckJava() != 0)
+        {
+            UnityEngine.Debug.Log("Java Not Found");
+            DisplayError("Java Not Found", "Parallel could not confirm that the Java Development Kit is installed. Ensure JDK version 8, updated 171 or higher is installed.");
+        }
         // prevent concurrent calls
         if (modelingProcess != null)
         {

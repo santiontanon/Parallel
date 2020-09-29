@@ -732,9 +732,13 @@ public class Playback_PlayerInteractionPhaseBehavior : MonoBehaviour {
 
     public void OnTimeSliderValueChanged(int i)
     {
+        GameManager.Instance.tracker.CreateEventExt("TimeSlider", i.ToString());
         if (i != currentStep)
         {
-            PauseSimulation();
+            if(paused == false)
+            {
+                PauseSimulation();
+            }
             currentStep = i;
             ChangePlaybackStep();
         }

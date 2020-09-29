@@ -240,7 +240,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.simulationButton.interactable = true;
 
         playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { EndSimulation(); });
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { GameManager.Instance.tracker.CreateEventExt("StopSimulation", "stoppedViaButton"); EndSimulation(); });
         playerInteraction_UI.stopSimulationButton.interactable = false;
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 
