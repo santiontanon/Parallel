@@ -1,7 +1,7 @@
 METADATA
 level_id	1
-level_title	Intro to Parallel: Pass the Semaphore Twice
-goal_string	Pass the Semaphore Twice
+level_title	Coordinate the arrow to pass the semaphore twice.
+goal_string	Coordinate the arrow to pass the semaphore twice.
 goal_struct	{"desired":[{"condition":"eq","thread_id":0,"property":"passed","id":4001,"type":"semaphore","value":2}],"required":[{"condition":"eq","thread_id":0,"property":"passed","id":4001,"type":"semaphore","value":2}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
 time_pickup_min	0

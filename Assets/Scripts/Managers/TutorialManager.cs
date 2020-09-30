@@ -110,7 +110,7 @@ public class TutorialManager : MonoBehaviour {
             if (descriptionSize <= 20) { }
             else if (descriptionSize <= 50) { targetPanelSize.y = 200f; }
             else if (descriptionSize <= 100) { targetPanelSize.x = 250f;  targetPanelSize.y = 250f; }
-            else { targetPanelSize.x = 280f; targetPanelSize.y = 260f; }
+            else { targetPanelSize.x = 420f; targetPanelSize.y = 300f; }
 
             panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, targetPanelSize.x);
             panelContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetPanelSize.y);

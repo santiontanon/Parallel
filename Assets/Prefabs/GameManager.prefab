@@ -292,7 +292,9 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: Welcome to Parallel. A game about parallel and concurrent programming.
+    popupDescription: Welcome to Parallel. This game is about parallel and concurrent
+      programming. You will coordinate arrows (threads) on the track (program) using
+      signals and semaphores to accomplish a specific goal in each level.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -329,45 +331,11 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: An Arrow is a thread. The track is the concurrent program.
-    nextTutorial: 1
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 0
-        delivered: 0
-        available: 0
-        payload: 
-        current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 1
-    type: 0
-    init_trigger: 0
-    complete_trigger: 4
-    sequenceId: 0
-    popupDescription: Your task is to design the synchronization mechanism to meet
-      the level goal.
+    popupDescription: Similar to concurrent programming, arrows in the game move in
+      nondeterministic ways. In other words, arrows will always move at unpredictable
+      rates! As a result, some solutions may work with some arrow speeds, but not
+      others. Your goal is to find solutions that will work with all possible arrow
+      speeds.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -404,7 +372,9 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: Click "Test" to run the program.
+    popupDescription: "The \"Test\" button selects one of these speed outcomes at
+      random to show your current solution in action.  Try testing to see the problem
+      in action. To run the simulation, click \u201CTest.\u201D"
     nextTutorial: 0
     pause: 0
     pauseDuration: 0
@@ -441,7 +411,9 @@ MonoBehaviour:
     init_trigger: 1
     complete_trigger: 3
     sequenceId: 0
-    popupDescription: An open Semaphore closes AFTER an Arrow passes it.
+    popupDescription: This is a semaphore and they can be used to block an arrow.
+      In this level, the semaphore is currently open. Irrespective of the open/close
+      status of the semaphore, it will close after an arrow passes through it.
     nextTutorial: 0
     pause: 1
     pauseDuration: 6
@@ -449,49 +421,11 @@ MonoBehaviour:
     filepath: 
     hasCompleted: 0
     targetButton: {fileID: 0}
-    targetComponentType: 
+    targetComponentType: semaphore
     targetSimulationStep:
       eventType: 
       timeStep: 0
       componentID: 4001
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 1
-        delivered: 0
-        available: 0
-        payload: 
-        current: -1
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 1
-    type: 0
-    init_trigger: 0
-    complete_trigger: 0
-    sequenceId: 1
-    popupDescription: Now, let's build a solution! To open a closed Semaphore, an
-      arrow must pass a linked Signal. To do this, drag a Signal to the track.
-    nextTutorial: 0
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
       componentPos: {x: 0, y: 0}
       componentStatus:
         final_condition: 0
@@ -514,10 +448,48 @@ MonoBehaviour:
   - levelNumber: 1
     type: 0
     init_trigger: 0
+    complete_trigger: 0
+    sequenceId: 1
+    popupDescription: "Now, let\u2019s build a solution! To open a closed semaphore,
+      an arrow must pass a linked signal. To do this, drag a signal to the track. "
+    nextTutorial: 0
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 1
+        delivered: 0
+        available: 0
+        payload: 
+        current: -1
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 1
+    type: 0
+    init_trigger: 0
     complete_trigger: 4
     sequenceId: 1
     popupDescription: Next, link them together by right-clicking on the Signal and
-      right-clicking again on a Semaphore.
+      right-clicking again on a Semaphore. Try it out and then hit next.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -553,7 +525,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    sequenceId: 1
+    sequenceId: 2
     popupDescription: Good work! When you think you have a correct solution, press
       the "Submit" button.
     nextTutorial: 0
@@ -587,16 +559,17 @@ MonoBehaviour:
         missed: 0
         missed_items: 
         delivered_items: 
-  - levelNumber: 2
+  - levelNumber: 1
     type: 0
-    init_trigger: 0
-    complete_trigger: 2
-    sequenceId: 0
-    popupDescription: 'Toggle on help mode, then click on a highlighted element to
-      learn more about it. '
-    nextTutorial: 1
-    pause: 0
-    pauseDuration: 0
+    init_trigger: 1
+    complete_trigger: 3
+    sequenceId: 2
+    popupDescription: "In contrast, the \u201CSubmit\u201D button checks ALL possible
+      arrow speed outcomes from the current level solution. To complete a level, all
+      of the possible outcomes must be successful. "
+    nextTutorial: 0
+    pause: 1
+    pauseDuration: 8
     overrideSimulation: 0
     filepath: 
     hasCompleted: 0
@@ -630,8 +603,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 0
-    popupDescription: Click the help toggle again to return to play mode when you
-      are done.
+    popupDescription: Packages are resources that arrows pick up and transport to
+      the designated delivery points.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -639,12 +612,12 @@ MonoBehaviour:
     filepath: 
     hasCompleted: 0
     targetButton: {fileID: 0}
-    targetComponentType: 
+    targetComponentType: pickup
     targetSimulationStep:
       eventType: exampleType
-      timeStep: -1
-      componentID: -1
-      componentPos: {x: -1, y: -1}
+      timeStep: 0
+      componentID: 2001
+      componentPos: {x: 0, y: 0}
       componentStatus:
         final_condition: -1
         goal_descriptions: []
@@ -665,52 +638,14 @@ MonoBehaviour:
         delivered_items: 
   - levelNumber: 2
     type: 0
-    init_trigger: 1
-    complete_trigger: 3
+    init_trigger: 0
+    complete_trigger: 4
     sequenceId: 0
-    popupDescription: Arrows pick up packages from here. Packages are resources in
-      parallel programming.
-    nextTutorial: 0
-    pause: 1
-    pauseDuration: 6
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: pickup
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 2001
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 1
-        delivered: 0
-        available: 0
-        payload: 
-        current: -1
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 2
-    type: 0
-    init_trigger: 1
-    complete_trigger: 3
-    sequenceId: 0
-    popupDescription: This is a package Delivery Point. It shows that you delivered
-      1 of the 2 packages it needs.
-    nextTutorial: 0
-    pause: 1
-    pauseDuration: 6
+    popupDescription: This is the delivery point where the arrow will deliver its
+      package. This type of package respawns immediately upon delivery.
+    nextTutorial: 1
+    pause: 0
+    pauseDuration: 0
     overrideSimulation: 0
     filepath: 
     hasCompleted: 0
@@ -742,48 +677,10 @@ MonoBehaviour:
   - levelNumber: 2
     type: 0
     init_trigger: 0
-    complete_trigger: 2
-    sequenceId: 1
-    popupDescription: Your turn! Build a solution so the Arrow can deliver the package
-      twice.
-    nextTutorial: 0
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 0
-        delivered: 0
-        available: 0
-        payload: 
-        current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 3
-    type: 0
-    init_trigger: 0
     complete_trigger: 4
-    sequenceId: 1
-    popupDescription: Like in concurrent programming, Arrows here move in nondeterministic
-      ways each playthrough.
+    sequenceId: 0
+    popupDescription: You're up! Build a solution that coordinates the arrow to deliver
+      the package twice.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -791,60 +688,22 @@ MonoBehaviour:
     filepath: 
     hasCompleted: 0
     targetButton: {fileID: 0}
-    targetComponentType: 
+    targetComponentType: thread
     targetSimulationStep:
       eventType: 
       timeStep: 0
-      componentID: 0
+      componentID: 1001
       componentPos: {x: 0, y: 0}
       componentStatus:
         final_condition: 0
         goal_descriptions: []
         speed: 0
         value: 0
-        passed: 0
+        passed: 1
         delivered: 0
         available: 0
         payload: 
-        current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 3
-    type: 0
-    init_trigger: 0
-    complete_trigger: 2
-    sequenceId: 1
-    popupDescription: Press "test" a couple of times. You may see how the arrows move
-      differently.
-    nextTutorial: 0
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 0
-        delivered: 0
-        available: 0
-        payload: 
-        current: 0
+        current: -1
         goals_completed: 0
         exchange_between_b: 0
         exchange_between_a: 0
@@ -857,9 +716,10 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
-    sequenceId: 2
-    popupDescription: Due to nondeterminism a solution may work sometimes but not
-      others.
+    sequenceId: 0
+    popupDescription: "Arrows only have access to particular parts of the track. To
+      view this, hover over the arrow sidebar to view each arrow\u2019s predefined
+      path."
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -895,46 +755,9 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 1
-    sequenceId: 2
-    popupDescription: Just like Signals, you can also place your own Semaphores. You
-      can set the starting state by right-clicking a Semaphore you placed.
-    nextTutorial: 0
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 0
-        delivered: 0
-        available: 0
-        payload: 
-        current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 3
-    type: 0
-    init_trigger: 0
-    complete_trigger: 4
-    sequenceId: 2
-    popupDescription: Press "test" to simulate 1 random set of Arrow speeds.
+    sequenceId: 0
+    popupDescription: Similar to signals, you can also place semaphores on to the
+      track. Click and drag a semaphore onto the track to continue.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -970,10 +793,47 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    sequenceId: 2
-    popupDescription: Once you think you find a solution that always works, press
-      "Submit".
-    nextTutorial: 0
+    sequenceId: 0
+    popupDescription: Right-click on the placed semaphore to change its default state
+      to start in an open or closed state. Try it out and then hit next!
+    nextTutorial: 1
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 0
+        delivered: 0
+        available: 0
+        payload: 
+        current: 0
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 3
+    type: 0
+    init_trigger: 0
+    complete_trigger: 4
+    sequenceId: 0
+    popupDescription: Good work!  Now, build a solution that meets the level goal.
+    nextTutorial: 1
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0

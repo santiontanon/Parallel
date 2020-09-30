@@ -419,18 +419,6 @@ MonoBehaviour:
   m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &313621481 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114000013746923780, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-    type: 3}
-  m_PrefabInstance: {fileID: 790319443}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &325216060 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000013182703010, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
@@ -606,6 +594,11 @@ PrefabInstance:
     - target: {fileID: 1000010584631698, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013890215990, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 224000011781466348, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
         type: 3}
@@ -1144,6 +1137,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.a
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013763179310, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -260.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224000013763179310, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -701.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000011623395838, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000012098485578, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
@@ -1747,9 +1755,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[3].targetButton
+      propertyPath: tutorialEvents.Array.data[2].targetButton
       value: 
       objectReference: {fileID: 2092442645}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[4].targetButton
+      value: 
+      objectReference: {fileID: 180840123}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[5].targetButton
@@ -1757,44 +1770,24 @@ PrefabInstance:
       objectReference: {fileID: 180840123}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
+      propertyPath: tutorialEvents.Array.data[6].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
       propertyPath: tutorialEvents.Array.data[7].targetButton
       value: 
       objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[8].targetButton
-      value: 
-      objectReference: {fileID: 313621481}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[9].targetButton
-      value: 
-      objectReference: {fileID: 313621481}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[10].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].targetButton
-      value: 
-      objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].targetButton
+      propertyPath: tutorialEvents.Array.data[11].targetButton
       value: 
       objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[15].targetButton
+      propertyPath: tutorialEvents.Array.data[12].targetButton
       value: 
-      objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[16].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
+      objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialOverlay.panelContainer
@@ -1870,6 +1863,11 @@ PrefabInstance:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].nextTutorial
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: ToolArray.Array.data[0].toolInstance
