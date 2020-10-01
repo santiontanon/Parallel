@@ -1153,6 +1153,10 @@ PrefabInstance:
       propertyPath: m_FontData.m_FontSize
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 1106750403726240, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000012098485578, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
@@ -1755,6 +1759,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
+      propertyPath: tutorialEvents.Array.data[1].targetButton
+      value: 
+      objectReference: {fileID: 2092442645}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
       propertyPath: tutorialEvents.Array.data[2].targetButton
       value: 
       objectReference: {fileID: 2092442645}
@@ -1767,25 +1776,30 @@ PrefabInstance:
         type: 3}
       propertyPath: tutorialEvents.Array.data[5].targetButton
       value: 
-      objectReference: {fileID: 180840123}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[6].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[7].targetButton
-      value: 
       objectReference: {fileID: 1115598523}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[11].targetButton
       value: 
-      objectReference: {fileID: 169655107}
+      objectReference: {fileID: 2092442645}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[12].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[13].targetButton
+      value: 
+      objectReference: {fileID: 169655107}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[14].targetButton
+      value: 
+      objectReference: {fileID: 169655107}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[15].targetButton
       value: 
       objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
@@ -1863,11 +1877,6 @@ PrefabInstance:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[2].nextTutorial
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: ToolArray.Array.data[0].toolInstance

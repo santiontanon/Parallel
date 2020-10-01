@@ -329,52 +329,12 @@ MonoBehaviour:
   - levelNumber: 1
     type: 0
     init_trigger: 0
-    complete_trigger: 4
-    sequenceId: 0
-    popupDescription: Similar to concurrent programming, arrows in the game move in
-      nondeterministic ways. In other words, arrows will always move at unpredictable
-      rates! As a result, some solutions may work with some arrow speeds, but not
-      others. Your goal is to find solutions that will work with all possible arrow
-      speeds.
-    nextTutorial: 1
-    pause: 0
-    pauseDuration: 0
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 0
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 0
-        delivered: 0
-        available: 0
-        payload: 
-        current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 1
-    type: 0
-    init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
-    popupDescription: "The \"Test\" button selects one of these speed outcomes at
-      random to show your current solution in action.  Try testing to see the problem
-      in action. To run the simulation, click \u201CTest.\u201D"
+    popupDescription: "The \u201CTest\u201D button simulates the current board state.
+      Before building a solution, it is good practice to test the level to observe
+      the current problem in action. To run the simulation, click the \u201CTest\u201D
+      button."
     nextTutorial: 0
     pause: 0
     pauseDuration: 0
@@ -416,7 +376,7 @@ MonoBehaviour:
       status of the semaphore, it will close after an arrow passes through it.
     nextTutorial: 0
     pause: 1
-    pauseDuration: 6
+    pauseDuration: 8
     overrideSimulation: 0
     filepath: 
     hasCompleted: 0
@@ -451,7 +411,7 @@ MonoBehaviour:
     complete_trigger: 0
     sequenceId: 1
     popupDescription: "Now, let\u2019s build a solution! To open a closed semaphore,
-      an arrow must pass a linked signal. To do this, drag a signal to the track. "
+      an arrow must pass a linked signal. To do this, drag a signal to the track."
     nextTutorial: 0
     pause: 0
     pauseDuration: 0
@@ -488,8 +448,8 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 4
     sequenceId: 1
-    popupDescription: Next, link them together by right-clicking on the Signal and
-      right-clicking again on a Semaphore. Try it out and then hit next.
+    popupDescription: Next, link them together by right-clicking on the signal and
+      right-click again on a semaphore.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -525,7 +485,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 2
-    sequenceId: 2
+    sequenceId: 1
     popupDescription: Good work! When you think you have a correct solution, press
       the "Submit" button.
     nextTutorial: 0
@@ -551,45 +511,6 @@ MonoBehaviour:
         available: 0
         payload: 
         current: 0
-        goals_completed: 0
-        exchange_between_b: 0
-        exchange_between_a: 0
-        delivered_to: 0
-        delivered_from: 0
-        missed: 0
-        missed_items: 
-        delivered_items: 
-  - levelNumber: 1
-    type: 0
-    init_trigger: 1
-    complete_trigger: 3
-    sequenceId: 2
-    popupDescription: "In contrast, the \u201CSubmit\u201D button checks ALL possible
-      arrow speed outcomes from the current level solution. To complete a level, all
-      of the possible outcomes must be successful. "
-    nextTutorial: 0
-    pause: 1
-    pauseDuration: 8
-    overrideSimulation: 0
-    filepath: 
-    hasCompleted: 0
-    targetButton: {fileID: 0}
-    targetComponentType: 
-    targetSimulationStep:
-      eventType: 
-      timeStep: 0
-      componentID: 9000
-      componentPos: {x: 0, y: 0}
-      componentStatus:
-        final_condition: 0
-        goal_descriptions: []
-        speed: 0
-        value: 0
-        passed: 1
-        delivered: 0
-        available: 0
-        payload: 
-        current: -1
         goals_completed: 0
         exchange_between_b: 0
         exchange_between_a: 0
@@ -754,10 +675,50 @@ MonoBehaviour:
   - levelNumber: 3
     type: 0
     init_trigger: 0
-    complete_trigger: 1
+    complete_trigger: 4
     sequenceId: 0
-    popupDescription: Similar to signals, you can also place semaphores on to the
-      track. Click and drag a semaphore onto the track to continue.
+    popupDescription: Similar to concurrent programming, arrows in the game move in
+      nondeterministic ways. In other words, arrows will always move at unpredictable
+      rates. As a result, some solutions may work with some arrow speeds, but not
+      others.
+    nextTutorial: 1
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 0
+        delivered: 0
+        available: 0
+        payload: 
+        current: 0
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 3
+    type: 0
+    init_trigger: 0
+    complete_trigger: 4
+    sequenceId: 0
+    popupDescription: The "Test" button selects one of these speeds at random to show
+      your current solution in action.
     nextTutorial: 1
     pause: 0
     pauseDuration: 0
@@ -794,6 +755,83 @@ MonoBehaviour:
     init_trigger: 0
     complete_trigger: 2
     sequenceId: 0
+    popupDescription: "The \u201CSubmit\u201D button checks all possible arrow speed
+      outcomes from the current level solution. To complete a level, all of the possible
+      outcomes must be successful. "
+    nextTutorial: 0
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 0
+        delivered: 0
+        available: 0
+        payload: 
+        current: 0
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 3
+    type: 0
+    init_trigger: 0
+    complete_trigger: 1
+    sequenceId: 1
+    popupDescription: Similar to signals, you can also place semaphores on to the
+      track. Click and drag a semaphore onto the track to continue.
+    nextTutorial: 0
+    pause: 0
+    pauseDuration: 0
+    overrideSimulation: 0
+    filepath: 
+    hasCompleted: 0
+    targetButton: {fileID: 0}
+    targetComponentType: 
+    targetSimulationStep:
+      eventType: 
+      timeStep: 0
+      componentID: 0
+      componentPos: {x: 0, y: 0}
+      componentStatus:
+        final_condition: 0
+        goal_descriptions: []
+        speed: 0
+        value: 0
+        passed: 0
+        delivered: 0
+        available: 0
+        payload: 
+        current: 0
+        goals_completed: 0
+        exchange_between_b: 0
+        exchange_between_a: 0
+        delivered_to: 0
+        delivered_from: 0
+        missed: 0
+        missed_items: 
+        delivered_items: 
+  - levelNumber: 3
+    type: 0
+    init_trigger: 0
+    complete_trigger: 2
+    sequenceId: 1
     popupDescription: Right-click on the placed semaphore to change its default state
       to start in an open or closed state. Try it out and then hit next!
     nextTutorial: 1
@@ -831,7 +869,7 @@ MonoBehaviour:
     type: 0
     init_trigger: 0
     complete_trigger: 4
-    sequenceId: 0
+    sequenceId: 1
     popupDescription: Good work!  Now, build a solution that meets the level goal.
     nextTutorial: 1
     pause: 0
