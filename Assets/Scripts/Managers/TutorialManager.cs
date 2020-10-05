@@ -168,7 +168,7 @@ public class TutorialManager : MonoBehaviour {
             tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
             float targetNubSize = ray.magnitude;
             tutorialArrow.localScale = Vector3.one;
-            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize + 10f);
+            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize * 2);
         }
 
 
