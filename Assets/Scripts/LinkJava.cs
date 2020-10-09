@@ -373,6 +373,12 @@ public class LinkJava : MonoBehaviour
     #region Player Modeling
     public string StartPlayerModelingServerCall(string username, string hostname, Action callback = null)
     {
+        if(CheckJava() != 0)
+        {
+            UnityEngine.Debug.LogError("JDK Installation Not Found");
+            DisplayError("Java Development Kit Not Found","Parallel requires JDK version 8 or newer to be installed. Please ensure it is installed and that environment variables are properly configured.");
+            return "failure";
+        }
         // prevent concurrent calls
         if (modelingProcess != null)
         {
@@ -425,6 +431,12 @@ public class LinkJava : MonoBehaviour
 
     public string StartPlayerModelingProcess(string executionPath, string logPath, string username, string levelname, string hostname, Action callback = null)
     {
+        if (CheckJava() != 0)
+        {
+            UnityEngine.Debug.LogError("JDK Installation Not Found");
+            DisplayError("Java Development Kit Not Found", "Parallel requires JDK version 8 or newer to be installed. Please ensure it is installed and that environment variables are properly configured.");
+            return "failure";
+        }
         // prevent concurrent calls
         if (modelingProcess != null)
         {
