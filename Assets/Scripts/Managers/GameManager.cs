@@ -41,13 +41,17 @@ public class GameManager : MonoBehaviour {
 			Instance = this;
 			DontDestroyOnLoad(this);
 		}
-
 		else
 		{
 			Destroy(this);
 		}
 
-		dataManager = GetComponent<DataManager>();
+        #if UNITY_STANDALONE_OSX
+        currentSaveMode = SaveMode.Default;
+        Debug.Log("Relative saving not compatible with OSX, changing to default.");
+        #endif
+
+        dataManager = GetComponent<DataManager>();
 		gridManager = GetComponent<GridManager>();
 		tutorialManager = GetComponent<TutorialManager>();
         inventoryManager = GetComponent<InventoryManager>();

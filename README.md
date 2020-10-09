@@ -7,3 +7,4 @@ Download the latest release <a href="https://github.com/santiontanon/Parallel/re
 Notes:
 - This project uses Unity 2018.1 and does not work on previous versions.
 - This project requires Java version 7 or newer to run.
+- Setup instructions for the Java portion of the project, PCGMC4PP, are located in the README within that directory
