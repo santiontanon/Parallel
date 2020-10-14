@@ -1,5 +1,5 @@
 METADATA
-level_id	4
+level_id	5
 level_title	Intro to Parallel
 goal_string	Deliver Both Packages Twice
 goal_struct	{"desired":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":4}],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":4}]}

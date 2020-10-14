@@ -101,18 +101,6 @@
 	  {  
         "file":"level25",
         "title":"Level 25"
-      },
-	  {  
-        "file":"level26",
-        "title":"Level 26"
-      },
-	  {  
-        "file":"level27",
-        "title":"Level 27"
-      },
-	  {  
-        "file":"level28",
-        "title":"Level 28"
       }
     ],
     "optional":[

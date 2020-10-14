@@ -1,0 +1,76 @@
+METADATA
+level_id	3
+level_title	Intro to Parallel
+goal_string	Deliver 2 packages
+goal_struct	{"desired":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2}],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	8
+board_height	8
+time_efficiency	55.0
+
+LAYOUT
+FEEEEEEC
+J------J
+J------J
+J------J
+J------J
+J------J
+J------J
+LEEEEEEI
+
+COLORS
+!!!!!!!!
+!------!
+!------!
+!------!
+!------!
+!------!
+!------!
+!!!!!!!!
+
+DIRECTIONS
+>>>>>>>V
+A      V
+A      V
+A      V
+A      V
+A      V
+A      V
+A<<<<<<<
+
+CRITICALSECTIONS
+--------
+-      -
+-      -
+-      -
+-      -
+-      -
+-      -
+--------
+
+COMPONENTS
+1001	thread	7	5	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"South","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"South"}
+2001	pickup	0	3	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+3001	delivery	7	3	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":2}
+4001	semaphore	4	0	S	L	{"stopped":0,"color":0,"passed":0,"value":0}
+4002	semaphore	4	7	S	L	{"stopped":0,"color":0,"passed":0,"value":1}
+
+EXECUTION
+
+PLAYER
+
+SKILLS
+Hover over objects to see what they do
+Use help bar
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Be able to link semaphores to buttons
+Deliver packages
+Testing before submitting

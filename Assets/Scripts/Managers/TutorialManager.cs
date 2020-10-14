@@ -120,7 +120,7 @@ public class TutorialManager : MonoBehaviour {
             float bottomBannerHeight = multiplier * GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
             float panelClearHeight = multiplier * panelContainer.rect.height / 2f;
             float panelClearWidth = multiplier * panelContainer.rect.width / 2f;
-            float tooltipNubSize = 50f * multiplier;
+            float tooltipNubSize = 100f * multiplier;
 
 
             Vector3 start = position;

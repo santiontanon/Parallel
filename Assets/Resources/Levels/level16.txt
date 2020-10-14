@@ -1,8 +1,8 @@
 METADATA
 level_id	16
-level_title	Classic Concurrency Problems
-goal_string	Each arrow delivers to all possible delivery points.
-goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":3003,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":3004,"type":"delivery","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":1001,"type":"thread","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":1002,"type":"thread","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":1003,"type":"thread","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":1004,"type":"thread","value":2}]}
+level_title	Exchanges and Race Conditions
+goal_string	Deliver the Package Twice
+goal_struct	{"desired":[],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":4}}
 time_pickup_min	0
 time_delivery_min	1
@@ -10,149 +10,94 @@ time_exchange_min	0
 time_pickup_max	0
 time_delivery_max	3
 time_exchange_max	0
-board_width	23
-board_height	27
-time_efficiency	252.23077
+board_width	15
+board_height	15
+time_efficiency	254.28572
 
 LAYOUT
-----------FEEEEEEEEEEEC
-----------J-----------J
------FEEEEOEEEEC------J
------J----J----J------J
------J----LEEC-J------J
------J-------J-J------J
------J-FEEC--J-J------J
------J-J--J--J-J------J
------J-J--J--J-J------J
-FEEEEOEOEEOEEOEOEEEEC-J
-J----J-J--J--J-J----J-J
-J----J-J--J--J-J----J-J
-J-FEEOEOEEOEEOEOEEC-J-J
-J-J--J-J--J--J-J--J-J-J
-J-J--J-J--J--J-J--J-J-J
-LEOEEI-LEEOEEI-LEEOEI-J
---J-------J-------J---J
---J-------J-------J---J
---LEEEEEEEMEEEEEEEMEEEI
------------------------
-------FEEEGEEEGEEEGEEEC
-------J---J---J---J---J
-------J---J---J---J---J
-------J---J---J---J---J
-------J---J---J---J---J
-------J---J---J---J---J
-------LEEEMEEEMEEEMEEEI
+------FEEEEEEEC
+------J-------J
+------J-------J
+--FEEEMEEEC---J
+--J-------J---J
+--J-------J---J
+FEMEC---FEMEC-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+J---J---J---J-J
+LEEEMEEEMEEEMEI
 
 COLORS
-----------'''''''''''''
-----------'-----------'
------!!!!!'$$$$$------'
------!----"----$------'
------!----""""-$------'
------!-------"-$------'
------!-""""--"-$------'
------!-"--"--"-$------'
------!-"--"--"-$------'
-!!!!!!!#!!'$$&$$$$$$$-'
-!----!-"--'--"-$----$-'
-!----!-"--'--"-$----$-'
-!-!!!!!#!!'$$&$$$$$-$-'
-!-!--!-"--"--"-$--$-$-'
-!-!--!-"--"--"-$--$-$-'
-!!!!!!-"""""""-$$$$$$-'
---!-------"-------$---'
---!-------"-------$---'
---!!!!!!!!########'''''
------------------------
-------(((((((((((((((((
-------(---(---(---(---(
-------(---(---(---(---(
-------(---(---(---(---(
-------(---(---(---(---(
-------(---(---(---(---(
-------(((((((((((((((((
+------/////////
+------/-------/
+------/-------/
+--/////////---/
+--/-------/---/
+--/-------/---/
+/////---/////-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+/---/---/---/-/
+///////////////
 
 DIRECTIONS
-          >>>>>>>>>>>>V
-          A           V
-     >>>>>A<<<<<      V
-     A    A    A      V
-     A    A<<< A      V
-     A       A A      V
-     A V<<<  A A      V
-     A V  A  A A      V
-     A V  A  A A      V
-V<<<<X<X<<X>>X>X>>>>V V
-V    A V  A  A A    V V
-V    A V  A  A A    V V
-V >>>X>X>>A<<X<X<<< V V
-V A  A V  A  A A  A V V
-V A  A V  A  A A  A V V
->>X>>A >>>X>>A A<<X<< V
-  A       A       A   V
-  A       A       A   V
-  A<<<<<<<X<<<<<<<X<<<<
-                       
-      >>>>X>>>X>>>X>>>V
-      A   V   V   V   V
-      A   V   V   V   V
-      A   V   V   V   V
-      A   V   V   V   V
-      A   V   V   V   V
-      A<<<<<<<<<<<<<<<<
+      V<<<<<<<<
+      V       A
+      V       A
+  V<<<X>>>V   A
+  V       V   A
+  V       V   A
+V<X>V   V<X>V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+V   V   V   V A
+>>>>>>>>>>>>>>A
 
 CRITICALSECTIONS
-          ----b-B------
-          -           -
-     -----------      -
-     -    -    -      -
-     -    ---- -      -
-     -       - -      -
-     - ----  - -      -
-     - -  -  - -      -
-     - -  -  - -      -
-----------A---------- -
--    - -  -  - -    - -
--    - -  -  - -    - -
-- --------a-------- - -
-- -  - -  -  - -  - - -
-- -  - -  -  - -  - - -
------- ------- ------ -
-  -       -       -   -
-  -       -       -   -
-  ---------------------
-                       
-      -----------------
-      -   -   -   -   -
-      -   -   -   -   -
-      -   -   -   -   -
-      -   -   -   -   -
-      -   -   -   -   -
-      -----------------
+      ---------
+      -       -
+      -       -
+  ---------   -
+  -       -   -
+  -       -   -
+-----   ----- -
+-   -   -   - -
+-   -   -   - -
+-   -   -   - -
+-   -   -   - -
+-   -   -   - -
+-   -   -   - -
+-   -   -   - -
+---------------
 
 COMPONENTS
-1001	thread	2	17	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
-1002	thread	10	17	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
-1003	thread	18	17	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
-1004	thread	7	20	S	L	{"time_pickup_min":-1,"color":4,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
-2001	pickup	2	15	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
-2002	pickup	10	15	S	L	{"color":2,"picked":0,"passed":0,"type":"Unconditional"}
-2003	pickup	18	15	S	L	{"color":3,"picked":0,"passed":0,"type":"Unconditional"}
-2004	pickup	10	23	S	L	{"color":2,"picked":0,"passed":0,"type":"Unconditional"}
-2005	pickup	14	23	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
-2006	pickup	18	23	S	L	{"color":3,"picked":0,"passed":0,"type":"Unconditional"}
-2007	pickup	10	24	S	L	{"color":3,"picked":0,"passed":0,"type":"Unconditional"}
-2008	pickup	14	24	S	L	{"color":2,"picked":0,"passed":0,"type":"Unconditional"}
-2009	pickup	18	24	S	L	{"color":1,"picked":0,"passed":0,"type":"Unconditional"}
-3001	delivery	14	0	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":3}
-3002	delivery	15	0	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2],"strict":0,"consumer":-1,"denominator":3}
-3003	delivery	16	0	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[3],"strict":0,"consumer":-1,"denominator":3}
-3004	delivery	6	23	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":-1}
-4001	exchange	10	9	S	L	{"delay":0,"color":0,"stop":1,"link":4002,"exchanged":0,"passed":0,"strict":1,"value":0}
-4002	exchange	6	25	S	L	{"delay":0,"color":0,"stop":1,"link":4001,"exchanged":0,"passed":0,"strict":1,"value":0}
-5001	conditional	10	20	S	L	{"current":0,"color":0,"directions":["South","East"],"passed":0}
-5002	conditional	14	20	S	L	{"current":0,"color":0,"directions":["East","South"],"passed":0}
-5003	conditional	18	20	S	L	{"current":0,"color":0,"directions":["East","South"],"passed":0}
+1001	thread	14	5	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+1002	thread	14	6	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+1003	thread	14	7	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+1004	thread	14	8	S	L	{"time_pickup_min":-1,"color":4,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+2001	pickup	0	7	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+3001	delivery	12	12	S	L	{"accepted_types":["Conditional"],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[],"strict":0,"consumer":-1,"denominator":2}
+4001	exchange	0	12	S	L	{"delay":0,"color":0,"stop":1,"link":4002,"exchanged":0,"passed":0,"strict":1,"value":0}
+4002	exchange	4	8	S	L	{"delay":0,"color":0,"stop":1,"link":4001,"exchanged":0,"passed":0,"strict":1,"value":0}
+4003	exchange	4	12	S	L	{"delay":0,"color":0,"stop":1,"link":4004,"exchanged":0,"passed":0,"strict":1,"value":0}
+4004	exchange	8	8	S	L	{"delay":0,"color":0,"stop":1,"link":4003,"exchanged":0,"passed":0,"strict":1,"value":0}
+4005	exchange	8	12	S	L	{"delay":0,"color":0,"stop":1,"link":4006,"exchanged":0,"passed":0,"strict":1,"value":0}
+4006	exchange	12	8	S	L	{"delay":0,"color":0,"stop":1,"link":4005,"exchanged":0,"passed":0,"strict":1,"value":0}
+5001	conditional	6	3	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
+5002	conditional	2	6	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
+5003	conditional	10	6	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
 
 EXECUTION
 
@@ -165,12 +110,10 @@ Hover over side arrows to see different colored tracks
 Drag objects
 Place objects on the track
 Remove unnecessary elements
-Understand that arrows move at unpredictable rates
-Be able to link semaphores to buttons
 Be able to link buttons to direction switches
-Alternating access with semaphores and buttons (ensure mutual exclusion)
-Synchronize multiple arrows
-Block critical sections
-Understand specific delivery points
+Prevent starvation
+Understand that arrows move at unpredictable rates
+Understand the use of semaphores
+Understand exchange points
 Deliver packages with multiple synchronized arrows
 Testing before submitting

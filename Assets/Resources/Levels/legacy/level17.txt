@@ -1,0 +1,148 @@
+METADATA
+level_id	17
+level_title	Classic Concurrency Problems
+goal_string	Each arrow delivers both packages on their routes
+goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3003,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3004,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3005,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":3006,"type":"delivery","value":0}]}
+player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":3}}
+time_pickup_min	0
+time_delivery_min	1
+time_exchange_min	0
+time_pickup_max	0
+time_delivery_max	3
+time_exchange_max	0
+board_width	22
+board_height	21
+time_efficiency	247.5
+
+LAYOUT
+FEEEEEEEEGEEEEEEEEEEEC
+J--------J-----------J
+J--------LEEGEEEEEC--J
+J-----------J-----J--J
+J-----------J-----J--J
+LEEGEEEEEGEEOEEGEEOEEI
+---J-----J--J--J--J---
+---J-----J--J--J--J---
+---J-----J--J--J--J---
+---J--FEEMEEK--J--J---
+---J--J-----J--J--J---
+---NEEK-----NEEK--J---
+---J--J-----J--J--J---
+---J--J-----J--J--J---
+---J--NEEGEEK--J--J---
+---NEEI--J--LEEK--J---
+---J-----J-----J--J---
+---J-----J-----J--J---
+---NEEEEEMEEEEEI--J---
+---J--------------J---
+---LEEEEEEEEEEEEEEI---
+
+COLORS
+"""""""""&$$$$$$$$$$$$
+"--------&-----------$
+"--------&&&'!!!!!!--$
+"-----------'-----!--$
+"-----------'-----!--$
+"""""""""&$$'$$$$$%$$$
+---"-----&--'--$--!---
+---"-----&--'--$--!---
+---"-----&--'--$--!---
+---"--'''''''--$--!---
+---"--'-----#--$--!---
+---"""'-----'$$$--!---
+---"--%-----'--$--!---
+---"--%-----'--$--!---
+---"--''''&&'--$--!---
+---####--!--%%%%--!---
+---!-----!-----!--!---
+---!-----!-----!--!---
+---!!!!!!!!!!!!!--!---
+---!--------------!---
+---!!!!!!!!!!!!!!!!---
+
+DIRECTIONS
+>>>>>>>>>X<<<<<<<<<<<<
+A        V           A
+A        >>>X<<<<<<  A
+A           V     A  A
+A           V     A  A
+A<<X>>>>>V<<X<<X>>X>>A
+   A     V  V  A  A   
+   A     V  V  A  A   
+   A     V  V  A  A   
+   A  V<<<<<<  A  A   
+   A  V     A  A  A   
+   X<<X     X>>X  A   
+   V  V     A  V  A   
+   V  V     A  V  A   
+   V  >>>X>>A  V  A   
+   >>>A  V  A<<<  A   
+   A     V     A  A   
+   A     V     A  A   
+   X<<<<<X>>>>>A  A   
+   V              A   
+   >>>>>>>>>>>>>>>A   
+
+CRITICALSECTIONS
+----------------------
+B        -           C
+-        ----------  -
+-           -     -  -
+-           -     -  -
+--------b-c-----------
+   -     -  -  -  -   
+   -     -  -  -  -   
+   -     -  -  -  -   
+   -  -------  -  -   
+   -  -     -  -  -   
+   ----     ----  -   
+   -  -     -  -  -   
+   -  -     -  -  -   
+   b  -------  c  -   
+   ----  -  ----  -   
+   a     -     a  -   
+   -     -     -  -   
+   -------------  -   
+   -              -   
+   -----A----------   
+
+COMPONENTS
+1001	thread	6	14	S	L	{"time_pickup_min":-1,"color":1,"initial_direction":"East","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"East"}
+1002	thread	9	9	S	L	{"time_pickup_min":-1,"color":2,"initial_direction":"West","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"West"}
+1003	thread	12	14	S	L	{"time_pickup_min":-1,"color":3,"initial_direction":"North","missed":0,"time_delivery_max":-1,"delivered":0,"time_exchange_max":-1,"capacity":-1,"time_pickup_max":-1,"delay":0,"picked":0,"time_delivery_min":-1,"passed":0,"time_exchange_min":-1,"direction":"North"}
+2001	pickup	3	15	S	L	{"color":1,"picked":0,"passed":0,"type":"Conditional"}
+2002	pickup	9	5	S	L	{"color":2,"picked":0,"passed":0,"type":"Conditional"}
+2003	pickup	15	15	S	L	{"color":3,"picked":0,"passed":0,"type":"Conditional"}
+3001	delivery	0	2	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2],"strict":0,"consumer":-1,"denominator":1}
+3002	delivery	21	3	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[2],"strict":0,"consumer":-1,"denominator":1}
+3003	delivery	0	3	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":1}
+3004	delivery	7	20	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[1],"strict":0,"consumer":-1,"denominator":1}
+3005	delivery	6	20	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[3],"strict":0,"consumer":-1,"denominator":1}
+3006	delivery	21	2	S	L	{"accepted_types":[],"color":0,"missed":0,"delivered":0,"passed":0,"accepted_colors":[3],"strict":0,"consumer":-1,"denominator":1}
+4001	conditional	3	5	S	L	{"current":0,"color":0,"directions":["East","West"],"passed":0}
+4002	conditional	3	11	S	L	{"current":0,"color":0,"directions":["North","South"],"passed":0}
+4003	conditional	3	18	S	L	{"current":0,"color":0,"directions":["North","South"],"passed":0}
+4004	conditional	9	18	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
+4005	conditional	15	5	S	L	{"current":0,"color":0,"directions":["West","East"],"passed":0}
+4006	conditional	15	11	S	L	{"current":0,"color":0,"directions":["South","North"],"passed":0}
+
+EXECUTION
+
+PLAYER
+
+SKILLS
+Hover over objects to see what they do
+Use help bar
+Hover over side arrows to see different colored tracks
+Drag objects
+Place objects on the track
+Remove unnecessary elements
+Understand that arrows move at unpredictable rates
+Be able to link semaphores to buttons
+Be able to link buttons to direction switches
+Alternating access with semaphores and buttons (ensure mutual exclusion)
+Synchronize multiple arrows
+Block critical sections
+Understand specific delivery points
+Deliver packages with multiple synchronized arrows
+Testing before submitting
