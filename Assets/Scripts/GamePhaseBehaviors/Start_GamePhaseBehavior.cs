@@ -62,7 +62,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
     }
 
-	public void StartPlayingWithLevelInformation(string json){
+	public void StartPlayingWithLevelInformation(string json)
+	{
 		// Get the level selection from the json
 		Debug.Log("Get the level selection from the json: "+json);
         //if(!GameManager.Instance.GetDataManager().debugLevelLoader) GameManager.Instance.GetDataManager().GetLevels(json);
@@ -70,7 +71,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.SetGamePhase( GameManager.GamePhases.LoadScreen );
     }
 
-    public void NoInternetError(){
+    public void NoInternetError()
+	{
 		Debug.Log("Show some error message here and do not continue, that is, remove the following line");
         fetchConfigInProgressOverlay.ClosePanel();
         fetchConfigErrorOverlay.errorText.text = Constants.Messages.DisconnectedOnStart;
