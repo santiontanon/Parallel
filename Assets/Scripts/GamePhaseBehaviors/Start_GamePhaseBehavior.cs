@@ -23,6 +23,13 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	public delegate void StartPlayingWithLevelInformationDelegate(string json);
 	public delegate void NoInternetErrorDelegate();
 
+	void Start() {
+		GameManager.Instance.GetSaveManager().LoadSave("input");
+		GameManager.Instance.UpdatePlayerField("input");
+	//	GameManager.Instance.tracker.StartTrackerWithCallback(LoadRemoteData, null);
+		GameManager.Instance.tracker.StartTrackerWithCallback(null, null, "NA", true, false);
+	}
+
 	public override void BeginPhase()
 	{
 		/*   
@@ -52,16 +59,12 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
             }
         }
 		*/
-
+		
         gameStart.onClick.RemoveAllListeners();
 
 		startGameUI.SetActive(true);
 		gameStart.onClick.AddListener( ()=> {
 			StartPlaying(); 
-			GameManager.Instance.GetSaveManager().LoadSave("input");
-			GameManager.Instance.UpdatePlayerField("input");
-		//	GameManager.Instance.tracker.StartTrackerWithCallback(LoadRemoteData, null);
-            GameManager.Instance.tracker.StartTrackerWithCallback(null, null, "NA", true, false);
 		});
 		gameStart.interactable = true;
 		
