@@ -20,7 +20,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	public delegate void StartPlayingWithLevelInformationDelegate(string json);
 	public delegate void NoInternetErrorDelegate();
 
-	void Start() {
+	void Start()
+	{
 		GameManager.Instance.GetSaveManager().LoadSave("input");
 		GameManager.Instance.UpdatePlayerField("input");
 	//	GameManager.Instance.tracker.StartTrackerWithCallback(LoadRemoteData, null);
@@ -31,14 +32,17 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 		gameStart.onClick.AddListener( ()=> {
 			StartPlaying(); 
 		});
+		
 		credits.creditButton.interactable = true;
 		credits.creditButton.onClick.AddListener(()=> {
 			credits.OpenPanel(); 
 		});
+		
 		credits.creditCloseButton.interactable = true;
 		credits.creditCloseButton.onClick.AddListener(() => {
 			credits.ClosePanel(true);
 		});
+		
 		gameEnd.interactable = true;
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );		
 	}
@@ -53,7 +57,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.GetDataManager().GetLevels(s);
     }
 
-	void StartPlaying(){
+	void StartPlaying()
+	{
         GameManager.Instance.SetGamePhase(GameManager.GamePhases.LoadScreen);
     }
 
