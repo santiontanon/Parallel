@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using ParallelProg.UI;
 
 public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	public GameObject startGameUI;
@@ -10,6 +11,7 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 	public Button gameEnd;
     public Button preSurvey;
     public Button postSurvey;
+	public Credit_UIOverlay credits;
     public InputField playerIdField;
     public ParallelProg.UI.UIOverlay fetchConfigInProgressOverlay;
     [System.Serializable] public class StartErrorOverlay : ParallelProg.UI.UIOverlay { public Text errorText; }
@@ -23,7 +25,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void BeginPhase()
 	{
-        if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
+		/*   
+		if (GameManager.Instance.currentGameMode == GameManager.GameMode.Demo)
         {
             preSurvey.gameObject.SetActive(false);
             postSurvey.gameObject.SetActive(false);
@@ -48,16 +51,33 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
                 playerIdField.onValueChanged.AddListener((string s) => { GameManager.Instance.ResetInitStatus(); });
             }
         }
+		*/
 
         gameStart.onClick.RemoveAllListeners();
-        gameEnd.onClick.RemoveAllListeners();
 
 		startGameUI.SetActive(true);
-		gameStart.onClick.AddListener( ()=> StartPlaying() );
+		gameStart.onClick.AddListener( ()=> {
+			StartPlaying(); 
+			GameManager.Instance.GetSaveManager().LoadSave("input");
+			GameManager.Instance.UpdatePlayerField("input");
+		//	GameManager.Instance.tracker.StartTrackerWithCallback(LoadRemoteData, null);
+            GameManager.Instance.tracker.StartTrackerWithCallback(null, null, "NA", true, false);
+		});
+		gameStart.interactable = true;
+		
+		credits.creditButton.onClick.AddListener(()=> {
+			credits.OpenPanel(); 
+		});
+
+		credits.creditCloseButton.onClick.AddListener(() => {
+			credits.ClosePanel(false);
+		});
+		
 		gameEnd.onClick.AddListener( ()=> GameManager.Instance.SetGamePhase(GameManager.GamePhases.CloseGame) );
     }
 
-    void PlayerFieldChangedEvent()
+/*   
+	void PlayerFieldChangedEvent()
     {
         Debug.Log("PlayerFieldChangedEvent");
         if(playerIdField.text != currentPlayerID)
@@ -105,7 +125,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         {
             Debug.Log("No Text Change");
         }
-    }
+    } 
+*/
 
     public void LoadRemoteData(string s)
     {
@@ -138,7 +159,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
         GameManager.Instance.SetGamePhase( GameManager.GamePhases.LoadScreen );
     }
 
-    public void PreSurveyButtonClicked()
+/*   
+	public void PreSurveyButtonClicked()
     {
         //gameStart.interactable = GameManager.Instance.preSurveyComplete;
         //float opacity = GameManager.Instance.preSurveyComplete ? 1f : 0.25f;
@@ -151,7 +173,8 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
     {
         GameManager.Instance.postSurveyComplete = true;
         Application.OpenURL(GameManager.Instance.GetDataManager().levRef.postsurvey);
-    }
+    } 
+*/
 
     public void NoInternetError(){
 		Debug.Log("Show some error message here and do not continue, that is, remove the following line");
@@ -162,32 +185,31 @@ public class Start_GamePhaseBehavior : GamePhaseBehavior {
 
 	public override void UpdatePhase()
 	{
-        if (Input.GetKeyDown(KeyCode.Escape) && Input.GetKey(KeyCode.LeftShift))
-        {
-            debugOverlay.ToggleDebugUI();
-        }
-        if(GameManager.Instance.currentGameMode != GameManager.GameMode.Demo)
-        {
-            if (GameManager.Instance.playerModelingIntialized && GameManager.Instance.trackerIntialized)
-            {
-                gameStart.interactable = true;
-                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
-            }
-            else
-            {
-                gameStart.interactable = false;
-                gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, .25f);
-            }
-        }
-        else
-        {
-            gameStart.interactable = true;
-            gameStart.GetComponentInChildren<Graphic>().color = new Color(1f, 1f, 1f, 1f);
-        }
+		
 	}
 
 	public override void EndPhase()
 	{
 		startGameUI.SetActive(false);
+	}
+	
+	[System.Serializable]
+	public class Credit_UIOverlay : UIOverlay {
+		
+		public Button creditButton;
+		
+		public Button creditCloseButton;
+		
+		public UIOverlayBackground background;
+		
+		public override void OpenPanel() {
+			background.SetTargetAlpha(1f);
+			base.OpenPanel();
+		}
+		
+		public override void ClosePanel(bool forceClose = false) {
+			background.SetTargetAlpha(0f);
+			base.ClosePanel(forceClose);
+		}
 	}
 }
