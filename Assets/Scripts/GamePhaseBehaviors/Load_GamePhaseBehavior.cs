@@ -67,15 +67,15 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
         }
         else
         {
-            loadUI.optionalLevelContainer.gameObject.SetActive(false);
-            loadUI.previousLevelContainer.gameObject.SetActive(false);
+            loadUI.optionalLevelContainer.gameObject.SetActive(true);
+            loadUI.previousLevelContainer.gameObject.SetActive(true);
             loadUI.requiredLevelsButton.gameObject.SetActive(false);
             loadUI.previousLevelsButton.gameObject.SetActive(false);
             loadUI.generateLevelButton.gameObject.SetActive(false);
             loadUI.optionalLevelsButton.gameObject.SetActive(false);
 
             loadUI.requiredTransform.gameObject.SetActive(true);
-            loadUI.generateTransform.gameObject.SetActive(true);
+        //    loadUI.generateTransform.gameObject.SetActive(true);
         }
     }
 
@@ -96,13 +96,14 @@ public class Load_GamePhaseBehavior : GamePhaseBehavior {
                 SetupLevelButton(lr, loadUI.previousLevelContainer, false);
             }
         }
-        if (GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
+/*        if (GameManager.Instance.GetDataManager().levRef.levels.pcg != null)
         {
             foreach (LevelReferenceObject lr in GameManager.Instance.GetDataManager().levRef.levels.pcg)
             {
                 SetupLevelButton(lr, loadUI.generateLevelContainer, true);
             }
         }
+*/
 
         loadUI.exitLevelSelectionButton.onClick.AddListener(() => GameManager.Instance.SetGamePhase(GameManager.GamePhases.StartScreen));
 
