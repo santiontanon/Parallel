@@ -334,7 +334,7 @@ public class PlayerInteraction_UI
             confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[1]);
             confirmLevelsOverlay.panelContainer.gameObject.SetActive(visibilityToggle && visibilitySettings[2]);
             Image overlayImg = panelContainer.GetComponent<Image>();
-            overlayImg.color = new Color(overlayImg.color.r, overlayImg.color.g, overlayImg.color.b, (visibilityToggle?0.75f:0.5f));
+        //    overlayImg.color = new Color(overlayImg.color.r, overlayImg.color.g, overlayImg.color.b, (visibilityToggle?0.75f:0.5f));
         }
 	}
 
