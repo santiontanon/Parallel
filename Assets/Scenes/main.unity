@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465785, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2627,7 +2627,7 @@ PrefabInstance:
       objectReference: {fileID: 446793111}
     - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
       propertyPath: currentGameMode
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 11482970, guid: 1cc312b1a60044ed2a3c2052d921f771, type: 3}
       propertyPath: currentSaveMode
@@ -2769,6 +2769,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ScrollSensitivity
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011745361118, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010027023110, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011400223592, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}

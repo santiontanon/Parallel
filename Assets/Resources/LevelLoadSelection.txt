@@ -38,7 +38,9 @@
       {
         "file":"level09",
         "title":"Level 9"
-      },
+      }
+    ],
+    "optional":[
       {
         "file":"level10",
         "title":"Level 10"
@@ -70,7 +72,9 @@
       {
         "file":"level17",
         "title":"Level 17"
-      },
+      }
+    ],
+    "previous":[
       {
         "file":"level18",
         "title":"Level 18"
@@ -78,10 +82,8 @@
       {
         "file":"level19",
         "title":"Level 19"
-      }
-    ],
-    "optional":[
-      {
+      },
+	  {
         "file":"level20",
         "title":"Level 20"
       },
@@ -92,9 +94,7 @@
       {
         "file":"level23",
         "title":"Level 23"
-      }
-    ],
-    "previous":[
+      },
       {
         "file":"level24",
         "title":"Level 24"
@@ -102,14 +102,6 @@
       {
         "file":"level25",
         "title":"Level 25"
-      },
-      {
-        "file":"level27",
-        "title":"Level 27"
-      },
-      {
-        "file":"level28",
-        "title":"Level 28"
       }
     ]
   }
