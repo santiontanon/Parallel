@@ -403,7 +403,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: After dragging to track, right click a signal and right click
       again on a semaphore to link them. Then press "Test" again.
-    nextTutorial: 1
+    nextTutorial: 0
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -516,7 +516,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: 'Toggle on help mode, then click on a highlighted element to
       learn more about it. '
-    nextTutorial: 1
+    nextTutorial: 0
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0
@@ -554,7 +554,7 @@ MonoBehaviour:
     sequenceId: 0
     popupDescription: Click the help toggle again to return to play mode when you
       are done.
-    nextTutorial: 1
+    nextTutorial: 0
     pause: 0
     pauseDuration: 0
     overrideSimulation: 0

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465785, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -389,18 +389,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 790319443}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &169655107 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114000013781415136, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-    type: 3}
-  m_PrefabInstance: {fileID: 790319443}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 169655104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &180840120 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000011626859744, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
@@ -2713,37 +2701,37 @@ PrefabInstance:
         type: 3}
       propertyPath: tutorialEvents.Array.data[12].targetButton
       value: 
-      objectReference: {fileID: 2092442645}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[14].targetButton
       value: 
-      objectReference: {fileID: 1115598523}
+      objectReference: {fileID: 2092442645}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[18].targetButton
       value: 
-      objectReference: {fileID: 169655107}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[21].targetButton
       value: 
-      objectReference: {fileID: 1115598523}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[24].targetButton
       value: 
-      objectReference: {fileID: 180840123}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[25].targetButton
       value: 
-      objectReference: {fileID: 2092442645}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[29].targetButton
       value: 
-      objectReference: {fileID: 1115598523}
+      objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialOverlay.panelContainer
@@ -2821,11 +2809,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[7].nextTutorial
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
       propertyPath: tutorialOverlay.nextTutorialButton
       value: 
       objectReference: {fileID: 1300136995}
@@ -2841,7 +2824,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[3].nextTutorial
+      propertyPath: tutorialEvents.Array.data[16].targetButton
+      value: 
+      objectReference: {fileID: 1115598523}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[23].targetButton
+      value: 
+      objectReference: {fileID: 2092442645}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[27].targetButton
+      value: 
+      objectReference: {fileID: 2092442645}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[7].nextTutorial
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
