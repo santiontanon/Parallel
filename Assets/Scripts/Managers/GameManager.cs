@@ -347,6 +347,7 @@ public class GameManager : MonoBehaviour {
 
     public void TriggerAdvanceToNextLevel()
     {
+		
         LevelReferenceObject nextLevel = dataManager.GetNextLevel(currentLevelReferenceObject);
         //Debug.Log("Next level is: " + nextLevel.levelId);
         TriggerLoadLevel(true, DataManager.LoadType.RESOURCES, nextLevel.file);

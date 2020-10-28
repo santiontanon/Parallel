@@ -230,12 +230,12 @@ public class DataManager : MonoBehaviour {
             if(levelFound) return l;
             if (l.levelId == currentLevelRef.levelId) { levelFound = true; }
         }
-        foreach (LevelReferenceObject l in levRef.levels.previous)
+        foreach (LevelReferenceObject l in levRef.levels.optional)
         {
             if (levelFound) return l;
             if (l.levelId == currentLevelRef.levelId) { levelFound = true; }
         }
-        foreach (LevelReferenceObject l in levRef.levels.optional)
+        foreach (LevelReferenceObject l in levRef.levels.previous)
         {
             if (levelFound) return l;
             if (l.levelId == currentLevelRef.levelId) { levelFound = true; }
