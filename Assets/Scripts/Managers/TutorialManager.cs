@@ -93,6 +93,7 @@ public class TutorialManager : MonoBehaviour {
             Vector3 end_tooltipFocusPoint = gameCamera.WorldToScreenPoint(new Vector3(posX, posY, panelContainer.position.z));
 
             PositionTutorialPanel(start_tooltipCenter, end_tooltipFocusPoint, inDescription.Length);
+            Debug.Log("start:" + start_tooltipCenter + " end:" + end_tooltipFocusPoint);
 
             if (nextTutorial)
                 nextTutorialButton.gameObject.SetActive(true);
@@ -120,7 +121,7 @@ public class TutorialManager : MonoBehaviour {
             float bottomBannerHeight = multiplier * GameObject.Find("Bottom_Banner").GetComponent<RectTransform>().rect.height;
             float panelClearHeight = multiplier * panelContainer.rect.height / 2f;
             float panelClearWidth = multiplier * panelContainer.rect.width / 2f;
-            float tooltipNubSize = 50f * multiplier;
+            float tooltipNubSize = multiplier* tutorialArrow.rect.height;
 
 
             Vector3 start = position;
@@ -161,14 +162,14 @@ public class TutorialManager : MonoBehaviour {
 
         void TutorialPanelTail(Vector3 start, Vector3 end)
         {
-            float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
-            Vector3 ray = end - start;
+            float multiplier = scaler.referenceResolution.x / canvas.pixelRect.width;
+            Vector3 ray = multiplier * (end - start);
             float rad = Mathf.Atan2(ray.y, ray.x); // In radians
             float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
             tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
             float targetNubSize = ray.magnitude;
             tutorialArrow.localScale = Vector3.one;
-            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize * 2);
+            tutorialArrow.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, targetNubSize);
         }
 
 
