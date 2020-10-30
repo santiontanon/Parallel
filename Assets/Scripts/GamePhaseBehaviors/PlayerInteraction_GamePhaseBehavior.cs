@@ -206,7 +206,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
 
         EventTrigger.Entry click_trash = new EventTrigger.Entry();
         click_trash.eventID = EventTriggerType.PointerDown;
-        click_trash.callback.AddListener((eventData) => { ResetPlacedObjects(); });
+        //click_trash.callback.AddListener((eventData) => { ResetPlacedObjects(); });
         playerInteraction_UI.trash.triggers.Add(click_trash);
 
         EventTrigger.Entry endHover_trash = new EventTrigger.Entry();
@@ -240,7 +240,7 @@ public class PlayerInteraction_GamePhaseBehavior : GamePhaseBehavior {
         playerInteraction_UI.simulationButton.interactable = true;
 
         playerInteraction_UI.stopSimulationButton.onClick.RemoveAllListeners();
-        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { GameManager.Instance.tracker.CreateEventExt("StopSimulation", "stoppedViaButton"); EndSimulation(); });
+        playerInteraction_UI.stopSimulationButton.onClick.AddListener(() => { Debug.Log("STOP"); GameManager.Instance.tracker.CreateEventExt("StopSimulation", "stoppedViaButton"); EndSimulation(); });
         playerInteraction_UI.stopSimulationButton.interactable = false;
         playerInteraction_UI.stopSimulationButton.gameObject.SetActive(false);
 

@@ -306,6 +306,7 @@ public class Tracker : MonoBehaviour {
 	}
 
 	public TrackedEvent CreateEventExt(string tracked_event, string data){
+        Debug.Log(tracked_event);
 		DebugInfoLabel = tracked_event + " " + data;
 		return CreateEvent(tracked_event, data);
 	}
