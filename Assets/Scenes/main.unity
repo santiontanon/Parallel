@@ -729,11 +729,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8440694687463296163, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -13.443115
-      objectReference: {fileID: 0}
     - target: {fileID: 1000013262923524, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1138,6 +1133,25 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 224000013021948786, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012229827694, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8440694687463296163, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -13.443115
+      objectReference: {fileID: 0}
+    - target: {fileID: 1106750403726240, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224000013763179310, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -1148,24 +1162,15 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: -701.8
       objectReference: {fileID: 0}
+    - target: {fileID: 114000013260654606, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 114000011623395838, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
         type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1106750403726240, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000013021948786, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000012229827694, guid: acaefe53ffe7bfb4b97b84c82f1cf840,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114000012098485578, guid: acaefe53ffe7bfb4b97b84c82f1cf840, type: 3}
@@ -1774,11 +1779,6 @@ PrefabInstance:
       objectReference: {fileID: 2092442645}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
-      propertyPath: tutorialEvents.Array.data[2].targetButton
-      value: 
-      objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
       propertyPath: tutorialEvents.Array.data[4].targetButton
       value: 
       objectReference: {fileID: 180840123}
@@ -1787,26 +1787,6 @@ PrefabInstance:
       propertyPath: tutorialEvents.Array.data[5].targetButton
       value: 
       objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[11].targetButton
-      value: 
-      objectReference: {fileID: 2092442645}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[12].targetButton
-      value: 
-      objectReference: {fileID: 1115598523}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[13].targetButton
-      value: 
-      objectReference: {fileID: 169655107}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[14].targetButton
-      value: 
-      objectReference: {fileID: 169655107}
     - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: tutorialEvents.Array.data[15].targetButton
@@ -1887,11 +1867,6 @@ PrefabInstance:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
-    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
-        type: 3}
-      propertyPath: tutorialEvents.Array.data[3].targetButton
-      value: 
-      objectReference: {fileID: 180840123}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: ToolArray.Array.data[0].toolInstance
@@ -2055,18 +2030,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -38.52466
       objectReference: {fileID: 0}
-    - target: {fileID: 1000010405702870, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000013169581460, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1000012729354332, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 114000012367674112, guid: fc994ba4b3f9b644a951c0743b3a9890,
         type: 3}
       propertyPath: m_ScrollSensitivity
@@ -2086,6 +2049,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ScrollSensitivity
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010405702870, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000013169581460, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000012729354332, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc994ba4b3f9b644a951c0743b3a9890, type: 3}

@@ -45,8 +45,10 @@ public class TutorialManager : MonoBehaviour {
             {
                 RectTransform elementRect = button.gameObject.GetComponent<RectTransform>();
                 //panelContainer.position = button.gameObject.transform.position;
-                float posX = button.gameObject.transform.position.x;
-                float posY = button.gameObject.transform.position.y;
+                //float posX = button.gameObject.transform.position.x;
+                //float posY = button.gameObject.transform.position.y;
+                float posX = Screen.width / 2f;
+                float posY = Screen.height / 2f;
 
                 //account for canvas size and resolution
                 float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
@@ -79,8 +81,10 @@ public class TutorialManager : MonoBehaviour {
         {
             SpriteRenderer sprite = element.GetComponent<SpriteRenderer>();
             panelContainer.position = element.transform.position;
-            float posX = element.transform.position.x;
-            float posY = element.transform.position.y;
+            //float posX = element.transform.position.x;
+            //float posY = element.transform.position.y;
+            float posX = Screen.width / 2f;
+            float posY = Screen.height / 2f;
 
             float multiplier = canvas.pixelRect.width / scaler.referenceResolution.x;
             RectTransform tooltip = panelContainer.GetChild(0).GetComponent<RectTransform>();
@@ -157,13 +161,13 @@ public class TutorialManager : MonoBehaviour {
             }
 
             panelContainer.position = start;
-            TutorialPanelTail(start, end);
+            //TutorialPanelTail(start, end);
         }
 
         void TutorialPanelTail(Vector3 start, Vector3 end)
         {
             float multiplier = scaler.referenceResolution.x / canvas.pixelRect.width;
-            Vector3 ray = multiplier * (end - start);
+            Vector3 ray =(end - start);
             float rad = Mathf.Atan2(ray.y, ray.x); // In radians
             float deg = rad * (180 / Mathf.PI) + 90f; //starts from bottom instead of from right
             tutorialArrow.localRotation = Quaternion.Euler(0,0,deg);
