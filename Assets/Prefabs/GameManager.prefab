@@ -369,17 +369,17 @@ MonoBehaviour:
         delivered_items: 
   - levelNumber: 1
     type: 0
-    init_trigger: 1
-    complete_trigger: 3
-    sequenceId: 0
+    init_trigger: 0
+    complete_trigger: 4
+    sequenceId: 1
     popupDescription: The component on the board (the circle with a plus symbol) is
       a semaphore. When the symbol inside the circle is a plus, the semaphore is open.
       Otherwise, it is closed and the icon will change to an X symbol. After an arrow
       passes through it, an open semaphore will close automatically and block any
       arrow.
-    nextTutorial: 0
-    pause: 1
-    pauseDuration: 12
+    nextTutorial: 1
+    pause: 0
+    pauseDuration: 0
     overrideSimulation: 0
     filepath: 
     hasCompleted: 0
@@ -388,7 +388,7 @@ MonoBehaviour:
     targetSimulationStep:
       eventType: 
       timeStep: 0
-      componentID: 4001
+      componentID: 0
       componentPos: {x: 0, y: 0}
       componentStatus:
         final_condition: 0

@@ -1867,6 +1867,41 @@ PrefabInstance:
       propertyPath: moviePauseTrigger
       value: 
       objectReference: {fileID: 4182688}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].init_trigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].sequenceId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].nextTutorial
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].pause
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].pauseDuration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].targetSimulationStep.componentID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013169398064, guid: 1cc312b1a60044ed2a3c2052d921f771,
+        type: 3}
+      propertyPath: tutorialEvents.Array.data[2].complete_trigger
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 114000010981810682, guid: 1cc312b1a60044ed2a3c2052d921f771,
         type: 3}
       propertyPath: ToolArray.Array.data[0].toolInstance
