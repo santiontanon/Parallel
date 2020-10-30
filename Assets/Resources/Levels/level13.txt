@@ -1,6 +1,6 @@
 METADATA
 level_id	13
-level_title	
+level_title	Level 13
 goal_string	Both Arrows Deliver at Package. Both Packages Get Delivered the right number of times
 goal_struct	{"desired":[],"required":[{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":1001,"type":"thread","value":0},{"condition":"gt","thread_id":0,"property":"delivered","id":1002,"type":"thread","value":0}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}

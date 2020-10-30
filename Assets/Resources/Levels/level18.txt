@@ -1,6 +1,6 @@
 METADATA
 level_id	18
-level_title	
+level_title	Level 18
 goal_string	Deliver all packages to the correct Delivery Point.
 goal_struct	{"desired":[],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":3},{"condition":"eq","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":3},{"condition":"eq","thread_id":0,"property":"delivered","id":3003,"type":"delivery","value":3}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":3}}
