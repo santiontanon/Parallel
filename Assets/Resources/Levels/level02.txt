@@ -1,6 +1,6 @@
 METADATA
 level_id	2
-level_title	Intro to Parallel
+level_title	
 goal_string	Deliver 2 packages
 goal_struct	{"desired":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2}],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":2}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}

@@ -1,6 +1,6 @@
 METADATA
 level_id	4
-level_title	Color coded tracks
+level_title	
 goal_string	Each arrow delivers the package at least twice
 goal_struct	{"desired":[],"required":[{"condition":"gt","property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","property":"delivered","id":3002,"type":"delivery","value":1}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}

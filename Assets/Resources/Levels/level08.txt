@@ -1,6 +1,6 @@
 METADATA
 level_id	8
-level_title	Intro to Parallel
+level_title	
 goal_string	Deliver 4 packages with each arrow delivering at least 2
 goal_struct	{"desired":[],"required":[{"condition":"lt","thread_id":0,"property":"passed","id":6001,"type":"intersection","value":2},{"condition":"lt","thread_id":0,"property":"passed","id":6002,"type":"intersection","value":2},{"condition":"gt","thread_id":0,"property":"delivered","id":1001,"type":"thread","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":1002,"type":"thread","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":1},{"condition":"gt","thread_id":0,"property":"delivered","id":3002,"type":"delivery","value":1}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":2}}

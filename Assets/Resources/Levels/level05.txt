@@ -1,6 +1,6 @@
 METADATA
 level_id	5
-level_title	Intro to Parallel
+level_title	
 goal_string	Deliver Both Packages Twice
 goal_struct	{"desired":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":4}],"required":[{"condition":"eq","thread_id":0,"property":"delivered","id":3001,"type":"delivery","value":4},{"condition":"eq","thread_id":0,"property":"delivered","id":1001,"type":"thread","value":2},{"condition":"eq","thread_id":0,"property":"delivered","id":1002,"type":"thread","value":2}]}
 player_palette	{"painter":{"count":0},"semaphore":{"count":-1},"signal":{"count":-1},"colors":{"count":1}}
